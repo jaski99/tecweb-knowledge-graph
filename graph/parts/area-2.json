@@ -5,34 +5,34 @@
     "area": 2,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "L'architettura 3-tier (a tre livelli) separa l'applicazione in: Presentazione (client, UI), Logica applicativa (server, business logic), Dati (database). Può essere orizzontale (livelli su macchine diverse) o verticale (tutti i livelli sulla stessa macchina). Ogni livello comunica solo con quello adiacente.",
+    "sapere": "L’architettura a tre tier separa logicamente presentazione, logica applicativa e dati. I tier possono essere co-locati o distribuiti. Scalabilità verticale (scale-up) significa aumentare le risorse di una macchina; scalabilità orizzontale (scale-out) significa aggiungere istanze e distribuire il carico: non sono sinonimi della collocazione fisica dei tier.",
     "saper_fare": [
-      "Disegnare uno schema di architettura 3-tier",
-      "Spiegare i vantaggi della separazione dei livelli",
-      "Confrontare architettura orizzontale e verticale"
+      "Disegnare i tre tier e assegnare a ciascuno le responsabilità",
+      "Distinguere separazione logica e distribuzione fisica",
+      "Confrontare scale-up verticale e scale-out orizzontale"
     ],
     "prerequisiti": [],
     "esercizi": [
       {
         "tipo_esame": "scritto: disegna architettura",
-        "testo": "Disegna un'architettura 3-tier per un e-commerce.",
-        "soluzione": "Livello Presentazione: Browser (HTML/CSS/JS) o App mobile\nLivello Logica: Server web (Flask, Node.js) con API REST\nLivello Dati: Database (SQLite, PostgreSQL, MongoDB)\nComunicazione: Presentazione ↔ Logica (HTTP/HTTPS), Logica ↔ Dati (SQL, ORM)."
+        "testo": "Disegna un’architettura 3-tier per un negozio online e indica come replicare il livello applicativo.",
+        "soluzione": "Presentazione: browser HTML/CSS/JavaScript; logica: server API che valida richieste e applica regole; dati: database. Il browser comunica con il server via HTTP(S), il server interroga il database. Aggiungere istanze API dietro un bilanciatore è scale-out orizzontale del livello applicativo. I tre tier sono responsabilità logiche, non tre macchine obbligatorie."
       }
     ],
     "tempo_studio_min": 45,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Fondamentale per progettazione web."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
-        "titolo": "MDN: Client-server architecture",
-        "url": "https://developer.mozilla.org/en-US/docs/Learn/Server-side/First_steps/Client-Server_overview",
+        "titolo": "MDN: Client-server overview",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Client-Server_overview",
         "verificato": true
       },
       {
-        "titolo": "Wikipedia: Multitier architecture",
-        "url": "https://en.wikipedia.org/wiki/Multitier_architecture",
+        "titolo": "MDN: Overview of HTTP",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview",
         "verificato": true
       }
     ],
@@ -42,10 +42,10 @@
       }
     ],
     "checklist_ripasso": [
-      "3 livelli: Presentazione, Logica, Dati",
-      "Orizzontale: livelli su macchine diverse",
-      "Verticale: tutti i livelli sulla stessa macchina",
-      "Vantaggi: manutenibilità, scalabilità, separazione delle responsabilità"
+      "3 tier logici: presentazione, logica applicativa, dati",
+      "I tier possono essere co-locati o distribuiti",
+      "Scale-up verticale: più risorse alla stessa macchina",
+      "Scale-out orizzontale: più istanze per distribuire il carico"
     ],
     "worker": "W1"
   },
@@ -55,11 +55,11 @@
     "area": 2,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "REST (Representational State Transfer) è uno stile architetturale per sistemi distribuiti basato su 6 vincoli: client-server, stateless, cacheability, uniform interface, layered system, code-on-demand (opzionale). L'uniform interface richiede: identificazione delle risorse (URI), manipolazione tramite rappresentazioni, messaggi autosufficenti, HATEOAS (opzionale).",
+    "sapere": "REST (Representational State Transfer) è uno stile architetturale per sistemi distribuiti con sei vincoli: client-server, stateless, cache, interfaccia uniforme, sistema a livelli e code-on-demand (opzionale). L’interfaccia uniforme comprende identificazione delle risorse, manipolazione tramite rappresentazioni, messaggi auto-descrittivi e HATEOAS; HTTP e JSON sono scelte comuni, non definizioni di REST.",
     "saper_fare": [
-      "Elencare e spiegare i 6 vincoli REST",
-      "Spiegare il principio di uniform interface",
-      "Distinguere REST da SOAP e GraphQL"
+      "Elencare i sei vincoli e indicare quello opzionale",
+      "Spiegare le parti dell’interfaccia uniforme, compreso HATEOAS",
+      "Distinguere REST da HTTP e dalle convenzioni comuni delle API"
     ],
     "prerequisiti": [
       {
@@ -71,14 +71,14 @@
     "esercizi": [
       {
         "tipo_esame": "scritto: elenca vincoli",
-        "testo": "Elenca i 6 vincoli architetturali di REST.",
-        "soluzione": "1) Client-server: separazione tra client (UI) e server (dati); 2) Stateless: ogni richiesta contiene tutte le informazioni; 3) Cacheability: le risposte devono essere esplicitamente cacheable o non cacheable; 4) Uniform interface: interfaccia consistente per tutte le risorse; 5) Layered system: componenti organizzati in livelli (proxy, gateway); 6) Code-on-demand (opzionale): server può inviare codice eseguibile (es. JavaScript)."
+        "testo": "Elenca i vincoli REST e indica quale è opzionale; chiarisci se HATEOAS è facoltativo nello stile rigoroso.",
+        "soluzione": "I vincoli sono client-server, stateless, cache, interfaccia uniforme, sistema a livelli e code-on-demand. Code-on-demand è opzionale. HATEOAS fa parte dell’interfaccia uniforme nella formulazione REST rigorosa; molte API HTTP dette RESTful non lo implementano integralmente."
       }
     ],
     "tempo_studio_min": 60,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Fondamentale per API design."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
@@ -87,13 +87,13 @@
         "verificato": true
       },
       {
-        "titolo": "Wikipedia: Representational State Transfer",
-        "url": "https://en.wikipedia.org/wiki/Representational_state_transfer",
+        "titolo": "RFC 8288 - Web Linking",
+        "url": "https://www.rfc-editor.org/rfc/rfc8288.html",
         "verificato": true
       },
       {
-        "titolo": "RFC 5988 - Web Linking (HATEOAS)",
-        "url": "https://www.rfc-editor.org/rfc/rfc5988.html",
+        "titolo": "W3C: Architecture of the World Wide Web",
+        "url": "https://www.w3.org/TR/webarch/",
         "verificato": true
       }
     ],
@@ -103,12 +103,16 @@
       },
       {
         "libro": "RFC"
+      },
+      {
+        "libro": "W3C"
       }
     ],
     "checklist_ripasso": [
-      "6 vincoli: client-server, stateless, cacheability, uniform interface, layered, code-on-demand",
-      "Uniform interface: URI + rappresentazioni + messaggi autosufficenti + HATEOAS",
-      "REST ≠ SOAP (protocollo) ≠ GraphQL (query language)"
+      "Vincoli: client-server, stateless, cache, interfaccia uniforme, livelli, code-on-demand",
+      "Code-on-demand è l’unico vincolo opzionale",
+      "Interfaccia uniforme: risorsa, rappresentazione, messaggi auto-descrittivi, hypermedia",
+      "REST non è un protocollo né un formato JSON"
     ],
     "worker": "W1"
   },
@@ -118,11 +122,11 @@
     "area": 2,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "I metodi HTTP definiscono le operazioni sulle risorse: GET (recupera, idempotente, safe), POST (crea, non idempotente), PUT (sostituisce completamente, idempotente), PATCH (aggiorna parzialmente, non necessariamente idempotente), DELETE (elimina, idempotente). PATCH è per aggiornamenti parziali, PUT per sostituzione completa.",
+    "sapere": "I metodi HTTP esprimono la semantica dell’operazione sulla risorsa: GET recupera, POST sottopone contenuto a elaborazione, PUT sostituisce le rappresentazioni correnti del target ed è idempotente, PATCH applica un documento di modifiche e non è necessariamente idempotente, DELETE rimuove ed è idempotente. PUT può creare una risorsa se il server lo consente.",
     "saper_fare": [
-      "Scegliere il metodo appropriato per operazioni CRUD",
-      "Spiegare la differenza tra PUT e PATCH",
-      "Definire idempotenza e safety"
+      "Scegliere il metodo coerente con l’operazione richiesta",
+      "Spiegare PUT vs PATCH in termini di rappresentazione e documento di patch",
+      "Distinguere safe da idempotente usando esempi di richieste ripetute"
     ],
     "prerequisiti": [
       {
@@ -134,33 +138,33 @@
     "esercizi": [
       {
         "tipo_esame": "scritto: scegli metodo",
-        "testo": "Quale metodo usare per: (a) creare un nuovo utente, (b) aggiornare solo l'email di un utente, (c) sostituire completamente un utente, (d) eliminare un utente?",
-        "soluzione": "(a) POST /users; (b) PATCH /users/1; (c) PUT /users/1; (d) DELETE /users/1."
+        "testo": "Scegli il metodo per creare un libro nella collezione, sostituire la rappresentazione di /libri/42 e aggiornare solo il titolo.",
+        "soluzione": "POST /libri sottopone i dati alla collezione e normalmente crea una risorsa; PUT /libri/42 sostituisce la rappresentazione del target; PATCH /libri/42 applica un documento di modifica nel formato dichiarato dall’API."
       },
       {
         "tipo_esame": "scritto: PATCH vs PUT",
-        "testo": "Qual è la differenza tra PATCH e PUT?",
-        "soluzione": "PATCH applica aggiornamenti parziali alla risorsa (es. modificare solo l'email di un utente); PUT sostituisce completamente la risorsa (tutti i campi devono essere forniti). PATCH non è necessariamente idempotente; PUT è idempotente."
+        "testo": "Una PATCH che imposta un campo a un valore fisso è sempre non idempotente? Confrontala con PUT.",
+        "soluzione": "No. PATCH non è garantito idempotente, ma una patch che assegna sempre lo stesso valore può esserlo; una patch che incrementa un contatore non lo è. PUT sostituisce la rappresentazione ed è idempotente per la stessa richiesta."
       }
     ],
     "tempo_studio_min": 40,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Domanda ricorrente: PATCH vs PUT."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
-        "titolo": "MDN: HTTP Methods",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods",
+        "titolo": "MDN: HTTP request methods",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods",
         "verificato": true
       },
       {
-        "titolo": "RFC 9110 - HTTP Semantics (Methods)",
-        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-methods",
+        "titolo": "RFC 9110 - HTTP Semantics",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
         "verificato": true
       },
       {
-        "titolo": "RFC 5789 - PATCH Method",
+        "titolo": "RFC 5789 - PATCH Method for HTTP",
         "url": "https://www.rfc-editor.org/rfc/rfc5789.html",
         "verificato": true
       }
@@ -174,11 +178,11 @@
       }
     ],
     "checklist_ripasso": [
-      "GET: recupera, idempotente, safe",
-      "POST: crea, non idempotente",
-      "PUT: sostituisce completamente, idempotente",
-      "PATCH: aggiorna parzialmente",
-      "DELETE: elimina, idempotente"
+      "GET è safe e idempotente; POST non è garantito idempotente",
+      "PUT sostituisce la rappresentazione ed è idempotente",
+      "PATCH applica un documento con semantica definita dal media type; idempotenza non garantita",
+      "DELETE è idempotente quanto all’effetto, anche se le risposte successive possono differire",
+      "Safe non significa privo di log o di effetti tecnici"
     ],
     "worker": "W1"
   },
@@ -188,11 +192,11 @@
     "area": 2,
     "gruppo": "A",
     "tipo": "abilita",
-    "sapere": "404 Not Found (RFC 7231) indica che il server non ha trovato la risorsa richiesta. È il codice di errore client più comune. Può essere usato per: risorsa inesistente, risorsa spostata senza reindirizzamento, risorsa nascosta per sicurezza. Non va confuso con 410 Gone (risorsa permanentemente rimossa).",
+    "sapere": "404 Not Found indica che il server non trova una rappresentazione corrente per il target o non vuole rivelarne l’esistenza. Non specifica se l’assenza sia temporanea o permanente; 410 Gone può indicare una rimozione definitiva nota. RFC 9110 ha sostituito le precedenti specifiche HTTP/1.1, incluso RFC 7231.",
     "saper_fare": [
-      "Spiegare quando usare 404 vs 410",
-      "Implementare una risposta 404 in Flask",
-      "Personalizzare una pagina 404"
+      "Scegliere tra 404, 410 e 403 in base al caso",
+      "Restituire JSON e status 404 coerenti in Flask",
+      "Distinguere una route non registrata da una risorsa assente in una route valida"
     ],
     "prerequisiti": [
       {
@@ -204,29 +208,29 @@
     "esercizi": [
       {
         "tipo_esame": "scritto: implementazione Flask",
-        "testo": "Scrivi un endpoint Flask che ritorna 404 se la risorsa non esiste.",
-        "soluzione": "from flask import Flask, jsonify, abort\napp = Flask(__name__)\n\n@app.route('/api/risorse/<id>')\ndef get_risorsa(id):\n    if id not in ['1', '2', '3']:\n        abort(404, description='Risorsa non trovata')\n    return jsonify({'id': id, 'nome': f'Risorsa {id}'})\n\n# Oppure con return:\n@app.route('/api/risorse/<id>')\ndef get_risorsa(id):\n    if id not in ['1', '2', '3']:\n        return jsonify({'error': 'Not Found'}), 404\n    return jsonify({'id': id, 'nome': f'Risorsa {id}'})"
+        "testo": "Scrivi una route Flask che restituisce il libro 42 oppure un errore JSON con status 404 quando l’ID non esiste.",
+        "soluzione": "from flask import Flask, jsonify\napp = Flask(__name__)\nLIBRI = {42: {\"id\": 42, \"titolo\": \"Il sentiero dei nidi di ragno\"}}\n\n@app.route(\"/api/libri/<int:book_id>\", methods=[\"GET\"])\ndef get_book(book_id):\n    book = LIBRI.get(book_id)\n    if book is None:\n        return jsonify({\"error\": \"Not Found\"}), 404\n    return jsonify(book), 200"
       }
     ],
     "tempo_studio_min": 30,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Codice specifico richiesto nelle prove."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
         "titolo": "MDN: 404 Not Found",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404",
         "verificato": true
       },
       {
-        "titolo": "RFC 7231 - 404 Not Found",
-        "url": "https://www.rfc-editor.org/rfc/rfc7231.html#section-6.5.4",
+        "titolo": "RFC 9110 - HTTP Semantics",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
         "verificato": true
       },
       {
-        "titolo": "Flask: Error Handling",
-        "url": "https://flask.palletsprojects.com/en/3.0.x/errorhandling/",
+        "titolo": "Flask: Handling Application Errors",
+        "url": "https://flask.palletsprojects.com/en/stable/errorhandling/",
         "verificato": true
       }
     ],
@@ -242,10 +246,10 @@
       }
     ],
     "checklist_ripasso": [
-      "404 = risorsa non trovata",
-      "410 = permanentemente rimossa",
-      "Flask: abort(404) o return ..., 404",
-      "Personalizzazione pagina 404"
+      "404: target non trovato o esistenza non rivelata",
+      "410: risorsa nota come rimossa definitivamente",
+      "403: accesso rifiutato, non risorsa assente",
+      "Flask: status HTTP nella tupla di risposta o tramite abort"
     ],
     "worker": "W1"
   },
@@ -255,11 +259,11 @@
     "area": 2,
     "gruppo": "A",
     "tipo": "abilita",
-    "sapere": "Le best practice per API RESTful includono: URI semantiche (sostantivi, non verbi), plurali per collezioni (/users non /user), gerarchia logica (/users/1/posts), versioning nell'URI (/v1/users) o nell'header, paginazione, rate limiting, documentazione (OpenAPI/Swagger), e codici di stato appropriati.",
+    "sapere": "Il design di un’API definisce risorse e URI, semantica dei metodi, rappresentazioni, codici di stato, errori, autorizzazione, paginazione e compatibilità. Nomi al plurale, versionamento nell’URI e specifici formati di paginazione sono convenzioni da documentare, non vincoli universali di REST.",
     "saper_fare": [
-      "Progettare URI RESTful per un'applicazione",
-      "Implementare versioning e paginazione",
-      "Documentare un'API con OpenAPI"
+      "Progettare percorsi per collezioni e risorse con metodi coerenti",
+      "Definire rappresentazioni, status ed errori per gli scenari principali",
+      "Documentare paginazione, autenticazione, permessi e strategia di compatibilità"
     ],
     "prerequisiti": [
       {
@@ -276,90 +280,34 @@
     "esercizi": [
       {
         "tipo_esame": "scritto: progetta API",
-        "testo": "Progetta un'API REST per un blog con post e commenti.",
-        "soluzione": "URI: GET /posts (elenca tutti i post), POST /posts (crea post), GET /posts/1 (ottieni post), PUT /posts/1 (sostituisci post), PATCH /posts/1 (aggiorna parzialmente), DELETE /posts/1 (elimina), GET /posts/1/comments (elenca commenti del post), POST /posts/1/comments (aggiungi commento). Versioning: /v1/posts. Paginazione: /posts?page=2&per_page=10. Status: 200 OK, 201 Created, 404 Not Found, 400 Bad Request."
+        "testo": "Progetta un’API per libri e recensioni che consenta di elencare i libri, leggere il libro 42, crearne uno e aggiungere una recensione.",
+        "soluzione": "GET /api/v1/libri?limit=20 elenca una pagina; GET /api/v1/libri/42 recupera il libro; POST /api/v1/libri crea una risorsa; POST /api/v1/libri/42/recensioni aggiunge una recensione. Specifica media type, limiti e continuazione della paginazione, autenticazione, permessi, status e formato degli errori. /v1 è una strategia possibile, non un obbligo REST."
       }
     ],
     "tempo_studio_min": 50,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Importante per sviluppo back-end."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
-        "titolo": "MDN: REST API Tutorial",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/API/REST_API_Tutorial",
+        "titolo": "MDN: HTTP request methods",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods",
         "verificato": true
       },
       {
-        "titolo": "Google: API Design Guide",
-        "url": "https://cloud.google.com/apis/design",
+        "titolo": "RFC 9110 - HTTP Semantics",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
         "verificato": true
       },
       {
-        "titolo": "OpenAPI Specification",
-        "url": "https://spec.openapis.org/oas/v3.1.0",
-        "verificato": true
-      }
-    ],
-    "riferimenti_testo": [
-      {
-        "libro": "MDN"
-      }
-    ],
-    "checklist_ripasso": [
-      "URI: sostantivi, plurali, gerarchia",
-      "Versioning: /v1/ o header Accept",
-      "Paginazione: ?page=&per_page=",
-      "Status: 200, 201, 400, 404, 500"
-    ],
-    "worker": "W1"
-  },
-  {
-    "id": "rate-limiting-sicurezza",
-    "title": "Rate limiting e sicurezza delle API",
-    "area": 2,
-    "gruppo": "B",
-    "tipo": "concetto",
-    "sapere": "Il rate limiting limita il numero di richieste che un client può fare in un determinato periodo, prevenendo abusi e attacchi DDoS. Tecniche comuni: limiti per IP, per utente, per endpoint; window (fisso, scorrevole); token bucket. La sicurezza delle API include: autenticazione (API key, OAuth, JWT), autorizzazione, HTTPS, CORS, input validation.",
-    "saper_fare": [
-      "Implementare rate limiting in Flask",
-      "Spiegare il funzionamento di OAuth 2.0",
-      "Configurare CORS per un'API"
-    ],
-    "prerequisiti": [
-      {
-        "id": "api-design-best-practice",
-        "forza": "soft",
-        "motivo": "Il rate limiting è parte della sicurezza delle API."
-      }
-    ],
-    "esercizi": [
-      {
-        "tipo_esame": "scritto: implementa rate limiting",
-        "testo": "Implementa rate limiting in Flask (max 100 richieste/minuto per IP).",
-        "soluzione": "from flask import Flask, request, jsonify\nfrom flask_limiter import Limiter\nfrom flask_limiter.util import get_remote_address\n\napp = Flask(__name__)\nlimiter = Limiter(app, key_func=get_remote_address)\n\n@app.route('/api/data')\n@limiter.limit(\"100 per minute\")\ndef get_data():\n    return jsonify({'data': '...'})\n\n# Oppure senza librerie esterne:\nfrom datetime import datetime, timedelta\nfrom collections import defaultdict\n\nrate_limits = defaultdict(list)\n\n@app.before_request\ndef check_rate_limit():\n    ip = get_remote_address()\n    now = datetime.now()\n    # Rimuovi richieste vecchie (> 1 minuto)\n    rate_limits[ip] = [t for t in rate_limits[ip] if now - t < timedelta(minutes=1)]\n    if len(rate_limits[ip]) >= 100:\n        return jsonify({'error': 'Rate limit exceeded'}), 429\n    rate_limits[ip].append(now)"
-      }
-    ],
-    "tempo_studio_min": 40,
-    "priorita": {
-      "livello": "media",
-      "motivazione": "Gruppo B. Importante ma meno centrale."
-    },
-    "risorse": [
-      {
-        "titolo": "MDN: CORS",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS",
+        "titolo": "RFC 9457 - Problem Details for HTTP APIs",
+        "url": "https://www.rfc-editor.org/rfc/rfc9457.html",
         "verificato": true
       },
       {
-        "titolo": "OAuth 2.0 Specification",
-        "url": "https://datatracker.ietf.org/doc/html/rfc6749",
-        "verificato": true
-      },
-      {
-        "titolo": "Flask-Limiter Documentation",
-        "url": "https://flask-limiter.readthedocs.io/",
+        "titolo": "RFC 8288 - Web Linking",
+        "url": "https://www.rfc-editor.org/rfc/rfc8288.html",
         "verificato": true
       }
     ],
@@ -372,10 +320,71 @@
       }
     ],
     "checklist_ripasso": [
-      "Rate limiting: limiti per IP/utente/endpoint",
-      "Autenticazione: API key, OAuth, JWT",
-      "CORS: Cross-Origin Resource Sharing",
-      "HTTPS: crittografia TLS"
+      "Il percorso identifica una risorsa; il metodo indica l’intento",
+      "Documentare media type, status ed errori",
+      "Definire limiti, ordine e continuazione della paginazione",
+      "Versionamento e nomi delle collezioni sono scelte da documentare",
+      "Validare input e autorizzare ogni operazione"
+    ],
+    "worker": "W1"
+  },
+  {
+    "id": "rate-limiting-sicurezza",
+    "title": "Rate limiting e sicurezza delle API",
+    "area": 2,
+    "gruppo": "B",
+    "tipo": "concetto",
+    "sapere": "Il rate limiting applica limiti di frequenza secondo una policy e una chiave come account, credenziale, IP o endpoint. 429 Too Many Requests comunica il superamento del limite e può includere Retry-After. La misura aiuta a contenere abusi ma non impedisce da sola attacchi DDoS; CORS non sostituisce autenticazione o autorizzazione.",
+    "saper_fare": [
+      "Definire chiave, soglia e finestra di una policy di rate limiting",
+      "Distinguere finestra fissa, finestra scorrevole e token bucket",
+      "Distinguere autenticazione, autorizzazione, HTTPS e CORS"
+    ],
+    "prerequisiti": [
+      {
+        "id": "api-design-best-practice",
+        "forza": "soft",
+        "motivo": "Il rate limiting è parte della sicurezza delle API."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "scritto: analisi rate limiting",
+        "testo": "Progetta una policy di rate limiting per il catalogo e descrivi la risposta oltre soglia e una cautela per più istanze API.",
+        "soluzione": "Scegli una chiave affidabile (per esempio account autenticato), una soglia e un algoritmo documentati. Oltre soglia restituisci 429 Too Many Requests ed eventualmente Retry-After. In più istanze, coordina i contatori in un archivio condiviso; non affidarti a un dizionario locale per processo. Il rate limiting non sostituisce difese anti-DDoS o autorizzazione."
+      }
+    ],
+    "tempo_studio_min": 40,
+    "priorita": {
+      "livello": "media",
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo B come argomento di variante; non assegna un punteggio specifico a questo nodo."
+    },
+    "risorse": [
+      {
+        "titolo": "RFC 6585 - Additional HTTP Status Codes",
+        "url": "https://www.rfc-editor.org/rfc/rfc6585.html",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: Cross-Origin Resource Sharing (CORS)",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "RFC"
+      },
+      {
+        "libro": "MDN"
+      }
+    ],
+    "checklist_ripasso": [
+      "Policy: chiave, soglia, finestra/algoritmo",
+      "429 Too Many Requests; Retry-After può indicare l’attesa",
+      "Contatori coordinati se l’API ha più istanze",
+      "CORS disciplina la lettura cross-origin nei browser",
+      "TLS, autenticazione, autorizzazione e validazione hanno ruoli distinti"
     ],
     "worker": "W1"
   }

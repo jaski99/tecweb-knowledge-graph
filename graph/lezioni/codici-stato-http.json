@@ -1,0 +1,99 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "La biblioteca riceve richieste per libri presenti, libri inesistenti e pagine spostate. Un codice di stato sintetico permette al browser e all'API di capire l'esito senza dedurlo dal solo testo della risposta.",
+  "definizione_esame": {
+    "definizione": "Un codice di stato HTTP è un codice a tre cifre che comunica la classe dell'esito di una richiesta nella risposta.",
+    "scopo_vantaggio": "Fornisce una semantica interoperabile a client, cache e intermediari, indipendentemente dal testo descrittivo del corpo.",
+    "esempio": "200 OK indica successo; 404 Not Found indica che il server non trova il target richiesto."
+  },
+  "spiegazione": "## Leggere la prima cifra\n\nPrerequisito: sai riconoscere richiesta e risposta HTTP. La risposta contiene un codice a tre cifre; la prima cifra indica la classe generale. Il codice precisa la semantica, mentre il corpo può aggiungere dettagli destinati all'utente o al programma.\n\n| Classe | Significato | Esempi |\n|---|---|---|\n| 1xx | Informativo, risposta intermedia | 100 Continue |\n| 2xx | Richiesta riuscita | 200 OK, 201 Created, 204 No Content |\n| 3xx | Reindirizzamento o gestione di una rappresentazione/condizione | 301, 302, 304 Not Modified |\n| 4xx | Problema attribuito alla richiesta o alla risorsa richiesta | 400, 401, 403, 404 |\n| 5xx | Il server non riesce a soddisfare una richiesta valida | 500, 503 |\n\n### Scegliere il codice in base al significato\n\n`200 OK` comunica un successo; il significato del risultato dipende dal metodo. `201 Created` indica che la richiesta ha creato una risorsa. `204 No Content` indica successo senza contenuto di risposta. Nel gruppo 3xx, `301` e `302` sono reindirizzamenti; `304 Not Modified` è una risposta condizionale usata con la cache e non fornisce una nuova rappresentazione.\n\n`400 Bad Request` segnala una richiesta che il server non può o non vuole elaborare per un problema percepito nel messaggio. `401 Unauthorized`, nonostante il nome storico, riguarda credenziali di autenticazione mancanti o non valide; una risposta 401 è normalmente accompagnata da una sfida `WWW-Authenticate`. `403 Forbidden` indica che il server comprende la richiesta ma rifiuta di soddisfarla. `404 Not Found` significa che non trova la risorsa o che non vuole rivelarne l'esistenza.\n\n### 404, 410 e gestione dell'errore\n\n404 non dice se l'assenza è temporanea o permanente. Se il server sa che una risorsa è stata rimossa definitivamente, 410 Gone può essere più appropriato. La scelta dipende dallo stato reale della risorsa e dalla politica del servizio, non dal desiderio di mostrare una certa pagina.\n\n```mermaid\nflowchart TD\n  R[Richiesta HTTP] --> S{Esito}\n  S -->|Operazione riuscita| C2[2xx]\n  S -->|Serve un'altra azione o una condizione| C3[3xx]\n  S -->|Richiesta/risorsa non soddisfatta| C4[4xx]\n  S -->|Errore del server| C5[5xx]\n```\n\n| Caso | Codice tipico | Distinzione da ricordare |\n|---|---|---|\n| Risorsa creata | 201 | Non confonderlo con 200 in ogni scenario |\n| Credenziali assenti/errate | 401 | Autenticazione |\n| Identità nota ma permesso negato | 403 | Autorizzazione |\n| Target non trovato o nascosto | 404 | Non prova una rimozione permanente |\n| Sovraccarico temporaneo | 503 | Il server può indicare quando riprovare |\n\nI codici non sono punteggi né messaggi d'interfaccia. Il client dovrebbe agire sulla semantica; il testo del corpo può essere localizzato o variare senza cambiare il significato del codice.",
+  "analogia": {
+    "testo": "È come il risultato timbrato su una richiesta in biblioteca: «completata», «serve un passaggio diverso» o «documento non disponibile» dà una categoria prima dei dettagli.",
+    "limite": "I codici HTTP hanno significati standard; i timbri di un ufficio non sono classificati da una specifica interoperabile."
+  },
+  "worked_example": {
+    "titolo": "Scegliere tra 401, 403 e 404",
+    "problema": "Un client richiede il libro 42. Considera tre casi: non invia credenziali, è autenticato ma non ha permesso, il libro non esiste.",
+    "passi": [
+      "Se manca un'autenticazione valida, valuta 401.",
+      "Se l'utente è autenticato ma l'accesso è vietato, valuta 403.",
+      "Se il target non è trovato o il servizio ne nasconde l'esistenza, valuta 404.",
+      "Aggiungi dettagli nel corpo senza alterare la semantica del codice."
+    ],
+    "soluzione": "Caso 1: 401 Unauthorized, normalmente con WWW-Authenticate. Caso 2: 403 Forbidden. Caso 3: 404 Not Found. Un servizio può scegliere 404 per non rivelare l'esistenza di una risorsa protetta.",
+    "perche_funziona": "La decisione si basa sulla semantica del fallimento: autenticazione, autorizzazione o mancata disponibilità del target."
+  },
+  "completion_problem": {
+    "titolo": "Completa le classi di stato",
+    "testo": "Completa: 2xx = ____, 3xx = ____, 4xx = ____, 5xx = ____.",
+    "passi_mancanti": [
+      "Associare a ogni classe il significato generale senza confondere 304 con un normale redirect."
+    ],
+    "soluzione": "2xx = successo; 3xx = reindirizzamento o gestione condizionale; 4xx = problema della richiesta o della risorsa; 5xx = impossibilità del server di soddisfare la richiesta. 304 è legato alla validazione della cache, non porta a una nuova URI."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Classifica gli esiti del catalogo",
+    "testo": "Indica un codice adatto per: risorsa creata, richiesta senza credenziali valide, accesso vietato a un utente autenticato, pagina mancante e guasto temporaneo del server.",
+    "suggerimento": "Usa 201, 401, 403, 404 e 503, motivando ogni scelta con l'esito reale.",
+    "soluzione_attesa": "201 Created; 401 Unauthorized; 403 Forbidden; 404 Not Found; 503 Service Unavailable. Il corpo può spiegare ulteriormente il problema senza sostituire il codice."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Usare 401 e 403 come sinonimi",
+      "perche_sbagliato": "401 riguarda credenziali di autenticazione mancanti/non valide; 403 riguarda un rifiuto di autorizzazione.",
+      "distrattore": "Multiplexing QUIC"
+    },
+    {
+      "errore": "Interpretare 404 come rimozione permanente",
+      "perche_sbagliato": "404 non distingue assenza temporanea e permanente; 410 può indicare una rimozione nota come definitiva.",
+      "distrattore": "Risoluzione di un URN"
+    },
+    {
+      "errore": "Dire che ogni 3xx è un redirect verso un nuovo URL",
+      "perche_sbagliato": "304 Not Modified è una risposta di validazione della cache e non richiede un nuovo target.",
+      "distrattore": "Box model CSS"
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa indica la prima cifra di un codice HTTP?",
+        "risposta": "La classe generale: 1xx informativo, 2xx successo, 3xx reindirizzamento/condizioni, 4xx client, 5xx server."
+      },
+      {
+        "domanda": "Qual è la differenza tra 401 e 403?",
+        "risposta": "401 riguarda credenziali di autenticazione mancanti o non valide; 403 indica che la richiesta è compresa ma rifiutata."
+      },
+      {
+        "domanda": "404 dimostra che la risorsa è stata cancellata per sempre?",
+        "risposta": "No. Indica che il server non trova la risorsa o non ne rivela l'esistenza; non specifica la permanenza."
+      },
+      {
+        "domanda": "Che cosa significa 201 Created?",
+        "risposta": "La richiesta ha avuto successo e ha creato una risorsa."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega come distingueresti un errore di autenticazione da un problema di permessi e da una risorsa non trovata.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "http-protocollo-base",
+        "collegamento": "I codici di stato sono parte della risposta HTTP e completano la lettura di metodo, target e header."
+      }
+    ]
+  },
+  "riepilogo": "La prima cifra divide i codici in cinque classi: informativi, successo, reindirizzamento/condizioni, errori client e server. 401 riguarda autenticazione; 403 autorizzazione; 404 risorsa non trovata o nascosta, non necessariamente rimossa per sempre. 201 segnala creazione; 304 è una risposta condizionale di cache.",
+  "flashcard": {
+    "fronte": "401, 403 e 404: quale distinzione?",
+    "retro": "401: credenziali mancanti/non valide; 403: richiesta compresa ma rifiutata; 404: il target non è trovato o la sua esistenza non viene rivelata."
+  },
+  "checklist": {
+    "so_fare": [
+      "Classificare i codici in 1xx–5xx.",
+      "Scegliere un codice coerente con autenticazione, autorizzazione e disponibilità."
+    ],
+    "so_dire": [
+      "Spiegare la differenza tra 401, 403, 404 e 410.",
+      "Distinguere 304 da un redirect ordinario."
+    ]
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo B, come argomento di variante. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "Un client automatico interroga ripetutamente il catalogo e consuma risorse del servizio. La biblioteca applica limiti documentati, risponde in modo standard quando il limite è superato e separa questa misura da autenticazione, autorizzazione e CORS.",
+  "definizione_esame": {
+    "definizione": "Il rate limiting limita il numero di richieste accettate secondo una policy e un intervallo, per una chiave come utente, credenziale o indirizzo.",
+    "scopo_vantaggio": "Aiuta a contenere abusi e carico eccessivo, ma non sostituisce misure anti-DDoS né i controlli di accesso.",
+    "esempio": "Quando supera la policy, il server può restituire 429 Too Many Requests e, se utile, Retry-After."
+  },
+  "spiegazione": "## Limitare il ritmo, non decidere chi è autorizzato\n\nPrerequisito: conosci le richieste HTTP e il design delle API. Il **rate limiting** applica una policy al numero o al ritmo di richieste. La policy specifica una chiave (utente, credenziale, IP o endpoint), una soglia e una finestra o un algoritmo. Serve a contenere abusi e carico eccessivo; da solo non impedisce un attacco DDoS distribuito né garantisce disponibilità.\n\n### Algoritmi in breve\n\n- **Finestra fissa**: conta richieste in intervalli predefiniti. È semplice ma può consentire un picco al confine tra due finestre.\n- **Finestra scorrevole**: stima o conta le richieste nell'intervallo mobile più recente e rende il limite più uniforme.\n- **Token bucket**: i token si ricaricano nel tempo; ogni richiesta ne consuma uno. La capacità del bucket consente raffiche limitate senza superare il ritmo medio nel lungo periodo.\n\n```mermaid\nflowchart LR\n  R[Richiesta] --> K[Identifica la chiave]\n  K --> L{Policy consente?}\n  L -->|Sì| A[Elabora richiesta]\n  L -->|No| X[429 Too Many Requests]\n``` \n\n### Risposta standard e comportamento del client\n\nRFC 6585 definisce **429 Too Many Requests** per il caso in cui un utente invii troppe richieste in un intervallo. La risposta può includere `Retry-After` per indicare quanto attendere; il server non è obbligato a usare un singolo criterio di conteggio. Il client dovrebbe rispettare l'attesa, applicare backoff e non ripetere immediatamente la stessa raffica.\n\n```http\nHTTP/1.1 429 Too Many Requests\nRetry-After: 30\nContent-Type: application/problem+json\n\n{\"title\": \"Limite di richieste superato\"}\n```\n\nIl valore e il formato sono un esempio didattico, non una quota consigliata. Un servizio deve comunicare la propria policy in modo coerente e non esporre informazioni sensibili.\n\n### Chiave, proxy e più istanze\n\nIl limite per IP può penalizzare utenti condivisi dietro una rete aziendale o mobile. Un IP visto dietro un proxy va interpretato soltanto se il proxy è fidato e configurato: un header inoltrato fornito direttamente da un client non è automaticamente affidabile. Limiti per account o credenziale possono essere più precisi, ma richiedono identità verificate e protezione delle chiavi. In un cluster, il contatore deve essere condiviso o coordinato fra le istanze; un dizionario locale in ogni processo permette di aggirare facilmente il limite distribuendo le richieste.\n\n### Sicurezza: concetti distinti\n\n- **Autenticazione**: stabilisce quale identità o credenziale presenta il client.\n- **Autorizzazione**: decide quali azioni quell'identità può compiere su quella risorsa.\n- **HTTPS/TLS**: protegge la comunicazione in transito e autentica il server secondo il certificato; non decide i permessi applicativi.\n- **Validazione input**: controlla formato, dimensione e regole dei dati prima di usarli.\n- **CORS**: consente a un server di indicare quali origini browser possono leggere una risposta cross-origin. È una regola applicata dai browser, non un'autenticazione né un firewall per API; client non-browser possono inviare richieste senza che CORS li blocchi.\n\n| Misura | Risponde alla domanda | Non sostituisce |\n|---|---|---|\n| Rate limiting | Quanto spesso può richiedere questo client? | Anti-DDoS, autenticazione e permessi |\n| Autenticazione | Chi presenta la richiesta? | Autorizzazione sulla singola risorsa |\n| Autorizzazione | Che cosa può fare? | Cifratura del trasporto |\n| CORS | Quale origine browser può leggere? | Controllo server-side di accesso |\n\nApplica più difese: TLS, credenziali gestite correttamente, permessi minimi, validazione, limiti, log e monitoraggio. Il rate limit deve essere dimensionato in base ai requisiti del servizio e può variare per utente, operazione o piano; non esiste una soglia universale adatta a ogni API.",
+  "analogia": {
+    "testo": "È come regolare il numero di richieste al banco durante un afflusso: si evita che una sola fila occupi tutto il personale, ma l'addetto deve comunque verificare identità e autorizzazioni.",
+    "limite": "Una API distribuita riceve richieste concorrenti e può avere più istanze e client anonimi; una fila fisica non riproduce chiavi, proxy o attacchi distribuiti."
+  },
+  "worked_example": {
+    "titolo": "Applicare una policy di richieste",
+    "problema": "Una API decide di limitare le letture del catalogo per credenziale e, al superamento della soglia configurata, comunicare al client quando può riprovare.",
+    "passi": [
+      "Scegli una chiave affidabile, come una credenziale autenticata, e definisci la policy.",
+      "Conta le richieste con un algoritmo scelto e condividi lo stato fra istanze.",
+      "Quando la soglia è superata, non elaborare la richiesta e restituisci 429.",
+      "Se la policy lo consente, aggiungi Retry-After e documenta il comportamento del client."
+    ],
+    "soluzione": "La risposta di superamento può essere HTTP 429 Too Many Requests con Retry-After, per esempio un intervallo in secondi. Il client attende e riprova secondo la policy. La soglia è una scelta del servizio, non un valore fissato da HTTP.",
+    "perche_funziona": "Il codice 429 comunica lo specifico eccesso di richieste; la policy e il conteggio restano responsabilità dell'API."
+  },
+  "completion_problem": {
+    "titolo": "Completa la risposta oltre soglia",
+    "testo": "Il client supera il limite documentato. Completa il codice HTTP e l'header facoltativo che può indicare quanto attendere.",
+    "passi_mancanti": [
+      "Usare 429 Too Many Requests e, se noto, Retry-After."
+    ],
+    "soluzione": "HTTP/1.1 429 Too Many Requests\nRetry-After: 30\nContent-Type: application/problem+json\n\nIl valore di Retry-After è solo illustrativo; lo decide la policy del servizio."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Distingui CORS e rate limiting",
+    "testo": "Un'app browser invia troppe richieste e un client da riga di comando legge una risorsa cross-origin. Spiega quale misura riguarda il ritmo e perché CORS non autentica il secondo client.",
+    "suggerimento": "Cerca la differenza tra 429, controllo del browser sull'accesso cross-origin e autorizzazione server-side.",
+    "soluzione_attesa": "Il rate limiter applica la policy di frequenza e può rispondere 429. CORS regola l'accesso cross-origin dei browser alla lettura delle risposte; un client non-browser può inviare richieste senza enforcement CORS. L'API deve verificare autenticazione e autorizzazione sul server."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dire che il rate limiting ferma ogni DDoS",
+      "perche_sbagliato": "Limita richieste secondo una policy, ma un attacco distribuito richiede ulteriori difese di rete e disponibilità.",
+      "distrattore": "Parser CSS"
+    },
+    {
+      "errore": "Usare CORS come sistema di autenticazione",
+      "perche_sbagliato": "CORS è applicato dai browser per l'accesso cross-origin; non dimostra l'identità del client e non blocca client non-browser.",
+      "distrattore": "Formato di un URN"
+    },
+    {
+      "errore": "Contare solo in memoria su ogni istanza",
+      "perche_sbagliato": "Un client può distribuire il traffico tra processi e aggirare contatori separati; il servizio deve coordinare lo stato del limite.",
+      "distrattore": "Semantica del metodo PUT"
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa comunica il codice 429?",
+        "risposta": "Che il client ha inviato troppe richieste in un dato intervallo; la risposta può includere Retry-After."
+      },
+      {
+        "domanda": "Che vantaggio e limite ha un token bucket?",
+        "risposta": "Consente raffiche limitate con token ricaricati nel tempo; richiede una capacità e un ritmo scelti per il servizio."
+      },
+      {
+        "domanda": "CORS autentica un client o autorizza una richiesta?",
+        "risposta": "No. CORS controlla l'accesso cross-origin nei browser; autenticazione e autorizzazione vanno applicate dall'API."
+      },
+      {
+        "domanda": "Perché il rate limiter deve coordinare più istanze?",
+        "risposta": "Contatori separati per processo consentono di superare il limite distribuendo richieste tra le istanze."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega la differenza tra rate limiting, autenticazione, autorizzazione e CORS usando il caso del catalogo della biblioteca.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "api-design-best-practice",
+        "collegamento": "La policy di frequenza e le regole di sicurezza fanno parte del contratto operativo dell'API."
+      }
+    ]
+  },
+  "riepilogo": "Il rate limiting controlla ritmo e volume secondo una policy; 429 segnala troppe richieste e può indicare Retry-After. La misura non ferma ogni DDoS e richiede conteggi coerenti fra istanze. Autenticazione, autorizzazione, TLS, validazione e CORS hanno ruoli diversi; CORS non è un controllo d'accesso server-side.",
+  "flashcard": {
+    "fronte": "429, CORS e autenticazione: che cosa controllano?",
+    "retro": "429 segnala una policy di frequenza superata; CORS disciplina la lettura cross-origin nei browser; autenticazione identifica il client. L'autorizzazione e gli altri controlli restano responsabilità dell'API."
+  },
+  "checklist": {
+    "so_fare": [
+      "Definire chiave, finestra e comportamento oltre soglia.",
+      "Distinguere CORS da autenticazione e autorizzazione."
+    ],
+    "so_dire": [
+      "Spiegare il significato di 429 e Retry-After.",
+      "Indicare limiti e necessità di coordinare rate limiter distribuiti."
+    ]
+  }
+}

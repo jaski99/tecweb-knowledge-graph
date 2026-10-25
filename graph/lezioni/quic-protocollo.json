@@ -1,0 +1,99 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "Una studentessa consulta il catalogo sul telefono mentre passa dalla rete Wi-Fi alla rete mobile. La pagina usa HTTP/3: QUIC gestisce gli stream e può mantenere una connessione logica anche quando cambia il percorso di rete.",
+  "definizione_esame": {
+    "definizione": "QUIC è un protocollo di trasporto sicuro e multiplexato, veicolato in datagrammi UDP, usato da HTTP/3.",
+    "scopo_vantaggio": "Integra la negoziazione TLS, offre stream indipendenti e può ridurre il blocco tra flussi e la latenza di avvio.",
+    "esempio": "HTTP/3 invia richieste su stream QUIC; la perdita di dati di uno stream non impone di attendere quei byte per consegnare gli altri."
+  },
+  "spiegazione": "## UDP è il veicolo, QUIC dà il servizio\n\nPrerequisito: conosci le differenze essenziali tra HTTP/2 e HTTP/3. QUIC è un protocollo di trasporto generale; HTTP/3 ne usa le connessioni e gli stream. I pacchetti QUIC viaggiano dentro datagrammi UDP. UDP non fornisce da solo affidabilità, ordinamento o controllo della congestione: QUIC implementa questi meccanismi sopra UDP.\n\n### Stream indipendenti\n\nUna connessione QUIC può trasportare più stream. Ogni stream ha flusso di byte ordinato al proprio interno e controllo di flusso. Le perdite sono recuperate a livello di connessione e stream, ma il dato mancante di uno stream non blocca la consegna dei dati già disponibili sugli altri. Il controllo della congestione è condiviso dalla connessione: QUIC non crea una rete fisica separata per ogni richiesta.\n\n```mermaid\nflowchart TD\n  H[HTTP/3] --> Q[Stream QUIC]\n  Q --> U[Datagrammi UDP]\n  U --> I[IP]\n```\n\n### Sicurezza e avvio della connessione\n\nQUIC integra TLS 1.3 per la negoziazione delle chiavi e protegge il traffico. Non è corretto dire che UDP, da solo, cifra i dati o autentica il server. La configurazione di una connessione QUIC comprende trasporto e handshake crittografico.\n\nUna connessione nuova può usare un handshake a 1-RTT; in una ripresa idonea, il client può inviare dati anticipati 0-RTT. 0-RTT non è disponibile in ogni caso e i dati anticipati possono essere riprodotti da un attaccante: l'applicazione deve evitare operazioni non idempotenti o altrimenti sensibili in quel contesto. Quindi non scrivere «QUIC ha sempre handshake 0-RTT».\n\n### Migrazione del percorso\n\nQUIC usa identificatori di connessione che non coincidono semplicemente con la coppia indirizzo IP/porta. Questo consente, in condizioni previste dal protocollo, di mantenere la connessione quando cambia il percorso di rete, ad esempio nel passaggio tra Wi-Fi e rete mobile. Non significa che ogni cambio sia invisibile o che la connessione non possa fallire: si applicano controlli e validazione del nuovo percorso.\n\n| Affermazione | Precisazione corretta |\n|---|---|\n| «QUIC è UDP» | No: QUIC è un protocollo sopra UDP, con funzioni di trasporto proprie |\n| «UDP rende QUIC inaffidabile» | No: QUIC realizza affidabilità e recupero delle perdite per stream |\n| «QUIC elimina ogni HOL» | Evita il blocco di consegna tra stream per perdita di un altro stream, non ogni causa di attesa |\n| «0-RTT è sempre possibile e sicuro» | No: dipende dalla ripresa e comporta rischi di replay |\n\nHTTP/3 conserva metodi, codici e semantica HTTP; cambia il trasporto sottostante. QUIC non sostituisce IP: i datagrammi UDP contenenti pacchetti QUIC sono ancora instradati da IP.",
+  "analogia": {
+    "testo": "È come una spedizione con più buste numerate: se una busta di una pratica è in ritardo, si possono consegnare quelle già arrivate per un'altra pratica, pur usando lo stesso corriere.",
+    "limite": "La consegna QUIC include controllo di congestione e recupero delle perdite condivisi; le buste non rendono l'analogia equivalente a UDP o a una rete."
+  },
+  "worked_example": {
+    "titolo": "Seguire HTTP/3 sul telefono",
+    "problema": "La pagina del catalogo trasferisce HTML e copertina su due stream; un pacchetto dello stream della copertina va perso.",
+    "passi": [
+      "HTTP/3 associa gli scambi a stream QUIC.",
+      "QUIC rileva la perdita e recupera i dati mancanti dello stream interessato.",
+      "I dati già disponibili sull'altro stream possono essere consegnati senza attenderli.",
+      "Se la rete cambia, QUIC può validare un nuovo percorso usando gli identificatori di connessione."
+    ],
+    "soluzione": "La perdita della copertina non impone di bloccare la consegna dei byte HTTP sull'altro stream; la copertina resta incompleta fino al recupero. Il cambio da Wi-Fi a rete mobile può essere gestito senza creare necessariamente una nuova connessione logica.",
+    "perche_funziona": "QUIC fornisce affidabilità ordinata per stream e separa le sequenze dei flussi, mentre IP/UDP continuano a trasportare i pacchetti sulla rete."
+  },
+  "completion_problem": {
+    "titolo": "Completa il percorso di HTTP/3",
+    "testo": "Inserisci i protocolli mancanti nel percorso: HTTP/3 → QUIC → ____ → IP.",
+    "passi_mancanti": [
+      "Indicare il protocollo che trasporta i pacchetti QUIC e ricordare dove opera la cifratura."
+    ],
+    "soluzione": "HTTP/3 → QUIC → UDP → IP. QUIC integra l'handshake TLS 1.3 e protegge il traffico; la cifratura non è fornita da UDP."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Correggi tre affermazioni su QUIC",
+    "testo": "Valuta: (1) QUIC è UDP; (2) QUIC garantisce sempre 0-RTT; (3) la perdita su uno stream blocca tutti gli altri.",
+    "suggerimento": "Distingui protocollo di trasporto da datagramma, connessione nuova da ripresa e consegna ordinata per stream.",
+    "soluzione_attesa": "(1) Falso: QUIC è trasportato su UDP; (2) falso: 0-RTT è possibile in condizioni di ripresa e può essere soggetto a replay; (3) falso per la consegna tra stream, anche se congestione e perdite continuano a influenzare la connessione."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Trattare QUIC come un alias di UDP",
+      "perche_sbagliato": "QUIC è un protocollo con affidabilità, stream e sicurezza che usa UDP come veicolo.",
+      "distrattore": "Schema delle tabelle SQL"
+    },
+    {
+      "errore": "Attribuire a UDP la cifratura TLS",
+      "perche_sbagliato": "La protezione crittografica è integrata da QUIC con TLS 1.3, non dal protocollo UDP.",
+      "distrattore": "Gerarchia dei titoli HTML"
+    },
+    {
+      "errore": "Promettere sempre 0-RTT",
+      "perche_sbagliato": "L'invio anticipato dipende da una ripresa e comporta rischi di replay; non è garantito per ogni connessione.",
+      "distrattore": "Selettori CSS"
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Come viaggiano i pacchetti QUIC sulla rete?",
+        "risposta": "I pacchetti QUIC sono trasportati in datagrammi UDP, che vengono poi instradati da IP."
+      },
+      {
+        "domanda": "Che cosa significa l'indipendenza degli stream QUIC?",
+        "risposta": "I byte sono ordinati all'interno di ciascuno stream; una perdita su uno stream non blocca la consegna dei dati già disponibili sugli altri."
+      },
+      {
+        "domanda": "QUIC garantisce sempre 0-RTT?",
+        "risposta": "No. 0-RTT è possibile in specifiche condizioni di ripresa e i dati anticipati possono essere riprodotti."
+      },
+      {
+        "domanda": "Quale relazione c'è tra HTTP/3 e QUIC?",
+        "risposta": "HTTP/3 trasferisce le semantiche HTTP usando QUIC come trasporto."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega perché dire «HTTP/3 usa UDP» è una scorciatoia utile ma incompleta, e quale ruolo aggiunge QUIC.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "http-1-1-1-2-3-differenze",
+        "collegamento": "Il confronto delle versioni mostra perché HTTP/3 usa QUIC e in che modo differisce dal trasporto TCP di HTTP/2."
+      }
+    ]
+  },
+  "riepilogo": "QUIC è un trasporto sicuro e multiplexato usato da HTTP/3, trasportato da UDP. Offre stream ordinati indipendenti, recupero perdite e controllo della congestione condiviso. Integra TLS 1.3; 0-RTT è condizionale e soggetto a replay. Gli identificatori di connessione possono supportare la migrazione del percorso.",
+  "flashcard": {
+    "fronte": "Che cosa aggiunge QUIC a UDP per HTTP/3?",
+    "retro": "Stream multiplexati, affidabilità e controllo del flusso/congestione, recupero delle perdite e TLS 1.3 integrato; UDP resta il veicolo dei datagrammi."
+  },
+  "checklist": {
+    "so_fare": [
+      "Disegnare HTTP/3 → QUIC → UDP → IP.",
+      "Spiegare una perdita isolata a uno stream e il caso 0-RTT."
+    ],
+    "so_dire": [
+      "Distinguere QUIC da UDP.",
+      "Descrivere TLS integrato e i limiti della migrazione/0-RTT."
+    ]
+  }
+}

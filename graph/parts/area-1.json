@@ -5,39 +5,39 @@
     "area": 1,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "HTTP (Hypertext Transfer Protocol) è il protocollo applicativo per la comunicazione sul Web. Funziona sul modello request-response: il client invia una richiesta, il server risponde. È stateless per design, testuale, e basa su URI per identificare le risorse.",
+    "sapere": "HTTP (Hypertext Transfer Protocol) è un protocollo applicativo che definisce la semantica delle richieste e delle risposte tra client e server. HTTP è stateless: il protocollo non lega una richiesta alla sequenza di richieste precedenti. La codifica e il trasporto dipendono dalla versione: HTTP/1.1 è testuale, HTTP/2 usa framing binario su TCP e HTTP/3 usa QUIC su UDP.",
     "saper_fare": [
-      "Spiegare il modello request-response",
-      "Elencare i componenti di una richiesta/risposta HTTP",
-      "Distinguere HTTP da altri protocolli (FTP, SMTP, WebSocket)"
+      "Individuare metodo, target, header, stato e rappresentazione in un messaggio HTTP",
+      "Distinguere semantica HTTP, formato della rappresentazione e protocollo di trasporto",
+      "Descrivere lo scambio request-response tra client e server"
     ],
     "prerequisiti": [],
     "esercizi": [
       {
         "tipo_esame": "scritto: domanda teorica",
-        "testo": "Descrivi il protocollo HTTP e il suo modello di comunicazione.",
-        "soluzione": "HTTP è un protocollo applicativo (livello 7 OSI) che usa il modello request-response: 1) Client invia richiesta (metodo, URI, header, body opzionale); 2) Server elabora e invia risposta (status code, header, body opzionale); 3) Connessione tipicamente TCP (porta 80/443). È stateless: ogni richiesta è indipendente. Usa URI per identificare risorse. Versioni: 1.0 (1996), 1.1 (1997), 2 (2015), 3 (2022)."
+        "testo": "Descrivi il protocollo HTTP e indica le parti essenziali di una richiesta e di una risposta.",
+        "soluzione": "HTTP è un protocollo applicativo stateless con semantica request-response. Una richiesta ha metodo, target e header, con corpo quando previsto; una risposta ha codice di stato, header e un corpo opzionale. Il corpo può contenere HTML, JSON o altri media type. HTTP/1.1 e HTTP/2 usano normalmente TCP; HTTP/3 usa QUIC su UDP."
       }
     ],
     "tempo_studio_min": 60,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A (materiale utente, ~65% dello scritto). Fondamentale per tutte le altre aree."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
-        "titolo": "MDN: HTTP Overview",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview",
+        "titolo": "MDN: Overview of HTTP",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview",
         "verificato": true
       },
       {
-        "titolo": "RFC 9110 - HTTP/1.1",
+        "titolo": "RFC 9110 - HTTP Semantics",
         "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
         "verificato": true
       },
       {
-        "titolo": "W3C: HTTP in Web Architecture",
-        "url": "https://www.w3.org/TR/webarch/#http-uri",
+        "titolo": "W3C: Architecture of the World Wide Web",
+        "url": "https://www.w3.org/TR/webarch/",
         "verificato": true
       }
     ],
@@ -53,10 +53,10 @@
       }
     ],
     "checklist_ripasso": [
-      "Request-response model",
-      "Stateless per design",
-      "Porta 80 (HTTP), 443 (HTTPS)",
-      "URI identifica la risorsa"
+      "HTTP è applicativo e request-response",
+      "Metodo, target e header nella richiesta; stato e header nella risposta",
+      "La rappresentazione può essere HTML, JSON o altro",
+      "HTTP/1.1 e HTTP/2 usano normalmente TCP; HTTP/3 usa QUIC su UDP"
     ],
     "worker": "W1"
   },
@@ -66,11 +66,11 @@
     "area": 1,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "HTTP è stateless per design: ogni richiesta è indipendente e il server non mantiene informazioni sul client tra richieste. Lo stato (sessioni) viene gestito tramite meccanismi esterni al protocollo: cookie, token, parametri URL, o sessioni server-side.",
+    "sapere": "HTTP è stateless: la semantica del protocollo non lega richieste consecutive del client. Un’applicazione può mantenere stato, per esempio una sessione, e ricostruirlo con dati espliciti come cookie, token o identificatori; connessione persistente e stato applicativo sono concetti distinti.",
     "saper_fare": [
-      "Spiegare perché HTTP è stateless e i suoi vantaggi",
-      "Elencare e confrontare i meccanismi per gestire lo stato",
-      "Distinguere autenticazione da autorizzazione"
+      "Spiegare che cosa significa stateless per la semantica HTTP",
+      "Distinguere protocollo stateless, sessione applicativa, cookie e identificatore",
+      "Descrivere vantaggi e limiti della gestione esplicita dello stato"
     ],
     "prerequisiti": [
       {
@@ -82,19 +82,19 @@
     "esercizi": [
       {
         "tipo_esame": "scritto: domanda teorica",
-        "testo": "Perché HTTP è definito stateless? Come si gestisce lo stato in applicazioni reali?",
-        "soluzione": "HTTP è stateless perché il protocollo non mantiene alcuna informazione sullo stato del client tra richieste. Vantaggi: scalabilità (server non devono mantenere stato), semplicità, affidabilità (nessun stato da recuperare dopo crash). Meccanismi per lo stato: 1) Cookie: dati salvati lato client e inviati automaticamente (RFC 6265); 2) Token: stringhe crittografate (JWT) inviate in header Authorization; 3) Parametri URL: dati passati esplicitamente; 4) Sessioni server-side: server mantiene stato in memoria/DB associato a un session ID (tipicamente nei cookie)."
+        "testo": "Perché HTTP è detto stateless e come può un’applicazione mantenere il carrello tra richieste?",
+        "soluzione": "HTTP non collega semanticamente una richiesta alle precedenti. L’applicazione può inviare un cookie con un identificatore di sessione e usare quell’identificatore per recuperare il carrello da un archivio. Il cookie non deve contenere necessariamente l’intera sessione; HTTP resta stateless."
       }
     ],
     "tempo_studio_min": 45,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A (materiale utente). Argomento chiave per comprendere il funzionamento del Web."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
         "titolo": "MDN: HTTP is stateless but not sessionless",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview#http_is_stateless_but_not_sessionless",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview",
         "verificato": true
       },
       {
@@ -112,10 +112,10 @@
       }
     ],
     "checklist_ripasso": [
-      "HTTP stateless per design",
-      "Vantaggi: scalabilità, semplicità, affidabilità",
-      "Meccanismi di stato: cookie, token, URL params, sessioni server-side",
-      "Cookie: Set-Cookie (server→client), Cookie (client→server)"
+      "HTTP non collega semanticamente richieste successive",
+      "Cookie e sessione sono concetti diversi",
+      "Il cookie può contenere un identificatore di sessione",
+      "Una connessione persistente non rende HTTP stateful"
     ],
     "worker": "W1"
   },
@@ -125,55 +125,51 @@
     "area": 1,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "Il modello TCP/IP (RFC 1122) è l'architettura di rete su cui si basa Internet. Ha 4 livelli: Applicazione (HTTP, FTP, SMTP), Trasporto (TCP, UDP), Internet (IP, ICMP), Accesso alla rete (Ethernet, WiFi). HTTP funziona al livello Applicazione, tipicamente su TCP (livello Trasporto).",
+    "sapere": "La suite TCP/IP è spesso descritta didatticamente con quattro livelli: Applicazione, Trasporto, Internet e Accesso alla rete (link). HTTP è applicativo; TCP e UDP sono protocolli di trasporto; IP instrada datagrammi; Ethernet e Wi-Fi forniscono il collegamento locale. HTTP/3 usa QUIC sopra UDP.",
     "saper_fare": [
-      "Elencare i 4 livelli TCP/IP e i protocolli tipici",
-      "Mappare HTTP nello stack TCP/IP",
-      "Confrontare TCP/IP con OSI (7 livelli)"
+      "Elencare i quattro livelli e associare protocolli ed esempi",
+      "Collocare HTTP, TCP/UDP e IP nello stack",
+      "Confrontare il modello didattico TCP/IP con OSI senza supporre una corrispondenza esatta"
     ],
     "prerequisiti": [],
     "esercizi": [
       {
         "tipo_esame": "scritto: disegna stack",
-        "testo": "Disegna lo stack TCP/IP e indica dove si posiziona HTTP.",
-        "soluzione": "Livello 4: Applicazione → HTTP, FTP, SMTP, DNS\nLivello 3: Trasporto → TCP, UDP\nLivello 2: Internet → IP, ICMP, ARP\nLivello 1: Accesso alla rete → Ethernet, WiFi\nHTTP è al livello Applicazione (4), tipicamente usa TCP al livello Trasporto (3)."
+        "testo": "Disegna lo stack TCP/IP per HTTP/1.1 e indica la differenza di trasporto per HTTP/3.",
+        "soluzione": "Modello a quattro livelli: Applicazione (HTTP, DNS), Trasporto (TCP o UDP), Internet (IP), Accesso alla rete (Ethernet o Wi-Fi). HTTP/1.1 usa normalmente TCP; HTTP/3 usa QUIC trasportato su UDP, poi IP e il collegamento locale. QUIC non sostituisce IP."
       }
     ],
     "tempo_studio_min": 40,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Fondamentale per comprendere dove HTTP si colloca nella rete."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
-      {
-        "titolo": "MDN: TCP/IP model",
-        "url": "https://developer.mozilla.org/en-US/docs/Glossary/TCP_IP",
-        "verificato": true
-      },
       {
         "titolo": "RFC 1122 - Requirements for Internet Hosts",
         "url": "https://www.rfc-editor.org/rfc/rfc1122.html",
         "verificato": true
       },
       {
-        "titolo": "Wikipedia: Internet protocol suite",
-        "url": "https://en.wikipedia.org/wiki/Internet_protocol_suite",
+        "titolo": "MDN: Overview of HTTP",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview",
         "verificato": true
       }
     ],
     "riferimenti_testo": [
       {
-        "libro": "MDN"
+        "libro": "RFC"
       },
       {
-        "libro": "RFC"
+        "libro": "MDN"
       }
     ],
     "checklist_ripasso": [
-      "4 livelli: Applicazione, Trasporto, Internet, Accesso rete",
-      "HTTP al livello Applicazione",
-      "TCP/UDP al livello Trasporto",
-      "IP al livello Internet"
+      "Applicazione: HTTP, DNS",
+      "Trasporto: TCP, UDP; QUIC opera sopra UDP",
+      "Internet: IP e instradamento",
+      "Accesso alla rete: Ethernet o Wi-Fi",
+      "OSI e TCP/IP hanno corrispondenze approssimative"
     ],
     "worker": "W1"
   },
@@ -183,11 +179,11 @@
     "area": 1,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "Le versioni di HTTP introducono miglioramenti progressivi: HTTP/1.0 (1996) connessioni non persistenti; HTTP/1.1 (1997) connessioni persistenti, pipelining, chunked transfer; HTTP/2 (2015) multiplexing, header compression, server push; HTTP/3 (2022) usa QUIC su UDP invece di TCP, riducendo la latenza.",
+    "sapere": "Le versioni HTTP condividono la semantica di base ma differiscono nel framing e nell’uso delle connessioni. HTTP/1.1 usa connessioni persistenti per default e può fare pipelining, ma non multiplexa risposte indipendenti. HTTP/2 introduce framing binario e stream multiplexati su TCP; la perdita TCP può bloccare tutti gli stream. HTTP/3 usa QUIC su UDP e riduce il blocco di consegna tra stream.",
     "saper_fare": [
-      "Elencare le differenze principali tra le versioni",
-      "Spiegare il multiplexing di HTTP/2",
-      "Spiegare perché HTTP/3 usa QUIC su UDP"
+      "Confrontare connessioni persistenti, pipelining e multiplexing",
+      "Spiegare perché HTTP/2 non elimina il blocco dovuto alla perdita TCP",
+      "Descrivere il ruolo di QUIC in HTTP/3"
     ],
     "prerequisiti": [
       {
@@ -199,21 +195,16 @@
     "esercizi": [
       {
         "tipo_esame": "scritto: confronto versioni",
-        "testo": "Quali sono le 3 differenze principali tra HTTP/1.1 e HTTP/2?",
-        "soluzione": "1) Multiplexing: HTTP/2 permette più richieste contemporanee sulla stessa connessione (HTTP/1.1 usa pipelining ma sequenziale); 2) Header compression: HTTP/2 usa HPACK per comprimere gli header; 3) Server push: HTTP/2 permette al server di inviare risorse prima che siano richieste (es. CSS/JS insieme all'HTML)."
+        "testo": "Confronta HTTP/1.1, HTTP/2 e HTTP/3 rispetto a multiplexing, trasporto e head-of-line blocking.",
+        "soluzione": "HTTP/1.1 può riusare connessioni e fare pipelining, ma le risposte restano ordinate. HTTP/2 interlaccia stream su TCP; una perdita TCP può bloccare la consegna di tutti gli stream. HTTP/3 usa stream QUIC su UDP e isola la consegna per stream, pur condividendo il controllo di congestione della connessione."
       }
     ],
     "tempo_studio_min": 60,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Argomento ricorrente nelle prove."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
-      {
-        "titolo": "MDN: HTTP/2 vs HTTP/1.1",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Protocol_upgrade_mechanism#http2",
-        "verificato": true
-      },
       {
         "titolo": "RFC 9113 - HTTP/2",
         "url": "https://www.rfc-editor.org/rfc/rfc9113.html",
@@ -227,17 +218,14 @@
     ],
     "riferimenti_testo": [
       {
-        "libro": "MDN"
-      },
-      {
         "libro": "RFC"
       }
     ],
     "checklist_ripasso": [
-      "HTTP/1.0: connessioni non persistenti",
-      "HTTP/1.1: persistenti, pipelining, chunked",
-      "HTTP/2: multiplexing, HPACK, server push",
-      "HTTP/3: QUIC su UDP, TLS integrato"
+      "HTTP/1.1: connessioni persistenti, pipelining senza multiplexing",
+      "HTTP/2: framing binario, stream multiplexati, TCP HOL resta",
+      "HTTP/3: QUIC su UDP, consegna indipendente per stream",
+      "La semantica HTTP è condivisa tra le versioni"
     ],
     "worker": "W1"
   },
@@ -247,11 +235,11 @@
     "area": 1,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "QUIC (Quick UDP Internet Connections) è un protocollo di trasporto che funziona su UDP (non TCP). Integra TLS 1.3 per la crittografia, riduce la latenza della handshake (0-RTT), supporta multiplexing nativo, e gestisce meglio la perdita di pacchetti. HTTP/3 usa QUIC invece di TCP.",
+    "sapere": "QUIC è un protocollo di trasporto sicuro e multiplexato che usa UDP come veicolo. Fornisce stream, controllo di flusso, recupero delle perdite e controllo della congestione, integrando TLS 1.3; HTTP/3 mappa su QUIC. 0-RTT è possibile in condizioni di ripresa, non è garantito e comporta rischi di replay.",
     "saper_fare": [
-      "Spiegare perché QUIC usa UDP invece di TCP",
-      "Elencare i vantaggi di QUIC rispetto a TCP+TLS",
-      "Descrivere il concetto di 0-RTT"
+      "Descrivere il percorso HTTP/3–QUIC–UDP–IP",
+      "Spiegare la consegna per stream e la migrazione del percorso",
+      "Distinguere handshake 1-RTT e invio anticipato 0-RTT"
     ],
     "prerequisiti": [
       {
@@ -263,45 +251,37 @@
     "esercizi": [
       {
         "tipo_esame": "scritto: domanda teorica",
-        "testo": "Perché HTTP/3 usa QUIC su UDP invece di TCP?",
-        "soluzione": "QUIC su UDP offre: 1) Handshake più veloce: integra TLS 1.3, permettendo 0-RTT (nessun round trip per connessioni ripetute); 2) Multiplexing nativo: evita il head-of-line blocking di TCP (un pacchetto perso non blocca gli altri stream); 3) Migrazione connessione: cambia indirizzo IP senza riconnettersi (utile per mobile); 4) Controllo congestione migliorato: per stream invece che per connessione. TCP ha head-of-line blocking e richiede 1-2 RTT per TLS."
+        "testo": "Perché HTTP/3 usa QUIC su UDP e quali limiti ha l’affermazione «QUIC offre sempre 0-RTT»?",
+        "soluzione": "QUIC è un trasporto sopra UDP che realizza stream affidabili, controllo della congestione e sicurezza con TLS 1.3 integrato. La perdita su uno stream non blocca la consegna di dati disponibili sugli altri. 0-RTT è possibile in specifiche condizioni di ripresa e i dati anticipati possono essere riprodotti; non è garantito per ogni connessione."
       }
     ],
     "tempo_studio_min": 30,
     "priorita": {
-      "livello": "media",
-      "motivazione": "Gruppo A. Importante per HTTP/3, ma meno centrale di HTTP/1.1/2."
+      "livello": "alta",
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
-        "titolo": "MDN: QUIC",
-        "url": "https://developer.mozilla.org/en-US/docs/Glossary/QUIC",
-        "verificato": true
-      },
-      {
-        "titolo": "RFC 9000 - QUIC: A UDP-Based Multiplexed and Secure Transport",
+        "titolo": "RFC 9000 - QUIC Transport Protocol",
         "url": "https://www.rfc-editor.org/rfc/rfc9000.html",
         "verificato": true
       },
       {
-        "titolo": "Wikipedia: QUIC",
-        "url": "https://en.wikipedia.org/wiki/QUIC",
+        "titolo": "RFC 9114 - HTTP/3",
+        "url": "https://www.rfc-editor.org/rfc/rfc9114.html",
         "verificato": true
       }
     ],
     "riferimenti_testo": [
       {
-        "libro": "MDN"
-      },
-      {
         "libro": "RFC"
       }
     ],
     "checklist_ripasso": [
-      "QUIC = UDP + TLS 1.3 integrato",
-      "0-RTT: nessuna latenza per connessioni ripetute",
-      "Niente head-of-line blocking",
-      "Migrazione connessione senza reconnect"
+      "QUIC è un protocollo sopra UDP, non un sinonimo di UDP",
+      "HTTP/3 usa QUIC; i pacchetti sono instradati da IP",
+      "Stream QUIC: consegna ordinata per stream",
+      "TLS 1.3 integrato; 0-RTT condizionale e soggetto a replay"
     ],
     "worker": "W1"
   },
@@ -311,34 +291,29 @@
     "area": 1,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "URI (Uniform Resource Identifier, RFC 3986) è la categoria generale per identificare risorse. URL (Uniform Resource Locator) è un URI che specifica il meccanismo di accesso (es. https://) e la posizione. URN (Uniform Resource Name) identifica una risorsa in modo univoco e persistente senza specificare la posizione (es. urn:isbn:0451450523).",
+    "sapere": "Un URI è una stringa che identifica una risorsa. URL enfatizza la localizzazione o il modo di accesso; URN identifica mediante un nome in uno spazio di nomi, indipendentemente dalla posizione. Un URN non garantisce che la risorsa esista, sia persistente o sia risolvibile.",
     "saper_fare": [
-      "Distinguere URI, URL, URN con esempi",
-      "Analizzare la sintassi di un URI (scheme, authority, path, query, fragment)",
-      "Spiegare perché tutti gli URL sono URI ma non viceversa"
+      "Distinguere URI, URL e URN con esempi prudenti",
+      "Analizzare schema, autorità, percorso, query e frammento in un URI gerarchico",
+      "Riconoscere un riferimento URI relativo e spiegare il ruolo del frammento"
     ],
     "prerequisiti": [],
     "esercizi": [
       {
         "tipo_esame": "scritto: classifica",
-        "testo": "Classifica: (a) https://esempio.it/pagina, (b) urn:isbn:1234567890, (c) /percorso/risorsa",
-        "soluzione": "(a) URL (e URI): specifica schema (https), host (esempio.it), path (/pagina); (b) URN (e URI): identifica univocamente un libro ISBN senza posizione; (c) URI relativo: path senza schema/host."
+        "testo": "Classifica: (a) https://biblioteca.example/libri/42, (b) urn:isbn:0451450523, (c) /libri/42.",
+        "soluzione": "(a) URL e URI: contiene schema e autorità e localizza la risorsa. (b) URN e URI: usa il namespace ISBN per nominarla, senza indicare un host. (c) riferimento URI relativo: va risolto rispetto a un URI di base. L’URN non garantisce che esista un servizio di risoluzione."
       }
     ],
     "tempo_studio_min": 40,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Domanda ricorrente nelle prove."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
-        "titolo": "RFC 3986 - URI: Generic Syntax",
+        "titolo": "RFC 3986 - URI Generic Syntax",
         "url": "https://www.rfc-editor.org/rfc/rfc3986.html",
-        "verificato": true
-      },
-      {
-        "titolo": "MDN: URL",
-        "url": "https://developer.mozilla.org/en-US/docs/Glossary/URL",
         "verificato": true
       },
       {
@@ -347,8 +322,8 @@
         "verificato": true
       },
       {
-        "titolo": "Wikipedia: Uniform Resource Identifier",
-        "url": "https://en.wikipedia.org/wiki/Uniform_Resource_Identifier",
+        "titolo": "MDN: URL",
+        "url": "https://developer.mozilla.org/en-US/docs/Glossary/URL",
         "verificato": true
       }
     ],
@@ -361,10 +336,10 @@
       }
     ],
     "checklist_ripasso": [
-      "URI = identificatore generico",
-      "URL = URI con posizione (scheme + authority)",
-      "URN = URI senza posizione (identificatore persistente)",
-      "Sintassi URI: scheme://authority/path?query#fragment"
+      "URI identifica una risorsa in senso generale",
+      "URL indica localizzazione o modalità di accesso",
+      "URN nomina in uno spazio di nomi, non garantisce risoluzione",
+      "Il frammento è interpretato dal client nelle richieste HTTP ordinarie"
     ],
     "worker": "W1"
   },
@@ -374,11 +349,11 @@
     "area": 1,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "I cookie (RFC 6265) sono piccoli dati salvati lato client e inviati automaticamente dal browser in ogni richiesta. Permettono di gestire lo stato in HTTP stateless. Le sessioni sono un meccanismo server-side che usa un session ID (tipicamente nei cookie) per associare dati sul server all'utente.",
+    "sapere": "I cookie sono dati inviati dal server tramite Set-Cookie e reinviati dal browser secondo ambito e regole del cookie. Una sessione è stato applicativo, spesso conservato sul server e raggiunto tramite un identificatore nel cookie. Secure, HttpOnly e SameSite hanno scopi distinti e non sostituiscono tutte le difese.",
     "saper_fare": [
-      "Spiegare il funzionamento dei cookie (Set-Cookie, Cookie header)",
-      "Distinguere cookie da sessioni",
-      "Elencare gli attributi di sicurezza dei cookie (HttpOnly, Secure, SameSite)"
+      "Descrivere il flusso Set-Cookie e Cookie",
+      "Distinguere cookie, cookie di sessione, ID di sessione e sessione server-side",
+      "Spiegare i limiti di Secure, HttpOnly e SameSite"
     ],
     "prerequisiti": [
       {
@@ -390,14 +365,14 @@
     "esercizi": [
       {
         "tipo_esame": "scritto: flusso cookie",
-        "testo": "Descrivi il flusso completo di autenticazione tramite cookie.",
-        "soluzione": "1) Client invia POST /login con credenziali; 2) Server verifica e genera session_id; 3) Server risponde con Set-Cookie: session_id=abc123; Path=/; HttpOnly; Secure; SameSite=Lax; 4) Browser salva il cookie; 5) Browser invia automaticamente Cookie: session_id=abc123 in ogni richiesta successiva a /; 6) Server associa session_id all'utente autenticato; 7) All'logout, server invalida la sessione e/o setta Set-Cookie: session_id=; Max-Age=0."
+        "testo": "Descrivi l’autenticazione con un cookie che contiene l’identificatore di sessione.",
+        "soluzione": "1) Il client invia credenziali a POST /login. 2) Il server le verifica, crea una sessione e invia Set-Cookie: sid=valore-casuale; Path=/; Secure; HttpOnly; SameSite=Lax. 3) Il browser invia Cookie: sid=valore-casuale nelle richieste compatibili. 4) Il server valida l’ID, recupera la sessione e applica l’autorizzazione. Al logout invalida la sessione e rimuove il cookie."
       }
     ],
     "tempo_studio_min": 50,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Fondamentale per autenticazione e sessioni."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
@@ -406,13 +381,8 @@
         "verificato": true
       },
       {
-        "titolo": "MDN: HTTP cookies",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies",
-        "verificato": true
-      },
-      {
         "titolo": "MDN: Using HTTP cookies",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies",
         "verificato": true
       }
     ],
@@ -425,10 +395,11 @@
       }
     ],
     "checklist_ripasso": [
-      "Cookie: Set-Cookie (server→client), Cookie (client→server)",
-      "Attributi: Domain, Path, Max-Age/Expires, HttpOnly, Secure, SameSite",
-      "Sessioni: session ID nei cookie + dati server-side",
-      "Sicurezza: HttpOnly (no JS), Secure (HTTPS), SameSite (CSRF)"
+      "Set-Cookie è nella risposta; Cookie è nella richiesta successiva",
+      "La sessione può essere sul server; il cookie spesso contiene l’ID",
+      "Secure limita l’invio a connessioni sicure",
+      "HttpOnly limita la lettura tramite Document.cookie",
+      "SameSite aiuta a ridurre alcuni invii cross-site, ma non è una difesa completa"
     ],
     "worker": "W1"
   },
@@ -438,11 +409,11 @@
     "area": 1,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "I codici di stato HTTP (RFC 7231, RFC 9110) indicano l'esito di una richiesta. 1xx: informazionali; 2xx: successo (200 OK, 201 Created); 3xx: reindirizzamento (301 Moved Permanently, 302 Found); 4xx: errore client (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found); 5xx: errore server (500 Internal Server Error).",
+    "sapere": "I codici HTTP a tre cifre indicano la classe e il significato dell’esito: 1xx informativi, 2xx successo, 3xx reindirizzamento o gestione condizionale, 4xx problemi di richiesta/risorsa, 5xx problemi del server. RFC 9110 ha sostituito RFC 7231; 401, 403, 404 e 410 hanno significati distinti.",
     "saper_fare": [
-      "Classificare i codici di stato per categoria",
-      "Spiegare la differenza tra 401 e 403",
-      "Scegliere il codice appropriato per scenari comuni"
+      "Classificare i codici di stato nelle cinque classi",
+      "Distinguere 401 da 403 e 404 da 410",
+      "Scegliere un codice in base alla semantica della risposta"
     ],
     "prerequisiti": [
       {
@@ -454,46 +425,41 @@
     "esercizi": [
       {
         "tipo_esame": "scritto: scegli codice",
-        "testo": "Quale codice di stato usare per: (a) risorsa creata con successo, (b) risorsa non trovata, (c) autenticazione fallita, (d) accesso negato?",
-        "soluzione": "(a) 201 Created; (b) 404 Not Found; (c) 401 Unauthorized; (d) 403 Forbidden."
+        "testo": "Quale codice è adatto per: (a) risorsa creata, (b) credenziali non valide, (c) accesso rifiutato, (d) target non trovato?",
+        "soluzione": "(a) 201 Created; (b) 401 Unauthorized; (c) 403 Forbidden; (d) 404 Not Found. 404 non dice se l’assenza sia permanente; 410 Gone può indicare una rimozione definitiva nota."
       }
     ],
     "tempo_studio_min": 35,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Importante per REST e API design."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
-        "titolo": "MDN: HTTP Status Codes",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status",
+        "titolo": "RFC 9110 - HTTP Semantics",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
         "verificato": true
       },
       {
-        "titolo": "RFC 7231 - Semantics and Content (Status Codes)",
-        "url": "https://www.rfc-editor.org/rfc/rfc7231.html",
-        "verificato": true
-      },
-      {
-        "titolo": "HTTP Status Code Registry (IANA)",
-        "url": "https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml",
+        "titolo": "MDN: HTTP response status codes",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status",
         "verificato": true
       }
     ],
     "riferimenti_testo": [
       {
-        "libro": "MDN"
+        "libro": "RFC"
       },
       {
-        "libro": "RFC"
+        "libro": "MDN"
       }
     ],
     "checklist_ripasso": [
-      "1xx: informazionali",
-      "2xx: successo (200, 201, 204)",
-      "3xx: reindirizzamento (301, 302, 304)",
-      "4xx: errore client (400, 401, 403, 404)",
-      "5xx: errore server (500, 502, 503)"
+      "1xx informativo; 2xx successo; 3xx reindirizzamento o condizioni",
+      "4xx richiesta o risorsa; 5xx errore del server",
+      "401 riguarda credenziali; 403 rifiuto di accesso",
+      "404 non implica assenza permanente; valutare 410",
+      "304 è condizionale/cache, non un redirect ordinario"
     ],
     "worker": "W1"
   },
@@ -503,11 +469,11 @@
     "area": 1,
     "gruppo": "A",
     "tipo": "abilita",
-    "sapere": "Il multiplexing permette di inviare più richieste contemporaneamente sulla stessa connessione. In HTTP/1.1 le richieste sono sequenziali (pipelining limitato). HTTP/2 introduce multiplexing binario: più stream su una connessione, senza head-of-line blocking a livello applicativo. HTTP/3 (QUIC) estende il multiplexing a livello di trasporto.",
+    "sapere": "HTTP/1.1 può fare pipelining ma mantiene l’ordine delle risposte e non multiplexa stream indipendenti. HTTP/2 interlaccia stream su una connessione TCP, ma la perdita TCP può bloccare la consegna di tutti gli stream. HTTP/3 usa stream QUIC su UDP, con consegna ordinata per stream; la congestione resta condivisa sulla connessione.",
     "saper_fare": [
-      "Spiegare il problema del head-of-line blocking in HTTP/1.1",
-      "Descrivere come HTTP/2 risolve il problema",
-      "Confrontare multiplexing in HTTP/2 e HTTP/3"
+      "Spiegare head-of-line blocking in HTTP/1.1 e nel trasporto TCP",
+      "Descrivere il multiplexing di HTTP/2",
+      "Confrontare la consegna degli stream HTTP/2 e HTTP/3 senza attribuire affidabilità a UDP"
     ],
     "prerequisiti": [
       {
@@ -519,39 +485,37 @@
     "esercizi": [
       {
         "tipo_esame": "scritto: spiegazione",
-        "testo": "Cosa è il head-of-line blocking e come lo risolvono HTTP/2 e HTTP/3?",
-        "soluzione": "Head-of-line blocking (HOL): in HTTP/1.1, se un pacchetto si perde, tutte le richieste successive devono aspettare che venga ritrasmesso, anche se non dipendono da esso. HTTP/2 risolve a livello applicativo: più stream su una connessione TCP, un pacchetto perso blocca solo il suo stream. HTTP/3 risolve a livello di trasporto: QUIC gestisce stream indipendenti su UDP, quindi un pacchetto perso non blocca gli altri stream."
+        "testo": "Confronta l’effetto di una perdita di pacchetto su più stream HTTP/2 e HTTP/3.",
+        "soluzione": "HTTP/2 multiplexa frame di stream distinti ma usa TCP, che consegna un flusso ordinato: una perdita può bloccare tutti gli stream. HTTP/3 usa QUIC; la perdita di uno stream non blocca la consegna dei dati disponibili sugli altri stream. La congestione resta condivisa sulla connessione."
       }
     ],
     "tempo_studio_min": 30,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Argomento tecnico importante per performance."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
-        "titolo": "MDN: HTTP/2 - Multiplexing",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Protocol_upgrade_mechanism#http2",
+        "titolo": "RFC 9113 - HTTP/2",
+        "url": "https://www.rfc-editor.org/rfc/rfc9113.html",
         "verificato": true
       },
       {
-        "titolo": "RFC 9000 - QUIC (Stream Multiplexing)",
-        "url": "https://www.rfc-editor.org/rfc/rfc9000.html#name-stream-multiplexing",
+        "titolo": "RFC 9114 - HTTP/3",
+        "url": "https://www.rfc-editor.org/rfc/rfc9114.html",
         "verificato": true
       }
     ],
     "riferimenti_testo": [
       {
-        "libro": "MDN"
-      },
-      {
         "libro": "RFC"
       }
     ],
     "checklist_ripasso": [
-      "HOL blocking: pacchetto perso blocca la coda",
-      "HTTP/2: multiplexing a livello applicativo (stream)",
-      "HTTP/3: multiplexing a livello trasporto (QUIC)"
+      "HTTP/1.1: pipelining con risposte ordinate, non multiplexing",
+      "HTTP/2: multiplexing su TCP, TCP HOL resta",
+      "HTTP/3: stream QUIC su UDP, consegna indipendente tra stream",
+      "QUIC gestisce affidabilità; UDP da solo non la fornisce"
     ],
     "worker": "W1"
   },
@@ -561,11 +525,11 @@
     "area": 1,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "Il contenuto statico è fisso e non cambia tra richieste (es. file HTML, CSS, JS, immagini). Il contenuto dinamico viene generato dal server per ogni richiesta in base a dati variabili (es. database, ora, utente). HTTP serve entrambi, ma con meccanismi diversi: statico = file preesistenti, dinamico = script server-side (PHP, Python, Node.js) che generano HTML.",
+    "sapere": "Statico e dinamico descrivono come viene preparata una rappresentazione, non due protocolli HTTP. Un file già pronto è spesso statico; logica e dati della richiesta possono produrre contenuto dinamico. Entrambi possono essere cacheabili secondo header, variabilità, personalizzazione e politica del servizio.",
     "saper_fare": [
-      "Distinguere contenuto statico da dinamico",
-      "Spiegare i vantaggi di ciascun approccio",
-      "Scegliere quando usare statico vs dinamico"
+      "Distinguere la generazione statica da quella dinamica",
+      "Spiegare perché l’estensione di un file non basta a classificarlo",
+      "Valutare caching e personalizzazione separatamente dalla generazione"
     ],
     "prerequisiti": [
       {
@@ -577,24 +541,24 @@
     "esercizi": [
       {
         "tipo_esame": "scritto: classificazione",
-        "testo": "Classifica come statico o dinamico: (a) index.html, (b) profile.php che mostra dati utente, (c) styles.css, (d) news.php che legge articoli da DB.",
-        "soluzione": "Statico: (a) index.html, (c) styles.css. Dinamico: (b) profile.php (genera HTML con dati utente), (d) news.php (legge articoli da database)."
+        "testo": "Classifica un logo servito da file e risultati di ricerca generati dal catalogo, distinguendo la cacheabilità.",
+        "soluzione": "Il logo servito da un file preparato è tipicamente statico; i risultati composti in base alla query e ai dati sono dinamici. Entrambi sono trasferiti tramite HTTP. Una risposta dinamica può essere cacheabile e una risorsa statica può variare nel tempo: decide la politica dichiarata."
       }
     ],
     "tempo_studio_min": 30,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Fondamentale per capire architetture web."
+      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
     },
     "risorse": [
       {
-        "titolo": "MDN: Static vs Dynamic Content",
-        "url": "https://developer.mozilla.org/en-US/docs/Learn/Server-side/First_steps/Introduction",
+        "titolo": "MDN: Client-server overview",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Client-Server_overview",
         "verificato": true
       },
       {
-        "titolo": "Wikipedia: Static web page",
-        "url": "https://en.wikipedia.org/wiki/Static_web_page",
+        "titolo": "MDN: Overview of HTTP",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview",
         "verificato": true
       }
     ],
@@ -604,10 +568,10 @@
       }
     ],
     "checklist_ripasso": [
-      "Statico: contenuto fisso, uguale per tutti",
-      "Dinamico: generato per ogni richiesta, personalizzato",
-      "Esempi statico: HTML, CSS, JS, immagini",
-      "Esempi dinamico: PHP, Python (Flask), Node.js, JSP"
+      "Statico/dinamico riguarda il processo di generazione",
+      "HTML può essere un file pronto o essere generato da un template",
+      "HTTP trasporta entrambi",
+      "Caching dipende da header, variabilità, privacy e politica"
     ],
     "worker": "W1"
   }

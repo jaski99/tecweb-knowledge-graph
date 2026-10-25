@@ -1,0 +1,99 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "Quando la pagina della biblioteca apre catalogo, stile e copertine, più richieste devono avanzare in parallelo. Il multiplexing le separa in stream logici, ma il trasporto sottostante determina come una perdita influenza gli altri dati.",
+  "definizione_esame": {
+    "definizione": "Il multiplexing HTTP consente di intercalare più scambi logici su una connessione: HTTP/2 usa stream sopra TCP, HTTP/3 stream QUIC sopra UDP.",
+    "scopo_vantaggio": "Riduce l'attesa fra richieste concorrenti e, con QUIC, isola la consegna degli stream rispetto alle perdite di un altro stream.",
+    "esempio": "HTTP/2 interlaccia frame di tre richieste su TCP; HTTP/3 usa stream QUIC indipendenti per la consegna ordinata."
+  },
+  "spiegazione": "## Multiplexing: più scambi, un collegamento\n\nPrerequisito: conosci le differenze tra HTTP/1.1, HTTP/2 e HTTP/3. Il multiplexing consente di gestire più scambi logici contemporaneamente sullo stesso collegamento. «Contemporaneamente» descrive l'intercalazione delle unità di dati, non che più bit attraversino lo stesso cavo nello stesso istante.\n\n### HTTP/1.1: persistenza non significa multiplexing\n\nHTTP/1.1 può mantenere una connessione persistente e supporta il pipelining, ma le risposte sul singolo flusso devono essere ordinate. Se la risposta alla prima richiesta tarda, quelle successive possono restare in attesa: è head-of-line blocking a livello HTTP. Per aumentare la concorrenza, i client possono aprire più connessioni; non è multiplexing su una sola connessione.\n\n### HTTP/2: stream multiplexati sopra TCP\n\nHTTP/2 assegna uno stream a ogni scambio e interlaccia frame di stream diversi sulla stessa connessione TCP. Questo rimuove la dipendenza d'ordine tra risposte distinte tipica di HTTP/1.1. Tuttavia TCP espone un solo flusso ordinato: se un segmento TCP si perde, la consegna dei byte successivi si ferma fino al recupero, anche se appartengono a stream HTTP differenti. HTTP/2 risolve un problema di HOL a livello HTTP, non quello da perdita del trasporto TCP.\n\n### HTTP/3: stream QUIC\n\nHTTP/3 usa QUIC su UDP. QUIC fornisce flussi affidabili e ordinati all'interno di ciascuno stream e non richiede che i byte mancanti di uno stream siano consegnati prima dei dati disponibili sugli altri. Il controllo della congestione è condiviso a livello di connessione; perciò non si deve promettere isolamento totale dalle condizioni di rete.\n\n```mermaid\nflowchart TD\n  A[HTTP/1.1: pipeline ordinata] --> B[HOL a livello HTTP]\n  C[HTTP/2: stream multiplexati] --> D[TCP: HOL da perdita resta]\n  E[HTTP/3: stream QUIC] --> F[Perdita isolata nella consegna tra stream]\n```\n\n| Versione | Multiplexing su una connessione | Effetto di una perdita |\n|---|---|---|\n| HTTP/1.1 | No; pipelining con risposte ordinate | HOL HTTP; TCP è anch'esso ordinato |\n| HTTP/2 | Sì, frame di stream diversi su TCP | Una perdita TCP può fermare tutti gli stream |\n| HTTP/3 | Sì, stream QUIC su UDP | I dati di uno stream non bloccano la consegna degli altri stream |\n\n### Una distinzione che evita la trappola\n\n«HTTP/2 ha multiplexing» è corretto. «HTTP/2 elimina ogni head-of-line blocking» è falso, perché il trasporto resta TCP. «HTTP/3 usa multiplexing» è corretto; il vantaggio nasce dagli stream QUIC e dalla consegna per stream, non dal fatto che UDP sia intrinsecamente affidabile. QUIC implementa la propria affidabilità sopra UDP.\n\nCon una pagina HTML, CSS e tre immagini possono avanzare come scambi distinti. Una risposta può essere pronta prima di un'altra; in HTTP/2 il framing consente di inviare i frame pronti, ma una perdita TCP può interrompere la consegna comune. Con HTTP/3 il dato perso su uno stream non obbliga a mettere in attesa la consegna ordinata degli altri. La congestione della connessione può comunque rallentare il traffico complessivo.",
+  "analogia": {
+    "testo": "Immagina tre ordini di libri trasportati sullo stesso nastro: con stream distinti, l'arrivo in ritardo di un ordine non deve bloccare quelli già pronti a essere consegnati.",
+    "limite": "TCP è un flusso ordinato unico mentre QUIC gestisce stream; il nastro non rappresenta ritrasmissioni, congestione o protocolli di framing."
+  },
+  "worked_example": {
+    "titolo": "Confrontare una perdita di rete",
+    "problema": "Il client scarica HTML e copertina su scambi diversi; un segmento contenente dati della copertina va perso.",
+    "passi": [
+      "In HTTP/1.1 nota il vincolo di ordine delle risposte sul flusso.",
+      "In HTTP/2 assegna agli scambi stream distinti ma colloca entrambi sopra la stessa connessione TCP.",
+      "In HTTP/3 usa stream QUIC distinti e considera il recupero della perdita per stream.",
+      "Descrivi il limite residuo: la congestione comune può rallentare tutti i flussi."
+    ],
+    "soluzione": "HTTP/2 permette di intercalare i frame, ma la perdita TCP blocca la consegna dei byte successivi finché TCP recupera il segmento. In HTTP/3 la perdita della copertina non blocca la consegna dei dati già disponibili dello stream HTML, anche se le condizioni della connessione possono influenzare entrambi.",
+    "perche_funziona": "La spiegazione separa il multiplexing HTTP/2 dal trasporto TCP ordinato e considera la consegna per stream di QUIC senza attribuirle immunità alla congestione."
+  },
+  "completion_problem": {
+    "titolo": "Completa la tabella dei trasporti",
+    "testo": "HTTP/2 multiplexa stream sopra ____; HTTP/3 multiplexa stream QUIC sopra ____. La perdita del primo blocca la consegna di tutti gli stream?",
+    "passi_mancanti": [
+      "Inserire TCP e UDP e specificare in quale versione la perdita del trasporto causa HOL comune."
+    ],
+    "soluzione": "HTTP/2 usa TCP; HTTP/3 usa QUIC su UDP. Una perdita TCP può bloccare la consegna di tutti gli stream HTTP/2; una perdita QUIC su uno stream non blocca la consegna dei dati già disponibili sugli altri stream."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Disegna tre stream concorrenti",
+    "testo": "Disegna il trasferimento di una pagina, del CSS e di un'immagine prima in HTTP/2 e poi in HTTP/3, segnando cosa succede se si perde un pacchetto.",
+    "suggerimento": "Disegna una connessione TCP per HTTP/2; per HTTP/3 disegna una connessione QUIC con stream distinti sopra UDP.",
+    "soluzione_attesa": "HTTP/2: tre stream logici intercalati su una connessione TCP; una perdita TCP può fermare tutti i byte consegnati. HTTP/3: tre stream QUIC; la perdita su uno stream non impone l'attesa degli altri nella consegna, pur condividendo la congestione della connessione."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Confondere connessione persistente con multiplexing",
+      "perche_sbagliato": "Una connessione HTTP/1.1 può restare aperta senza gestire stream indipendenti intercalati.",
+      "distrattore": "Mappa dei selettori CSS"
+    },
+    {
+      "errore": "Dire che HTTP/2 non soffre mai di HOL",
+      "perche_sbagliato": "La perdita su TCP blocca il flusso ordinato sottostante e quindi la consegna agli stream.",
+      "distrattore": "Schema di indirizzi email"
+    },
+    {
+      "errore": "Attribuire l'affidabilità a UDP",
+      "perche_sbagliato": "UDP trasporta datagrammi; QUIC implementa affidabilità, flusso e recupero delle perdite sopra UDP.",
+      "distrattore": "Formato URN"
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "HTTP/1.1 supporta multiplexing su una connessione?",
+        "risposta": "No: può riusare la connessione e supporta pipelining, ma le risposte restano ordinate."
+      },
+      {
+        "domanda": "Che cosa multiplexa HTTP/2?",
+        "risposta": "Frame di più stream HTTP sulla stessa connessione TCP."
+      },
+      {
+        "domanda": "Perché una perdita TCP può bloccare HTTP/2?",
+        "risposta": "TCP consegna un flusso unico e ordinato, quindi attende i byte mancanti prima di consegnare quelli successivi."
+      },
+      {
+        "domanda": "Quale limite di HOL riduce QUIC per HTTP/3?",
+        "risposta": "Evita che la consegna mancante di uno stream blocchi quella degli altri; congestione e ritardi di rete restano possibili."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega con un diagramma perché il multiplexing HTTP/2 non elimina la perdita TCP e come gli stream QUIC riducono il blocco tra flussi.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "quic-protocollo",
+        "collegamento": "Il comportamento di HTTP/3 dipende dal trasporto QUIC e dalla sua consegna ordinata per stream."
+      }
+    ]
+  },
+  "riepilogo": "HTTP/1.1 riusa connessioni ma non multiplexa risposte indipendenti. HTTP/2 interlaccia stream sopra TCP, ma una perdita TCP può fermare tutti gli stream. HTTP/3 usa stream QUIC su UDP: la perdita di uno non blocca la consegna degli altri. La congestione resta condivisa.",
+  "flashcard": {
+    "fronte": "Dove compare il multiplexing in HTTP/2 e HTTP/3?",
+    "retro": "HTTP/2: stream/frame multipli sopra TCP, con HOL da perdita TCP. HTTP/3: stream QUIC sopra UDP, con consegna indipendente tra stream."
+  },
+  "checklist": {
+    "so_fare": [
+      "Confrontare pipelining, multiplexing HTTP/2 e stream QUIC.",
+      "Spiegare l'effetto di una perdita TCP rispetto a una perdita su stream QUIC."
+    ],
+    "so_dire": [
+      "Precisare quale HOL HTTP/2 non risolve.",
+      "Evitare di attribuire affidabilità a UDP o immunità totale a QUIC."
+    ]
+  }
+}

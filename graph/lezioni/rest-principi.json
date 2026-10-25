@@ -1,0 +1,100 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti sulle API. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "La biblioteca digitale vuole offrire lo stesso catalogo a browser e app. Un'interfaccia uniforme basata su risorse consente ai client di scambiare rappresentazioni senza conoscere i dettagli interni del servizio.",
+  "definizione_esame": {
+    "definizione": "REST è uno stile architetturale per sistemi distribuiti definito da vincoli, non un protocollo né un formato dati.",
+    "scopo_vantaggio": "I vincoli favoriscono separazione, scalabilità, visibilità delle interazioni e riuso di componenti attraverso un'interfaccia uniforme.",
+    "esempio": "Un client identifica /libri/42, riceve una rappresentazione e usa controlli ipermediali per scoprire azioni successive."
+  },
+  "spiegazione": "## REST è uno stile, non un protocollo\n\nPrerequisito: conosci HTTP e l'idea di risorsa identificata tramite URI. REST (Representational State Transfer) è uno **stile architetturale** per sistemi distribuiti, definito da un insieme di vincoli. HTTP è spesso il protocollo usato per realizzare API REST, ma REST non è sinonimo di HTTP, JSON, CRUD o di «URL con sostantivi».\n\n### I vincoli architetturali\n\n1. **Client-server**: separa interfaccia e responsabilità del server.\n2. **Stateless**: ogni richiesta contiene il contesto necessario; il server non dipende da uno stato di sessione client conservato tra richieste. Lo stato delle risorse può comunque essere persistente.\n3. **Cache**: le risposte indicano se possono essere riutilizzate da una cache e per quanto, quando applicabile.\n4. **Interfaccia uniforme**: uniforma le interazioni con le risorse.\n5. **Sistema a livelli**: il client può comunicare attraverso intermediari senza dover conoscere tutti i componenti.\n6. **Code-on-demand**: il server può inviare codice eseguibile al client; è l'unico vincolo opzionale nella formulazione classica.\n\n### Le quattro parti dell'interfaccia uniforme\n\nL'interfaccia uniforme comprende identificazione delle risorse, manipolazione attraverso rappresentazioni, messaggi auto-descrittivi e **HATEOAS** (Hypermedia as the Engine of Application State): le rappresentazioni espongono controlli o collegamenti che permettono al client di scoprire transizioni possibili. HATEOAS non è opzionale nello stile REST rigoroso. Molte API HTTP dette «RESTful» nella pratica non rispettano integralmente questo vincolo; è più preciso dichiarare l'aderenza effettiva.\n\n```mermaid\nflowchart LR\n  C[Client] -->|Richiesta con contesto| I[Interfaccia uniforme]\n  I -->|Rappresentazione e controlli| C\n  I --> L[Intermediari / livelli]\n  L --> S[Server della risorsa]\n```\n\nUna rappresentazione può essere JSON, HTML o un altro formato; REST non impone JSON. I metodi HTTP, i codici di stato e i campi forniscono semantica interoperabile quando HTTP è il protocollo scelto. Un URI identifica una risorsa, non deve necessariamente esporre la struttura interna del database.\n\n### Esempio di controllo ipermediale\n\nIl client richiede `GET /api/libri/42` e riceve una rappresentazione del libro. Un formato scelto dall'applicazione può includere link a sé stessa, alla collezione o alle recensioni. Il nome e la struttura del campo `links` sono una convenzione dell'esempio, non una struttura JSON prescritta da REST.\n\n```http\nGET /api/libri/42 HTTP/1.1\nHost: biblioteca.example\nAccept: application/json\n\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n{\"id\": 42, \"titolo\": \"Il sentiero dei nidi di ragno\", \"links\": {\"self\": \"/api/libri/42\", \"recensioni\": \"/api/libri/42/recensioni\"}}\n```\n\n### Tabella di contrasto\n\n| Termine | Che cos'è | Non significa |\n|---|---|---|\n| REST | Stile con vincoli architetturali | Un protocollo specifico |\n| HTTP | Protocollo con semantiche e metodi | Un formato dati obbligatoriamente JSON |\n| API HTTP «RESTful» | Etichetta d'uso comune | Prova automatica di aderenza completa a REST |\n\nLa statelessness REST riguarda il contesto di sessione delle richieste, non l'assenza di database o di stato delle risorse. Il caching è un vincolo, ma non tutte le risposte sono cacheabili. Le scelte devono mantenere coerente l'interfaccia e i permessi.",
+  "analogia": {
+    "testo": "È come un catalogo con schede standard: il lettore usa un formato comune, e ogni scheda può indicare quali azioni o percorsi sono disponibili.",
+    "limite": "REST è un insieme formale di vincoli per sistemi distribuiti; un catalogo cartaceo non ha cache HTTP, messaggi auto-descrittivi o client-server."
+  },
+  "worked_example": {
+    "titolo": "Valutare un endpoint della biblioteca",
+    "problema": "Il client invia GET /api/libri/42 e riceve JSON con i dati del libro. Determina quali caratteristiche da sole non bastano per chiamare l'API REST rigorosa.",
+    "passi": [
+      "Riconosci risorsa e rappresentazione.",
+      "Verifica se le richieste contengono il contesto necessario senza sessione implicita.",
+      "Valuta cache e sistema a livelli.",
+      "Controlla se i messaggi sono auto-descrittivi e le rappresentazioni guidano le transizioni tramite hypermedia."
+    ],
+    "soluzione": "Usare URI e JSON è compatibile con un'interfaccia orientata alle risorse, ma non prova da solo l'aderenza REST. Per la forma rigorosa occorre valutare tutti i vincoli, incluso HATEOAS, che molte API pratiche omettono.",
+    "perche_funziona": "REST è definito dai vincoli complessivi, non dal solo aspetto dei percorsi o dall'estensione JSON della risposta."
+  },
+  "completion_problem": {
+    "titolo": "Completa i vincoli REST",
+    "testo": "Completa l'elenco: client-server, stateless, cache, interfaccia uniforme, sistema a livelli e ____. Indica quale vincolo è opzionale.",
+    "passi_mancanti": [
+      "Aggiungere code-on-demand e specificare che è opzionale, non HATEOAS."
+    ],
+    "soluzione": "Il sesto vincolo è code-on-demand, che è opzionale. HATEOAS fa parte dell'interfaccia uniforme nello stile REST rigoroso e non è il vincolo opzionale."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Esamina una API chiamata REST",
+    "testo": "Una API usa JSON e percorsi /libri/42 ma mantiene il carrello tramite stato di sessione implicito sul server e non espone collegamenti ipermediali. Spiega quali aspetti sono compatibili e quale cautela serve.",
+    "suggerimento": "Non decidere sulla sola sintassi URI; confronta statelessness e HATEOAS con i vincoli REST.",
+    "soluzione_attesa": "JSON e URI orientati alle risorse sono compatibili con una API HTTP in stile REST, ma l'uso di sessione implicita contrasta con statelessness REST e l'assenza di controlli ipermediali non soddisfa HATEOAS. È più prudente chiamarla API HTTP/REST-like, non dichiarare aderenza rigorosa."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dire che REST è un protocollo o un formato JSON",
+      "perche_sbagliato": "REST è uno stile architetturale; HTTP e JSON possono essere usati per implementarlo ma non lo definiscono da soli.",
+      "distrattore": "Formato del foglio di stile CSS"
+    },
+    {
+      "errore": "Dire che HATEOAS è opzionale",
+      "perche_sbagliato": "È parte dell'interfaccia uniforme nella formulazione REST rigorosa; code-on-demand è opzionale.",
+      "distrattore": "Porta UDP"
+    },
+    {
+      "errore": "Interpretare stateless come assenza di dati persistenti",
+      "perche_sbagliato": "REST non vieta database o stato delle risorse; richiede che ogni richiesta porti il contesto necessario.",
+      "distrattore": "Estensione di un file HTML"
+    }
+  ],
+  "mnemonica": "C-S-C-U-L-O: Client-server, Stateless, Cache, Uniform interface, Layered system, On-demand code (opzionale).",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quali sono i sei vincoli REST?",
+        "risposta": "Client-server, stateless, cache, interfaccia uniforme, sistema a livelli e code-on-demand, quest'ultimo opzionale."
+      },
+      {
+        "domanda": "HATEOAS è opzionale nello stile REST rigoroso?",
+        "risposta": "No. È una parte dell'interfaccia uniforme; code-on-demand è il vincolo opzionale."
+      },
+      {
+        "domanda": "REST impone JSON e HTTP?",
+        "risposta": "No. HTTP e JSON sono scelte comuni, ma REST è uno stile e non prescrive un unico protocollo o formato."
+      },
+      {
+        "domanda": "Stateless vieta un database?",
+        "risposta": "No. Vieta la dipendenza da un contesto di sessione implicito fra richieste, non la persistenza dello stato delle risorse."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega perché la presenza di URI e JSON non è sufficiente per dimostrare che un servizio rispetti tutti i vincoli REST.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "http-stateless-vs-stateful",
+        "collegamento": "La statelessness di REST approfondisce la natura delle richieste HTTP indipendenti, ma resta un vincolo architetturale dell'applicazione."
+      }
+    ]
+  },
+  "riepilogo": "REST è uno stile architetturale con sei vincoli: client-server, stateless, cache, interfaccia uniforme, sistema a livelli e code-on-demand opzionale. HATEOAS è parte dell'interfaccia uniforme rigorosa. REST non è HTTP né JSON; un'API HTTP detta RESTful può rispettare solo parte dei vincoli.",
+  "flashcard": {
+    "fronte": "Qual è l'unico vincolo REST opzionale?",
+    "retro": "Code-on-demand. HATEOAS fa parte dell'interfaccia uniforme e non è opzionale nella formulazione rigorosa."
+  },
+  "checklist": {
+    "so_fare": [
+      "Valutare un'API rispetto ai vincoli, non soltanto agli URL.",
+      "Distinguere HATEOAS da code-on-demand."
+    ],
+    "so_dire": [
+      "Definire REST come stile architetturale.",
+      "Elencare i vincoli e spiegare i limiti dell'etichetta RESTful."
+    ]
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "Nel negozio della biblioteca, il browser mostra il carrello, un servizio applicativo calcola prezzi e disponibilità, e un database conserva libri e ordini. Separare queste responsabilità chiarisce dove collocare codice, dati e scalabilità.",
+  "definizione_esame": {
+    "definizione": "Un'architettura a tre tier separa logicamente presentazione, logica applicativa e dati in tre livelli di responsabilità.",
+    "scopo_vantaggio": "La separazione riduce l'accoppiamento e permette di manutenere e distribuire ciascun livello secondo le proprie esigenze.",
+    "esempio": "Browser, server API e database formano una possibile architettura logica a tre tier per un catalogo web."
+  },
+  "spiegazione": "## Tre responsabilità, non necessariamente tre macchine\n\nPrerequisito: conosci il modello client-server. Una separazione **3-tier** distingue il livello di presentazione, il livello della logica applicativa e il livello dei dati. Sono ruoli logici: in un prototipo possono coesistere sulla stessa macchina; in un sistema distribuito possono essere processi o servizi distinti. La separazione non impone che siano sempre ospitati su host diversi.\n\n### Flusso tipico nel negozio della biblioteca\n\n```mermaid\nflowchart LR\n  P[Presentazione: browser] -->|HTTPS / API| A[Logica applicativa: servizio]\n  A -->|Query controllate| D[Dati: database]\n  D --> A\n  A --> P\n```\n\n- **Presentazione**: interfaccia e interazione con l'utente; per esempio HTML, CSS e JavaScript nel browser.\n- **Logica applicativa**: regole di dominio, validazione, autorizzazione e coordinamento delle operazioni.\n- **Dati**: persistenza, interrogazioni e vincoli sui dati.\n\nNel flusso usuale, il browser invia una richiesta al servizio; il servizio controlla la richiesta e interroga il database. Non è una legge che ogni componente comunichi soltanto con il livello adiacente: è una regola architetturale frequente, da applicare in modo coerente. In particolare, non si espongono credenziali del database al browser.\n\n### Orizzontale e verticale: scalare, non collocare i tier\n\n**Scalabilità verticale** (scale-up) significa aumentare le risorse di una macchina, ad esempio CPU o memoria. **Scalabilità orizzontale** (scale-out) significa aggiungere istanze e distribuire il carico, spesso dietro un bilanciatore. Questi termini non indicano se i tre tier siano su una o più macchine. Un sistema 3-tier può essere co-locato e scalato verticalmente; un suo livello applicativo può essere replicato orizzontalmente.\n\n| Concetto | Che cosa cambia | Esempio |\n|---|---|---|\n| 3-tier | Separazione logica di responsabilità | UI / logica / dati |\n| Scale-up verticale | Risorse di una macchina | Più memoria al server applicativo |\n| Scale-out orizzontale | Numero di istanze | Più server API dietro un bilanciatore |\n| Distribuzione fisica | Collocazione dei processi | App e database su host distinti |\n\n### Vantaggi e costi\n\nLa separazione rende più facile testare la logica senza interfaccia, sostituire il database o distribuire il livello applicativo. Introduce però confini, chiamate di rete, configurazione e possibili punti di guasto. Replicare server applicativi è spesso più semplice se sono privi di stato locale; lo stato persistente e la coerenza del database richiedono comunque decisioni specifiche.\n\nNon confondere **tier** (livello di responsabilità o distribuzione), **layer** (organizzazione logica del software, secondo la terminologia del progetto) e **scaling** (aumento della capacità). I termini vengono talvolta usati con convenzioni diverse; descrivi sempre quale distinzione intendi.",
+  "analogia": {
+    "testo": "È come una biblioteca: il banco accoglie il lettore, il bibliotecario applica le regole di prestito, l'archivio conserva le schede. Le responsabilità sono distinte anche se gli spazi sono nello stesso edificio.",
+    "limite": "Un'applicazione reale può avere più processi, code, cache e comunicazioni non lineari; i tre ruoli non sono tre stanze obbligatorie."
+  },
+  "worked_example": {
+    "titolo": "Mappare un ordine in tre tier",
+    "problema": "Un utente conferma l'acquisto di un libro; descrivi dove si collocano interfaccia, controllo dell'ordine e persistenza.",
+    "passi": [
+      "La presentazione mostra il pulsante e invia i dati al servizio.",
+      "La logica valida utente, disponibilità e regole d'acquisto.",
+      "Il livello dati salva ordine e righe nel database.",
+      "La logica restituisce l'esito alla presentazione, che aggiorna l'interfaccia."
+    ],
+    "soluzione": "Browser = presentazione; server applicativo = logica; database = dati. La logica comunica con il database e restituisce una risposta HTTP al browser. Possono essere co-locati o distribuiti senza cambiare la distinzione logica.",
+    "perche_funziona": "Ogni tier è assegnato secondo la responsabilità, non in base alla macchina su cui è installato."
+  },
+  "completion_problem": {
+    "titolo": "Completa la distinzione 3-tier/scale",
+    "testo": "Un servizio aggiunge tre istanze API dietro un bilanciatore. Completa: sono state aggiunte istanze in modo ____; non è cambiata la definizione dei tre ____ logici.",
+    "passi_mancanti": [
+      "Indicare scale-out orizzontale e tier."
+    ],
+    "soluzione": "È uno scale-out orizzontale del livello applicativo; i tre tier logici restano presentazione, logica applicativa e dati."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Disegna una variante scalata",
+    "testo": "Disegna un sistema 3-tier per il catalogo con due istanze applicative dietro un bilanciatore e un database. Specifica cosa è replicato e cosa no.",
+    "suggerimento": "Disegna il bilanciatore davanti alle istanze di logica; non chiamare ogni server un tier diverso.",
+    "soluzione_attesa": "Browser/presentazione → bilanciatore → due istanze applicative replicate → database. È uno scale-out orizzontale del livello applicativo; il database è il tier dati e richiede una strategia separata di capacità e disponibilità."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dire che orizzontale significa tier su macchine diverse",
+      "perche_sbagliato": "La scalabilità orizzontale aggiunge istanze; la collocazione fisica dei tier è una decisione distinta.",
+      "distrattore": "Codice di stato 304"
+    },
+    {
+      "errore": "Dire che verticale significa tutti i tier sulla stessa macchina",
+      "perche_sbagliato": "Lo scale-up aumenta le risorse di una macchina; i tier possono essere co-locati o distribuiti in entrambi i casi.",
+      "distrattore": "Schema di URI"
+    },
+    {
+      "errore": "Consentire al browser di collegarsi direttamente al database",
+      "perche_sbagliato": "Esporrebbe credenziali e dati; il server applicativo deve applicare validazione e autorizzazione.",
+      "distrattore": "Compressione HPACK"
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quali sono i tre tier logici?",
+        "risposta": "Presentazione, logica applicativa e dati."
+      },
+      {
+        "domanda": "Che cosa significa scalabilità orizzontale?",
+        "risposta": "Aggiungere istanze e distribuire il carico; per esempio replicare i server API dietro un bilanciatore."
+      },
+      {
+        "domanda": "Che cosa significa scalabilità verticale?",
+        "risposta": "Aumentare risorse come CPU o memoria di una macchina esistente."
+      },
+      {
+        "domanda": "Tre tier richiedono tre host distinti?",
+        "risposta": "No. La separazione può essere logica e i componenti possono essere co-locati o distribuiti."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega perché «3-tier» e «scalabilità orizzontale/verticale» rispondono a domande diverse.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "http-protocollo-base",
+        "collegamento": "La comunicazione tra presentazione e logica avviene spesso tramite richieste e risposte HTTP."
+      }
+    ]
+  },
+  "riepilogo": "3-tier separa presentazione, logica applicativa e dati come responsabilità. I tier possono essere co-locati o distribuiti. Scale-up verticale aumenta le risorse di una macchina; scale-out orizzontale aggiunge istanze. Replicare la logica non elimina la necessità di gestire stato, dati e guasti.",
+  "flashcard": {
+    "fronte": "Che cosa distingue 3-tier da scaling orizzontale/verticale?",
+    "retro": "3-tier separa responsabilità logiche; scale-up aumenta risorse su una macchina; scale-out aggiunge istanze. La collocazione fisica è una decisione distinta."
+  },
+  "checklist": {
+    "so_fare": [
+      "Disegnare i tre tier e associare le responsabilità.",
+      "Disegnare scale-up e scale-out senza confonderli con la distribuzione."
+    ],
+    "so_dire": [
+      "Spiegare i vantaggi e i costi della separazione.",
+      "Chiarire che tre tier non significano tre macchine obbligatorie."
+    ]
+  }
+}

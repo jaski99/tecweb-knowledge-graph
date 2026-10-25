@@ -1,0 +1,100 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "Quando il browser della biblioteca carica una scheda, i dati attraversano più protocolli: HTTP descrive la richiesta, il trasporto la consegna tra processi e IP instrada i pacchetti fino alla rete locale del server.",
+  "definizione_esame": {
+    "definizione": "La suite TCP/IP organizza la comunicazione di Internet in livelli: accesso alla rete, Internet, trasporto e applicazione.",
+    "scopo_vantaggio": "La stratificazione separa responsabilità e permette a protocolli di un livello di usare i servizi del livello sottostante.",
+    "esempio": "HTTP è applicativo; TCP o UDP è trasporto; IP instrada i datagrammi; Ethernet o Wi-Fi trasferisce dati sul collegamento locale."
+  },
+  "spiegazione": "## Perché si usa uno stack\n\nPrerequisito: conosci il client-server. Un messaggio HTTP non viene consegnato direttamente al browser remoto: è incapsulato in unità dei livelli sottostanti. Ogni livello si occupa di una responsabilità e offre un servizio a quello superiore. Questo modello è una vista concettuale della suite Internet, non un disegno letterale dei componenti software installati su ogni host.\n\n### I quattro livelli didattici\n\n| Livello | Responsabilità | Esempi |\n|---|---|---|\n| Applicazione | Semantica dei servizi usati dai programmi | HTTP, DNS, SMTP |\n| Trasporto | Comunicazione tra processi, porte e controllo del flusso secondo il protocollo | TCP, UDP |\n| Internet | Indirizzamento e inoltro tra reti | IP; ICMP per funzioni di controllo |\n| Accesso alla rete (link) | Trasferimento sul collegamento locale | Ethernet, Wi-Fi |\n\nLe classificazioni didattiche possono usare nomi o suddivisioni leggermente diversi, soprattutto per il livello fisico. L'importante è non confondere la funzione del protocollo. ARP è legato alla risoluzione degli indirizzi sul collegamento, non va presentato come un servizio applicativo.\n\n### Incapsulamento: una richiesta attraversa i livelli\n\nIl browser crea una richiesta HTTP. Per HTTP/1.1 e HTTP/2, normalmente il flusso è trasportato da TCP; IP instrada i pacchetti e il link li trasferisce al prossimo nodo. Per HTTP/3, HTTP usa QUIC sopra UDP, che a sua volta viaggia su IP. QUIC fornisce funzioni di trasporto ulteriori rispetto al servizio base di UDP.\n\n```mermaid\nflowchart TD\n  H[HTTP: applicazione] --> T[TCP oppure QUIC su UDP: trasporto]\n  T --> I[IP: Internet]\n  I --> L[Ethernet o Wi-Fi: accesso alla rete]\n```\n\nA ogni passaggio si aggiungono informazioni di controllo; al destinatario i livelli rimuovono le proprie intestazioni e consegnano i dati al livello superiore. È una spiegazione schematica: QUIC è veicolato da UDP, mentre HTTP/3 si appoggia alle funzioni di QUIC.\n\n### TCP/IP e OSI non sono la stessa tabella\n\nOSI è un modello di riferimento a sette livelli; TCP/IP descrive la suite protocollare di Internet con una suddivisione didattica più compatta. La corrispondenza è approssimativa: i livelli Applicazione, Presentazione e Sessione di OSI sono spesso raccolti nell'Applicazione TCP/IP; anche il livello Accesso alla rete può essere ulteriormente suddiviso. Non dedurre che ogni protocollo abbia una corrispondenza uno-a-uno.\n\n| Affermazione | Valutazione | Motivo |\n|---|---|---|\n| HTTP è applicativo | Corretta | Definisce lo scambio tra programmi client e server |\n| TCP è il livello Internet | Errata | TCP è trasporto; IP è il protocollo Internet |\n| HTTP/3 passa su TCP | Errata | HTTP/3 usa QUIC su UDP |\n| Un router inoltra IP tra reti | Corretta | L'inoltro di pacchetti è responsabilità del livello Internet |\n\nIl vantaggio didattico dello stack è localizzare un problema: un errore HTTP non è automaticamente un errore IP, e la raggiungibilità IP non garantisce che l'applicazione HTTP risponda.",
+  "analogia": {
+    "testo": "È come una spedizione: il contenuto è il messaggio della biblioteca, la busta aggiunge indirizzi e istruzioni, il corriere lo porta al centro successivo e la rete locale completa l'ultimo tratto.",
+    "limite": "Le intestazioni di rete sono interpretate da protocolli e apparati; non sono semplici etichette leggibili da un singolo corriere."
+  },
+  "worked_example": {
+    "titolo": "Collocare HTTP nello stack",
+    "problema": "Un browser invia GET /api/libri/42 a un server usando HTTP/1.1. Individua il ruolo dei livelli attraversati.",
+    "passi": [
+      "Il browser crea la richiesta HTTP al livello applicativo.",
+      "TCP consegna il flusso tra processi e usa le porte.",
+      "IP instrada datagrammi verso la rete di destinazione.",
+      "Ethernet o Wi-Fi trasferisce il frame sul collegamento locale."
+    ],
+    "soluzione": "Applicazione: HTTP; Trasporto: TCP; Internet: IP; Accesso alla rete: Ethernet o Wi-Fi. Il server riceve i dati e i livelli li consegnano, in ordine inverso, al programma HTTP.",
+    "perche_funziona": "La risposta distingue la funzione di ciascun livello e segue l'incapsulamento senza collocare HTTP direttamente su Ethernet o IP."
+  },
+  "completion_problem": {
+    "titolo": "Completa la pila protocollare",
+    "testo": "Per HTTP/1.1, completa la sequenza dal protocollo applicativo al collegamento locale: HTTP → ____ → IP → Ethernet.",
+    "passi_mancanti": [
+      "Inserire il livello Trasporto e il protocollo normalmente usato dall'esempio."
+    ],
+    "soluzione": "HTTP → TCP → IP → Ethernet. Per HTTP/3, invece, la sequenza comprende HTTP/3 → QUIC → UDP → IP → accesso alla rete."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Confronta HTTP/2 e HTTP/3 nello stack",
+    "testo": "Disegna la pila dei protocolli per HTTP/2 e HTTP/3, indicando dove si collocano IP ed Ethernet o Wi-Fi.",
+    "suggerimento": "Non mettere QUIC al posto di IP: HTTP/3 usa QUIC, e QUIC è trasportato su UDP.",
+    "soluzione_attesa": "HTTP/2 → TCP → IP → link; HTTP/3 → QUIC → UDP → IP → link. In entrambi i casi IP instrada i datagrammi e il link li trasferisce sulla rete locale."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Collocare TCP al livello Internet",
+      "perche_sbagliato": "TCP offre un servizio di trasporto tra processi; IP si occupa dell'indirizzamento e dell'inoltro tra reti.",
+      "distrattore": "Proprietà del font"
+    },
+    {
+      "errore": "Trattare OSI e TCP/IP come identici",
+      "perche_sbagliato": "Sono modelli con diverso numero di livelli e corrispondenze solo approssimative.",
+      "distrattore": "Pattern MVC"
+    },
+    {
+      "errore": "Dire che HTTP/3 usa direttamente TCP",
+      "perche_sbagliato": "HTTP/3 usa QUIC su UDP; HTTP/2 usa TCP.",
+      "distrattore": "Formato dei file SVG"
+    }
+  ],
+  "mnemonica": "A-T-I-A: Applicazione, Trasporto, Internet, Accesso alla rete.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "A quale livello si colloca HTTP?",
+        "risposta": "Al livello Applicazione, perché definisce lo scambio richiesto dai programmi client e server."
+      },
+      {
+        "domanda": "Qual è il ruolo di IP rispetto a TCP?",
+        "risposta": "IP instrada datagrammi tra reti; TCP fornisce un trasporto affidabile e ordinato tra processi."
+      },
+      {
+        "domanda": "Quali protocolli attraversa HTTP/3 prima di IP?",
+        "risposta": "HTTP/3 usa QUIC, che viaggia su UDP; poi i datagrammi sono trasportati da IP."
+      },
+      {
+        "domanda": "TCP/IP e OSI hanno una corrispondenza esatta?",
+        "risposta": "No. I livelli e i confini differiscono; la mappatura è un'approssimazione didattica."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega come un messaggio applicativo attraversa i livelli e perché conoscere lo stack aiuta a diagnosticare un problema.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "http-protocollo-base",
+        "collegamento": "HTTP è il messaggio applicativo da collocare sopra trasporto, Internet e accesso alla rete."
+      }
+    ]
+  },
+  "riepilogo": "Il modello TCP/IP descrive la comunicazione a livelli: Applicazione, Trasporto, Internet e Accesso alla rete. HTTP è applicativo; TCP e UDP sono trasporti; IP instrada; Ethernet e Wi-Fi operano sul collegamento. HTTP/3 usa QUIC su UDP. OSI è un diverso modello di riferimento, con corrispondenze non esatte.",
+  "flashcard": {
+    "fronte": "Dove si colloca HTTP nello stack TCP/IP?",
+    "retro": "Nel livello Applicazione. HTTP/1.1 e HTTP/2 usano normalmente TCP; HTTP/3 usa QUIC su UDP, poi IP e il livello di accesso alla rete."
+  },
+  "checklist": {
+    "so_fare": [
+      "Disegnare i quattro livelli e collocare i protocolli tipici.",
+      "Tracciare l'incapsulamento HTTP/1.1 rispetto a HTTP/3."
+    ],
+    "so_dire": [
+      "Distinguere le responsabilità di HTTP, TCP/UDP e IP.",
+      "Spiegare perché la mappatura OSI/TCP-IP è approssimativa."
+    ]
+  }
+}
