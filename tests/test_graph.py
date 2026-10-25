@@ -20,7 +20,7 @@ def test_node_matches_schema(node):
 
 
 def test_areas_declared():
-    assert {a["id"] for a in G["aree"]} == {1, 2, 3, 4, 5}
+    assert {a["id"] for a in G["aree"]} == {1, 2, 3, 4, 5, 6}
 
 
 def test_ids_unique():
@@ -70,7 +70,7 @@ def test_graph_json_is_up_to_date():
 
 def test_parts_naming_and_area():
     for name, nodes in load_parts().items():
-        m = re.fullmatch(r"area-([1-5])\.json", name)
+        m = re.fullmatch(r"area-([1-6])\.json", name)
         assert m, f"nome part non valido: {name}"
         assert isinstance(nodes, list)
         assert all(n["area"] == int(m.group(1)) for n in nodes), name

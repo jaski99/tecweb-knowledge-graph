@@ -1,13 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.local/ids-kg/node.schema.json",
-  "title": "Nodo del knowledge graph IdS (schema v3)",
+  "$id": "https://example.local/tecweb-kg/node.schema.json",
+  "title": "Nodo del knowledge graph — Tecnologie Web (schema v3)",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "id",
     "title",
     "area",
+    "gruppo",
     "tipo",
     "sapere",
     "saper_fare",
@@ -16,33 +17,49 @@
     "tempo_studio_min",
     "priorita",
     "risorse",
-    "riferimenti_testo"
+    "riferimenti_testo",
+    "worker"
   ],
   "properties": {
     "id": {
       "type": "string",
       "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
-      "maxLength": 64
+      "maxLength": 64,
+      "description": "Identificatore unico in kebab-case, senza prefisso area"
     },
     "title": {
       "type": "string",
-      "minLength": 3
+      "minLength": 3,
+      "description": "Titolo del nodo in italiano"
     },
     "area": {
       "type": "integer",
       "minimum": 1,
-      "maximum": 5
+      "maximum": 6,
+      "description": "Area tematica (1=Fondamenti rete e HTTP, 2=Architetture, 3=Front-end, 4=Back-end e strumenti, 5=Web semantico, 6=Tesina)"
+    },
+    "gruppo": {
+      "type": "string",
+      "enum": ["A", "B", "C"],
+      "description": "Classificazione dal materiale utente: A=iper-riciclati (~65%), B=varianti (~20%), C=punti ciechi (~15%)"
+    },
+    "worker": {
+      "type": "string",
+      "enum": ["W1", "W2", "W3", "W4", "W5"],
+      "description": "Worker assegnato per la FASE 2: W1=area1-2, W2=area3, W3=area4-5, W4=area6-quiz, W5=webapp"
     },
     "tipo": {
       "enum": [
         "concetto",
         "abilita",
         "tipo_esercizio"
-      ]
+      ],
+      "description": "Tipo di nodo: concetto=teoria, abilita=procedura, tipo_esercizio=famiglia di esercizi d'esame"
     },
     "sapere": {
       "type": "string",
-      "minLength": 10
+      "minLength": 10,
+      "description": "Cosa si deve conoscere (1-4 frasi)"
     },
     "saper_fare": {
       "type": "array",
@@ -50,7 +67,8 @@
       "items": {
         "type": "string",
         "minLength": 5
-      }
+      },
+      "description": "Criteri osservabili (verbi d'azione), ~2-4"
     },
     "prerequisiti": {
       "type": "array",
@@ -64,20 +82,24 @@
         ],
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "ID di un nodo esistente"
           },
           "forza": {
             "enum": [
               "hard",
               "soft"
-            ]
+            ],
+            "description": "hard = indispensabile; soft = utile"
           },
           "motivo": {
             "type": "string",
-            "minLength": 5
+            "minLength": 5,
+            "description": "Motivazione del prerequisito"
           }
         }
-      }
+      },
+      "description": "Prerequisiti: id esistenti, niente self-loop; nessun ciclo considerando archi hard+soft"
     },
     "esercizi": {
       "type": "array",
@@ -92,23 +114,28 @@
         "properties": {
           "tipo_esame": {
             "type": "string",
-            "minLength": 3
+            "minLength": 3,
+            "description": "Tipo di esercizio d'esame (es. 'scritto: domanda HTTP')"
           },
           "testo": {
             "type": "string",
-            "minLength": 5
+            "minLength": 5,
+            "description": "Testo dell'esercizio"
           },
           "soluzione": {
             "type": "string",
-            "minLength": 10
+            "minLength": 10,
+            "description": "Soluzione breve, passo-passo"
           }
         }
-      }
+      },
+      "description": "Mini-esempi svolti. minItems 1 se tipo è abilita o tipo_esercizio"
     },
     "tempo_studio_min": {
       "type": "integer",
       "minimum": 5,
-      "maximum": 600
+      "maximum": 600,
+      "description": "Tempo di studio minimo in minuti"
     },
     "priorita": {
       "type": "object",
@@ -123,13 +150,16 @@
             "alta",
             "media",
             "bassa"
-          ]
+          ],
+          "description": "Livello di priorità"
         },
         "motivazione": {
           "type": "string",
-          "minLength": 5
+          "minLength": 5,
+          "description": "Motivazione legata a programma + testi + gruppo A/B/C"
         }
-      }
+      },
+      "description": "Priorità: motivazione basata su gruppo A/B/C e formato d'esame IPOTIZZATO"
     },
     "risorse": {
       "type": "array",
@@ -144,17 +174,21 @@
         ],
         "properties": {
           "titolo": {
-            "type": "string"
+            "type": "string",
+            "description": "Titolo della risorsa"
           },
           "url": {
             "type": "string",
-            "pattern": "^https?://"
+            "pattern": "^https?://",
+            "description": "URL assoluto con protocollo"
           },
           "verificato": {
-            "const": true
+            "const": true,
+            "description": "La risorsa è stata verificata con scripts/check_urls.py (HTTP 200)"
           }
         }
-      }
+      },
+      "description": "Risorse esterne verificabili (HTTP 200)"
     },
     "riferimenti_testo": {
       "type": "array",
@@ -167,28 +201,32 @@
         "properties": {
           "libro": {
             "enum": [
-              "TSUI",
-              "HFDP",
-              "GOF",
-              "FOWLER",
-              "MILES",
-              "UMLCLASS",
-              "MARTIN"
-            ]
+              "MDN",
+              "RFC",
+              "W3C",
+              "FLASK",
+              "GIT",
+              "ECMA",
+              "SQLITE"
+            ],
+            "description": "Chiave in testi (meta.json)"
           },
           "capitolo_o_sezione": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Sezione specifica (opzionale, solo se verificato su indice reale)"
           }
         }
-      }
+      },
+      "description": "Riferimenti a testi di riferimento"
     },
     "checklist_ripasso": {
       "type": "array",
       "items": {
         "type": "string",
         "minLength": 3
-      }
+      },
+      "description": "Punti flash per il ripasso finale (opzionale)"
     },
     "lezione": {
       "type": "object",
@@ -206,15 +244,18 @@
       "properties": {
         "intuizione": {
           "type": "string",
-          "minLength": 80
+          "minLength": 80,
+          "description": "2-4 frasi: l'idea in parole semplici"
         },
         "spiegazione": {
           "type": "string",
-          "minLength": 1500
+          "minLength": 1500,
+          "description": "Markdown lungo e autosufficiente con ##/###, ≥1 blocco code o mermaid; mermaid valido"
         },
         "analogia": {
           "type": "string",
-          "minLength": 40
+          "minLength": 40,
+          "description": "Analogia della vita quotidiana, con il punto in cui smette di valere"
         },
         "collegamenti_prior": {
           "type": "array",
@@ -229,17 +270,21 @@
             "properties": {
               "conoscenza": {
                 "type": "string",
-                "minLength": 3
+                "minLength": 3,
+                "description": "Cosa si sa già"
               },
               "collegamento": {
                 "type": "string",
-                "minLength": 20
+                "minLength": 20,
+                "description": "Come si aggancia al nuovo argomento"
               },
               "nodo": {
-                "type": "string"
+                "type": "string",
+                "description": "ID di un nodo esistente (opzionale)"
               }
             }
-          }
+          },
+          "description": "Cosa si sa già e come si aggancia"
         },
         "esempi_svolti": {
           "type": "array",
@@ -257,11 +302,13 @@
             "properties": {
               "titolo": {
                 "type": "string",
-                "minLength": 3
+                "minLength": 3,
+                "description": "Titolo dell'esempio"
               },
               "problema": {
                 "type": "string",
-                "minLength": 20
+                "minLength": 20,
+                "description": "Descrizione del problema"
               },
               "passi": {
                 "type": "array",
@@ -269,18 +316,22 @@
                 "items": {
                   "type": "string",
                   "minLength": 5
-                }
+                },
+                "description": "Passi numerati per risolvere il problema"
               },
               "soluzione": {
                 "type": "string",
-                "minLength": 10
+                "minLength": 10,
+                "description": "Soluzione completa"
               },
               "perche_funziona": {
                 "type": "string",
-                "minLength": 20
+                "minLength": 20,
+                "description": "Spiegazione del perché la soluzione funziona"
               }
             }
-          }
+          },
+          "description": "≥2 per abilita/tipo_esercizio, ≥1 per concetto"
         },
         "errori_comuni": {
           "type": "array",
@@ -288,7 +339,8 @@
           "items": {
             "type": "string",
             "minLength": 10
-          }
+          },
+          "description": "≥2 trappole concrete"
         },
         "domande_autoverifica": {
           "type": "array",
@@ -310,14 +362,17 @@
                 "minLength": 10
               }
             }
-          }
+          },
+          "description": "≥3 domande con risposte complete"
         },
         "riepilogo": {
           "type": "string",
           "minLength": 40,
-          "maxLength": 800
+          "maxLength": 800,
+          "description": "Riepilogo in ≤5 righe"
         }
-      }
+      },
+      "description": "Lezione v3: il nodo deve bastare per imparare (opzionale nello schema, obbligatorio per completezza)"
     }
   },
   "allOf": [

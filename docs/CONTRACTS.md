@@ -1,33 +1,36 @@
-# Contratti del knowledge graph IdS
+# Contratti del knowledge graph — Tecnologie Web
 
 **Fonte unica di verità: `graph/graph.json`** (schema v3), **generato** da `graph/meta.json` + `graph/parts/area-N.json` + `graph/lezioni/<id>.json` con `python scripts/kg.py build`. Niente note Markdown. Gli archi NON sono memorizzati: si derivano da `prerequisiti` (arco `prerequisito.id → nodo`, sia hard sia soft).
 
 ## graph.json (radice)
 ```json
-{ "versione": 3, "corso": {...}, "aree": [{"id":1,"titolo":"..."}, ... 5 aree],
-  "testi": {"TSUI": "...", ...}, "nota_esame": "...",
+{ "versione": 3, "corso": {...}, "aree": [{"id":1,"titolo":"..."}, ... 6 aree],
+  "testi": {"MDN": "...", ...}, "nota_esame": "...",
   "nodi": [ <nodo>, ... ordinati per (area, id) ] }
 ```
 
 ## Nodo — `schema/node.schema.json` (JSON Schema 2020-12, `additionalProperties: false`)
+
 | campo | tipo | regole |
 |---|---|---|
 | `id` | string | kebab-case `^[a-z0-9]+(-[a-z0-9]+)*$`, ≤64, unico, mai rinominato dopo il merge |
 | `title` | string | italiano |
-| `area` | int 1..5 | vedi aree |
+| `area` | int 1..6 | vedi aree (1=Fondamenti rete e HTTP, 2=Architetture, 3=Front-end, 4=Back-end e strumenti, 5=Web semantico, 6=Tesina) |
 | `tipo` | `concetto` \| `abilita` \| `tipo_esercizio` | concetto = sapere; abilita = procedura; tipo_esercizio = famiglia di esercizi d'esame |
+| `gruppo` | `A` \| `B` \| `C` | Classificazione dal materiale utente: A=iper-riciclati (~65%), B=varianti (~20%), C=punti ciechi (~15%) |
 | `sapere` | string | 1-4 frasi, cosa si deve conoscere |
 | `saper_fare` | string[] ≥1 | criteri osservabili (verbo d'azione), ~2-4 |
 | `prerequisiti` | [{id, forza: hard\|soft, motivo}] | id esistenti, niente self-loop; **nessun ciclo considerando archi hard+soft**. hard = indispensabile; soft = utile |
-| `esercizi` | [{tipo_esame, testo, soluzione}] | mini-esempi **svolti**: `tipo_esame` es. "scritto: disegna use case"; `soluzione` breve, passo-passo. **minItems 1** se `tipo` è `abilita` o `tipo_esercizio` |
+| `esercizi` | [{tipo_esame, testo, soluzione}] | mini-esempi **svolti**: `tipo_esame` es. "scritto: domanda HTTP"; `soluzione` breve, passo-passo. **minItems 1** se `tipo` è `abilita` o `tipo_esercizio` |
 | `checklist_ripasso` | string[] (opzionale) | punti flash per il ripasso finale |
-| `tempo_studio_min` | int 5..600 | stima |
-| `priorita` | {livello: alta\|media\|bassa, motivazione} | motivazione legata a programma + testi; **formato d'esame sconosciuto** finché non confermato (vedi `nota_esame`) |
-| `risorse` | [{titolo, url, verificato: true}] ≥1 | solo URL reali controllati con `scripts/check_urls.py` |
-| `lezione` | oggetto (opzionale nello schema, obbligatorio per completezza) | vedi sotto; sta in `graph/lezioni/<id>.json`, **mai inline nel part** |
-| `riferimenti_testo` | [{libro, capitolo_o_sezione?}] | `libro` = chiave in `testi`; capitolo SOLO se verificato su indice reale |
+| `tempo_studio_min` | int 5..600 | stima in minuti |
+| `priorita` | {livello: alta\|media\|bassa, motivazione} | motivazione legata a programma + testi + gruppo A/B/C; **formato d'esame IPOTIZZATO** (vedi `nota_esame` in meta.json) |
+| `risorse` | [{titolo, url, verificato: true}] ≥1 | solo URL reali controllati con `scripts/check_urls.py` (HTTP 200) |
+| `lezione` | oggetto (opzionale nello schema, **obbligatorio per completezza**) | vedi sotto; sta in `graph/lezioni/<id>.json`, **mai inline nel part** |
+| `riferimenti_testo` | [{libro, capitolo_o_sezione?}] | `libro` = chiave in `testi` (MDN, RFC, W3C, FLASK, GIT, ECMA, SQLite); capitolo SOLO se verificato su indice reale |
 
 ## Lezione (v3) — il nodo deve bastare per imparare
+
 | campo | regole |
 |---|---|
 | `intuizione` | 2-4 frasi: l'idea in parole semplici (≥80 caratteri) |
@@ -39,55 +42,176 @@
 | `domande_autoverifica` | ≥3 [{domanda, risposta}], risposte complete |
 | `riepilogo` | ≤5 righe |
 
-Regole di qualità (testate dove possibile in `tests/test_lezioni.py`):
+## Regole di qualità (testate dove possibile in `tests/test_lezioni.py`)
+
 - **Autosufficiente**: niente rimandi al libro per capire ("vedi capitolo…", "consulta il testo…" sono vietati). I libri/risorse servono solo come approfondimento facoltativo (`risorse`, `riferimenti_testo`).
-- **Mai inventare** fatti attribuiti al prof (cosa chiede, come valuta, preferenze): solo ciò che risulta da programma, prove d'esame reali o `nota_esame`; altrimenti dirlo esplicitamente come ipotesi.
-- Java moderno e compilabile negli esempi; esempi svolti con passi numerati e risultato verificabile; modelli: le due lezioni pilota.
+- **Mai inventare** fatti attribuiti al docente (cosa chiede, come valuta, preferenze): solo ciò che risulta da programma, prove d'esame reali o `nota_esame`; altrimenti dirlo esplicitamente come **ipotesi**.
+- JavaScript/HTML/CSS moderno e verificabile negli esempi; esempi svolti con passi numerati e risultato verificabile.
 - Completezza: `test_lezioni_complete` fallisce se un nodo non ha `lezione`; `KG_ALLOW_TODO=1` lo salta durante la stesura.
 
-## Aree (programma ufficiale + area 5 aggiunta)
-1. Specifica dei requisiti — obiettivi, input, generazione specifiche, casi d'uso UML
-2. Progettazione — alto livello/dettaglio, stili architetturali, decomposizione funzionale, ORM e problematiche (JPA/Hibernate), qualità, metriche, coesione/accoppiamento, UML, design pattern
-3. Implementazione e testing — best practice, refactoring, testing e ispezione, path analysis, boundary value analysis, JUnit, programmazione difensiva, Maven, Git
-4. Distribuzione e manutenzione — gestione configurazioni, post-produzione, licenze
-5. IdS AI-native — LLM e agenti nel ciclo di vita, opportunità/limiti/rischi del codice generato, verifica umana, assistenti AI per generazione/comprensione/modifica/refactoring/testing (*non presente nel programma ufficiale pubblicato*)
+## Aree (6 aree per Tecnologie Web UNIMORE)
 
-## Testi (chiavi `testi`) e mappa aree → testi
-| chiave | testo |
-|---|---|
-| TSUI | Tsui, Karam, Bernal — Essentials of Software Engineering, 5th ed., Jones & Bartlett, 2022 |
-| HFDP | Freeman, Robson, Bates, Sierra — Head First Design Patterns, 2nd ed., O'Reilly, 2020 |
-| GOF | Gamma, Helm, Johnson, Vlissides — Design Patterns, Addison-Wesley, 1994 |
-| FOWLER | Fowler — UML Distilled (citare solo il titolo, edizione non specificata) |
-| MILES | Miles, Hamilton — Learning UML 2.0, O'Reilly, 2006 |
-| UMLCLASS | Seidl, Scholz, Huemer, Kappel — UML @ Classroom, Springer, 2015 |
-| MARTIN | R.C. Martin — Clean Architecture, Prentice Hall, 2017 (**riferimento extra, NON tra i testi del prof**; usato solo per REP/CCP/CRP) |
+1. **Fondamenti rete e HTTP** — TCP/IP, HTTP 1/1.1/2/3, QUIC, multiplexing, stateless/stateful, cookie e sessioni, URI/URL/URN
+2. **Architetture** — 3-tier orizzontale/verticale, REST (PATCH vs PUT, codici 404), API design, rate limiting, sicurezza
+3. **Front-end** — HTML5/form, CSS (origini/box model/ereditarietà), DOM e Virtual DOM, DHTML, canvas, span, JS moderno (fetch/async-await), motore JS (parser/AST/profiler/JIT), eventi locali vs remoti
+4. **Back-end e strumenti** — Flask (rotte/jsonify), SQLite/JSON, Git (branch/merge/pull request)
+5. **Web semantico ed evoluzione** — RDF, OWL, SPARQL, Web 1.0-4.0, AJAX
+6. **Tesina** — Progetto Flask + front-end CRUD, presentazione 8 minuti con 4 slide, domande revisione codice, esercitazione guidata
 
-| area | testi | sezioni TSUI verificate (indice O'Reilly) |
+**Nodo "Modulo IA"**: SOLO se il corso lo prevede (verificare in SYLLABUS.md). Altrimenti **non includere** e segnalarlo come ipotesi.
+
+## Mappa aree → testi
+
+| area | testi | fonti |
 |---|---|---|
-| 1 | TSUI, UMLCLASS, FOWLER, MILES | 1.1.2-1.1.4; cap. 6 (6.3.2 use case; 6.5 specifica); App. B (SRS) |
-| 2 | TSUI, GOF, HFDP, FOWLER, UMLCLASS, MILES | cap. 7 (7.2 architettura, 7.2.3 stili/pattern, 7.3.1 decomposizione funzionale, 7.3.2 DB relazionali, 7.3.4 OOD e UML); cap. 8 (8.2 metriche, 8.3.1 coesione, 8.3.2 accoppiamento, 8.4 metriche OO) |
-| 3 | TSUI (+ HFDP/GOF per refactoring verso pattern) | 1.4.3 JUnit; cap. 9 (9.3.2 asserzioni e programmazione difensiva, 9.3.4 refactoring); cap. 10 (10.3.2 BVA, 10.3.3 path analysis, 10.3.5 unit test/TDD, 10.5 ispezioni) |
-| 4 | TSUI | cap. 11 (configuration management, build); cap. 12 (manutenzione, change control). Licenze: nessuna sezione dedicata trovata nell'indice |
-| 5 | nessuno dei testi copre l'area | usare solo risorse web verificate |
+| 1 | MDN, RFC, W3C | HTTP, URI, TCP/IP, cookie |
+| 2 | MDN, RFC, W3C | REST, API, architetture |
+| 3 | MDN, W3C, ECMA | HTML, CSS, JavaScript, DOM |
+| 4 | FLASK, GIT, SQLite | Flask, Git, database |
+| 5 | W3C, MDN, RFC | RDF, OWL, SPARQL, AJAX |
+| 6 | FLASK, MDN | Progetto pratico, presentazione |
 
-Per HFDP, GOF, FOWLER, MILES, UMLCLASS i capitoli NON sono stati verificati: citare solo il libro.
+**N.B.**: I "testi" sono fonti autorevoli online (MDN, RFC, W3C, ecc.), non libri cartacei. Tutti i riferimenti sono URL verificati (HTTP 200).
+
+## Worker Fase 2 (da ARENA_PLAN.md)
+
+| id | ramo | scope esclusivo |
+|----|------|-----------------|
+| W1 | feat/contenuti-1-2 | graph/parts/area-1.json, area-2.json (+ lezioni) |
+| W2 | feat/contenuti-3 | graph/parts/area-3.json |
+| W3 | feat/contenuti-4-5 | graph/parts/area-4.json, area-5.json |
+| W4 | feat/contenuti-6-quiz | graph/parts/area-6.json, banca quiz/abbinamenti (con distrattori fuori contesto) e flashcard in graph/ |
+| W5 | feat/webapp | web/ (grafo, percorso, progresso, filtri, ricerca, tema, lettore lezioni, simulatore esame 2h, ripasso SM-2), testi UI italiani |
 
 ## Convenzioni
-- id: `kebab-case` italiano, senza prefisso area (l'area è un campo). Pattern: `design-pattern-observer`, `uml-diagramma-classi`, `esercizio-bva-intervalli` (per `tipo_esercizio`).
-- Lingua contenuti: italiano; termini tecnici inglesi ammessi.
-- Prerequisiti cross-area ammessi (es. testing → requisiti) ma solo verso id esistenti su `main` o nello stesso ramo.
+
+- **id**: `kebab-case` italiano, senza prefisso area (l'area è un campo). Pattern: `http-stateless-vs-stateful`, `rest-patch-vs-put`, `html-form-accessibilita`, `flask-rotte-jsonify`, `web-semantico-rdf`, `tesina-progetto-flask-crud`
+- **Lingua contenuti**: italiano; termini tecnici inglesi ammessi (HTTP, REST, DOM, CSS, ecc.)
+- **Gruppo**: A, B, o C in base a MATERIALE_UTENTE.md
+- **Prerequisiti cross-area**: ammessi (es. area 4 → area 3 per Flask che usa HTML/JS), ma solo verso id già presenti su `main` o nello stesso ramo
 
 ## Regole per i rami contenuti
-- Ogni ramo contenuti scrive **SOLO** in `graph/parts/area-N.json` delle proprie aree (`feat/contenuti-a`: area-1, area-2; `feat/contenuti-b`: area-3, area-4, area-5).
-- Rami lezioni (`feat/lezioni-*`): creano **solo** `graph/lezioni/<id>.json` dei propri id (elenco in STATUS.md); il file contiene l'oggetto `lezione` e il nome è l'id del nodo.
-- Ogni file part è un **array JSON di nodi**; ogni nodo ha `area == N` del file.
-- Vietato modificare a mano `graph/graph.json`, `graph/meta.json`, `schema/` o i part di altre aree: modifiche a contratti/meta solo su `main`.
-- Prima di ogni commit: `python scripts/kg.py build` (rigenera `graph.json`) e `pytest -q` (verde). `python scripts/kg.py check` fallisce se `graph.json` non è aggiornato.
-- Prerequisiti verso altre aree: solo id già presenti su `main`. In caso di conflitto su `graph.json` al merge: prendere qualsiasi versione e rieseguire `kg.py build`.
-- I seed esistenti stanno nei part; si possono arricchire, non rinominare.
+
+- Ogni ramo contenuti scrive **SOLO** in `graph/parts/area-N.json` delle proprie aree
+- Rami lezioni (`feat/lezioni-*`): creano **solo** `graph/lezioni/<id>.json` dei propri id
+- Ogni file part è un **array JSON di nodi**; ogni nodo ha `area == N` del file
+- Vietato modificare a mano `graph/graph.json`, `graph/meta.json`, `schema/` o i part di altre aree: modifiche a contratti/meta solo su `main`
+- Prima di ogni commit: `python scripts/kg.py build` (rigenera `graph.json`) e `pytest -q` (verde)
+- `python scripts/kg.py check` fallisce se `graph.json` non è aggiornato
+- Prerequisiti verso altre aree: solo id già presenti su `main`
+- In caso di conflitto su `graph.json` al merge: prendere qualsiasi versione e rieseguire `kg.py build`
 
 ## Regole/validazione
-- `pytest` (offline): schema valido, ogni nodo conforme, 5 aree dichiarate, id unici, prerequisiti esistenti, niente self-loop, **niente cicli (hard+soft)**, ordine topologico generabile e coerente, ≥1 risorsa per nodo, `riferimenti_testo.libro` dichiarato, abilità/tipo_esercizio con ≥1 esercizio svolto, part nominati `area-N.json` con area coerente, `graph.json` uguale all'output di `kg.py build`.
-- `python scripts/check_urls.py` (online, fuori dai test): HEAD→GET, exit 1 su 4xx/5xx/errori.
-- `python scripts/topo.py`: ordine di studio (Kahn deterministico per area, id) con tempo totale.
+
+- `pytest` (offline): schema valido, ogni nodo conforme, **6 aree dichiarate**, id unici, prerequisiti esistenti, niente self-loop, **niente cicli (hard+soft)**, ordine topologico generabile e coerente, ≥1 risorsa per nodo, `riferimenti_testo.libro` dichiarato in `testi`, abilità/tipo_esercizio con ≥1 esercizio svolto, part nominati `area-N.json` con area coerente, `graph.json` uguale all'output di `kg.py build`
+- `python scripts/check_urls.py` (online, fuori dai test): HEAD→GET, exit 1 su 4xx/5xx/errori
+- `python scripts/topo.py`: ordine di studio (Kahn deterministico per area, id) con tempo totale
+
+## Esempio di nodo (minimo)
+
+```json
+{
+  "id": "http-stateless-vs-stateful",
+  "title": "HTTP: Stateless vs Stateful",
+  "area": 1,
+  "gruppo": "A",
+  "tipo": "concetto",
+  "sapere": "HTTP è stateless per design: ogni richiesta è indipendente. Lo stato (sessioni) viene gestito tramite cookie, token JWT, o parametri URL.",
+  "saper_fare": [
+    "Spiegare perché HTTP è stateless",
+    "Elencare i meccanismi per gestire lo stato in HTTP",
+    "Distinguere autenticazione da autorizzazione"
+  ],
+  "prerequisiti": [],
+  "esercizi": [
+    {
+      "tipo_esame": "scritto: domanda teorica",
+      "testo": "Perché HTTP è definito stateless? Come si gestisce lo stato?",
+      "soluzione": "HTTP è stateless perché il server non mantiene informazioni tra richieste. Lo stato si gestisce con: 1) Cookie (lato client, RFC 6265), 2) Token (JWT, Bearer), 3) Parametri URL, 4) Sessioni server-side (con session ID nei cookie)."
+    }
+  ],
+  "tempo_studio_min": 45,
+  "priorita": {
+    "livello": "alta",
+    "motivazione": "Gruppo A (materiale utente, ~65% dello scritto). Argomento fondamentale per comprendere HTTP."
+  },
+  "risorse": [
+    {
+      "titolo": "MDN: HTTP - Stateless",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview#http_is_stateless_but_not_sessionless",
+      "verificato": true
+    },
+    {
+      "titolo": "RFC 9110 - HTTP/1.1 Semantics",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "verificato": true
+    }
+  ],
+  "riferimenti_testo": [
+    {"libro": "MDN"},
+    {"libro": "RFC"}
+  ],
+  "checklist_ripasso": [
+    "HTTP stateless per design",
+    "Meccanismi di stato: cookie, token, sessioni",
+    "Cookie: Set-Cookie (server→client), Cookie (client→server)"
+  ]
+}
+```
+
+## Esempio di lezione (v3, in graph/lezioni/http-stateless-vs-stateful.json)
+
+```json
+{
+  "intuizione": "HTTP è come un sportello postale: ogni volta che fai una richiesta (consegna un pacco), il dipendente non si ricorda di te dalla volta precedente. Se vuoi che si ricordi (es. il tuo indirizzo), devi portarglielo scritto ogni volta (cookie) o mostrare un tesserino (token).",
+  "spiegazione": "## HTTP Stateless: il principio fondamentale\n\nHTTP (Hypertext Transfer Protocol) è progettato per essere **stateless**, cioè senza memoria tra richieste consecutive. Questo significa che:\n\n1. Ogni richiesta HTTP è **indipendente** dalle altre\n2. Il server **non mantiene** informazioni sullo stato del client tra richieste\n3. Tutte le informazioni necessarie sono **contenute nella richiesta stessa**\n\n### Perché stateless?\n\n```mermaid\ngraph TD\n    A[Client] -->|Richiesta 1| B[Server]\n    A -->|Richiesta 2| B\n    B -->|Risposta 1| A\n    B -->|Risposta 2| A\n```\n\n- **Scalabilità**: i server possono gestire più client senza mantenere stato\n- **Semplificazione**: protocollo più semplice da implementare\n- **Affidabilità**: in caso di crash del server, non si perde lo stato\n\n### Come gestire lo stato?\n\n#### 1. Cookie (RFC 6265)\n```\nClient → Server: GET /carrello\nServer → Client: Set-Cookie: session_id=abc123; Path=/; HttpOnly\nClient → Server: GET /checkout (con Cookie: session_id=abc123)\n```\n\n#### 2. Token (JWT)\n```\nClient → Server: GET /api/data (con Authorization: Bearer eyJhbGc...)\n```\n\n#### 3. Parametri URL\n```\nGET /prodotto?id=123&session=abc123\n```\n\n#### 4. Sessioni server-side\n- Il client invia un session ID (via cookie o URL)\n- Il server mantiene lo stato in memoria/DB e lo associa al session ID\n",
+  "analogia": "HTTP stateless è come un ristorante self-service: ogni volta che vuoi qualcosa, devi prendere un nuovo vassoio e riempirlo. Se vuoi che il ristorante si ricordi del tuo ordine precedente, devi portarti dietro lo scontrino (cookie) o avere un numero di tavolo (session ID). L'analogia smette di valere quando: nel web, lo stato può essere crittografato (JWT) e verificato senza bisogno di memoria server-side.",
+  "collegamenti_prior": [
+    {
+      "conoscenza": "Protocollo HTTP",
+      "collegamento": "HTTP è il protocollo base del web, e la sua natura stateless ne definisce il funzionamento.",
+      "nodo": "http-protocollo-base"
+    },
+    {
+      "conoscenza": "Client-server",
+      "collegamento": "In un'architettura client-server, lo stateless riduce la complessità del server.",
+      "nodo": "architettura-client-server"
+    }
+  ],
+  "esempi_svolti": [
+    {
+      "titolo": "Autenticazione con cookie",
+      "problema": "Un sito e-commerce vuole ricordare l'utente loggato tra le pagine.",
+      "passi": [
+        "1. Utente invia credenziali a /login",
+        "2. Server verifica e genera session_id",
+        "3. Server risponde con Set-Cookie: session_id=abc123",
+        "4. Browser salva il cookie",
+        "5. Browser invia automaticamente Cookie: session_id=abc123 in ogni richiesta successiva",
+        "6. Server associa session_id all'utente loggato"
+      ],
+      "soluzione": "Il browser gestisce automaticamente i cookie. Il server può così identificare l'utente in ogni richiesta senza dover mantenere connessioni persistenti.",
+      "perche_funziona": "I cookie sono salvati lato client e inviati automaticamente dal browser (se HttpOnly=false, accessibili anche a JavaScript)."
+    }
+  ],
+  "errori_comuni": [
+    "Confondere stateless con sessionless: HTTP è stateless ma NON sessionless (le sessioni esistono, solo non sono gestite dal protocollo).",
+    "Pensare che i cookie siano sicuri: i cookie possono essere rubati (XSS, MITM) se non si usano HttpOnly e Secure flag."
+  ],
+  "domande_autoverifica": [
+    {
+      "domanda": "Cosa significa che HTTP è stateless?",
+      "risposta": "Significa che il protocollo HTTP non mantiene alcuna informazione sullo stato del client tra richieste consecutive. Ogni richiesta è trattata come indipendente."
+    },
+    {
+      "domanda": "Quali sono i 3 meccanismi principali per gestire lo stato in HTTP?",
+      "risposta": "1) Cookie: dati salvati lato client e inviati automaticamente; 2) Token: stringhe crittografate (es. JWT) inviate nell'header Authorization; 3) Parametri URL: dati passati esplicitamente nell'URL."
+    },
+    {
+      "domanda": "Qual è il vantaggio principale di un protocollo stateless?",
+      "risposta": "La scalabilità: i server non devono mantenere informazioni sullo stato dei client, quindi possono gestire un numero molto maggiore di connessioni contemporanee."
+    }
+  ],
+  "riepilogo": "HTTP è stateless per design. Lo stato si gestisce tramite cookie, token, o parametri URL. I cookie sono il meccanismo più comune per sessioni autenticate."
+}
+```
