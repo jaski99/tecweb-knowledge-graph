@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Genera docs/PIANO_STUDIO.md e docs/CHECKLIST_RIPASSO.md da graph/graph.json.
-Uso: python scripts/gen_docs.py [check]"""
+Uso: python scripts/gen_docs.py [check]
+Corso: Tecnologie Web UNIMORE"""
 import sys
 from kg import ROOT, load_graph, topo_order
 
@@ -32,21 +33,38 @@ def piano(g):
     by_id = {n["id"]: n for n in g["nodi"]}
     order = topo_order(g["nodi"])
     aree = {a["id"]: a["titolo"] for a in g["aree"]}
-    L = [ORIGINE, "# Piano di studio — Ingegneria del Software\n",
+    
+    L = [ORIGINE, "# Piano di studio — Tecnologie Web UNIMORE\n",
          "Ordine topologico dei nodi (ogni prerequisito prima del nodo che lo usa); a parità di vincoli prima la priorità **ALTA**, poi area e id. "
-         f"Sessioni da circa {SESSIONE_MIN // 60} ore (un nodo non viene mai spezzato).\n", "## Tempo totale per area\n",
-         "| area | nodi | alta | tempo |", "|---|---|---|---|"]
-    for a, t in aree.items():
+         f"Sessioni da circa {SESSIONE_MIN // 60} ore (un nodo non viene mai spezzato).\n\n",
+         "## Legenda\n",
+         "- **Gruppo A**: iper-riciclati (~65% dello scritto) - argomenti fondamentali\n",
+         "- **Gruppo B**: varianti (~20%) - argomenti occasionali\n",
+         "- **Gruppo C**: punti ciechi (~15%) - argomenti pratici da studiare attivamente\n\n",
+         "## Tempo totale per area\n",
+         "| area | titolo | nodi | A | B | C | tempo |",
+         "|---|---|---|---|---|---|---|"]
+    
+    for a, t in sorted(aree.items()):
         ns = [n for n in g["nodi"] if n["area"] == a]
-        L.append(f"| {a}. {t} | {len(ns)} | {sum(n['priorita']['livello'] == 'alta' for n in ns)} | {fmt(sum(n['tempo_studio_min'] for n in ns))} |")
-    L.append(f"| **Totale** | {len(by_id)} | {sum(n['priorita']['livello'] == 'alta' for n in g['nodi'])} | **{fmt(sum(n['tempo_studio_min'] for n in g['nodi']))}** |\n")
+        count_a = sum(1 for n in ns if n["gruppo"] == "A")
+        count_b = sum(1 for n in ns if n["gruppo"] == "B")
+        count_c = sum(1 for n in ns if n["gruppo"] == "C")
+        L.append(f"| {a} | {t} | {len(ns)} | {count_a} | {count_b} | {count_c} | {fmt(sum(n['tempo_studio_min'] for n in ns))} |")
+    
+    total_a = sum(1 for n in g["nodi"] if n["gruppo"] == "A")
+    total_b = sum(1 for n in g["nodi"] if n["gruppo"] == "B")
+    total_c = sum(1 for n in g["nodi"] if n["gruppo"] == "C")
+    L.append(f"| **Totale** | | {len(by_id)} | **{total_a}** | **{total_b}** | **{total_c}** | **{fmt(sum(n['tempo_studio_min'] for n in g['nodi']))}** |\n")
+    
     k = 0
     for s, ids in enumerate(sessioni(order, by_id), 1):
         L.append(f"## Sessione {s} ({fmt(sum(by_id[i]['tempo_studio_min'] for i in ids))})\n")
         for i in ids:
             k += 1; n = by_id[i]
             pre = ", ".join(p["id"] for p in n["prerequisiti"]) or "—"
-            L.append(f"{k}. [ ] **{n['title']}** (`{i}`) — area {n['area']}, {n['tipo']}, priorità {n['priorita']['livello'].upper()}, {n['tempo_studio_min']} min. Prerequisiti: {pre}")
+            gruppo = n["gruppo"]
+            L.append(f"{k}. [ ] **{n['title']}** (`{i}`) — area {n['area']}, gruppo {gruppo}, {n['tipo']}, priorità {n['priorita']['livello'].upper()}, {n['tempo_studio_min']} min. Prerequisiti: {pre}")
         L.append("")
     return "\n".join(L).rstrip() + "\n"
 
@@ -55,19 +73,56 @@ def checklist(g):
     by_id = {n["id"]: n for n in g["nodi"]}
     aree = {a["id"]: a["titolo"] for a in g["aree"]}
     order = topo_order(g["nodi"])
-    L = [ORIGINE, "# Checklist di ripasso — Ingegneria del Software\n", "## Trappole note dalle prove d'esame\n"]
-    for t in g.get("trappole", []):
-        L.append(f"- [ ] **{t['tema']}** ({t['fonte']}). Trappola: {t['trappola']} → {t['risposta']}")
-    for a, titolo in aree.items():
+    
+    L = [ORIGINE, "# Checklist di ripasso — Tecnologie Web UNIMORE\n", 
+         "## Flashcard per ripasso SM-2\n",
+         "> Usa queste flashcard per il ripasso a intervalli (1-3-7-14 giorni).\n\n"]
+    
+    # Aggiungi flashcard dalle lezioni
+    for i in order:
+        n = by_id[i]
+        if "lezione" in n and "flashcard" in n["lezione"]:
+            fc = n["lezione"]["flashcard"]
+            L.append(f"### {n['title']}\n")
+            L.append(f"**Fronte**: {fc['fronte']}\n")
+            L.append(f"**Retro**: {fc['retro']}\n")
+            L.append("")
+    
+    L.append("## Checklist per area\n")
+    
+    for a, titolo in sorted(aree.items()):
         ids = [i for i in order if by_id[i]["area"] == a and by_id[i].get("checklist_ripasso")]
+        if not ids:
+            # Usa checklist dalle lezioni
+            ids = [i for i in order if by_id[i]["area"] == a and "lezione" in by_id[i] and "checklist" in by_id[i]["lezione"]]
+        
         if not ids:
             continue
         L.append(f"\n## Area {a}. {titolo}\n")
         for i in ids:
             n = by_id[i]
-            L.append(f"### {n['title']} (priorità {n['priorita']['livello'].upper()})\n")
-            L += [f"- [ ] {x}" for x in n["checklist_ripasso"]]
+            L.append(f"### {n['title']} (priorità {n['priorita']['livello'].upper()}, gruppo {n['gruppo']})\n")
+            
+            if "checklist_ripasso" in n:
+                L += [f"- [ ] {x}" for x in n["checklist_ripasso"]]
+            elif "lezione" in n and "checklist" in n["lezione"]:
+                cl = n["lezione"]["checklist"]
+                if cl.get("so_fare"):
+                    L.append("**So fare:**")
+                    L += [f"- [ ] {x}" for x in cl["so_fare"]]
+                if cl.get("so_dire"):
+                    L.append("**So dire:**")
+                    L += [f"- [ ] {x}" for x in cl["so_dire"]]
             L.append("")
+    
+    # Aggiungi trappole dalle lezioni
+    L.append("\n## Trappole d'esame\n")
+    for i in order:
+        n = by_id[i]
+        if "lezione" in n and "errori_trappole" in n["lezione"]:
+            for err in n["lezione"]["errori_trappole"]:
+                L.append(f"- [ ] **{n['title']}**: {err['errore']} → {err['perche_sbagliato']}")
+    
     return "\n".join(L).rstrip() + "\n"
 
 

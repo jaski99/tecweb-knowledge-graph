@@ -1,512 +1,329 @@
 <!-- generato da scripts/gen_docs.py: non modificare a mano -->
 
-# Checklist di ripasso — Ingegneria del Software
+# Checklist di ripasso — Tecnologie Web UNIMORE
 
-## Trappole note dalle prove d'esame
+## Flashcard per ripasso SM-2
 
-- [ ] **Es. 1.4 - pattern** (tutte le prove (2016/17, 2022, 2023, 2025)). Trappola: Il testo non nomina mai il pattern: descrive uno scenario. → Riconosci lo scenario: gerarchia parte-tutto → Composite; accessori opzionali con costo → Decorator; algoritmo a passi fissi con varianti → Template Method; evento che notifica un insieme variabile di interessati → Observer. Motiva la scelta e indica i limiti.
-- [ ] **Ottimizzazione del codice** (prova 9/6/2022 (sintesi)). Trappola: Dire che la velocità va ottimizzata fin dall'inizio. → Knuth: 'premature optimization is the root of all evil'. Make it work, make it right, make it fast: si ottimizza dopo il profiling, solo sui veri colli di bottiglia, senza sacrificare leggibilità.
-- [ ] **Errori nei requisiti** (prova 9/6/2022 (sintesi)). Trappola: Dire che gli errori di analisi si correggono facilmente in programmazione. → Curva di Boehm: il costo di correzione cresce lungo il ciclo di vita (fino a ~100 volte in produzione). Prevenzione: review delle specifiche, prototipi, coinvolgimento degli stakeholder.
-- [ ] **Coesione dei componenti** (prove 9/6/2022 e 27/1/2023 (sintesi)). Trappola: Rispondere con la coesione delle classi invece che dei componenti. → Enuncia REP (granulo di riuso = granulo di rilascio), CCP (classi che cambiano insieme stanno insieme, SRP sui componenti), CRP (non dipendere da ciò che non usi, ISP sui componenti) e la loro tensione.
-- [ ] **Black box a scaglioni** (Parte 2 di tutte le prove). Trappola: Dimenticare le classi non valide o fare la BVA su tutti i parametri quando ne è chiesto uno solo. → Classi valide e non valide per ogni parametro; test minimi: una classe non valida per test, le valide combinate; BVA solo sui casi validi e solo sul parametro richiesto (es. 'numero' nel 5/11/2025).
-- [ ] **Coerenza tra diagrammi** (2016/17 e 5/11/2025). Trappola: Sequence/activity/state con oggetti o metodi che non esistono nel class diagram. → Ogni lifeline è un'istanza di una classe progettata; ogni messaggio è un'operazione di quella classe.
-- [ ] **Simple Factory e static** (prova 5/11/2025). Trappola: Chiamarla Factory Method o non discutere lo static. → È una Simple Factory (non un pattern GoF). Static: comodo, senza istanza, ma non si può sottoclassare né sostituire nei test.
-- [ ] **White box** (2022, 2023, 5/11/2025). Trappola: Confondere statement coverage con decision coverage (un while va percorso sia vero sia falso). → Disegna il CFG; statement = ogni nodo; decision = ogni ramo vero/falso di ogni if/while; MC/DC = ogni condizione influenza da sola l'esito.
+> Usa queste flashcard per il ripasso a intervalli (1-3-7-14 giorni).
 
-## Area 1. Specifica dei requisiti
 
-### Obiettivi della specifica dei requisiti (priorità ALTA)
+## Checklist per area
 
-- [ ] Funzionale vs non funzionale
-- [ ] Requisito verificabile e non ambiguo
-- [ ] Requisito = cosa, non come
-- [ ] Costo dell'errore cresce con la fase
 
-### Diagramma UML dei casi d'uso (priorità ALTA)
+## Area 1. Fondamenti rete e HTTP
 
-- [ ] Attori fuori dal confine del sistema
-- [ ] include = sempre, extend = condizionale
-- [ ] include: base → incluso; extend: estensione → base
-- [ ] Generalizzazione tra attori
+### Protocollo HTTP: fondamenta del Web (priorità ALTA, gruppo A)
 
-### Descrizione testuale di un caso d'uso (scenari) (priorità MEDIA)
+- [ ] Request-response model
+- [ ] Stateless per design
+- [ ] Porta 80 (HTTP), 443 (HTTPS)
+- [ ] URI identifica la risorsa
 
-- [ ] Pre/post condizioni
-- [ ] Scenario principale numerato
-- [ ] Alternativi ed eccezioni con riferimento al passo
+### Codici di stato HTTP (2xx, 3xx, 4xx, 5xx) (priorità ALTA, gruppo A)
 
-### Esercizio d'esame: use case da un caso di studio testuale (priorità ALTA)
+- [ ] 1xx: informazionali
+- [ ] 2xx: successo (200, 201, 204)
+- [ ] 3xx: reindirizzamento (301, 302, 304)
+- [ ] 4xx: errore client (400, 401, 403, 404)
+- [ ] 5xx: errore server (500, 502, 503)
 
-- [ ] Attori = ruoli, non persone
-- [ ] Casi d'uso = obiettivi dell'attore
-- [ ] Generalizzazione per il cliente tesserato
-- [ ] Max 10 minuti
-- [ ] Trappola: casi d'uso come passi interni ('salva nel DB')
-- [ ] Trappola: freccia extend dalla base all'estensione (è il contrario)
+### HTTP/1.0, HTTP/1.1, HTTP/2, HTTP/3: differenze chiave (priorità ALTA, gruppo A)
 
-### Input dei requisiti: stakeholder ed elicitazione (priorità MEDIA)
+- [ ] HTTP/1.0: connessioni non persistenti
+- [ ] HTTP/1.1: persistenti, pipelining, chunked
+- [ ] HTTP/2: multiplexing, HPACK, server push
+- [ ] HTTP/3: QUIC su UDP, TLS integrato
 
-- [ ] Stakeholder ≠ utente finale
-- [ ] Interviste, questionari, osservazione, workshop, prototipi
-- [ ] Conflitti tra stakeholder vanno negoziati
+### HTTP: Stateless vs Stateful (priorità ALTA, gruppo A)
 
-### Processo di specifica dei requisiti e documento SRS (priorità ALTA)
+- [ ] HTTP stateless per design
+- [ ] Vantaggi: scalabilità, semplicità, affidabilità
+- [ ] Meccanismi di stato: cookie, token, URL params, sessioni server-side
+- [ ] Cookie: Set-Cookie (server→client), Cookie (client→server)
 
-- [ ] Elicitazione → analisi → specifica → validazione → gestione
-- [ ] Sezioni SRS
-- [ ] Qualità: corretto, non ambiguo, completo, coerente, verificabile, tracciabile
+### Cookie e sessioni: gestione dello stato in HTTP (priorità ALTA, gruppo A)
 
-### Costo degli errori nei requisiti (curva di Boehm) (priorità ALTA)
+- [ ] Cookie: Set-Cookie (server→client), Cookie (client→server)
+- [ ] Attributi: Domain, Path, Max-Age/Expires, HttpOnly, Secure, SameSite
+- [ ] Sessioni: session ID nei cookie + dati server-side
+- [ ] Sicurezza: HttpOnly (no JS), Secure (HTTPS), SameSite (CSRF)
 
-- [ ] Trappola: dire 'costa un po' di più' → risposta attesa: cresce di ordini di grandezza con la fase
-- [ ] Citare review, prototipi, stakeholder, tracciabilità
-- [ ] Un esempio concreto vale punti
+### Multiplexing: HTTP/2 vs HTTP/3 (priorità ALTA, gruppo A)
 
-### Scrivere requisiti verificabili (priorità MEDIA)
+- [ ] HOL blocking: pacchetto perso blocca la coda
+- [ ] HTTP/2: multiplexing a livello applicativo (stream)
+- [ ] HTTP/3: multiplexing a livello trasporto (QUIC)
 
-- [ ] Atomico, misurabile, testabile
-- [ ] NF sempre quantificati
-- [ ] Un requisito = un criterio di accettazione
+### Contenuto statico vs dinamico: differenze fondamentali (priorità ALTA, gruppo A)
 
-### Esercizio d'esame: domanda teorica sui requisiti (priorità ALTA)
+- [ ] Statico: contenuto fisso, uguale per tutti
+- [ ] Dinamico: generato per ogni richiesta, personalizzato
+- [ ] Esempi statico: HTML, CSS, JS, immagini
+- [ ] Esempi dinamico: PHP, Python (Flask), Node.js, JSP
 
-- [ ] Scaletta 5 fasi
-- [ ] Risposta attesa: chiudere con il costo degli errori tardivi (Boehm)
-- [ ] 1 esempio F + 1 NF
-- [ ] Qualità SRS
-- [ ] Perché costa correggere tardi
+### Modello TCP/IP e stack protocollare (priorità ALTA, gruppo A)
 
+- [ ] 4 livelli: Applicazione, Trasporto, Internet, Accesso rete
+- [ ] HTTP al livello Applicazione
+- [ ] TCP/UDP al livello Trasporto
+- [ ] IP al livello Internet
 
-## Area 2. Progettazione
+### URI, URL, URN: differenze e sintassi (priorità ALTA, gruppo A)
 
-### Diagramma UML delle classi (priorità ALTA)
+- [ ] URI = identificatore generico
+- [ ] URL = URI con posizione (scheme + authority)
+- [ ] URN = URI senza posizione (identificatore persistente)
+- [ ] Sintassi URI: scheme://authority/path?query#fragment
 
-- [ ] Visibilità + - # ~
-- [ ] Corsivo/<<abstract>> per classi astratte
-- [ ] Composizione = rombo pieno, ciclo di vita legato
-- [ ] Trappola: mettere chiavi esterne come attributi (è un modello OO, non un DB)
+### QUIC: protocollo di trasporto per HTTP/3 (priorità MEDIA, gruppo A)
 
-### Associazioni: molteplicità, navigabilità, ruoli (priorità ALTA)
+- [ ] QUIC = UDP + TLS 1.3 integrato
+- [ ] 0-RTT: nessuna latenza per connessioni ripetute
+- [ ] Niente head-of-line blocking
+- [ ] Migrazione connessione senza reconnect
 
-- [ ] Molteplicità su ENTRAMBI gli estremi
-- [ ] Molteplicità vicino alla classe a cui si riferisce
-- [ ] Freccia = navigabilità = attributo in Java
-- [ ] Trappola: mettere la molteplicità dal lato sbagliato
-- [ ] 0..1 vs 1: obbligatorietà
 
-### Esercizio d'esame: class diagram da un caso di studio (priorità ALTA)
+## Area 2. Architetture
 
-- [ ] Sostantivi → classi/attributi, verbi → operazioni
-- [ ] Tipi agli attributi
-- [ ] Stato come enum o attributo (serve per lo state diagram)
-- [ ] Trappola: diagramma senza operazioni → il sequence non è coerente
+### Architettura 3-tier (orizzontale e verticale) (priorità ALTA, gruppo A)
 
-### Diagramma UML degli stati (state machine) (priorità ALTA)
+- [ ] 3 livelli: Presentazione, Logica, Dati
+- [ ] Orizzontale: livelli su macchine diverse
+- [ ] Verticale: tutti i livelli sulla stessa macchina
+- [ ] Vantaggi: manutenibilità, scalabilità, separazione delle responsabilità
 
-- [ ] Etichetta: evento [guardia] / azione
-- [ ] Stato = condizione stabile, non un'azione (Trappola: 'Pagare' come stato)
-- [ ] Stati = valori dell'enum nel class diagram
-- [ ] Stato iniziale obbligatorio, finale se il ciclo termina
+### Codice 404 Not Found: significato e uso (priorità ALTA, gruppo A)
 
-### Diagramma UML di attività (priorità ALTA)
+- [ ] 404 = risorsa non trovata
+- [ ] 410 = permanentemente rimossa
+- [ ] Flask: abort(404) o return ..., 404
+- [ ] Personalizzazione pagina 404
 
-- [ ] Rombo = decisione/merge, barra = fork/join
-- [ ] Guardie tra [ ] su ogni uscita, mutuamente esclusive
-- [ ] Un solo nodo iniziale
-- [ ] Trappola: usare fork per una scelta alternativa
+### REST: principi e vincoli architetturali (priorità ALTA, gruppo A)
 
-### Diagramma UML di sequenza (priorità ALTA)
+- [ ] 6 vincoli: client-server, stateless, cacheability, uniform interface, layered, code-on-demand
+- [ ] Uniform interface: URI + rappresentazioni + messaggi autosufficenti + HATEOAS
+- [ ] REST ≠ SOAP (protocollo) ≠ GraphQL (query language)
 
-- [ ] Lifeline = oggetto :Classe
-- [ ] alt (if/else), opt (if), loop
-- [ ] Messaggio = operazione della classe destinataria
-- [ ] Trappola: messaggi verso classi non associate/navigabili
+### REST: metodi HTTP (GET, POST, PUT, PATCH, DELETE) (priorità ALTA, gruppo A)
 
-### Esercizio d'esame: sequence, activity e state coerenti con le classi (priorità ALTA)
+- [ ] GET: recupera, idempotente, safe
+- [ ] POST: crea, non idempotente
+- [ ] PUT: sostituisce completamente, idempotente
+- [ ] PATCH: aggiorna parzialmente
+- [ ] DELETE: elimina, idempotente
 
-- [ ] Checklist finale: ogni messaggio è un'operazione?
-- [ ] Ogni messaggio segue un'associazione navigabile?
-- [ ] Stati = valori dell'enum?
-- [ ] Azioni dell'activity = casi d'uso/operazioni?
+### API Design: best practice RESTful (priorità ALTA, gruppo A)
 
-### Obiettivi della progettazione: alto livello e dettaglio (priorità MEDIA)
+- [ ] URI: sostantivi, plurali, gerarchia
+- [ ] Versioning: /v1/ o header Accept
+- [ ] Paginazione: ?page=&per_page=
+- [ ] Status: 200, 201, 400, 404, 500
 
-- [ ] Alto livello = componenti + interfacce
-- [ ] Dettaglio = classi, algoritmi, dati
-- [ ] NF guidano l'architettura
+### Rate limiting e sicurezza delle API (priorità MEDIA, gruppo B)
 
-### Coesione e accoppiamento dei moduli (priorità ALTA)
+- [ ] Rate limiting: limiti per IP/utente/endpoint
+- [ ] Autenticazione: API key, OAuth, JWT
+- [ ] CORS: Cross-Origin Resource Sharing
+- [ ] HTTPS: crittografia TLS
 
-- [ ] Scala della coesione (coincidentale, logica, temporale, procedurale, comunicativa, sequenziale, funzionale)
-- [ ] Scala dell'accoppiamento (contenuto, comune, controllo, stamp, dati)
-- [ ] Obiettivo: alta coesione, basso accoppiamento
-- [ ] Trappola: invertire gli estremi delle scale
 
-### Design pattern: concetto e classificazione (priorità ALTA)
+## Area 3. Front-end
 
-- [ ] Tre categorie GoF
-- [ ] Nome/problema/soluzione/conseguenze
-- [ ] Ogni pattern ha anche LIMITI (vanno scritti all'esame)
+### CSS: Box Model (priorità ALTA, gruppo A)
 
-### Pattern Composite (priorità ALTA)
+- [ ] Box model: content, padding, border, margin
+- [ ] box-sizing: content-box (default), border-box
+- [ ] Dimensione totale = width + padding*2 + border*2 (content-box)
+- [ ] Trappola: margin non fa parte del box model
 
-- [ ] Albero parte-tutto + trattamento uniforme
-- [ ] Composite contiene 0..* Component (ricorsione)
-- [ ] Limite: vincolare i tipi dei figli
-- [ ] Trappola: far ereditare Settore da Scaffale invece di usare l'interfaccia comune
+### CSS: origini, cascading e ereditarietà (priorità ALTA, gruppo A)
 
-### Principi SOLID (priorità ALTA)
+- [ ] Origini: author > user > user agent
+- [ ] Cascading: !important > origine > specificità > ordine
+- [ ] Specificità: ID=0,1,0,0; classe=0,0,1,0; tag=0,0,0,1
+- [ ] Ereditarietà: color, font-family SÌ; margin, padding, border NO
 
-- [ ] S: una ragione di cambiamento
-- [ ] O: estendi senza modificare
-- [ ] L: sottotipo sostituibile
-- [ ] I: interfacce piccole
-- [ ] D: dipendi da astrazioni
-- [ ] Trappola: SRP non è 'un solo metodo'
+### DOM e Virtual DOM (priorità ALTA, gruppo A)
 
-### Coesione dei componenti (Clean Architecture): REP, CCP, CRP (priorità ALTA)
+- [ ] DOM: albero di nodi (elementi, testo, commenti)
+- [ ] Manipolazione: createElement, appendChild, removeChild, innerHTML
+- [ ] Virtual DOM: copia in memoria per ottimizzazione
+- [ ] Diffing: confronto tra Virtual DOM vecchi/nuovi
+- [ ] Reconciliation: applicazione differenze al DOM reale
 
-- [ ] REP = riuso/rilascio, CCP = cambiano insieme (SRP), CRP = usate insieme (ISP)
-- [ ] Risposta attesa: citare la tensione (triangolo) tra i tre
-- [ ] Trappola: confonderli con i principi di accoppiamento (ADP, SDP, SAP)
-- [ ] Esempio concreto di suddivisione
+### HTML: form e accessibilità (priorità ALTA, gruppo A)
 
-### Pattern Decorator (priorità ALTA)
+- [ ] Form: input, textarea, select, button, checkbox, radio
+- [ ] Accessibilità: label per ogni input
+- [ ] Associazione: for/id o wrapping
+- [ ] Validazione: required, minlength, pattern
 
-- [ ] Parole chiave: opzioni/accessori/supplementi combinabili
-- [ ] Decorator È un Component E HA un Component
-- [ ] Costo = costo avvolto + supplemento
-- [ ] Trappola: usare sottoclassi per ogni combinazione (esplosione di classi)
+### JavaScript moderno: fetch, async/await (priorità ALTA, gruppo C)
 
-### Pattern Observer (priorità ALTA)
+- [ ] fetch(): API moderna per HTTP requests
+- [ ] Response.ok: verifica status 200-299
+- [ ] response.json(): parse JSON body
+- [ ] async/await: sintassi sincrona per codice asincrono
+- [ ] try/catch: gestione errori
 
-- [ ] Uno-a-molti, iscrizione dinamica
-- [ ] Subject: attach/detach/notify; Observer: update
-- [ ] Push vs pull
-- [ ] Limiti: ordine notifiche, cascata, memory leak
-- [ ] Parole chiave nello scenario: iscriversi, notificare, avvisare, mailing list
+### Canvas API: disegno 2D in HTML (priorità MEDIA, gruppo B)
 
-### Simple Factory e static factory method (priorità ALTA)
+- [ ] <canvas> elemento HTML
+- [ ] getContext('2d') per contesto 2D
+- [ ] Metodi: fillRect, strokeRect, arc, beginPath, fill, stroke
+- [ ] Animazioni: requestAnimationFrame
 
-- [ ] Non è GoF: è un idioma
-- [ ] Pro static: niente istanza, punto unico, nome espressivo
-- [ ] Contro static: niente override, difficile da mockare, viola OCP
-- [ ] Risposta attesa: nome del pattern + pro + contro, in 5-6 righe
+### DHTML: Dynamic HTML (priorità MEDIA, gruppo B)
 
-### Pattern Factory Method (priorità ALTA)
+- [ ] DHTML = HTML + CSS + JavaScript
+- [ ] Manipolazione DOM dinamica
+- [ ] Eventi: mouseover, mouseout, click, etc.
+- [ ] DHTML ≠ AJAX (DHTML è client-side, AJAX include server-side)
 
-- [ ] Metodo factory astratto + sottoclassi
-- [ ] Spesso usato dentro un Template Method
-- [ ] Tabella: Simple (switch) / Method (ereditarietà) / Abstract (famiglie)
+### Eventi: locali vs remoti (priorità MEDIA, gruppo B)
 
-### Pattern Abstract Factory (priorità ALTA)
+- [ ] Eventi locali: click, mouseover, keydown, submit, load, scroll
+- [ ] Eventi remoti: WebSocket, SSE, polling, long polling
+- [ ] WebSocket: bidirezionale, full-duplex
+- [ ] SSE: server→client, solo testuale, auto-reconnect
 
-- [ ] Famiglie di prodotti coerenti
-- [ ] Facile aggiungere famiglie, difficile aggiungere prodotti
-- [ ] Factory iniettata nel client
+### Motore JavaScript: parser, AST, profiler, JIT (priorità MEDIA, gruppo B)
 
-### Pattern Strategy (priorità ALTA)
+- [ ] 5 fasi: Parsing → Interpretazione → Profiling → JIT Compilation → Esecuzione
+- [ ] AST: Abstract Syntax Tree (rappresentazione strutturata del codice)
+- [ ] JIT: Just-In-Time compilation (codice caldo → codice macchina)
+- [ ] V8: Ignition (interprete) + TurboFan (JIT)
 
-- [ ] Algoritmi intercambiabili, scelti dal client
-- [ ] Elimina switch sul tipo (OCP)
-- [ ] Diverso da State: in State le transizioni le decide lo stato stesso
+### Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0 (priorità MEDIA, gruppo B)
 
-### Pattern Template Method (priorità ALTA)
+- [ ] Web 1.0: statico, lettura, HTML base
+- [ ] Web 2.0: dinamico, lettura/scrittura, AJAX, social
+- [ ] Web 3.0: semantico, Linked Data, AI, personalizzazione
+- [ ] Web 4.0: ubiquo, IoT, AI generativa
 
-- [ ] Metodo template final + passi abstract/hook
-- [ ] Ereditarietà (TM) vs composizione (Strategy)
-- [ ] Parole chiave: 'segue sempre gli stessi passi, ma...'
-- [ ] Trappola: rendere il template ridefinibile (va final)
+### Tag <span>: uso e scopi (priorità BASSA, gruppo B)
 
-### Pattern Adapter (priorità MEDIA)
+- [ ] <span> = elemento inline generico
+- [ ] Usi: styling, raggruppamento, attributi semantici
+- [ ] Niente significato semantico di default
+- [ ] Inline: non introduce interruzione di riga
 
-- [ ] Target, Adapter, Adaptee
-- [ ] Object adapter (composizione) preferibile
-- [ ] Adapter cambia interfaccia; Decorator la mantiene
 
-### Pattern Singleton (priorità MEDIA)
+## Area 4. Back-end e strumenti
 
-- [ ] Costruttore privato + static getInstance
-- [ ] Thread safety (eager/holder/enum)
-- [ ] Limiti: stato globale, test
+### Flask: rotte e jsonify (priorità ALTA, gruppo C)
 
-### Pattern State (priorità MEDIA)
+- [ ] @app.route('percorso') per definire rotte
+- [ ] methods=['GET', 'POST', ...] per limitare i metodi
+- [ ] jsonify() per convertire Python → JSON
+- [ ] Parametri URL: <tipo:nome> (es. <int:id>, <string:nome>)
 
-- [ ] Una classe per stato, il contesto delega
-- [ ] Le transizioni le decidono gli stati (≠ Strategy)
-- [ ] Mappa diretta da state diagram
+### Flask: request e response (priorità ALTA, gruppo C)
 
-### Riconoscere il pattern dallo scenario (priorità ALTA)
+- [ ] request.args: query string (GET)
+- [ ] request.form: dati form (POST, application/x-www-form-urlencoded)
+- [ ] request.json: body JSON (POST, application/json)
+- [ ] request.cookies: cookie in entrata
+- [ ] make_response: creare risposte personalizzate
 
-- [ ] Albero → Composite
-- [ ] Iscriviti/avvisa → Observer
-- [ ] Opzioni combinabili con costo → Decorator
-- [ ] Stessi passi, varianti → Template Method
-- [ ] Algoritmo scelto a runtime → Strategy
-- [ ] Trappola: scegliere Strategy quando le opzioni si sommano (è Decorator)
+### Git: comandi base (priorità ALTA, gruppo C)
 
-### Esercizio d'esame: pattern motivato + class diagram + Java minimo (priorità ALTA)
+- [ ] init: inizializza repository
+- [ ] add: aggiungi file allo staging area
+- [ ] commit: salva cambiamenti localmente
+- [ ] branch: gestione rami
+- [ ] checkout/switch: cambia branch
+- [ ] merge: unisci branch
+- [ ] push/pull: sincronizzazione con remote
+- [ ] clone: copia repository
+- [ ] Pull request: richiesta di merge su GitHub (non comando Git)
 
-- [ ] Scaletta: pattern, perché, alternativa scartata, limiti, diagramma, Java
-- [ ] Ruoli del pattern annotati sulle classi del dominio
-- [ ] Trappola: dimenticare i LIMITI (chiesti esplicitamente)
-- [ ] Java minimo: interfaccia + 2 classi + metodo chiave
+### SQLite: operazioni CRUD (priorità ALTA, gruppo C)
 
-### Esercizio d'esame: riconoscere il pattern dal codice (priorità ALTA)
+- [ ] CRUD: Create (INSERT), Read (SELECT), Update (UPDATE), Delete (DELETE)
+- [ ] sqlite3: connect(), cursor(), execute(), commit(), close()
+- [ ] Parametri sicuri: ? placeholder per evitare SQL injection
+- [ ] Flask-SQLAlchemy: ORM per Flask
 
-- [ ] static + switch + new → Simple Factory
-- [ ] Costruttore privato + getInstance → Singleton
-- [ ] Riceve e avvolge lo stesso tipo → Decorator
-- [ ] Lista di listener + notify → Observer
+### JSON: formato dati per il Web (priorità MEDIA, gruppo C)
 
-### Caratteristiche di qualità del progetto (priorità MEDIA)
+- [ ] JSON: JavaScript Object Notation
+- [ ] Sintassi: {chiave: valore, ...}
+- [ ] Tipi: string, number, boolean, null, object, array
+- [ ] Python: json.dumps() (ser), json.loads() (deser)
+- [ ] JavaScript: JSON.stringify(), JSON.parse()
 
-- [ ] Qualità esterne vs attributi interni
-- [ ] ISO 9126/25010: 6-8 caratteristiche
-- [ ] Manutenibilità ← coesione/accoppiamento
 
-### Metriche software (priorità ALTA)
+## Area 5. Web semantico ed evoluzione
 
-- [ ] Dimensione, complessità, OO (CK)
-- [ ] Per la metrica scelta: definizione, formula, esempio, interpretazione, limiti
-- [ ] Trappola: dire che una metrica misura direttamente la 'qualità'
+### Web Semantico: RDF, OWL, SPARQL (priorità ALTA, gruppo A)
 
-### Calcolare la complessità ciclomatica (priorità ALTA)
+- [ ] Web Semantico: dati comprensibili dalle macchine
+- [ ] RDF: Resource Description Framework (triple: soggetto-predicato-oggetto)
+- [ ] OWL: Web Ontology Language (ontologie, gerarchie)
+- [ ] SPARQL: query language per RDF
+- [ ] Linked Data: collegamento dati da fonti diverse
 
-- [ ] V(G)=E−N+2 = decisioni+1
-- [ ] Contare && e || come decisioni se si conta per condizioni
-- [ ] Verificare con due formule
+### AJAX: Asynchronous JavaScript and XML (priorità MEDIA, gruppo B)
 
-### Esercizio d'esame: domanda teorica sulle metriche (priorità ALTA)
+- [ ] AJAX: Asynchronous JavaScript And XML (ma usa JSON)
+- [ ] API: XMLHttpRequest (legacy), fetch() (moderna)
+- [ ] Passaggi: crea → invia → aspetta → elabora → aggiorna DOM
+- [ ] Asincrono: non blocca l'interfaccia utente
 
-- [ ] Scaletta in 4 punti
-- [ ] Esempio numerico
-- [ ] Limiti delle metriche
+### SPARQL: esempi di query (priorità MEDIA, gruppo A)
 
-### Stili architetturali (priorità MEDIA)
+- [ ] SELECT ?var WHERE { pattern }
+- [ ] Triple pattern: ?s ?p ?o
+- [ ] FILTER: condizionare risultati
+- [ ] OPTIONAL: risultati opzionali
+- [ ] UNION: combinare pattern
 
-- [ ] Layered, client-server, pipe&filter, MVC, event-driven, repository
-- [ ] Ogni stile: qualità favorite e limiti
-- [ ] Trappola: confondere MVC (stile/pattern di presentazione) con 3-tier
+### Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0 (priorità MEDIA, gruppo B)
 
-### Decomposizione funzionale (priorità BASSA)
+- [ ] Web 1.0: statico, lettura, HTML base
+- [ ] Web 2.0: dinamico, user-generated, AJAX, social
+- [ ] Web 3.0: semantico, Linked Data, AI
+- [ ] Web 4.0: ubiquo, IoT, AI generativa
 
-- [ ] Top-down: funzione → sottofunzioni
-- [ ] Confronto con OO: dati incapsulati
 
-### Object Relational Mapping, problematiche e JPA/Hibernate (priorità BASSA)
+## Area 6. Tesina
 
-- [ ] Impedance mismatch: identità, ereditarietà, associazioni, granularità
-- [ ] FK sul lato molti
-- [ ] Lazy/eager e N+1
+### Tesina: Progetto Flask + CRUD (priorità ALTA, gruppo C)
 
-### Diagrammi UML di componenti e deployment (priorità BASSA)
+- [ ] Backend: Flask + rotte RESTful
+- [ ] Front-end: HTML/CSS/JS + fetch
+- [ ] Database: SQLite o JSON
+- [ ] CRUD: Create, Read, Update, Delete
 
-- [ ] Interfaccia fornita = lollipop, richiesta = socket
-- [ ] Deployment: nodi, artefatti, canali
+### Tesina: Domande di revisione codice (priorità ALTA, gruppo C)
 
+- [ ] Metodi HTTP: GET, POST, PUT, PATCH, DELETE
+- [ ] Stato: client-side vs server-side
+- [ ] Chiamate asincrone: fetch, async/await
+- [ ] Error handling: try/catch, status code
 
-## Area 3. Implementazione e testing
+### Tesina: Presentazione di 8 minuti con 4 slide (priorità ALTA, gruppo C)
 
-### Testing: livelli, tipi e terminologia (priorità ALTA)
+- [ ] 8 minuti totali
+- [ ] 4 slide: obiettivi, architettura, codice, demo
+- [ ] Tempi: 1 + 2 + 3 + 2 minuti
+- [ ] Demo dal vivo o screen
 
-- [ ] Error → fault → failure
-- [ ] Unit, integration, system, acceptance + regressione
-- [ ] Verifica ≠ validazione
-- [ ] Il testing mostra la presenza di difetti, non la loro assenza
+### Quiz e form: domande a scelta multipla e raccolta risposte (priorità MEDIA, gruppo C)
 
-### Black box e white box testing (priorità ALTA)
+- [ ] Quiz: domande + opzioni + risposta corretta
+- [ ] Form: input radio/checkbox per risposte
+- [ ] JavaScript: logica valutazione
+- [ ] Feedback: immediato per ogni domanda
 
-- [ ] Black box = dalla specifica
-- [ ] White box = dal codice
-- [ ] Sono complementari
+### Tesina: Esercitazione guidata e modello presentazione (priorità MEDIA, gruppo C)
 
-### Partizione in classi di equivalenza (priorità ALTA)
+- [ ] Scegli tema adatto
+- [ ] Progetta database
+- [ ] Implementa endpoint
+- [ ] Testa con Postman/curl
 
-- [ ] Valide + non valide per ogni parametro
-- [ ] Un caso non valido per volta
-- [ ] I casi validi possono coprire più classi
 
-### Analisi dei valori limite (Boundary Value Analysis) (priorità ALTA)
-
-- [ ] min-ε, min, min+ε, max-ε, max, max+ε
-- [ ] ε = 1 per gli int, 0,1 per i double (scrivilo nella risposta)
-- [ ] I limiti esclusi (<60) vanno testati da tutte e due le parti
-- [ ] Test parametrici JUnit
-
-### Grafo di flusso di controllo (CFG) (priorità ALTA)
-
-- [ ] if = 2 archi; while = arco di ritorno
-- [ ] Condizioni composte espanse
-- [ ] Numera nodi e archi
-
-### Criteri di copertura: statement, decision, condition, MC/DC (priorità ALTA)
-
-- [ ] Statement ⊂ decision ⊂ MC/DC ⊂ multiple condition
-- [ ] Condition coverage NON implica decision coverage
-- [ ] MC/DC: n+1 test, ogni condizione cambia da sola l'esito
-
-### Esercizio d'esame: black box su una funzione a scaglioni (classi di equivalenza + BVA) (priorità ALTA)
-
-- [ ] FORMULARIO: retta numerica → classi V/NV → test minimi (un NV per volta) → TB min-ε/min/min+ε e max-ε/max/max+ε → output atteso
-- [ ] Dichiara sempre ε e se i limiti sono inclusi o esclusi
-- [ ] Classe valida senza limite superiore: testa un valore grande
-- [ ] Segnala i salti di prezzo o i buchi tra scaglioni
-- [ ] Scrivi l'output atteso numerico per OGNI caso
-
-### Buona programmazione e best practices (priorità MEDIA)
-
-- [ ] DRY, KISS, YAGNI, SRP
-- [ ] Nomi parlanti > commenti
-- [ ] Stile condiviso nel team
-
-### Code smell (priorità MEDIA)
-
-- [ ] Smell ≠ bug
-- [ ] Long Method → Extract Method
-- [ ] Duplicated Code → Extract Method/Pull Up
-- [ ] Switch → Replace Conditional with Polymorphism
-
-### Refactoring (priorità ALTA)
-
-- [ ] Stesso comportamento esterno, struttura migliore
-- [ ] Piccoli passi + test verdi
-- [ ] Extract Method, Rename, Move Method, Replace Conditional with Polymorphism
-
-### Domanda d'esame: refactoring (cos'è, a cosa serve, rischi) (priorità ALTA)
-
-- [ ] Definizione → scopi → quando → come → esempi → rischi
-- [ ] Rischio principale: regressioni senza test
-
-### Ottimizzazione del codice e ottimizzazione prematura (priorità ALTA)
-
-- [ ] TRAPPOLA: 'ottimizzare sempre e subito' è sbagliato. Prima si misura, poi si ottimizza
-- [ ] Knuth 1974: 97% premature optimization, ma non trascurare il 3% critico
-- [ ] Make it work → right → fast
-- [ ] Profiler → hotspot → algoritmo prima delle micro-ottimizzazioni → nuova misura + test
-
-### Path analysis e complessità ciclomatica di McCabe (priorità MEDIA)
-
-- [ ] V(G) = E − N + 2 = decisioni + 1
-- [ ] = n° minimo di test per la basis path coverage
-- [ ] Le condizioni composte contano: dichiara la convenzione
-
-### Esercizio d'esame: da codice a CFG e test minimi per la copertura (priorità ALTA)
-
-- [ ] CFG → tabella decisioni → test minimi con output atteso
-- [ ] Un ciclo con 2 iterazioni può coprire T e F dell'if con un solo test
-- [ ] Indica sempre il cammino coperto
-
-### Controllo di versione con Git (priorità MEDIA)
-
-- [ ] working tree → staging → commit → push
-- [ ] branch = puntatore; merge vs rebase
-- [ ] Conflitti: marcatori, add, commit
-
-### Ispezione e revisione del codice (priorità MEDIA)
-
-- [ ] Statica: non esegue il codice
-- [ ] Fagan: ruoli + 6 fasi + checklist
-- [ ] Nella riunione si trovano i difetti, non si correggono
-
-### Programmazione difensiva e asserzioni (priorità MEDIA)
-
-- [ ] Valida gli input pubblici → eccezione
-- [ ] assert per gli invarianti interni (-ea)
-- [ ] Pre-, postcondizioni, invarianti
-
-### Unit testing con JUnit 5 (priorità MEDIA)
-
-- [ ] @Test, @BeforeEach, assertEquals(atteso, effettivo, delta)
-- [ ] assertThrows per le eccezioni
-- [ ] @ParameterizedTest + @CsvSource = tabella BVA
-- [ ] TDD: red → green → refactor
-
-### Debugging e processo di debugging (priorità ALTA)
-
-- [ ] Riproduci → localizza → causa radice → correggi → test di regressione
-- [ ] Testing ≠ debugging
-- [ ] Bisezione (git bisect), breakpoint, log
-
-### Build automation con Maven (priorità BASSA)
-
-- [ ] pom.xml: GAV + dependencies + scope
-- [ ] validate → compile → test → package → verify → install → deploy
-- [ ] Convenzione sulle cartelle
-
-
-## Area 4. Distribuzione e manutenzione
-
-### Gestione delle configurazioni (SCM) (priorità MEDIA)
-
-- [ ] CI, baseline, change control, status accounting, audit
-- [ ] CCB approva le modifiche
-- [ ] Riproducibilità delle release
-
-### Licenze software: proprietarie, permissive e copyleft (priorità MEDIA)
-
-- [ ] Permissive: MIT, Apache 2.0 (+ brevetti)
-- [ ] Copyleft forte: GPL; debole: LGPL; rete: AGPL
-- [ ] Gli obblighi scattano con la distribuzione
-- [ ] Senza licenza = tutti i diritti riservati
-
-### Copyleft e compatibilità tra licenze (priorità MEDIA)
-
-- [ ] Permissiva → dentro la GPL: sì
-- [ ] Apache 2.0 + GPLv3: sì; + GPLv2: no
-- [ ] GPL dentro un prodotto proprietario distribuito: no
-- [ ] LGPL con collegamento dinamico: sì
-
-### Integrazione e consegna continua (CI/CD) (priorità BASSA)
-
-- [ ] CI = integrare spesso + build e test automatici
-- [ ] Delivery = sempre rilasciabile; deployment = rilascio automatico
-- [ ] Una build rotta si ripara subito
-
-### Versionamento semantico e changelog (priorità BASSA)
-
-- [ ] MAJOR = incompatibile, MINOR = feature, PATCH = fix
-- [ ] Incrementando MAJOR si azzerano MINOR e PATCH
-
-### Rilascio e post-produzione (priorità BASSA)
-
-- [ ] alpha → beta → RC → GA → EOL
-- [ ] Le segnalazioni post-rilascio alimentano la manutenzione
-
-### Manutenzione del software: tipi e costi (priorità MEDIA)
-
-- [ ] Correttiva, adattiva, perfettiva, preventiva
-- [ ] La manutenzione è la parte più costosa del ciclo di vita
-- [ ] Leggi di Lehman
-
-
-## Area 5. Ingegneria del software AI-native
-
-### LLM e agenti nel ciclo di vita del software (priorità MEDIA)
-
-- [ ] LLM = previsione probabilistica di token
-- [ ] Agente = LLM + strumenti + ciclo
-- [ ] Un uso per ogni fase, sempre con verifica umana
-
-### Assistenti AI per generazione, comprensione, modifica, refactoring e testing (priorità MEDIA)
-
-- [ ] Prompt = contesto + specifica + vincoli + casi limite
-- [ ] Compiti piccoli, diff revisionati
-- [ ] Valori attesi ricalcolati a mano
-
-### Opportunità, limiti e rischi del codice generato (priorità MEDIA)
-
-- [ ] Allucinazioni, casi limite, sicurezza, prompt injection, licenze, debito tecnico, eccesso di fiducia
-- [ ] Per ogni rischio: una mitigazione
-
-### Verifica umana del codice generato (priorità MEDIA)
-
-- [ ] Lo sviluppatore resta responsabile
-- [ ] Test dalla specifica, non dal codice generato
-- [ ] Bug ai limiti: usa la BVA
-- [ ] Benchmark ≠ garanzia
-
-### Domanda d'esame: ingegneria del software AI-native (priorità MEDIA)
-
-- [ ] Definizione → usi → opportunità → rischi → verifica umana → conclusione
-- [ ] Collega sempre alle tecniche del corso
+## Trappole d'esame

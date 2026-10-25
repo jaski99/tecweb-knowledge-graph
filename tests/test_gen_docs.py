@@ -6,7 +6,11 @@ from kg import load_graph, topo_order, ROOT
 
 
 def test_docs_aggiornati():
-    pytest.skip("gen_docs.py non ancora aggiornato per Tecnologie Web")
+    import gen_docs
+    g = load_graph()
+    for p, txt in gen_docs.outputs(g).items():
+        assert p.exists(), f"{p} non esiste"
+        assert p.read_text(encoding="utf-8") == txt, f"{p} non aggiornato"
 
 
 def test_sessioni_rispettano_limite_e_ordine():

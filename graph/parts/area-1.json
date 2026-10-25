@@ -554,5 +554,61 @@
       "HTTP/3: multiplexing a livello trasporto (QUIC)"
     ],
     "worker": "W1"
+  },
+  {
+    "id": "statico-vs-dinamico",
+    "title": "Contenuto statico vs dinamico: differenze fondamentali",
+    "area": 1,
+    "gruppo": "A",
+    "tipo": "concetto",
+    "sapere": "Il contenuto statico è fisso e non cambia tra richieste (es. file HTML, CSS, JS, immagini). Il contenuto dinamico viene generato dal server per ogni richiesta in base a dati variabili (es. database, ora, utente). HTTP serve entrambi, ma con meccanismi diversi: statico = file preesistenti, dinamico = script server-side (PHP, Python, Node.js) che generano HTML.",
+    "saper_fare": [
+      "Distinguere contenuto statico da dinamico",
+      "Spiegare i vantaggi di ciascun approccio",
+      "Scegliere quando usare statico vs dinamico"
+    ],
+    "prerequisiti": [
+      {
+        "id": "http-protocollo-base",
+        "forza": "soft",
+        "motivo": "HTTP serve sia contenuto statico che dinamico."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "scritto: classificazione",
+        "testo": "Classifica come statico o dinamico: (a) index.html, (b) profile.php che mostra dati utente, (c) styles.css, (d) news.php che legge articoli da DB.",
+        "soluzione": "Statico: (a) index.html, (c) styles.css. Dinamico: (b) profile.php (genera HTML con dati utente), (d) news.php (legge articoli da database)."
+      }
+    ],
+    "tempo_studio_min": 30,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo A. Fondamentale per capire architetture web."
+    },
+    "risorse": [
+      {
+        "titolo": "MDN: Static vs Dynamic Content",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/Server-side/First_steps/Introduction",
+        "verificato": true
+      },
+      {
+        "titolo": "Wikipedia: Static web page",
+        "url": "https://en.wikipedia.org/wiki/Static_web_page",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "MDN"
+      }
+    ],
+    "checklist_ripasso": [
+      "Statico: contenuto fisso, uguale per tutti",
+      "Dinamico: generato per ogni richiesta, personalizzato",
+      "Esempi statico: HTML, CSS, JS, immagini",
+      "Esempi dinamico: PHP, Python (Flask), Node.js, JSP"
+    ],
+    "worker": "W1"
   }
 ]

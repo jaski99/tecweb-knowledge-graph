@@ -221,5 +221,70 @@
       "Testa con Postman/curl"
     ],
     "worker": "W4"
+  },
+  {
+    "id": "quiz-form",
+    "title": "Quiz e form: domande a scelta multipla e raccolta risposte",
+    "area": 6,
+    "gruppo": "C",
+    "tipo": "abilita",
+    "sapere": "I quiz sono una forma di valutazione interattiva. Un quiz form raccoglie risposte dall'utente e le valuta automaticamente. Deve includere: domande (testo), opzioni di risposta (scelta multipla o aperte), risposta corretta, feedback immediato, punteggio. Può essere implementato con HTML form + JavaScript per la logica.",
+    "saper_fare": [
+      "Creare un quiz con domande a scelta multipla",
+      "Implementare la logica di valutazione",
+      "Fornire feedback immediato all'utente",
+      "Calcolare il punteggio automaticamente"
+    ],
+    "prerequisiti": [
+      {
+        "id": "html-form-accessibilita",
+        "forza": "hard",
+        "motivo": "I quiz usano form HTML per raccogliere risposte."
+      },
+      {
+        "id": "javascript-fetch-async-await",
+        "forza": "soft",
+        "motivo": "JavaScript è utile per la logica interattiva del quiz."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "pratico: crea quiz",
+        "testo": "Crea un quiz di 5 domande su HTTP con: domanda, 4 opzioni (1 corretta), feedback immediato, punteggio finale.",
+        "soluzione": "# HTML\n<form id=\"quiz-form\">\n  <div class=\"question\" data-correct=\"A\">\n    <p>1. Quale metodo HTTP è idempotente?</p>\n    <input type=\"radio\" name=\"q1\" value=\"A\"> A) GET\n    <input type=\"radio\" name=\"q1\" value=\"B\"> B) POST\n    <input type=\"radio\" name=\"q1\" value=\"C\"> C) PATCH\n    <input type=\"radio\" name=\"q1\" value=\"D\"> D) DELETE\n    <span class=\"feedback\"></span>\n  </div>\n  <button type=\"submit\">Calcola punteggio</button>\n  <p>Punteggio: <span id=\"score\">0</span>/5</p>\n</form>\n\n# JavaScript\n<script>\nconst quizForm = document.getElementById('quiz-form');\nconst questions = quizForm.querySelectorAll('.question');\n\nquizForm.addEventListener('submit', (e) => {\n  e.preventDefault();\n  let score = 0;\n  questions.forEach(q => {\n    const correct = q.dataset.correct;\n    const selected = q.querySelector('input:checked');\n    const feedback = q.querySelector('.feedback');\n    if (selected && selected.value === correct) {\n      score++;\n      feedback.textContent = '✓ Corretto!';\n      feedback.style.color = 'green';\n    } else {\n      feedback.textContent = `✗ Sbagliato! Corretta: ${correct}`;\n      feedback.style.color = 'red';\n    }\n  });\n  document.getElementById('score').textContent = score;\n});\n</script>"
+      }
+    ],
+    "tempo_studio_min": 45,
+    "priorita": {
+      "livello": "media",
+      "motivazione": "Gruppo C. Utile per preparazione quiz di ripasso."
+    },
+    "risorse": [
+      {
+        "titolo": "MDN: HTML forms",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/Forms",
+        "verificato": true
+      },
+      {
+        "titolo": "W3C: Web Forms",
+        "url": "https://www.w3.org/TR/html52/sec-forms.html",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "MDN"
+      },
+      {
+        "libro": "W3C"
+      }
+    ],
+    "checklist_ripasso": [
+      "Quiz: domande + opzioni + risposta corretta",
+      "Form: input radio/checkbox per risposte",
+      "JavaScript: logica valutazione",
+      "Feedback: immediato per ogni domanda"
+    ],
+    "worker": "W4"
   }
 ]

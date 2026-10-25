@@ -13,12 +13,20 @@
 |---|---|---|
 | [Manifesto Studi Ingegneria Informatica 2026/2027](https://www.ingmo.unimore.it/sites/dip02/files/2026-06/Laurea%20Ingegneria%20Informatica%20a.a.%202026_2027.pdf) | Presenza del corso "Tecnologie web" (6 CFU, 3° anno) | ✅ HTTP 200 |
 | [SUA-LT Ingegneria Informatica](https://www.ingmo.unimore.it/sites/dip02/files/2024-05/SUA-LT%20INGINF_0.pdf) | Competenze in tecnologie web per sviluppatori | ✅ HTTP 200 |
+| [Programmazione per il web - UNIMORE Course Catalogue](https://unimore.coursecatalogue.cineca.it/af/2027?ad=I215-020&annoOrdinamento=2025&coorte=2025&corso=16-315&pds=16-315-1) | **Programma ufficiale UNIMORE**: 6 CFU, orale, Django, MVC, ORM, CSS/HTML/JS/Ajax/jQuery/Bootstrap, evoluzione Web, cloud computing | ✅ HTTP 200, [1] |
+
+**Nota importante**: Il corso ufficiale UNIMORE si chiama **"Programmazione per il web"** (I215-020), non "Tecnologie Web". Questo knowledge graph è basato su un corso simile con **Flask** invece di **Django** per il backend. Le differenze principali:
+- **Backend**: Django (ufficiale) vs Flask (questo KG)
+- **Valutazione**: Orale + Progetto (ufficiale) vs Scritto + Tesina (questo KG, basato su materiale utente)
+- **Peso progetto**: 70% (ufficiale) vs variabile (questo KG)
 
 **Cosa NON è stato trovato**:
-- Programma dettagliato ufficiale UNIMORE per il corso "Tecnologie Web" (non pubblicato sul sito del dipartimento o su Course Catalogue al 25/10/2026)
-- Modalità d'esame ufficiale (scritto/orale/progetto, pesi, durata)
+- Programma dettagliato ufficiale UNIMORE per un corso chiamato esattamente "Tecnologie Web" (il nome potrebbe essere un'alternativa o un corso di un altro anno accademico)
+- Modalità d'esame ufficiale specifica per "Tecnologie Web" (assunta scritto + tesina basata su materiale utente)
 - Testi di riferimento ufficiali del docente
 - Nome del docente titolare per l'a.a. 2026/2027
+
+[1]: Programma ufficiale trovato via ricerca web: "[I215-020] - Programmazione per il web"
 
 **Decisione**: Il programma sotto è **ricostruito** in base a:
 1. Le **6 aree tematiche** definite nel piano di lavoro (ARENA_PLAN.md)

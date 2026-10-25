@@ -3,7 +3,7 @@
 **Fonte**: `graph/graph.json` (schema v3)
 **Generato da**: `graph/meta.json` + `graph/parts/area-*.json`
 **Ultimo aggiornamento**: 25/10/2026
-**Totale nodi**: 39
+**Totale nodi**: 41
 
 ## Legenda
 
@@ -16,10 +16,10 @@
 
 | Worker | Ramo | Scope | Nodi assegnati |
 |--------|------|-------|----------------|
-| W1 | feat/contenuti-1-2 | Area 1 + Area 2 | 13 nodi |
-| W2 | feat/contenuti-3 | Area 3 | 10 nodi |
-| W3 | feat/contenuti-4-5 | Area 4 + Area 5 | 8 nodi |
-| W4 | feat/contenuti-6-quiz | Area 6 + quiz | 4 nodi |
+| W1 | feat/contenuti-1-2 | Area 1 + Area 2 | 16 nodi |
+| W2 | feat/contenuti-3 | Area 3 | 11 nodi |
+| W3 | feat/contenuti-4-5 | Area 4 + Area 5 | 9 nodi |
+| W4 | feat/contenuti-6-quiz | Area 6 + quiz | 5 nodi |
 | W5 | feat/webapp | Web app | 0 nodi (web/) |
 
 ---
@@ -37,9 +37,10 @@
 | cookie-sessioni-gestione-stato | Cookie e sessioni: gestione dello stato in HTTP | A | concetto | http-stateless-vs-stateful | W1 |
 | codici-stato-http | Codici di stato HTTP (2xx, 3xx, 4xx, 5xx) | A | concetto | http-protocollo-base | W1 |
 | multiplexing-http-2-3 | Multiplexing: HTTP/2 vs HTTP/3 | A | abilita | http-1-1-1-2-3-differenze | W1 |
+| statico-vs-dinamico | Contenuto statico vs dinamico: differenze fondamentali | A | concetto | http-protocollo-base | W1 |
 
-**Totale Area 1**: 9 nodi (7 gruppo A, 2 gruppo A)
-**Tempo stimato**: ~5 ore
+**Totale Area 1**: 10 nodi (tutti gruppo A)
+**Tempo stimato**: ~5.5 ore
 
 ---
 
@@ -73,9 +74,10 @@
 | span-tag-uso | Tag span: uso e scopi | B | concetto | - | W2 |
 | motore-js-parser-ast-jit | Motore JavaScript: parser, AST, profiler, JIT | B | concetto | - | W2 |
 | eventi-locali-vs-remoti | Eventi: locali vs remoti | B | concetto | - | W2 |
+| web-1-0-2-0-3-0-4-0 | Web 1.0-2.0-3.0-4.0: evoluzione | B | concetto | - | W2 |
 
-**Totale Area 3**: 10 nodi (3 gruppo A, 5 gruppo B, 2 gruppo C)
-**Tempo stimato**: ~6 ore
+**Totale Area 3**: 11 nodi (3 gruppo A, 5 gruppo B, 3 gruppo C)
+**Tempo stimato**: ~6.5 ore
 
 ---
 
@@ -101,8 +103,9 @@
 | web-semantico-rdf-owl | Web Semantico: RDF, OWL, SPARQL | A | concetto | - | W3 |
 | sparql-query-esempi | SPARQL: esempi di query | A | abilita | web-semantico-rdf-owl | W3 |
 | ajax-fetch-xhr | AJAX: Asynchronous JavaScript and XML | B | abilita | javascript-fetch-async-await | W3 |
+| web-1-0-2-0-3-0-4-0-evoluzione | Web 1.0-2.0-3.0-4.0: evoluzione e differenze | B | concetto | - | W3 |
 
-**Totale Area 5**: 3 nodi (2 gruppo A, 1 gruppo B)
+**Totale Area 5**: 4 nodi (2 gruppo A, 2 gruppo B)
 **Tempo stimato**: ~2.5 ore
 
 ---
@@ -115,9 +118,10 @@
 | tesina-presentazione-8-minuti | Tesina: Presentazione di 8 minuti con 4 slide | C | abilita | tesina-progetto-flask-crud | W4 |
 | tesina-domande-revisione-codice | Tesina: Domande di revisione codice | C | tipo_esercizio | tesina-progetto-flask-crud, rest-metodi-http | W4 |
 | tesina-esercitazione-guidata | Tesina: Esercitazione guidata e modello presentazione | C | tipo_esercizio | - | W4 |
+| quiz-form | Quiz e form: domande a scelta multipla e raccolta risposte | C | abilita | html-form-accessibilita | W4 |
 
-**Totale Area 6**: 4 nodi (tutti gruppo C)
-**Tempo stimato**: ~5 ore
+**Totale Area 6**: 5 nodi (tutti gruppo C)
+**Tempo stimato**: ~5.5 ore
 
 ---
 
@@ -127,31 +131,31 @@ I seguenti nodi hanno **lezioni complete** (v3) che servono come modello di qual
 
 1. **http-stateless-vs-stateful** (Area 1, Gruppo A)
    - Intuizione: sportello postale
-   - Spiegazione: HTTP stateless, meccanismi di stato (cookie, token, URL params, sessioni)
+   - Spiegazione: HTTP stateless, meccanismi di stato
    - Analogia: bar con carta d'identita
    - Collegamenti: protocollo HTTP, architettura client-server
-   - Esempi svolti: autenticazione con cookie, JWT
-   - Errori comuni: stateless vs sessionless, sicurezza cookie
+   - Esempi svolti: autenticazione con cookie
+   - Errori comuni: stateless vs sessionless
    - Domande autoverifica: 5 domande
    - Riepilogo: concetto chiave
 
-2. **rest-patch-vs-put** (Area 2, Gruppo A)
-   - Intuizione: matrioska vs sostituzione completa
-   - Spiegazione: PUT vs PATCH, idempotenza, JSON Patch/Merge Patch
-   - Analogia: giardino (potare vs rasare tutto)
-   - Collegamenti: metodi HTTP, REST principi, API design
-   - Esempi svolti: aggiornamento parziale, sostituzione completa, creazione PUT vs POST
-   - Errori comuni: confondere PUT e PATCH
+2. **rest-metodi-http** (Area 2, Gruppo A)
+   - Intuizione: operazioni su documento
+   - Spiegazione: 5 metodi HTTP, CRUD, idempotenza
+   - Analogia: operazioni su documento cartaceo
+   - Collegamenti: protocollo HTTP, REST principi
+   - Esempi svolti: PATCH vs PUT
+   - Errori comuni: confusione PUT/PATCH
    - Domande autoverifica: 5 domande
-   - Riepilogo: quando usare PUT vs PATCH
+   - Riepilogo: quando usare ogni metodo
 
 3. **css-box-model** (Area 3, Gruppo A)
    - Intuizione: scatola da regalo
-   - Spiegazione: 4 componenti (content, padding, border, margin), box-sizing
+   - Spiegazione: 4 componenti, box-sizing
    - Analogia: matrioska
    - Collegamenti: CSS base, HTML structure
    - Esempi svolti: calcolo dimensioni, centrare box
-   - Errori comuni: dimenticare padding/border, margin collapsing
+   - Errori comuni: margin collapsing, padding vs margin
    - Domande autoverifica: 6 domande
    - Riepilogo: box model e box-sizing
 
@@ -161,14 +165,14 @@ I seguenti nodi hanno **lezioni complete** (v3) che servono come modello di qual
 
 | Metrica | Valore |
 |---|---|
-| **Totale nodi** | 39 |
-| **Gruppo A** | 17 nodi (~44%) |
-| **Gruppo B** | 10 nodi (~26%) |
-| **Gruppo C** | 12 nodi (~31%) |
-| **Concetti** | 20 nodi |
+| **Totale nodi** | 41 |
+| **Gruppo A** | 21 nodi (~51%) |
+| **Gruppo B** | 9 nodi (~22%) |
+| **Gruppo C** | 11 nodi (~27%) |
+| **Concetti** | 24 nodi |
 | **Abilita** | 15 nodi |
-| **Tipo esercizio** | 4 nodi |
-| **Tempo totale stimato** | ~21.5 ore |
+| **Tipo esercizio** | 2 nodi |
+| **Tempo totale stimato** | ~24 ore |
 
 ---
 
@@ -187,11 +191,28 @@ I seguenti nodi hanno **lezioni complete** (v3) che servono come modello di qual
 
 Basato sul **materiale utente** e sulle prove passate:
 
-- **Priorita ALTA**: Gruppo A (17 nodi) + nodi gruppo C pratici (Flask, Git, JS moderno)
-- **Priorita MEDIA**: Gruppo B (10 nodi)
+- **Priorita ALTA**: Gruppo A (21 nodi) + nodi gruppo C pratici (Flask, Git, JS moderno)
+- **Priorita MEDIA**: Gruppo B (9 nodi)
 - **Priorita BASSA**: Argomenti teorici meno frequenti
 
 **Obiettivo**: Coprire tutti i nodi Gruppo A + Gruppo C per ottenere 20-22/23 allo scritto + 9-10/10 alla tesina = **30**
+
+---
+
+## Copertura argomenti richiesti
+
+I nodi coprono i seguenti argomenti richiesti dal materiale utente:
+
+- ✅ **AJAX**: `ajax-fetch-xhr` (Area 5)
+- ✅ **Statico vs dinamico**: `statico-vs-dinamico` (Area 1)
+- ✅ **Eventi locali vs remoti**: `eventi-locali-vs-remoti` (Area 3)
+- ✅ **Web 1.0-4.0**: `web-1-0-2-0-3-0-4-0` e `web-1-0-2-0-3-0-4-0-evoluzione` (Area 5)
+- ✅ **DHTML**: `dhtml-dynamic-html` (Area 3)
+- ✅ **Canvas**: `canvas-api` (Area 3)
+- ✅ **Span**: `span-tag-uso` (Area 3)
+- ✅ **Motore JS (parser/AST/profiler/JIT)**: `motore-js-parser-ast-jit` (Area 3)
+- ✅ **Stack TCP/IP**: `tcp-ip-modello-livelli` (Area 1)
+- ✅ **Quiz form**: `quiz-form` (Area 6)
 
 ---
 
