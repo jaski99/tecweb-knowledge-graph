@@ -23,9 +23,79 @@
 
 ### CSS: Box Model
 
-**Fronte**: CSS Box Model: Quali sono i 4 componenti e come si calcola la dimensione totale?
+**Fronte**: Box model: aree e formula della larghezza fino al bordo con content-box?
 
-**Retro**: 4 componenti: Content (contenuto), Padding (spazio interno), Border (bordo), Margin (spazio esterno). Dimensione box = width + padding-left + padding-right + border-left + border-right. Dimensione totale = dimensione box + margin-left + margin-right. Con box-sizing: border-box, width include gia padding e border.
+**Retro**: Aree: content, padding, border, margin. Con content-box la scatola fino al bordo vale width + padding sinistro e destro + border sinistro e destro; il margin è fuori dalla misura. Con border-box, width include già padding e border.
+
+
+### CSS: origini, cascading e ereditarietà
+
+**Fronte**: Cascata CSS: in che ordine si risolve un conflitto e come si calcola la specificità?
+
+**Retro**: Origine e importanza (normali: browser, utente, autore; !important rovescia le origini), poi specificità ID-classi-tipi confrontata lessicograficamente, poi ordine di apparizione. Undici classi non battono un id.
+
+
+### DOM e Virtual DOM
+
+**Fronte**: DOM e Virtual DOM: definizioni e differenza in una frase?
+
+**Retro**: Il DOM è l'albero di oggetti del browser che rappresenta la pagina viva e si manipola con le sue API. Il Virtual DOM è una copia leggera in memoria che il framework confronta tra un render e l'altro per applicare al DOM reale solo le differenze.
+
+
+### HTML: form e accessibilità
+
+**Fronte**: Form accessibile: che cosa devono avere tutti i controlli e chi legge name e label?
+
+**Retro**: Ogni controllo vuole una label associata (for/id o wrapping) come nome accessibile per persone e tecnologie assistive, e un attributo name perché il valore venga inviato al server. Il placeholder non sostituisce la label.
+
+
+### JavaScript moderno: fetch, async/await
+
+**Fronte**: Fetch: qual è la sequenza corretta per leggere dati JSON in sicurezza?
+
+**Retro**: await fetch per ottenere la Response, controllo di response.ok (gli stati di errore non causano rejected), poi await risposta.json() per i dati; il tutto in una funzione async con try/catch per rete, stati HTTP e JSON non valido.
+
+
+### Canvas API: disegno 2D in HTML
+
+**Fronte**: Canvas 2D: i quattro passi minimi per disegnare qualcosa?
+
+**Retro**: 1) Elemento canvas con width/height (risoluzione). 2) Contesto con getContext('2d'). 3) Stato: fillStyle/strokeStyle. 4) Disegno: fillRect oppure beginPath + arc/lineTo + fill/stroke. Senza contesto non si disegna nulla.
+
+
+### DHTML: Dynamic HTML
+
+**Fronte**: DHTML: definizione e differenza rispetto ad AJAX?
+
+**Retro**: DHTML = HTML, CSS e JavaScript sul DOM per pagine interattive lato client con ciò che è già nel browser. AJAX aggiunge richieste asincrone di dati nuovi al server senza ricaricare la pagina.
+
+
+### Eventi: locali vs remoti
+
+**Fronte**: Eventi locali contro remoti: criterio e quattro meccanismi per i remoti?
+
+**Retro**: Criterio: dove nasce l'evento. Locali nel browser (click, input, submit) con addEventListener. Remoti dal server: polling (richieste periodiche), long polling (risposta trattenuta), SSE (flusso solo server verso client), WebSocket (persistente bidirezionale).
+
+
+### Motore JavaScript: parser, AST, profiler, JIT
+
+**Fronte**: Pipeline di un motore JS: fasi in ordine e nomi V8?
+
+**Retro**: Parser (costruisce l'AST), interprete Ignition (bytecode eseguito subito), profiler/feedback (parti calde e tipi osservati), compilatore JIT TurboFan (codice macchina per le parti calde), con deottimizzazione se le assunzioni cadono.
+
+
+### Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0
+
+**Fronte**: Web 1.0, 2.0, 3.0, 4.0: l'idea chiave di ciascuna fase?
+
+**Retro**: 1.0 leggo: documenti statici, sola lettura. 2.0 scrivo: partecipazione e contenuti degli utenti. 3.0 significo: web semantico, dati riusabili (RDF). 4.0 seguo: ubiquo e intelligente, tra dispositivi connessi e assistenza personalizzata.
+
+
+### Tag <span>: uso e scopi
+
+**Fronte**: Span contro div: livello, contenuto e riga?
+
+**Retro**: Span: inline, resta nella riga, contiene testo e inline (phrasing content). Div: block, occupa una riga propria, contiene interi blocchi (flow content). Entrambi generici, senza significato proprio.
 
 
 ## Checklist per area
@@ -153,82 +223,86 @@
 
 ### CSS: Box Model (priorità ALTA, gruppo A)
 
-- [ ] Box model: content, padding, border, margin
-- [ ] box-sizing: content-box (default), border-box
-- [ ] Dimensione totale = width + padding*2 + border*2 (content-box)
-- [ ] Trappola: margin non fa parte del box model
+- [ ] Quattro aree dall'interno: content, padding, border, margin
+- [ ] Il padding mostra lo sfondo dell'elemento; il margin è trasparente e fuori dalla scatola
+- [ ] content-box (iniziale): width = solo content; border-box: width = content + padding + border
+- [ ] Margin collapsing: margin verticali adiacenti si fondono nel più grande
 
 ### CSS: origini, cascading e ereditarietà (priorità ALTA, gruppo A)
 
-- [ ] Origini: author > user > user agent
-- [ ] Cascading: !important > origine > specificità > ordine
-- [ ] Specificità: ID=0,1,0,0; classe=0,0,1,0; tag=0,0,0,1
-- [ ] Ereditarietà: color, font-family SÌ; margin, padding, border NO
+- [ ] Origini normali dalla più debole: user agent, user, author; con !important l'ordine si rovescia
+- [ ] Risoluzione dei conflitti: origine/importanza, specificità, ordine di apparizione
+- [ ] Specificità in tre colonne (ID, classi, tipi): 11 classi non battono 1 ID
+- [ ] Ereditarietà: color e font sì; margin, padding, border no (forzabili con inherit)
 
 ### DOM e Virtual DOM (priorità ALTA, gruppo A)
 
-- [ ] DOM: albero di nodi (elementi, testo, commenti)
-- [ ] Manipolazione: createElement, appendChild, removeChild, innerHTML
-- [ ] Virtual DOM: copia in memoria per ottimizzazione
-- [ ] Diffing: confronto tra Virtual DOM vecchi/nuovi
-- [ ] Reconciliation: applicazione differenze al DOM reale
+- [ ] DOM: albero di nodi del documento, API del browser indipendente da JavaScript
+- [ ] Manipolazione: querySelector, createElement, appendChild, remove, textContent contro innerHTML
+- [ ] Virtual DOM: descrizione leggera in memoria sincronizzata con il DOM reale
+- [ ] Ciclo dei framework: render, diffing/reconciliation, patch delle sole differenze
 
 ### HTML: form e accessibilità (priorità ALTA, gruppo A)
 
-- [ ] Form: input, textarea, select, button, checkbox, radio
-- [ ] Accessibilità: label per ogni input
-- [ ] Associazione: for/id o wrapping
-- [ ] Validazione: required, minlength, pattern
+- [ ] Controlli: input, select, textarea, button; radio con stesso name in un fieldset
+- [ ] Invio: coppie nome-valore dall'attributo name; id serve a label, CSS e JavaScript
+- [ ] GET: dati nell'URL per le letture; POST: dati nel corpo per scritture e dati sensibili
+- [ ] Label per ogni controllo (for/id o wrapping): il placeholder non la sostituisce
+- [ ] Validazione nel browser per il feedback; il server rivalida sempre
 
 ### JavaScript moderno: fetch, async/await (priorità ALTA, gruppo C)
 
-- [ ] fetch(): API moderna per HTTP requests
-- [ ] Response.ok: verifica status 200-299
-- [ ] response.json(): parse JSON body
-- [ ] async/await: sintassi sincrona per codice asincrono
-- [ ] try/catch: gestione errori
+- [ ] Doppio await: prima la Response, poi il corpo con response.json()
+- [ ] fetch è rejected per errori di rete, non per 404 o 500: controllare response.ok
+- [ ] Promise: pending, fulfilled, rejected; settled = conclusa in uno dei due modi
+- [ ] async restituisce sempre una Promise; await sospende solo quella funzione
+- [ ] POST JSON: method, Content-Type: application/json, body con JSON.stringify
 
 ### Canvas API: disegno 2D in HTML (priorità MEDIA, gruppo B)
 
-- [ ] <canvas> elemento HTML
-- [ ] getContext('2d') per contesto 2D
-- [ ] Metodi: fillRect, strokeRect, arc, beginPath, fill, stroke
-- [ ] Animazioni: requestAnimationFrame
+- [ ] <canvas>: bitmap disegnata via script; contenuto interno come riserva (fallback)
+- [ ] getContext('2d') restituisce il contesto con stato e metodi di disegno
+- [ ] Percorsi: beginPath, arc, lineTo, poi fill o stroke; angoli in radianti
+- [ ] Attributi width/height = risoluzione; CSS width/height = dimensione in pagina
+- [ ] Animazione: clearRect e ridisegno coordinati da requestAnimationFrame
 
 ### DHTML: Dynamic HTML (priorità MEDIA, gruppo B)
 
-- [ ] DHTML = HTML + CSS + JavaScript
-- [ ] Manipolazione DOM dinamica
-- [ ] Eventi: mouseover, mouseout, click, etc.
-- [ ] DHTML ≠ AJAX (DHTML è client-side, AJAX include server-side)
+- [ ] DHTML = HTML + CSS + JavaScript sul DOM, non un linguaggio nuovo
+- [ ] Dinamicità lato client: eventi, classi che cambiano, contenuti mostrati e nascosti
+- [ ] Solo presentazione al passaggio del mouse: spesso basta il CSS :hover
+- [ ] DHTML contro AJAX: AJAX aggiunge richieste asincrone di dati al server
 
 ### Eventi: locali vs remoti (priorità MEDIA, gruppo B)
 
-- [ ] Eventi locali: click, mouseover, keydown, submit, load, scroll
-- [ ] Eventi remoti: WebSocket, SSE, polling, long polling
-- [ ] WebSocket: bidirezionale, full-duplex
-- [ ] SSE: server→client, solo testuale, auto-reconnect
+- [ ] Criterio: dove nasce l'evento (client contro server o altri sistemi)
+- [ ] Locali: addEventListener; fasi cattura, target, bubbling; preventDefault contro stopPropagation
+- [ ] Polling e long polling: richieste del client, con o senza risposta trattenuta
+- [ ] SSE: EventSource, solo server verso client, riconnessione automatica
+- [ ] WebSocket: handshake HTTP, poi canale persistente bidirezionale
 
 ### Motore JavaScript: parser, AST, profiler, JIT (priorità MEDIA, gruppo B)
 
-- [ ] 5 fasi: Parsing → Interpretazione → Profiling → JIT Compilation → Esecuzione
-- [ ] AST: Abstract Syntax Tree (rappresentazione strutturata del codice)
-- [ ] JIT: Just-In-Time compilation (codice caldo → codice macchina)
-- [ ] V8: Ignition (interprete) + TurboFan (JIT)
+- [ ] Pipeline: parser e AST, bytecode interpretato, profiler/feedback, JIT, deottimizzazione
+- [ ] AST: albero della struttura del programma, distinto da bytecode e codice macchina
+- [ ] JIT Just-In-Time: compila durante l'esecuzione solo le parti calde
+- [ ] In V8: Ignition è l'interprete del bytecode, TurboFan il compilatore ottimizzante
+- [ ] Il motore implementa il linguaggio; il DOM lo fornisce il browser, non il motore
 
 ### Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0 (priorità MEDIA, gruppo B)
 
-- [ ] Web 1.0: statico, lettura, HTML base
-- [ ] Web 2.0: dinamico, lettura/scrittura, AJAX, social
-- [ ] Web 3.0: semantico, Linked Data, AI, personalizzazione
-- [ ] Web 4.0: ubiquo, IoT, AI generativa
+- [ ] Etichette descrittive di tendenze, non versioni rilasciate: le fasi convivono
+- [ ] 1.0 leggo: statico, sola lettura; 2.0 scrivo: partecipazione e contenuti degli utenti
+- [ ] 3.0 significo: web semantico e dati riusabili (RDF); 4.0 seguo: ubiquo e intelligente
+- [ ] Negli abbinamenti scarta i distrattori fuori contesto (per esempio LAN)
 
 ### Tag <span>: uso e scopi (priorità BASSA, gruppo B)
 
-- [ ] <span> = elemento inline generico
-- [ ] Usi: styling, raggruppamento, attributi semantici
-- [ ] Niente significato semantico di default
-- [ ] Inline: non introduce interruzione di riga
+- [ ] <span>: inline, resta in riga, contiene solo phrasing content
+- [ ] Usi: stile su un frammento, attributo lang, aggancio per JavaScript
+- [ ] Prima l'elemento semantico (strong, em, mark, code): lo span solo se manca
+- [ ] Contro <div>: il div è il contenitore generico a blocco e va a capo
+- [ ] width ed height sullo span non contano finché display resta inline
 
 
 ## Area 4. Back-end e strumenti
@@ -358,9 +432,57 @@
 - [ ] **REST: metodi HTTP (GET, POST, PUT, PATCH, DELETE)**: Non fornire tutti i campi in una richiesta PUT → PUT sostituisce completamente la risorsa. Se non fornisci tutti i campi obbligatori, la risorsa sara incompleta dopo l aggiornamento.
 - [ ] **REST: metodi HTTP (GET, POST, PUT, PATCH, DELETE)**: Usare POST per creare una risorsa con URI noto → POST e per creare risorse quando il server decide l URI. Se il client conosce gia l URI completo (es. /users/123), deve usare PUT.
 - [ ] **REST: metodi HTTP (GET, POST, PUT, PATCH, DELETE)**: Pensare che PATCH sia sempre idempotente → PATCH non e necessariamente idempotente. Se l implementazione incrementa un valore (es. eta += 1), eseguire PATCH piu volte produce risultati diversi.
-- [ ] **CSS: Box Model**: Dimenticare che padding e border vengono aggiunti alla width con box-sizing: content-box (default) → Questo porta a dimensioni totali maggiore di quella attesa. Se vuoi un box di 200px totale, devi impostare width a 200px - padding - border, che e controintuitivo.
-- [ ] **CSS: Box Model**: Pensare che margin faccia parte delle dimensioni del box → Il margin e spazio esterno e non contribuisce alla dimensione del box stesso. Tuttavia, influisce sullo spazio totale occupato nel layout.
-- [ ] **CSS: Box Model**: Non usare box-sizing: border-box → Questo costringe a calcolare manualmente le dimensioni totali ogni volta, portando a errori e frustrazione. box-sizing: border-box e la soluzione standard moderna.
-- [ ] **CSS: Box Model**: Applicare width e height a elementi inline (span, a) → Gli elementi inline ignorano width e height. Per applicare dimensioni, devi usare display: inline-block o block.
-- [ ] **CSS: Box Model**: Dimenticare il margin collapsing → I margin verticali adiacenti si fondono, portando a spazi minori di quelli attesi. Questo puo rompere il layout.
-- [ ] **CSS: Box Model**: Confondere padding con margin → Padding e spazio interno tra content e border (mostra lo sfondo), margin e spazio esterno fuori dal border (non mostra lo sfondo).
+- [ ] **CSS: Box Model**: Includere color, background o script tra le componenti del box model negli abbinamenti → Le componenti (aree) del box model sono esattamente quattro: content, padding, border e margin. Colore e sfondo sono proprietà che si dipingono dentro la scatola, non aree della scatola.
+- [ ] **CSS: Box Model**: Sommare due margin verticali adiacenti aspettandosi la somma → Per il margin collapsing, margin-top e margin-bottom di blocchi adiacenti nel flusso normale si fondono nel valore più grande. Due margin da 20px danno 20px di spazio, non 40.
+- [ ] **CSS: Box Model**: Dire che width include sempre padding e border → Con il valore iniziale box-sizing: content-box, width misura solo il content. Padding e border sono inclusi in width solo con box-sizing: border-box.
+- [ ] **CSS: Box Model**: Confondere padding e margin rispetto allo sfondo → Il padding è dentro la scatola e mostra lo sfondo dell'elemento; il margin è fuori dal bordo, è trasparente e lascia vedere lo sfondo del contenitore. Se vuoi spazio colorato attorno al testo, serve il padding.
+- [ ] **CSS: Box Model**: Applicare width e margin-top a uno span aspettandosi effetto sul layout → Span è inline non sostituito: width e height non si applicano e i margin verticali non spostano le righe. Per dimensionarlo serve display: inline-block o block.
+- [ ] **CSS: origini, cascading e ereditarietà**: Sommare la specificità come numero decimale e concludere che 11 classi battono 1 id → Il confronto è lessicografico per colonne ID, classi, tipi: la prima colonna decide prima delle altre. 0-11-0 perde contro 1-0-0 perché nessun numero di classi colma la colonna degli id.
+- [ ] **CSS: origini, cascading e ereditarietà**: Credere che margin, padding e border si ereditino dai genitori → Sono proprietà non ereditarie: sui figli, senza dichiarazioni dirette, valgono i valori iniziali. Si ereditano soprattutto le proprietà tipografiche come color e font-family; per forzare le altre serve il valore inherit.
+- [ ] **CSS: origini, cascading e ereditarietà**: Dire che con !important vince sempre l'autore sulle altre origini → Con !important l'ordine delle origini si rovescia: tra le dichiarazioni importanti vincono user agent e user sull'author. Il rovesciamento serve a proteggere esigenze di browser e utente, per esempio di accessibilità.
+- [ ] **CSS: origini, cascading e ereditarietà**: Pensare che il valore ereditato dal genitore batta una regola diretta poco specifica → L'ereditarietà interviene solo se la cascata non produce dichiarazioni per quella proprietà sull'elemento. Qualsiasi dichiarazione diretta, anche del foglio del browser, ha la precedenza sul valore ereditato.
+- [ ] **CSS: origini, cascading e ereditarietà**: Confondere l'ordine di apparizione con il criterio principale di risoluzione dei conflitti → L'ordine di apparizione decide solo a parità di origine, importanza e specificità. Scrivere una regola dopo non la fa vincere contro un selettore più specifico o contro un'origine più forte.
+- [ ] **DOM e Virtual DOM**: Dire che il DOM fa parte del linguaggio JavaScript → Il DOM è una Web API fornita dal browser, indipendente dal linguaggio: JavaScript la usa, ma il linguaggio ECMAScript in sé (per esempio in Node.js) non include document né i nodi della pagina.
+- [ ] **DOM e Virtual DOM**: Presentare il Virtual DOM come sostituto che elimina il DOM reale → Il Virtual DOM è solo una descrizione in memoria: ciò che l'utente vede è sempre il DOM reale del browser, aggiornato applicando le differenze nella fase di patch. Senza DOM reale non ci sarebbe pagina.
+- [ ] **DOM e Virtual DOM**: Affermare che il Virtual DOM è sempre più veloce di qualsiasi manipolazione diretta → Costruire e confrontare alberi virtuali ha un costo; un aggiornamento manuale mirato può fare meno lavoro. Il vantaggio certo è il modello dichiarativo che tiene interfaccia e stato allineati con meno codice fragile.
+- [ ] **DOM e Virtual DOM**: Usare innerHTML e textContent come se fossero intercambiabili → innerHTML analizza la stringa come HTML e costruisce nodi: con testo proveniente dall'utente può iniettare markup (XSS). textContent inserisce testo puro e va preferito quando il contenuto non è markup fidato.
+- [ ] **DOM e Virtual DOM**: Confondere l'albero DOM con il sorgente HTML della pagina → Il sorgente è il testo ricevuto; il DOM è l'albero di oggetti costruito dal browser con il parsing, che poi JavaScript può modificare. Dopo le modifiche i due non coincidono più: la pagina visualizzata segue il DOM.
+- [ ] **HTML: form e accessibilità**: Usare il placeholder come unica etichetta del campo → Il placeholder è un esempio che sparisce durante la digitazione e non è un nome affidabile per le tecnologie assistive. Ogni controllo vuole una label permanente, collegata con for e id oppure per wrapping.
+- [ ] **HTML: form e accessibilità**: Dimenticare l'attributo name e dare solo l'id al controllo → L'invio del form costruisce coppie a partire dai name: senza name il valore non parte nemmeno. L'id serve a label, CSS e JavaScript, non al server.
+- [ ] **HTML: form e accessibilità**: Credere che la validazione nel browser renda sicuri i dati → Required, pattern e controlli JavaScript vivono nel client e si possono aggirare inviando una richiesta costruita a mano. La validazione lato client serve all'esperienza utente; il server deve sempre rivalidare.
+- [ ] **HTML: form e accessibilità**: Scrivere method="patch" in un form per aggiornare una risorsa REST → I form HTML supportano nativamente get e post. PATCH, PUT e DELETE verso un'API si inviano con JavaScript (fetch), oppure il server deve accettare un POST e interpretarlo lato suo.
+- [ ] **HTML: form e accessibilità**: Lasciare un button senza type dentro il form per un'azione secondaria → Senza type, un button dentro un form si comporta come submit e invia i dati. Per azioni JavaScript che non devono inviare va scritto esplicitamente type="button".
+- [ ] **JavaScript moderno: fetch, async/await**: Aspettarsi che fetch fallisca da solo quando il server risponde 404 → La Promise di fetch diventa rejected per i fallimenti nel completare la richiesta (come gli errori di rete), non per gli stati HTTP di errore: un 404 produce una Response normale. Va controllato response.ok o response.status e gestito esplicitamente.
+- [ ] **JavaScript moderno: fetch, async/await**: Dimenticare await davanti a risposta.json() → json() restituisce una Promise, non i dati già interpretati: senza await ottieni la Promise e ogni accesso ai campi dà undefined. La lettura del corpo è il secondo tempo asincrono dopo l'arrivo della Response.
+- [ ] **JavaScript moderno: fetch, async/await**: Usare await in una funzione normale o pensare che blocchi tutta la pagina → await sta nelle funzioni async (o al livello più alto dei moduli) e sospende solo quella funzione: il browser continua a disegnare e a gestire gli eventi durante l'attesa.
+- [ ] **JavaScript moderno: fetch, async/await**: Presentare async/await come alternativa che sostituisce le Promise → async/await è sintassi costruita sulle Promise: una funzione async restituisce una Promise e await ne attende la conclusione. Cambia la leggibilità, non il meccanismo sottostante.
+- [ ] **JavaScript moderno: fetch, async/await**: Mandare un corpo JSON dimenticando intestazione o serializzazione → Nel body va una stringa prodotta con JSON.stringify e l'intestazione Content-Type: application/json dice al server come interpretarla. Senza, il server può non riconoscere i dati o leggerli nel formato sbagliato.
+- [ ] **Canvas API: disegno 2D in HTML**: Disegnare sull'elemento canvas senza ottenere il contesto → L'elemento è solo l'area: i metodi di disegno stanno sul contesto restituito da getContext('2d'). Chiamare fillRect sull'elemento è un errore, perché quel metodo sull'elemento non esiste.
+- [ ] **Canvas API: disegno 2D in HTML**: Confondere attributi width/height del canvas con le omonime proprietà CSS → Gli attributi definiscono la risoluzione della bitmap (predefiniti 300 per 150), il CSS la dimensione di visualizzazione. Se differiscono, la bitmap viene scalata e appare sfocata o deformata.
+- [ ] **Canvas API: disegno 2D in HTML**: Trattare le forme disegnate come oggetti cliccabili e spostabili → Il modello è immediato: restano solo i pixel, non oggetti forma. Per spostare qualcosa si cancella e si ridisegna; per intercettare un click su una forma si calcolano le coordinate a mano.
+- [ ] **Canvas API: disegno 2D in HTML**: Dimenticare beginPath() tra forme indipendenti → Il percorso corrente accumula i tratti: senza beginPath, il nuovo arco o segmento si collega ai precedenti e fill/stroke li disegnano come un'unica figura, con linee e riempimenti indesiderati.
+- [ ] **Canvas API: disegno 2D in HTML**: Scrivere contenuti importanti solo sul canvas senza alternativa accessibile → Il canvas è una bitmap: le tecnologie assistive non ricavano informazioni sugli oggetti disegnati e il testo rasterizzato perde leggibilità ingrandendolo. Servono testo di riserva o alternative equivalenti per i contenuti significativi.
+- [ ] **DHTML: Dynamic HTML**: Definire DHTML come un linguaggio di programmazione o una nuova versione di HTML → DHTML è un termine collettivo storico per l'uso combinato di HTML, CSS e JavaScript con il DOM. Non ha una sua sintassi né una sua specifica: le tecnologie restano quelle, già note singolarmente.
+- [ ] **DHTML: Dynamic HTML**: Affermare che con DHTML la pagina ottiene dati aggiornati dal server senza ricaricarsi → Quello è il contributo di AJAX (richieste asincrone di dati). Il DHTML da solo trasforma ciò che è già arrivato nel browser: struttura, stili e contenuti locali.
+- [ ] **DHTML: Dynamic HTML**: Credere che ogni effetto dinamico richieda JavaScript, compreso un rollover → Effetti di sola presentazione legati a stati come il passaggio del mouse si esprimono in CSS con :hover. JavaScript serve quando l'effetto dipende da una logica o da uno stato da elaborare.
+- [ ] **DHTML: Dynamic HTML**: Negli abbinamenti, associare DHTML a opzioni fuori dal contesto web → È la trappola segnalata nel materiale di studio: opzioni come reti locali o installazione di sistemi operativi sono distrattori fuori contesto. DHTML coinvolge solo HTML, CSS, JavaScript e DOM nel browser.
+- [ ] **Eventi: locali vs remoti**: Classificare il click come evento remoto perché la pagina arriva da un server → Il criterio è l'origine dell'evento, non quella della pagina: il click nasce dall'interazione dell'utente nel browser ed è gestito localmente dai listener. Remoto è ciò che nasce fuori dal client e deve viaggiare sulla rete.
+- [ ] **Eventi: locali vs remoti**: Descrivere i Server-Sent Events come canale bidirezionale → SSE è un flusso unidirezionale dal server al client (EventSource, formato text/event-stream): la pagina non può inviare messaggi su quel canale. Per la bidirezionalità continua serve WebSocket, oppure normali richieste separate dal client.
+- [ ] **Eventi: locali vs remoti**: Presentare il polling come aggiornamento in tempo reale senza costi → Il polling interroga a intervalli: tra un controllo e l'altro le novità aspettano, e molti controlli tornano a vuoto consumando richieste. È semplice, ma né istantaneo né gratuito.
+- [ ] **Eventi: locali vs remoti**: Confondere preventDefault e stopPropagation → preventDefault annulla l'azione predefinita del browser (per esempio l'invio del form); stopPropagation interrompe la propagazione dell'evento ad altri nodi. Scambiarli lascia partire invii indesiderati o non ferma i listener degli antenati.
+- [ ] **Eventi: locali vs remoti**: Pensare che con HTTP ordinario il server possa avvisare la pagina quando vuole → Nel modello richiesta-risposta di HTTP è il client a iniziare: il server non apre conversazioni. Per questo servono polling, long polling, oppure canali persistenti come SSE e WebSocket (questo dopo un handshake iniziale via HTTP).
+- [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Dire che il parser esegue il codice JavaScript → Il parser analizza il testo sorgente e costruisce l'AST, segnalando gli errori di sintassi. L'esecuzione comincia dopo, con l'interprete che gira sul bytecode generato a partire dall'AST.
+- [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Confondere l'AST con il codice macchina o con il bytecode → L'AST è la rappresentazione ad albero della struttura del programma, ancora indipendente dalla macchina. Il bytecode è una rappresentazione compatta eseguita dall'interprete; il codice macchina è il prodotto finale del JIT per le parti calde.
+- [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Pensare che il JIT compili tutto il programma prima di iniziare a eseguirlo → Just-In-Time significa durante l'esecuzione e in modo selettivo: si comincia interpretando il bytecode e si compila in codice macchina solo ciò che il profiler segnala come caldo. Compilare tutto prima è la strategia AOT, diversa.
+- [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Attribuire il DOM al motore JavaScript → Il motore implementa il linguaggio ECMAScript; il DOM lo fornisce il browser che ospita il motore, come precisa la documentazione ufficiale di V8. In Node.js, infatti, document non esiste.
+- [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Credere che una volta ottimizzato, il codice resti tale per sempre → Le ottimizzazioni JIT sono speculative, basate sui tipi osservati dal feedback: se arriva un valore di tipo diverso, il motore deottimizza e torna al bytecode per mantenere il risultato corretto.
+- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Trattare Web 1.0, 2.0, 3.0, 4.0 come versioni ufficiali rilasciate in date precise → Sono etichette descrittive di tendenze, con confini sfumati e fasi che convivono: nessun organismo le rilascia e le datazioni sono solo indicative. Le domande si risolvono con le caratteristiche, non con gli anni.
+- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Attribuire i contenuti generati dagli utenti al Web 1.0 → Il Web 1.0 è di sola lettura: pochi autori, pagine statiche uguali per tutti. Partecipazione, profili e contenuti degli utenti sono la firma del Web 2.0.
+- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Rispondere sul Web 3.0 con significati diversi dal web semantico del materiale del corso → Nel materiale di studio del corso (SYLLABUS e MATERIALE_UTENTE) il 3.0 è il Web semantico: dati condivisi e riusabili tra applicazioni con formati comuni come RDF e significato elaborabile dalle macchine. È in quel quadro che vanno date le risposte.
+- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Far entrare negli abbinamenti opzioni fuori contesto come LAN o fasi di installazione → Sono i distrattori segnalati dal materiale di studio: termini di reti locali o di sistemi operativi non sono generazioni del Web. Un'opzione che non riguarda contenuti, interazione, dati o servizi web va scartata immediatamente.
+- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Credere che una nuova generazione elimini del tutto le precedenti → Le fasi si sovrappongono: oggi convivono pagine statiche, applicazioni partecipative e dati semantici. Descrivono modelli d'uso prevalenti in un periodo, non sostituzioni complete.
+- [ ] **Tag <span>: uso e scopi**: Dire che lo span introduce un'interruzione di riga come il div → Lo span è inline: resta nel flusso del testo senza andare a capo. Il div è il contenitore generico a blocco e forza una riga propria. Confondere i due livelli è la trappola centrale negli abbinamenti su questo tag.
+- [ ] **Tag <span>: uso e scopi**: Usare lo span per rendere un testo importante o enfatizzato → Importanza ed enfasi sono significati, e hanno i loro elementi: strong ed em. Lo span non rappresenta nulla: con uno stile lo fai solo sembrare importante per chi vede, senza dirlo a chi usa tecnologie assistive.
+- [ ] **Tag <span>: uso e scopi**: Costruire pulsanti con span cliccabili invece di button o a → Lo span non è focalizzabile, non risponde alla tastiera come un controllo e non espone un ruolo adeguato. Un'azione vuole un button, un collegamento vuole un a con href.
+- [ ] **Tag <span>: uso e scopi**: Aspettarsi che uno span rispetti width ed height senza cambiare display → Come elemento inline non sostituito, lo span ignora width, height e margini verticali ai fini del layout. Per dimensionarlo occorre display: inline-block o block.
+- [ ] **Tag <span>: uso e scopi**: Mettere blocchi come div o paragrafi dentro uno span → Il modello di contenuto dello span è il phrasing content (testo ed elementi inline). Contenuti a blocco dentro uno span sono markup non valido e producono comportamenti imprevedibili.

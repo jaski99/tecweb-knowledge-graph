@@ -1,0 +1,122 @@
+{
+  "perche_ti_serve": "Gruppo A (iper-riciclati, ~65% dello scritto da MATERIALE_UTENTE): origini, specificità ed ereditarietà tornano in domande ed esercizi «quale regola vince?».",
+  "scenario_fil_rouge": "Nella scheda libro della libreria vuoi i prezzi in rosso, ma il CSS della pagina è pieno di regole che si contraddicono: una dice che i paragrafi sono grigi, un'altra che gli elementi con classe prezzo sono rossi, il browser ha le sue regole predefinite e un prezzo ha perfino uno stile scritto dentro l'attributo style. Chi decide quale regola vince, e perché il colore si trasmette ai testi interni ma il bordo no?",
+  "definizione_esame": {
+    "definizione": "La cascata CSS è l'algoritmo che sceglie il valore di ogni proprietà per ogni elemento tra le dichiarazioni in conflitto, ordinandole per origine e importanza, poi per specificità del selettore, poi per ordine di apparizione; se nessuna dichiarazione vale per una proprietà, interviene l'ereditarietà o il valore iniziale.",
+    "scopo_vantaggio": "Permette a browser, utenti e autori di far coesistere fogli di stile diversi con una precedenza prevedibile e uguale per tutti: è la C di CSS (Cascading Style Sheets).",
+    "esempio": "Sul prezzo della card vincono in ordine: regole del browser (le più deboli), poi quelle dell'autore della libreria; tra due regole dell'autore vince il selettore più specifico, per esempio .prezzo batte il semplice p."
+  },
+  "spiegazione": "## Prerequisiti in una riga\n\nNessun prerequisito nel grafo, ma tieni presente il box model (`css-box-model`): qui decidiamo **quale valore** arriva a proprietà come `color`, `margin` o `border` quando più regole puntano allo stesso elemento.\n\n## Le tre origini dei fogli di stile\n\nLe dichiarazioni CSS arrivano da tre **origini**:\n\n1. **user agent**: il foglio predefinito del browser (per esempio link blu e sottolineati, margini dei paragrafi);\n2. **user**: il foglio personalizzato dell'utente che legge la pagina, raro ma previsto;\n3. **author**: i fogli dell'autore della pagina, inclusi blocchi `<style>` e attributi `style`.\n\nPer le dichiarazioni **normali** la precedenza cresce così: user agent, poi user, poi author. Con **`!important`** l'ordine delle origini si **rovescia**, perché lo scopo è permettere a utente e browser di imporre esigenze irrinunciabili (per esempio di accessibilità) contro lo stile dell'autore:\n\n| Precedenza | Origine e importanza |\n|---|---|\n| Più bassa | User agent, normale |\n| | User, normale |\n| | Author, normale |\n| | Author, `!important` |\n| | User, `!important` |\n| Più alta | User agent, `!important` |\n\nL'ordine completo descritto da MDN comprende anche animazioni e transizioni CSS; per rispondere alle domande su origini e `!important` basta la tabella qui sopra, ma sappi che esiste.\n\n## L'algoritmo della cascata in quattro passi\n\nPer ogni elemento e ogni proprietà il browser:\n\n1. **rilevanza**: tiene solo le dichiarazioni il cui selettore corrisponde all'elemento (nelle condizioni giuste, per esempio dentro la media query attiva);\n2. **origine e importanza**: ordina secondo la tabella delle origini, con `!important` che rovescia le origini;\n3. **specificità**: a parità di origine e importanza vince il selettore più specifico;\n4. **ordine di apparizione**: a parità anche di specificità, vince la dichiarazione che compare **dopo**.\n\n```mermaid\nflowchart TD\n    A[\"Dichiarazioni che corrispondono all'elemento\"] --> B[\"Origine e importanza\"]\n    B --> C[\"Specificità del selettore\"]\n    C --> D[\"Ordine di apparizione\"]\n    D --> E[\"Valore applicato\"]\n```\n\nGli stili **inline** (attributo `style`) appartengono all'origine author e, tra le dichiarazioni normali, battono qualsiasi selettore. Perdono però contro una dichiarazione `!important` dell'autore nei fogli, a meno che anche lo stile inline non sia `!important`.\n\n## Specificità: il peso del selettore in tre colonne\n\nLa **specificità** si scrive come tre numeri **ID – CLASSI – TIPI**:\n\n- colonna **ID**: selettori di id, come `#prezzo`;\n- colonna **CLASSI**: classi, selettori di attributo e pseudo-classi, come `.card`, `[type=\"email\"]`, `:hover`;\n- colonna **TIPI**: selettori di elemento e pseudo-elementi, come `p`, `div`, `::before`.\n\nSelettore universale `*` e combinatori (`>`, `+`, spazio) valgono **zero**. Il confronto è **lessicografico**, colonna per colonna da sinistra: non è un numero decimale, quindi **undici classi (0-11-0) non battono un solo id (1-0-0)**.\n\n```css\np             { color: gray; }   /* 0-0-1 */\n.prezzo       { color: red; }    /* 0-1-0 : vince sul semplice p */\n.card p.prezzo { color: darkred; } /* 0-2-1 : vince sulle prime due */\n#offerta      { color: orange; } /* 1-0-0 : vince su tutte e tre */\n```\n\n## Ereditarietà: il ripiego quando nessuna regola si applica\n\nSe per una proprietà **nessuna dichiarazione** risulta dalla cascata:\n\n- le **proprietà ereditarie** (come `color`, `font-family`, `font-size`, `line-height`, `text-align`) prendono il **valore calcolato del genitore**;\n- le **proprietà non ereditarie** (come `margin`, `padding`, `border`, `width`, `background`) prendono il **valore iniziale** della proprietà.\n\n| Si eredita | Non si eredita |\n|---|---|\n| `color`, `font-family`, `font-size`, `font-weight` | `margin`, `padding` |\n| `line-height`, `text-align`, `visibility` | `border`, `width`, `height`, `background` |\n\nDue conseguenze da ricordare:\n\n1. l'ereditarietà **non ha specificità**: una dichiarazione che si applica direttamente all'elemento, anche debole come quella del browser sui link, batte sempre il valore ereditato dal genitore;\n2. con il valore chiave **`inherit`** puoi forzare l'ereditarietà anche su una proprietà non ereditaria (per esempio `border: inherit`); con `initial` chiedi il valore iniziale, con `unset` ottieni `inherit` sulle proprietà ereditarie e `initial` sulle altre.\n\nEsempio nella card: `color` impostato sulla card arriva a titolo e prezzo figli, ma il `border` della card **non** si ripete attorno a ogni figlio, perché `border` non è ereditario.",
+  "analogia": {
+    "testo": "La cascata è la fila di autorità che decide il colore delle pareti della libreria: prima contano le norme dell'edificio (il browser), poi le preferenze del cliente che entra con esigenze particolari (l'utente), infine la scelta dell'arredatore ingaggiato dal negozio (l'autore). A parità di autorità, decide chi ha dato l'istruzione più precisa (la specificità); a parità di precisione, l'ultima istruzione ricevuta.",
+    "limite": "Nella vita reale un capo può sempre annullare tutto; in CSS invece !important rovescia la fila: proprio le norme dell'edificio e le esigenze dell'utente diventano inappellabili, e l'arredatore-autore scende all'ultimo posto tra gli !important."
+  },
+  "worked_example": {
+    "titolo": "Chi colora il prezzo? Quattro regole in conflitto",
+    "problema": "Per l'HTML <p class=\"prezzo\" id=\"offerta\" style=\"color: green\">9,90 euro</p> dentro una card, il foglio dell'autore contiene: p { color: gray; }, .card p { color: black; }, .prezzo { color: red; }, #offerta { color: orange; }. Determina il colore finale; poi ripeti il ragionamento se .prezzo diventa color: red !important.",
+    "passi": [
+      "Rilevanza: tutte e quattro le regole corrispondono all'elemento, più lo stile inline; sono tutte dichiarazioni normali dell'origine author.",
+      "Calcola le specificità: p vale 0-0-1; .card p vale 0-1-1; .prezzo vale 0-1-0; #offerta vale 1-0-0.",
+      "Confronto lessicografico: 1-0-0 batte tutte, quindi tra i selettori vincerebbe #offerta (orange).",
+      "Lo stile inline, tra le dichiarazioni normali author, batte qualsiasi selettore: il colore finale è green.",
+      "Se .prezzo dichiara red !important, entra nel gruppo author !important e batte anche lo stile inline normale: il colore finale diventa red."
+    ],
+    "soluzione": "Senza `!important` il prezzo è **verde** per lo stile inline (che tra le dichiarazioni normali supera anche il selettore di id 1-0-0). Con `color: red !important` su `.prezzo` il prezzo diventa **rosso**: l'importanza si valuta prima della specificità e degli stili inline normali.",
+    "perche_funziona": "L'ordine dei passi è rigido: prima origine e importanza, poi specificità, poi ordine di apparizione. Cambiare passo cambia il vincitore, ed è per questo che !important va usato con cautela: sposta la dichiarazione in un gruppo che la specificità non può più raggiungere."
+  },
+  "completion_problem": {
+    "titolo": "Completa il calcolo della specificità",
+    "testo": "Completa la tabella per i selettori della pagina del catalogo e ordina i tre dal più debole al più forte: 1) ul li a; 2) .menu a:hover; 3) #menu .voce a.",
+    "passi_mancanti": [
+      "Conta id, classi (con attributi e pseudo-classi) e tipi per ciascun selettore",
+      "Ordina le tre triple con confronto lessicografico da sinistra"
+    ],
+    "soluzione": "1) `ul li a`: 0 id, 0 classi, 3 tipi = **0-0-3**. 2) `.menu a:hover`: la classe `.menu` e la pseudo-classe `:hover` contano nella colonna classi, `a` nei tipi = **0-2-1**. 3) `#menu .voce a`: un id, una classe, un tipo = **1-1-1**. Ordine dal più debole: 0-0-3, poi 0-2-1, poi 1-1-1. Nota che i combinatori e gli spazi non aggiungono peso."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Prevedi ereditarietà e valore finale nella card",
+    "testo": "Dato il CSS: .card { color: #333; border: 2px solid #333; padding: 12px; } e .card .titolo { font-weight: bold; }, con HTML <article class=\"card\"><h3 class=\"titolo\">Dune</h3><p>Romanzo</p></article>, rispondi per l'h3 e per il p: quale colore vedono? Hanno un bordo? Hanno padding? Motiva ogni risposta citando ereditarie e non ereditarie.",
+    "suggerimento": "Per ogni proprietà chiediti: esiste una dichiarazione diretta sull'elemento figlio? Se no, la proprietà è ereditaria (allora arriva dal genitore) o no (allora vale il suo valore iniziale)?",
+    "soluzione_attesa": "Entrambi i figli mostrano il colore #333 perché color è ereditario e nessuno dei due ha una propria dichiarazione di color (l'h3 ha solo font-weight, che diventa bold). Nessuno dei due ha bordo né padding: border e padding non sono ereditari, quindi sui figli valgono i valori iniziali (nessun bordo, padding 0). Il bordo e il padding si vedono solo sulla card."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Sommare la specificità come numero decimale e concludere che 11 classi battono 1 id",
+      "perche_sbagliato": "Il confronto è lessicografico per colonne ID, classi, tipi: la prima colonna decide prima delle altre. 0-11-0 perde contro 1-0-0 perché nessun numero di classi colma la colonna degli id.",
+      "distrattore": "Undici classi superano un selettore di id"
+    },
+    {
+      "errore": "Credere che margin, padding e border si ereditino dai genitori",
+      "perche_sbagliato": "Sono proprietà non ereditarie: sui figli, senza dichiarazioni dirette, valgono i valori iniziali. Si ereditano soprattutto le proprietà tipografiche come color e font-family; per forzare le altre serve il valore inherit.",
+      "distrattore": "Tutte le proprietà CSS sono ereditabili"
+    },
+    {
+      "errore": "Dire che con !important vince sempre l'autore sulle altre origini",
+      "perche_sbagliato": "Con !important l'ordine delle origini si rovescia: tra le dichiarazioni importanti vincono user agent e user sull'author. Il rovesciamento serve a proteggere esigenze di browser e utente, per esempio di accessibilità.",
+      "distrattore": "L'autore con important batte anche il browser"
+    },
+    {
+      "errore": "Pensare che il valore ereditato dal genitore batta una regola diretta poco specifica",
+      "perche_sbagliato": "L'ereditarietà interviene solo se la cascata non produce dichiarazioni per quella proprietà sull'elemento. Qualsiasi dichiarazione diretta, anche del foglio del browser, ha la precedenza sul valore ereditato.",
+      "distrattore": "Il colore ereditato batte la regola sui link"
+    },
+    {
+      "errore": "Confondere l'ordine di apparizione con il criterio principale di risoluzione dei conflitti",
+      "perche_sbagliato": "L'ordine di apparizione decide solo a parità di origine, importanza e specificità. Scrivere una regola dopo non la fa vincere contro un selettore più specifico o contro un'origine più forte.",
+      "distrattore": "La regola scritta dopo vince sempre"
+    }
+  ],
+  "mnemonica": "«O-I-S-O»: Origine, Importanza, Specificità, Ordine. Se ricordi la fila dei quattro criteri, ogni esercizio «quale regola vince» diventa meccanico.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Elenca le tre origini CSS in ordine di precedenza crescente per le dichiarazioni normali e dì che cosa cambia con !important.",
+        "risposta": "Normali: user agent (browser), user, author, dalla più debole alla più forte. Con !important l'ordine delle origini si rovescia: author !important è il più debole dei tre gruppi importanti, user agent !important il più forte."
+      },
+      {
+        "domanda": "Calcola la specificità di .card #prezzo span e di div.card span.prezzo:hover: quale vince?",
+        "risposta": "Il primo: 1 id, 1 classe, 1 tipo = 1-1-1. Il secondo: 0 id, 3 classi (card, prezzo, hover), 2 tipi = 0-3-2. Vince 1-1-1 perché la colonna degli id decide prima delle altre."
+      },
+      {
+        "domanda": "Perché il titolo dentro la card eredita il colore ma non il padding della card?",
+        "risposta": "Perché color è una proprietà ereditaria (prende il valore calcolato del genitore quando non ha dichiarazioni proprie), mentre padding non lo è e sul figlio vale il suo valore iniziale, cioè 0."
+      },
+      {
+        "domanda": "Uno stile inline normale perde contro quale dichiarazione presente in un foglio esterno dello stesso autore?",
+        "risposta": "Contro una dichiarazione author marcata !important: l'importanza si confronta prima della specificità e degli stili inline normali. Solo uno stile inline a sua volta !important tornerebbe sopra."
+      }
+    ],
+    "spiega_con_parole_tue": "Racconta con parole tue il viaggio di una proprietà contesa, per esempio il colore del prezzo, attraverso i quattro criteri O-I-S-O, fino al caso in cui nessuna regola si applica e deve decidere l'ereditarietà.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "css-box-model",
+        "collegamento": "Nel box model hai visto che box-sizing non si eredita: colloca questo fatto nella tabella ereditarie e non ereditarie e spiega perché il reset con selettore universale è la conseguenza pratica."
+      },
+      {
+        "nodo": "span-tag-uso",
+        "collegamento": "Per evidenziare il prezzo usi uno span con classe: confronta la specificità di span (0-0-1) e di .prezzo (0-1-0) e spiega perché la classe vince anche se la regola su span fosse scritta dopo."
+      },
+      {
+        "nodo": "dom-virtual-dom",
+        "collegamento": "JavaScript può cambiare gli stili impostando property inline sugli elementi del DOM: in quale posizione della cascata finiscono quegli stili e che cosa può ancora batterli?"
+      }
+    ]
+  },
+  "riepilogo": "La cascata risolve i conflitti in ordine: origine (user agent, user, author) e importanza (con !important l'ordine si rovescia), specificità del selettore in tre colonne ID-classi-tipi con confronto lessicografico, ordine di apparizione. A cascata vuota, le proprietà ereditarie prendono il valore del genitore, le altre il valore iniziale.",
+  "flashcard": {
+    "fronte": "Cascata CSS: in che ordine si risolve un conflitto e come si calcola la specificità?",
+    "retro": "Origine e importanza (normali: browser, utente, autore; !important rovescia le origini), poi specificità ID-classi-tipi confrontata lessicograficamente, poi ordine di apparizione. Undici classi non battono un id."
+  },
+  "checklist": {
+    "so_fare": [
+      "Calcolare la specificità di un selettore nelle tre colonne e confrontarla lessicograficamente",
+      "Determinare la regola vincente tra origini, !important, stili inline e selettori in conflitto",
+      "Forzare o annullare l'ereditarietà con i valori inherit, initial e unset"
+    ],
+    "so_dire": [
+      "Elencare le tre origini e spiegare il rovesciamento con !important",
+      "Distinguere proprietà ereditarie e non ereditarie con esempi di entrambe",
+      "Spiegare perché il valore ereditato perde contro qualsiasi dichiarazione diretta"
+    ]
+  }
+}

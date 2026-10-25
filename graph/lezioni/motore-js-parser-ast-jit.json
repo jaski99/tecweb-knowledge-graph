@@ -1,0 +1,118 @@
+{
+  "perche_ti_serve": "Gruppo B (varianti isolate, ~20% dello scritto da MATERIALE_UTENTE): le quattro parole parser, AST, profiler e JIT sono la domanda tipo da abbinamento.",
+  "scenario_fil_rouge": "Apri la pagina del catalogo della libreria e in una frazione di secondo il browser esegue migliaia di righe di JavaScript: filtri, ricerca, carrello. Ma JavaScript è un linguaggio dinamico e «interpretato»: come fa a girare così in fretta? La risposta è nel motore JavaScript, che prima analizza il codice e poi combina interpretazione veloce a partire e compilazione ottimizzata per le parti più usate.",
+  "definizione_esame": {
+    "definizione": "Il motore JavaScript è il programma che esegue il codice JavaScript: il parser lo analizza e costruisce l'AST (albero sintattico astratto), un interprete lo esegue raccogliendo informazioni di profilo sulle parti eseguite di frequente, e un compilatore JIT (Just-In-Time) traduce quelle parti «calde» in codice macchina ottimizzato durante l'esecuzione.",
+    "scopo_vantaggio": "Combina i pregi dei due mondi: partenza rapida dell'interpretazione e prestazioni elevate della compilazione, concentrate dove servono davvero in base al comportamento osservato del programma.",
+    "esempio": "In V8 (il motore di Chrome e Node.js): il parser produce l'AST, l'interprete Ignition genera ed esegue bytecode raccogliendo feedback, e il compilatore ottimizzante TurboFan compila in codice macchina le funzioni diventate calde."
+  },
+  "spiegazione": "## Prerequisiti in una riga\n\nNessun prerequisito nel grafo: bastano le idee di programma come testo sorgente e di esecuzione riga per riga; i termini (parser, AST, JIT) vengono definiti uno a uno.\n\n## Il problema: un linguaggio dinamico deve partire subito e andare veloce\n\nJavaScript è **dinamico**: il tipo di una variabile si conosce solo mentre il programma gira (la stessa variabile può contenere prima un numero e poi una stringa). E nelle pagine web il codice deve **partire subito**: non puoi compilare tutto con calma prima di mostrare la pagina.\n\nI motori moderni (V8 in Chrome e Node.js, SpiderMonkey in Firefox, JavaScriptCore in Safari) risolvono il problema con una **pipeline adattiva**, qui descritta con i nomi di V8 perché è l'esempio documentato dalla fonte ufficiale:\n\n```mermaid\nflowchart TD\n    A[\"Codice sorgente JavaScript\"] --> B[\"Parser: analisi del testo\"]\n    B --> C[\"AST: albero sintattico astratto\"]\n    C --> D[\"Bytecode eseguito dall'interprete\"]\n    D --> E[\"Profiler e feedback: parti calde e tipi osservati\"]\n    E --> F[\"Compilatore JIT: codice macchina ottimizzato\"]\n    F --> G[\"Assunzioni violate\"]\n    G --> D\n```\n\n## Le fasi con le parole d'esame\n\n**1. Parser.** Legge il **testo** sorgente e ne verifica la correttezza grammaticale secondo le regole del linguaggio. Il parser **non esegue**: analizza. Se il codice ha un errore di sintassi, è qui che viene scoperto.\n\n**2. AST (Abstract Syntax Tree).** Il risultato dell'analisi è un **albero** che rappresenta la struttura del programma, liberata dai dettagli puramente testuali (spazi, commenti, parentesi di raggruppamento). Per esempio `let totale = 10 + 5 * 2;` diventa all'incirca:\n\n```text\nDichiarazioneVariabile (totale)\n└── EspressioneBinaria (+)\n    ├── Numero 10\n    └── EspressioneBinaria (*)\n        ├── Numero 5\n        └── Numero 2\n```\n\nNota che l'albero rende esplicita la precedenza: la moltiplicazione sta sotto, quindi viene valutata prima, esattamente come richiedono le regole del linguaggio.\n\n**3. Interpretazione con bytecode.** Dall'AST l'interprete (in V8 si chiama **Ignition**) genera un **bytecode** compatto e lo esegue subito. Generare bytecode è rapido e occupa poca memoria: perfetto per partire in fretta, anche se eseguire bytecode è più lento del codice macchina nativo.\n\n**4. Profiler (feedback).** Mentre il bytecode gira, il motore **osserva**: quali funzioni vengono chiamate spessissimo (diventano **calde**, *hot*) e con quali tipi di valori lavorano davvero (per esempio «questa funzione ha sempre sommato numeri interi»). È questa raccolta di informazioni che nel materiale d'esame compare come fase del **profiler**.\n\n**5. Compilazione JIT ottimizzante.** Le parti calde passano al compilatore ottimizzante (in V8, **TurboFan**), che le traduce in **codice macchina** sfruttando le assunzioni suggerite dal feedback (per esempio: «tratta questi valori come interi»). JIT significa **Just-In-Time**: la compilazione avviene **durante** l'esecuzione, solo per il codice che si è dimostrato meritevole.\n\n**6. Deottimizzazione.** Se un'assunzione cade (la funzione ottimizzata per i numeri riceve una stringa), il motore **butta via** quel codice macchina e torna al bytecode interpretato: corretto sempre, ottimizzato quando possibile.\n\n## Tre strategie a confronto\n\n| Strategia | Quando traduce | Partenza | Velocità a regime |\n|---|---|---|---|\n| Interpretazione pura | Mai: esegue il codice così com'è | Immediata | Modesta |\n| Compilazione anticipata (AOT) | Tutto prima dell'esecuzione | Lenta (compilazione completa) | Alta, ma senza conoscere i tipi reali a runtime |\n| JIT adattiva (motori JS) | Durante l'esecuzione, solo le parti calde | Rapida (bytecode) | Alta sulle parti calde, guidata dal feedback |\n\n## Un confine da esame: motore contro browser\n\nIl motore JavaScript implementa il **linguaggio** (tipi, operatori, oggetti e funzioni dello standard ECMAScript) e gestisce esecuzione e memoria degli oggetti. **Non** fornisce il DOM: come precisa la documentazione di V8, il DOM è fornito dal **browser** che ospita il motore. Ecco perché lo stesso JavaScript in Node.js non ha `document`: motore presente, browser assente.",
+  "analogia": {
+    "testo": "Pensa a un interprete simultaneo a un convegno in libreria. All'inizio traduce frase per frase ascoltando (interpretazione: parte subito). Se lo stesso relatore ripete mille volte la stessa presentazione, l'interprete la scrive, la ottimizza e alla fine la legge già tradotta e rifinita (JIT sulle parti calde), tenendo d'occhio che il relatore non cambi discorso.",
+    "limite": "L'interprete umano decide con giudizio e ricorda tutto; il motore decide con contatori e feedback automatici e, se il «relatore» cambia improvvisamente tipo di argomenti, deve scartare la traduzione ottimizzata e tornare alla simultanea (deottimizzazione). Inoltre prima dell'interpretazione il motore fa un passo che l'analogia non mostra: analizza la grammatica del discorso costruendone l'albero (AST)."
+  },
+  "worked_example": {
+    "titolo": "Vita di una funzione: dalla prima chiamata alla deottimizzazione",
+    "problema": "Il catalogo calcola i prezzi con function sommaPrezzi(a, b) { return a + b; }, chiamata moltissime volte con numeri mentre la pagina elenca i libri. Descrivi che cosa fa il motore dalla lettura del codice in poi, e che cosa succede il giorno in cui una chiamata arriva con una stringa.",
+    "passi": [
+      "Il parser analizza il testo della funzione e costruisce l'AST: dichiarazione di funzione con parametri a e b e corpo che restituisce l'espressione a + b.",
+      "Dall'AST l'interprete genera il bytecode e le prime chiamate girano interpretate: risposta immediata, velocità modesta.",
+      "Il profiler osserva che sommaPrezzi viene chiamata di continuo (diventa calda) e sempre con numeri: registra questo feedback sui tipi.",
+      "Il compilatore JIT compila una versione in codice macchina ottimizzata sull'assunzione «a e b sono numeri», molto più veloce nelle migliaia di chiamate successive.",
+      "Arriva una chiamata con una stringa: l'assunzione è violata, il motore deottimizza, scarta il codice macchina specializzato e torna a eseguire il bytecode, che gestisce correttamente anche la concatenazione di stringhe."
+    ],
+    "soluzione": "Sequenza completa: parser e AST, bytecode interpretato, feedback del profiler (funzione calda, tipi numerici), codice macchina JIT specializzato, e alla prima chiamata con stringa deottimizzazione con ritorno al bytecode. Il risultato del programma resta sempre corretto; cambia solo la velocità con cui viene prodotto.",
+    "perche_funziona": "La pipeline è adattiva: investe tempo di compilazione solo dove l'esecuzione ripetuta lo ripagherà, e le ottimizzazioni sono speculative ma sorvegliate, con un percorso di ritorno sicuro quando le assunzioni sui tipi smettono di valere."
+  },
+  "completion_problem": {
+    "titolo": "Metti in ordine le fasi e assegna i nomi di V8",
+    "testo": "Ti vengono date in disordine: A) compilazione in codice macchina delle parti calde; B) analisi del sorgente e costruzione dell'AST; C) esecuzione del bytecode con raccolta del feedback; D) eventuale ritorno al bytecode se le assunzioni cadono. Metti in ordine le fasi e, per l'esempio V8, associa a ciascuna il componente o il concetto giusto tra: parser, Ignition, TurboFan, deottimizzazione.",
+    "passi_mancanti": [
+      "Ordina le quattro fasi dalla lettura del codice all'ottimizzazione",
+      "Associa parser, Ignition, TurboFan e deottimizzazione alle fasi giuste"
+    ],
+    "soluzione": "Ordine corretto: **B, C, A, D**. Associazioni: B è il lavoro del **parser** (produce l'AST); C è **Ignition**, l'interprete che esegue il bytecode mentre il profiler raccoglie il feedback; A è **TurboFan**, il compilatore JIT ottimizzante; D è la **deottimizzazione**, il ritorno al bytecode quando le assunzioni sui tipi vengono violate."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Disegna l'AST e prevedi il percorso nel motore",
+    "testo": "Dato il frammento: let prezzo = (10 + 5) * 2; 1) disegna l'albero sintattico astratto mostrando quale operazione sta più in basso e perché; 2) spiega che cosa cambia nel percorso dentro il motore se questa riga sta in uno script eseguito una sola volta al caricamento, rispetto a una funzione di calcolo chiamata migliaia di volte.",
+    "suggerimento": "Le parentesi spariscono come caratteri ma restano come struttura: l'operazione tra parentesi deve risultare più profonda nell'albero. Per la seconda parte: chi decide se vale la pena compilare in codice macchina?",
+    "soluzione_attesa": "1) L'albero ha in cima la dichiarazione di variabile, sotto l'espressione binaria * (moltiplicazione), e come figlio la somma (10 + 5) più in basso, cioè valutata per prima, proprio per effetto delle parentesi:\n\n```text\nDichiarazioneVariabile (prezzo)\n└── EspressioneBinaria (*)\n    ├── EspressioneBinaria (+)\n    │   ├── Numero 10\n    │   └── Numero 5\n    └── Numero 2\n```\n\n2) Eseguita una volta sola, la riga resta al livello di bytecode interpretato: compilarla in codice macchina costerebbe più di quanto farebbe risparmiare. In una funzione chiamata migliaia di volte il profiler la segnala come calda e il JIT la compila in codice macchina ottimizzato, con eventuale deottimizzazione se i tipi osservati cambiano."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dire che il parser esegue il codice JavaScript",
+      "perche_sbagliato": "Il parser analizza il testo sorgente e costruisce l'AST, segnalando gli errori di sintassi. L'esecuzione comincia dopo, con l'interprete che gira sul bytecode generato a partire dall'AST.",
+      "distrattore": "Il parser è la parte che esegue le istruzioni"
+    },
+    {
+      "errore": "Confondere l'AST con il codice macchina o con il bytecode",
+      "perche_sbagliato": "L'AST è la rappresentazione ad albero della struttura del programma, ancora indipendente dalla macchina. Il bytecode è una rappresentazione compatta eseguita dall'interprete; il codice macchina è il prodotto finale del JIT per le parti calde.",
+      "distrattore": "L'AST è il codice compilato per il processore"
+    },
+    {
+      "errore": "Pensare che il JIT compili tutto il programma prima di iniziare a eseguirlo",
+      "perche_sbagliato": "Just-In-Time significa durante l'esecuzione e in modo selettivo: si comincia interpretando il bytecode e si compila in codice macchina solo ciò che il profiler segnala come caldo. Compilare tutto prima è la strategia AOT, diversa.",
+      "distrattore": "Il JIT traduce l'intero script prima dell'avvio"
+    },
+    {
+      "errore": "Attribuire il DOM al motore JavaScript",
+      "perche_sbagliato": "Il motore implementa il linguaggio ECMAScript; il DOM lo fornisce il browser che ospita il motore, come precisa la documentazione ufficiale di V8. In Node.js, infatti, document non esiste.",
+      "distrattore": "V8 fornisce anche il DOM delle pagine"
+    },
+    {
+      "errore": "Credere che una volta ottimizzato, il codice resti tale per sempre",
+      "perche_sbagliato": "Le ottimizzazioni JIT sono speculative, basate sui tipi osservati dal feedback: se arriva un valore di tipo diverso, il motore deottimizza e torna al bytecode per mantenere il risultato corretto.",
+      "distrattore": "Il codice macchina del JIT non viene mai scartato"
+    }
+  ],
+  "mnemonica": "«Prima Analizzo, Poi Eseguo, Osservo, Ottimizzo»: Parser e AST, esecuzione del bytecode, osservazione del profiler, ottimizzazione JIT. Le iniziali ripercorrono la pipeline in ordine.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Elenca in ordine le fasi che attraversa una funzione JavaScript in un motore moderno e il ruolo di ciascuna.",
+        "risposta": "Parser: analizza il sorgente e costruisce l'AST. Interprete: genera ed esegue il bytecode. Profiler: osserva parti calde e tipi reali (feedback). JIT: compila le parti calde in codice macchina ottimizzato. In caso di assunzioni violate, deottimizzazione e ritorno al bytecode."
+      },
+      {
+        "domanda": "Che cos'è l'AST e perché rappresenta (10 + 5) * 2 con la somma più in basso della moltiplicazione?",
+        "risposta": "L'Abstract Syntax Tree è l'albero che rappresenta la struttura del programma dopo l'analisi del parser. Gli operandi più profondi si valutano per primi: le parentesi impongono che la somma sia il sottoalbero da valutare prima della moltiplicazione."
+      },
+      {
+        "domanda": "Che cosa significa che una funzione è «calda» e chi se ne accorge?",
+        "risposta": "Significa che viene eseguita molto di frequente, tanto da ripagare il costo di compilarla in codice macchina. Se ne accorge il profiler, che durante l'esecuzione interpretata raccoglie conteggi e tipi osservati (feedback)."
+      },
+      {
+        "domanda": "Confronta interpretazione pura, compilazione AOT e JIT su tempi di avvio e di regime.",
+        "risposta": "L'interpretazione parte subito ma è modesta a regime; l'AOT compila tutto prima, avvio lento e ottimizzazioni senza conoscere i tipi reali; il JIT parte rapido col bytecode e compila solo le parti calde durante l'esecuzione, guidato dal feedback."
+      }
+    ],
+    "spiega_con_parole_tue": "Racconta con parole tue perché un motore JavaScript non compila tutto subito né interpreta tutto per sempre, usando la funzione dei prezzi della libreria come esempio da far attraversare a ogni fase.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "dom-virtual-dom",
+        "collegamento": "Motore e DOM stanno su due piani diversi: il motore esegue il linguaggio, il browser fornisce document e i nodi. Collega questa distinzione al fatto che in Node.js lo stesso motore V8 gira senza DOM."
+      },
+      {
+        "nodo": "javascript-fetch-async-await",
+        "collegamento": "Il codice con async e await attraversa la stessa pipeline (parser, AST, bytecode, JIT): ciò che lo rende asincrono non è il motore del linguaggio in sé, ma il fatto che le attese riguardano operazioni dell'ambiente, come la risposta di rete. Che cosa resta «in attesa» quando una Promise fetch è pending?"
+      }
+    ]
+  },
+  "riepilogo": "Il motore JavaScript esegue il codice con una pipeline adattiva: il parser costruisce l'AST, l'interprete genera ed esegue bytecode partendo subito, il profiler raccoglie feedback su parti calde e tipi, il compilatore JIT traduce le parti calde in codice macchina e, se le assunzioni cadono, deottimizza tornando al bytecode. Il DOM non appartiene al motore: lo fornisce il browser.",
+  "flashcard": {
+    "fronte": "Pipeline di un motore JS: fasi in ordine e nomi V8?",
+    "retro": "Parser (costruisce l'AST), interprete Ignition (bytecode eseguito subito), profiler/feedback (parti calde e tipi osservati), compilatore JIT TurboFan (codice macchina per le parti calde), con deottimizzazione se le assunzioni cadono."
+  },
+  "checklist": {
+    "so_fare": [
+      "Disegnare l'AST di una piccola espressione rispettando precedenze e parentesi",
+      "Riordinare e nominare le fasi parser, AST, bytecode, profiler, JIT, deottimizzazione",
+      "Raccontare per una funzione calda il passaggio da interpretazione a codice macchina e ritorno"
+    ],
+    "so_dire": [
+      "Definire AST come albero astratto della struttura, distinto da bytecode e codice macchina",
+      "Spiegare JIT come compilazione durante l'esecuzione e solo delle parti calde",
+      "Attribuire correttamente linguaggio al motore e DOM al browser ospitante"
+    ]
+  }
+}

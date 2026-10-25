@@ -1,0 +1,124 @@
+{
+  "perche_ti_serve": "Gruppo A (iper-riciclati, ~65% dello scritto da MATERIALE_UTENTE): DOM e Virtual DOM si rispondono con la regola dei 3 punti e con il confronto diretto.",
+  "scenario_fil_rouge": "Nella pagina della libreria online il lettore clicca «Aggiungi al carrello»: la pagina non si ricarica, ma il contatore in alto passa da 2 a 3 e compare una riga nuova nell'elenco. Chi ha modificato la pagina già caricata? JavaScript, lavorando sul DOM. E quando le modifiche diventano centinaia, i framework si appoggiano a un Virtual DOM per non dover riscrivere tutto a mano.",
+  "definizione_esame": {
+    "definizione": "Il DOM (Document Object Model) è l'interfaccia di programmazione che rappresenta il documento HTML come un albero di nodi in memoria, così che i programmi possano leggerne e modificarne struttura, contenuto e stile; il Virtual DOM è una rappresentazione leggera («virtuale») dell'interfaccia utente mantenuta in memoria dai framework e sincronizzata con il DOM reale applicando solo le differenze.",
+    "scopo_vantaggio": "Il DOM rende la pagina manipolabile dal codice; il Virtual DOM permette di descrivere l'interfaccia in modo dichiarativo (come deve apparire dato lo stato) lasciando al framework il calcolo e l'applicazione delle modifiche minime al DOM reale.",
+    "esempio": "Nella libreria, document.querySelector('#conteggio').textContent = '3' aggiorna il contatore del carrello nel DOM reale; con un framework basato su Virtual DOM dichiari il nuovo elenco dei libri e il framework scopre da solo che va cambiato solo quel testo e aggiunta una riga."
+  },
+  "spiegazione": "## Prerequisiti in una riga\n\nNessun prerequisito nel grafo: servono le nozioni di documento HTML ad albero (elementi annidati) e di JavaScript che gira nella pagina.\n\n## Che cos'è il DOM\n\nQuando il browser analizza (fa il **parsing** di) un documento HTML, costruisce in memoria il **DOM**: un **albero logico** in cui ogni elemento, testo o commento della pagina è un **nodo** (oggetto) con proprietà e metodi. Il punto di accesso all'albero è l'oggetto `document`.\n\nTre precisazioni importanti per rispondere bene alle domande di definizione:\n\n- il DOM **non è JavaScript**: è una **Web API** del browser, progettata per essere indipendente dal linguaggio; JavaScript è solo il linguaggio con cui di solito la si usa nella pagina (e infatti in Node.js, fuori dal browser, il DOM non c'è);\n- DOM e sorgente HTML rappresentano lo **stesso documento** in due forme: testo da una parte, albero di oggetti manipolabili dall'altra;\n- sui nodi si possono registrare **gestori di eventi**: quando l'evento si verifica, il gestore viene eseguito (nodo `eventi-locali-vs-remoti`).\n\n```mermaid\nflowchart TD\n    A[\"Documento HTML ricevuto\"] --> B[\"Parsing del browser\"]\n    B --> C[\"Albero DOM di nodi in memoria\"]\n    C --> D[\"JavaScript legge e modifica i nodi\"]\n    D --> E[\"Il browser ridisegna la pagina aggiornata\"]\n```\n\n## Manipolare il DOM: le operazioni essenziali\n\n**Trovare** i nodi:\n\n```javascript\nconst lista = document.getElementById('carrello');      // per id\nconst prezzo = document.querySelector('.card .prezzo'); // primo che corrisponde al selettore CSS\nconst cards = document.querySelectorAll('.card');       // tutti quelli che corrispondono\n```\n\n**Creare, inserire, rimuovere**:\n\n```javascript\nconst riga = document.createElement('li');\nriga.textContent = 'Dune - 14,90 euro';  // testo puro, mai interpretato come HTML\nlista.appendChild(riga);                  // inserisce come ultimo figlio\nriga.remove();                            // rimuove il nodo dall'albero\n```\n\n**Modificare** contenuti, attributi e classi:\n\n```javascript\ntitolo.textContent = 'Novità in libreria';\ncopertina.setAttribute('alt', 'Copertina di Dune');\ncard.classList.add('in-offerta');        // gli stili li decide il CSS\n```\n\nDifferenza da non sbagliare: assegnare a **`textContent`** inserisce **testo** (i caratteri `<` e `>` restano innocui), assegnare a **`innerHTML`** fa **analizzare la stringa come HTML** e costruire nuovi nodi. Con dati che arrivano dall'utente, `innerHTML` può quindi iniettare markup indesiderato (problema di sicurezza noto come XSS): per il testo si usa `textContent`.\n\n## Dal DOM reale al Virtual DOM\n\nModificare il DOM reale a mano funziona, ma con interfacce grandi il codice che tiene allineati dati e pagina diventa fragile. I framework come React e Vue adottano un altro modello, il **Virtual DOM**: una rappresentazione «virtuale» dell'interfaccia mantenuta in memoria come **semplici oggetti JavaScript** (i nodi virtuali descrivono tipo di elemento, proprietà e figli) e sincronizzata con il DOM reale.\n\nIl ciclo, con i nomi usati nella documentazione Vue e React:\n\n1. **render**: dai dati (lo stato) il framework costruisce un **nuovo albero virtuale** che descrive come deve apparire l'interfaccia;\n2. **confronto (diffing/reconciliation)**: il nuovo albero viene confrontato con il precedente per trovare le **differenze**;\n3. **patch/commit**: al DOM reale vengono applicate **solo le operazioni necessarie** per allinearlo (cambiare un testo, aggiungere o togliere un nodo), non la ricostruzione dell'intera pagina.\n\n```mermaid\nflowchart TD\n    A[\"Nuovo stato: carrello con 3 libri\"] --> B[\"Nuovo albero virtuale\"]\n    B --> C[\"Confronto con albero precedente\"]\n    C --> D[\"Differenze: un testo e una riga nuova\"]\n    D --> E[\"Patch sul DOM reale\"]\n```\n\nIl vantaggio principale, come lo descrive la documentazione Vue, è di **modello di programmazione**: descrivi l'interfaccia in modo **dichiarativo** in funzione dello stato e lasci la manipolazione diretta del DOM al motore di rendering. Non è una bacchetta magica sulle prestazioni: il confronto ha un costo e un aggiornamento manuale mirato può fare anche meno lavoro; il Virtual DOM compra soprattutto **correttezza e semplicità** quando gli aggiornamenti sono tanti e intrecciati.\n\n## DOM e Virtual DOM a confronto\n\n| Aspetto | DOM reale | Virtual DOM |\n|---|---|---|\n| Che cos'è | Albero di oggetti del browser che rappresenta la pagina viva | Albero di oggetti JavaScript leggeri tenuto dal framework |\n| Chi lo crea | Il browser, dal parsing dell'HTML | Il framework, a partire dallo stato dell'applicazione |\n| Effetto sullo schermo | È ciò che viene disegnato | Nessuno da solo: va sincronizzato (patch) sul DOM reale |\n| Come si aggiorna | Con le API DOM, nodo per nodo | Si ricostruisce la descrizione e si applicano solo le differenze |\n| Esiste senza framework? | Sì, in ogni pagina web | No, è un pattern introdotto dai framework |\n\nParole chiave da usare nella risposta d'esame: per il DOM **albero di nodi, API, manipolazione**; per il Virtual DOM **copia leggera in memoria, confronto (diffing), applicazione delle sole differenze (patch/reconciliation), programmazione dichiarativa**.",
+  "analogia": {
+    "testo": "Il DOM è lo scaffale vero della libreria: per spostare un libro devi prendere in mano quel libro e metterlo al suo posto. Il Virtual DOM è la mappa cartacea dello scaffale che il commesso aggiorna a tavolino: segna sulla mappa come deve diventare lo scaffale, confronta mappa nuova e vecchia, e poi va a spostare fisicamente solo i libri che differiscono.",
+    "limite": "La mappa cartacea non sposta nulla da sola e anche il Virtual DOM non mostra nulla: alla fine qualcuno deve sempre agire sullo scaffale reale, cioè sul DOM. Inoltre disegnare e confrontare le mappe costa tempo, quindi per un solo libro da spostare l'azione diretta resta più semplice."
+  },
+  "worked_example": {
+    "titolo": "Aggiungere un libro al carrello senza ricaricare la pagina",
+    "problema": "La pagina della libreria contiene <ul id=\"carrello\"></ul> e <span id=\"conteggio\">2</span>. Scrivi il codice che, al click sul pulsante con id aggiungi, inserisce la riga «Dune - 14,90 euro» in fondo all'elenco e porta il conteggio a 3, senza costruire HTML a partire da testo non fidato.",
+    "passi": [
+      "Recupera i nodi che servono con getElementById: pulsante, elenco e conteggio.",
+      "Registra sul pulsante un gestore per l'evento click con addEventListener.",
+      "Nel gestore crea la nuova riga con createElement('li') e impostane il testo con textContent, così il contenuto resta testo e non viene interpretato come HTML.",
+      "Inserisci la riga con appendChild sull'elenco.",
+      "Aggiorna il conteggio leggendo il numero di figli dell'elenco (children.length) e riscrivendolo con textContent."
+    ],
+    "soluzione": "```javascript\nconst pulsante = document.getElementById('aggiungi');\nconst elenco = document.getElementById('carrello');\nconst conteggio = document.getElementById('conteggio');\n\npulsante.addEventListener('click', () => {\n  const riga = document.createElement('li');\n  riga.textContent = 'Dune - 14,90 euro';\n  elenco.appendChild(riga);\n  conteggio.textContent = String(elenco.children.length);\n});\n```\n\nVerifica: dopo il click l'elenco ha una riga in più e il conteggio vale '3'; nessuna ricarica della pagina è avvenuta, perché è cambiato solo l'albero DOM in memoria.",
+    "perche_funziona": "Il DOM è la rappresentazione viva della pagina: modificare i suoi nodi (crearne uno, inserirlo, cambiare un testo) è sufficiente perché il browser mostri la pagina aggiornata. createElement e textContent mantengono separati struttura e testo, evitando che il contenuto venga interpretato come markup."
+  },
+  "completion_problem": {
+    "titolo": "Lo stesso aggiornamento raccontato con il Virtual DOM",
+    "testo": "Immagina la stessa pagina realizzata con un framework a Virtual DOM. Stato prima: carrello con due libri, A e B, e conteggio 2. Stato dopo: tre libri A, B, C e conteggio 3. Completa la descrizione del ciclo indicando che cosa viene confrontato e quali operazioni minime arrivano al DOM reale.",
+    "passi_mancanti": [
+      "Descrivi che cosa produce il render a partire dal nuovo stato",
+      "Individua le differenze tra albero virtuale vecchio e nuovo (diffing)",
+      "Elenca le sole operazioni applicate al DOM reale (patch)"
+    ],
+    "soluzione": "Render: dal nuovo stato (tre libri, conteggio 3) il framework costruisce un nuovo albero virtuale che descrive elenco con tre righe e conteggio '3'. Diffing: confrontandolo con l'albero virtuale precedente (due righe, conteggio '2'), le righe A e B risultano uguali; differiscono solo una riga in più e il testo del conteggio. Patch: sul DOM reale vengono eseguite solo due operazioni, inserire il nuovo elemento li e cambiare il testo del conteggio; il resto della pagina non viene toccato né ricostruito."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Rimuovere le righe esaurite dal catalogo",
+    "testo": "Il catalogo mostra una lista di libri; quelli esauriti hanno classe esaurito. Scrivi il codice che seleziona tutte le righe esaurite e le rimuove dalla pagina. Poi spiega in tre righe come cambierebbe la descrizione se la pagina usasse un Virtual DOM: che cosa scriveresti tu e che cosa calcolerebbe il framework?",
+    "suggerimento": "Per la selezione usa querySelectorAll con un selettore di classe e poi rimuovi ogni nodo. Per la parte concettuale: con il Virtual DOM non rimuovi nodi, dichiari il nuovo elenco senza gli esauriti.",
+    "soluzione_attesa": "```javascript\ndocument.querySelectorAll('.esaurito').forEach((riga) => riga.remove());\n```\n\nCon il Virtual DOM scriveresti l'elenco a partire dai soli libri disponibili: il framework confronterebbe il nuovo albero con il precedente, scoprirebbe le righe scomparse e applicherebbe al DOM reale solo le rimozioni corrispondenti."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dire che il DOM fa parte del linguaggio JavaScript",
+      "perche_sbagliato": "Il DOM è una Web API fornita dal browser, indipendente dal linguaggio: JavaScript la usa, ma il linguaggio ECMAScript in sé (per esempio in Node.js) non include document né i nodi della pagina.",
+      "distrattore": "Il DOM è una caratteristica del linguaggio JavaScript"
+    },
+    {
+      "errore": "Presentare il Virtual DOM come sostituto che elimina il DOM reale",
+      "perche_sbagliato": "Il Virtual DOM è solo una descrizione in memoria: ciò che l'utente vede è sempre il DOM reale del browser, aggiornato applicando le differenze nella fase di patch. Senza DOM reale non ci sarebbe pagina.",
+      "distrattore": "Con il Virtual DOM il DOM reale non serve più"
+    },
+    {
+      "errore": "Affermare che il Virtual DOM è sempre più veloce di qualsiasi manipolazione diretta",
+      "perche_sbagliato": "Costruire e confrontare alberi virtuali ha un costo; un aggiornamento manuale mirato può fare meno lavoro. Il vantaggio certo è il modello dichiarativo che tiene interfaccia e stato allineati con meno codice fragile.",
+      "distrattore": "Il Virtual DOM è sempre l'opzione più veloce"
+    },
+    {
+      "errore": "Usare innerHTML e textContent come se fossero intercambiabili",
+      "perche_sbagliato": "innerHTML analizza la stringa come HTML e costruisce nodi: con testo proveniente dall'utente può iniettare markup (XSS). textContent inserisce testo puro e va preferito quando il contenuto non è markup fidato.",
+      "distrattore": "innerHTML e textContent sono equivalenti"
+    },
+    {
+      "errore": "Confondere l'albero DOM con il sorgente HTML della pagina",
+      "perche_sbagliato": "Il sorgente è il testo ricevuto; il DOM è l'albero di oggetti costruito dal browser con il parsing, che poi JavaScript può modificare. Dopo le modifiche i due non coincidono più: la pagina visualizzata segue il DOM.",
+      "distrattore": "DOM e sorgente HTML sono la stessa cosa"
+    }
+  ],
+  "mnemonica": "«Descrivi, Confronta, Correggi»: il Virtual DOM descrive la pagina desiderata, confronta con la descrizione precedente, corregge il DOM reale solo dove serve.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cos'è il DOM e perché non è corretto dire che fa parte di JavaScript?",
+        "risposta": "È l'interfaccia (Web API) che rappresenta il documento come albero di nodi manipolabili. È fornita dal browser ed è indipendente dal linguaggio: JavaScript la usa nelle pagine, ma ECMAScript da solo (per esempio in Node.js) non la include."
+      },
+      {
+        "domanda": "Descrivi le tre fasi con cui un framework aggiorna la pagina tramite Virtual DOM.",
+        "risposta": "Render: dallo stato costruisce un nuovo albero virtuale. Diffing (reconciliation): confronta nuovo e vecchio albero per trovare le differenze. Patch (commit): applica al DOM reale solo le operazioni necessarie per allinearlo."
+      },
+      {
+        "domanda": "Quando preferisci textContent a innerHTML e perché?",
+        "risposta": "Quando inserisci testo, specie se arriva dall'utente o dai dati: textContent lo tratta come testo puro, mentre innerHTML lo analizza come markup e può iniettare elementi indesiderati (XSS)."
+      },
+      {
+        "domanda": "Qual è il vantaggio principale del Virtual DOM rispetto alla manipolazione manuale?",
+        "risposta": "Il modello dichiarativo: descrivi l'interfaccia in funzione dello stato e il framework calcola e applica le modifiche minime. Riduce il codice imperativo fragile che tiene allineati dati e pagina; non garantisce di essere sempre più veloce di un aggiornamento manuale mirato."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega a parole tue, con l'esempio del carrello, la differenza tra «spostare il libro sullo scaffale» (DOM) e «aggiornare la mappa e correggere solo le differenze» (Virtual DOM), dicendo chi fa che cosa in ciascun caso.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "dhtml-dynamic-html",
+        "collegamento": "Il DHTML è nato proprio combinando HTML, CSS e JavaScript che manipola il DOM in risposta agli eventi: collega le operazioni DOM di questa lezione (createElement, classList, listener) alla definizione storica di pagina dinamica lato client."
+      },
+      {
+        "nodo": "eventi-locali-vs-remoti",
+        "collegamento": "Su quali oggetti registri i listener degli eventi locali come click? Collega addEventListener sui nodi DOM alla distinzione tra eventi che nascono nel client ed eventi che arrivano dalla rete."
+      },
+      {
+        "nodo": "javascript-fetch-async-await",
+        "collegamento": "Quando fetch scarica l'elenco dei libri, i dati JSON da soli non compaiono in pagina: quale metà del lavoro fa fetch e quale metà fanno le API del DOM per mostrare l'elenco?"
+      }
+    ]
+  },
+  "riepilogo": "Il DOM è l'albero di nodi con cui il browser rappresenta la pagina e la rende manipolabile (selezione, creazione, inserimento, rimozione, textContent contro innerHTML). Il Virtual DOM è una descrizione leggera in memoria: il framework la ricostruisce a ogni cambio di stato, la confronta con la precedente e applica al DOM reale solo le differenze.",
+  "flashcard": {
+    "fronte": "DOM e Virtual DOM: definizioni e differenza in una frase?",
+    "retro": "Il DOM è l'albero di oggetti del browser che rappresenta la pagina viva e si manipola con le sue API. Il Virtual DOM è una copia leggera in memoria che il framework confronta tra un render e l'altro per applicare al DOM reale solo le differenze."
+  },
+  "checklist": {
+    "so_fare": [
+      "Selezionare nodi con getElementById, querySelector e querySelectorAll",
+      "Creare, inserire e rimuovere elementi con createElement, appendChild e remove",
+      "Aggiornare testi in modo sicuro con textContent e classi con classList",
+      "Simulare su carta render, diffing e patch di un piccolo aggiornamento"
+    ],
+    "so_dire": [
+      "Definire il DOM citando albero di nodi, API del browser e indipendenza dal linguaggio",
+      "Definire il Virtual DOM citando descrizione in memoria, confronto e applicazione delle sole differenze",
+      "Spiegare perché il vantaggio del Virtual DOM è soprattutto il modello dichiarativo"
+    ]
+  }
+}

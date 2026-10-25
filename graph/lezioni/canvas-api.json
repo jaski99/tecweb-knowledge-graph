@@ -1,0 +1,124 @@
+{
+  "perche_ti_serve": "Gruppo B (varianti isolate, ~20% dello scritto da MATERIALE_UTENTE): ricorre il tag canvas con un piccolo disegno 2D da saper leggere e scrivere.",
+  "scenario_fil_rouge": "Nella pagina delle statistiche la libreria vuole un grafico a barre con i libri venduti per genere, disegnato al volo nel browser a partire dai numeri. Non è un'immagine pronta caricata dal server: è JavaScript che prende un'area rettangolare della pagina e ci disegna dentro rettangoli ed etichette, pixel per pixel. Quell'area è l'elemento canvas.",
+  "definizione_esame": {
+    "definizione": "L'elemento <canvas> è un'area rettangolare nella pagina su cui si disegna grafica raster (una bitmap) tramite JavaScript; la Canvas API 2D fornisce il contesto di disegno, ottenuto con getContext('2d'), con metodi per tracciare e riempire forme, testo e immagini.",
+    "scopo_vantaggio": "Permette grafica generata dal codice in tempo reale (grafici, giochi, animazioni, elaborazione di immagini) senza plugin e senza preparare i file immagine in anticipo.",
+    "esempio": "Per il grafico della libreria: si ottiene il contesto con canvas.getContext('2d'), si imposta ctx.fillStyle e si disegna ogni barra con ctx.fillRect(x, y, larghezza, altezza) calcolata dai dati di vendita."
+  },
+  "spiegazione": "## Prerequisiti in una riga\n\nNessun prerequisito nel grafo: servono solo le basi di HTML e JavaScript (selezionare un elemento, chiamare metodi, assegnare proprietà).\n\n## Elemento e contesto: la tela e i pennelli\n\nL'elemento `<canvas>` da solo è uno spazio vuoto e trasparente. Per disegnare serve il **contesto di disegno**, l'oggetto che espone gli strumenti:\n\n```html\n<canvas id=\"grafico\" width=\"400\" height=\"240\">\n  Il tuo browser non supporta il canvas: qui vedresti il grafico delle vendite.\n</canvas>\n```\n\n```javascript\nconst canvas = document.getElementById('grafico');\nconst ctx = canvas.getContext('2d');\n```\n\n`getContext('2d')` restituisce il contesto **2D** (`CanvasRenderingContext2D`). Lo stesso elemento supporta anche il contesto **WebGL** per la grafica accelerata 2D/3D, ma la Canvas API trattata qui si concentra sul 2D. Il testo **dentro** il tag è contenuto di riserva (*fallback*), mostrato solo se il canvas non è supportato.\n\nDistinzione fondamentale sulle misure:\n\n| Misura | Dove si imposta | Che cosa controlla |\n|---|---|---|\n| Attributi `width`/`height` (predefiniti: 300 e 150) | Nel tag `<canvas>` o via proprietà | La **risoluzione** della bitmap, cioè quanti pixel ha la tela |\n| Proprietà CSS `width`/`height` | Nel foglio di stile | La **dimensione in pagina** con cui la bitmap viene mostrata |\n\nSe le due misure non coincidono, la bitmap viene **scalata** e può apparire sfocata o deformata: è la trappola classica del «canvas sfocato».\n\n## Disegnare: coordinate, stato e percorsi\n\nIl sistema di coordinate ha **origine (0, 0) nell'angolo in alto a sinistra**, `x` crescente a destra e `y` crescente **verso il basso**.\n\nIl contesto ha uno **stato**: proprietà come `fillStyle` (riempimento) e `strokeStyle` (contorno) valgono per **tutte le operazioni seguenti**, finché non le cambi. Il modello è a esecuzione immediata (*immediate mode*): quando disegni, i pixel vengono scritti sulla bitmap e **non resta nessun oggetto** che rappresenti la forma.\n\nRettangoli (le uniche forme con metodi diretti):\n\n```javascript\nctx.fillStyle = 'darkred';\nctx.fillRect(20, 30, 120, 60);   // riempie: x, y, larghezza, altezza\nctx.strokeRect(20, 120, 120, 60); // solo contorno\nctx.clearRect(30, 40, 40, 40);    // rende trasparente un'area\n```\n\nPer tutto il resto si costruisce un **percorso** (*path*) e poi lo si riempie o contorna:\n\n```javascript\nctx.beginPath();                    // inizia un percorso nuovo\nctx.arc(200, 80, 40, 0, Math.PI * 2); // cerchio: centro (200, 80), raggio 40\nctx.fillStyle = 'orange';\nctx.fill();                         // riempie il percorso corrente\nctx.stroke();                       // disegna il contorno del percorso corrente\n```\n\n`arc(x, y, raggio, angoloInizio, angoloFine)` lavora in **radianti**: il cerchio completo arriva a `Math.PI * 2`. Altri mattoni dei percorsi: `moveTo` (alza la penna e si sposta), `lineTo` (segmento fino al punto), `rect`. Dimenticare `beginPath()` **unisce** il nuovo tratto al percorso precedente: errore tipico, con riempimenti e contorni che «sbavano» da una forma all'altra.\n\n```mermaid\nflowchart TD\n    A[\"Elemento canvas in pagina\"] --> B[\"getContext 2d: il contesto\"]\n    B --> C[\"Imposta lo stato: fillStyle e strokeStyle\"]\n    C --> D[\"Costruisci forme o percorsi\"]\n    D --> E[\"fill o stroke scrivono i pixel\"]\n    E --> F[\"Per animare: cancella e ridisegna\"]\n```\n\n## Animare: cancella, aggiorna, ridisegna\n\nPoiché le forme non esistono come oggetti, per animare si **ridisegna la scena** a ogni fotogramma: si pulisce l'area (`clearRect` sull'intero canvas), si aggiornano le posizioni calcolate dal codice e si disegna di nuovo. Il ritmo lo dà **`requestAnimationFrame(callback)`**, che chiede al browser di chiamare la funzione **prima del prossimo ridisegno** dello schermo: è lo strumento pensato per le animazioni, preferibile a temporizzatori generici.\n\nLo stesso vale per gli **eventi**: il canvas riceve il click come elemento unico; per capire **quale** «forma» è stata colpita devi calcolarlo tu dalle coordinate (per esempio sottraendo la posizione del canvas ottenuta con `getBoundingClientRect()`), perché le forme disegnate non sono nodi con propri listener.\n\n## Canvas e SVG: raster immediato contro vettoriale nel DOM\n\n| Aspetto | Canvas 2D | SVG |\n|---|---|---|\n| Rappresentazione | Bitmap raster: solo pixel finali | Grafica vettoriale: elementi nel DOM |\n| Modello | Immediato: disegni e dimentichi | Conservato: ogni forma è un nodo separato |\n| Modifica una forma | Ridisegni la scena | Cambi attributi del nodo |\n| Eventi sulle forme | Calcolo manuale dalle coordinate | Listener sui singoli elementi |\n| Ingrandimento | I pixel si vedono (perde nitidezza) | Scala senza perdere nitidezza |\n\nConseguenza per l'**accessibilità** (sottolineata da MDN): il canvas è «solo una bitmap» e **non espone informazioni** sugli oggetti disegnati alle tecnologie assistive; contenuti importanti disegnati su canvas richiedono un'alternativa accessibile (testo equivalente o markup), un po' come per le immagini.",
+  "analogia": {
+    "testo": "Il canvas è una lavagna bianca nella sala della libreria: JavaScript è la persona con il pennarello che disegna il grafico delle vendite. Una volta tracciata una barra, sulla lavagna resta solo l'inchiostro: per cambiarla devi cancellare e ridisegnare, non puoi «afferrare» la barra e spostarla come fosse un cartoncino separato.",
+    "limite": "Sulla lavagna fisica puoi almeno indicare una barra col dito; nel canvas nemmeno questo è automatico: il click arriva alla lavagna intera e sta al codice calcolare, dalle coordinate, se il punto cade dentro la zona che aveva disegnato come barra."
+  },
+  "worked_example": {
+    "titolo": "Grafico a barre delle vendite per genere",
+    "problema": "Disegna su un canvas 400 per 240 tre barre verticali per le vendite: Narrativa 120, Saggi 80, Fumetti 50. L'altezza di ogni barra deve essere proporzionale al valore, le barre poggiano sulla stessa base (y = 220) e sono larghe 60px, distanziate, tutte dello stesso colore.",
+    "passi": [
+      "Recupera l'elemento con getElementById e il contesto con getContext('2d'): senza contesto non esiste alcuno strumento di disegno.",
+      "Imposta una volta il colore di riempimento con ctx.fillStyle: lo stato vale per i disegni seguenti.",
+      "Metti i valori in un array e, per ciascuno, calcola la posizione x della barra (partenza più indice per passo) e la sua y superiore come base meno altezza, perché la y cresce verso il basso.",
+      "Disegna ogni barra con fillRect(x, ySuperiore, 60, valore): con i valori dati, l'altezza in pixel coincide con il valore.",
+      "Verifica: barre alte 120, 80 e 50 pixel a partire dalla stessa base, coerenti con i dati."
+    ],
+    "soluzione": "```html\n<canvas id=\"grafico\" width=\"400\" height=\"240\">\n  Grafico non disponibile: Narrativa 120, Saggi 80, Fumetti 50.\n</canvas>\n```\n\n```javascript\nconst canvas = document.getElementById('grafico');\nconst ctx = canvas.getContext('2d');\n\nconst vendite = [120, 80, 50];\nconst base = 220;\nctx.fillStyle = 'darkred';\n\nvendite.forEach((valore, i) => {\n  const x = 40 + i * 110;      // 40, 150, 260\n  const y = base - valore;     // la y cresce verso il basso\n  ctx.fillRect(x, y, 60, valore);\n});\n```\n\nConto di controllo per la prima barra: `fillRect(40, 100, 60, 120)` copre da y=100 a y=220, esattamente la base comune.",
+    "perche_funziona": "Il contesto applica lo stato impostato (fillStyle) a ogni fillRect, e la conversione dato-coordinate è esplicita nel codice: siccome la y cresce verso il basso, l'angolo superiore della barra si ottiene sottraendo l'altezza dalla base. La bitmap finale contiene i pixel delle tre barre, proporzionali ai valori."
+  },
+  "completion_problem": {
+    "titolo": "Completa il disegno di un cerchio con contorno",
+    "testo": "Su un canvas già presente in pagina con id \"tela\" devi disegnare un cerchio pieno arancione con contorno nero, centro (120, 90) e raggio 45. Mancano: ottenere il contesto, costruire il percorso del cerchio e applicare riempimento e contorno nell'ordine sensato.",
+    "passi_mancanti": [
+      "Ottieni il contesto 2D dall'elemento canvas",
+      "Apri un percorso nuovo e aggiungi l'arco completo con centro, raggio e angoli in radianti",
+      "Imposta fillStyle e strokeStyle, poi chiama fill e stroke sul percorso"
+    ],
+    "soluzione": "```javascript\nconst ctx = document.getElementById('tela').getContext('2d');\n\nctx.beginPath();\nctx.arc(120, 90, 45, 0, Math.PI * 2);\nctx.fillStyle = 'orange';\nctx.fill();\nctx.strokeStyle = 'black';\nctx.stroke();\n```\n\n`beginPath()` evita che il cerchio si unisca a eventuali percorsi precedenti; `0` e `Math.PI * 2` sono gli angoli, in radianti, per il giro completo."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Diagnosi di un canvas sfocato e di forme «incollate»",
+    "testo": "Un collega lamenta due problemi sul grafico del catalogo: 1) le barre si vedono sfocate e leggermente deformate; nel CSS il canvas è largo 600px, ma gli attributi sono width=\"300\" height=\"150\". 2) Quando disegna due cerchi uno dopo l'altro, il secondo trascina con sé una linea dal primo. Spiega la causa di entrambi e le correzioni.",
+    "suggerimento": "Per il primo problema confronta risoluzione della bitmap e dimensione visualizzata. Per il secondo, pensa a che cosa accumula il percorso corrente tra un disegno e l'altro.",
+    "soluzione_attesa": "1) La bitmap è 300 per 150 pixel ma viene mostrata a 600px di larghezza: il browser la scala e i pixel si ingrandiscono (sfocatura e possibile deformazione se le proporzioni cambiano). Correzione: allineare gli attributi width/height alla risoluzione desiderata, per esempio width=\"600\" con altezza in proporzione, tenendo conto delle dimensioni in pagina. 2) Manca beginPath() prima del secondo cerchio: il percorso corrente include ancora il primo arco, quindi fill e stroke li trattano come un'unica figura collegata. Correzione: chiamare beginPath() all'inizio di ogni forma indipendente."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Disegnare sull'elemento canvas senza ottenere il contesto",
+      "perche_sbagliato": "L'elemento è solo l'area: i metodi di disegno stanno sul contesto restituito da getContext('2d'). Chiamare fillRect sull'elemento è un errore, perché quel metodo sull'elemento non esiste.",
+      "distrattore": "Si disegna chiamando i metodi direttamente sul tag canvas"
+    },
+    {
+      "errore": "Confondere attributi width/height del canvas con le omonime proprietà CSS",
+      "perche_sbagliato": "Gli attributi definiscono la risoluzione della bitmap (predefiniti 300 per 150), il CSS la dimensione di visualizzazione. Se differiscono, la bitmap viene scalata e appare sfocata o deformata.",
+      "distrattore": "Attributi e CSS width del canvas sono la stessa misura"
+    },
+    {
+      "errore": "Trattare le forme disegnate come oggetti cliccabili e spostabili",
+      "perche_sbagliato": "Il modello è immediato: restano solo i pixel, non oggetti forma. Per spostare qualcosa si cancella e si ridisegna; per intercettare un click su una forma si calcolano le coordinate a mano.",
+      "distrattore": "Ogni rettangolo sul canvas ha i suoi eventi click"
+    },
+    {
+      "errore": "Dimenticare beginPath() tra forme indipendenti",
+      "perche_sbagliato": "Il percorso corrente accumula i tratti: senza beginPath, il nuovo arco o segmento si collega ai precedenti e fill/stroke li disegnano come un'unica figura, con linee e riempimenti indesiderati.",
+      "distrattore": "Ogni arc inizia automaticamente un percorso pulito"
+    },
+    {
+      "errore": "Scrivere contenuti importanti solo sul canvas senza alternativa accessibile",
+      "perche_sbagliato": "Il canvas è una bitmap: le tecnologie assistive non ricavano informazioni sugli oggetti disegnati e il testo rasterizzato perde leggibilità ingrandendolo. Servono testo di riserva o alternative equivalenti per i contenuti significativi.",
+      "distrattore": "Il testo disegnato sul canvas è leggibile dagli screen reader"
+    }
+  ],
+  "mnemonica": "«Tela, Contesto, Colore, Tratto»: prima la tela in HTML, poi il contesto con getContext, poi imposti gli stili di stato, infine tracci. Saltare un gradino è l'origine di quasi tutti gli errori.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa restituisce getContext('2d') e a che cosa serve?",
+        "risposta": "Restituisce il contesto di disegno 2D dell'elemento canvas: l'oggetto con lo stato (come fillStyle) e i metodi (fillRect, beginPath, arc, fill, stroke) con cui si scrive sulla bitmap."
+      },
+      {
+        "domanda": "Perché un canvas con attributi 300 per 150 mostrato largo 600px dal CSS appare sfocato?",
+        "risposta": "Perché la bitmap ha solo 300 pixel di larghezza reale e il browser la scala al doppio per mostrarla: i pixel si ingrandiscono. Attributi e CSS controllano rispettivamente risoluzione e dimensione in pagina."
+      },
+      {
+        "domanda": "Che cosa significa che il modello del canvas è «immediato» e quale conseguenza ha per le animazioni?",
+        "risposta": "Significa che disegnando si scrivono pixel e non resta alcun oggetto che rappresenti la forma. Per animare bisogna cancellare e ridisegnare la scena a ogni fotogramma, tipicamente coordinandosi con requestAnimationFrame."
+      },
+      {
+        "domanda": "Scrivi le coordinate per un cerchio completo con arc: quali parametri servono e in che unità sono gli angoli?",
+        "risposta": "arc(x, y, raggio, angoloInizio, angoloFine): centro, raggio e angoli in radianti; il cerchio completo va da 0 a Math.PI * 2, preceduto da beginPath() e seguito da fill() o stroke()."
+      }
+    ],
+    "spiega_con_parole_tue": "Racconta con parole tue, usando la lavagna o un'immagine tua, perché sul canvas non puoi «spostare la barra» ma devi ridisegnare il grafico, e che cosa succede invece con una forma SVG nella stessa situazione.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "dom-virtual-dom",
+        "collegamento": "L'elemento canvas è un nodo del DOM, ma il suo interno disegnato non è fatto di nodi: confronta questa situazione con una lista costruita con createElement, dove ogni riga è un nodo selezionabile e cliccabile."
+      },
+      {
+        "nodo": "eventi-locali-vs-remoti",
+        "collegamento": "Il click sul canvas è un evento locale ricevuto dall'elemento intero: collega questo fatto alla necessità di calcolare a mano, dalle coordinate dell'evento, quale parte del disegno è stata colpita."
+      },
+      {
+        "nodo": "javascript-fetch-async-await",
+        "collegamento": "I dati del grafico possono arrivare da fetch in formato JSON: ripercorri la catena completa, dalla richiesta asincrona ai numeri, fino alle chiamate fillRect che li trasformano in barre."
+      }
+    ]
+  },
+  "riepilogo": "Il canvas è una bitmap disegnata da JavaScript tramite il contesto 2D di getContext('2d'): attributi width/height danno la risoluzione, il CSS la taglia in pagina. Si disegna con rettangoli diretti e percorsi (beginPath, arc, fill, stroke) su uno stato fatto di stili. Il modello immediato non conserva oggetti: animazioni ed eventi vanno gestiti ridisegnando e calcolando le coordinate.",
+  "flashcard": {
+    "fronte": "Canvas 2D: i quattro passi minimi per disegnare qualcosa?",
+    "retro": "1) Elemento canvas con width/height (risoluzione). 2) Contesto con getContext('2d'). 3) Stato: fillStyle/strokeStyle. 4) Disegno: fillRect oppure beginPath + arc/lineTo + fill/stroke. Senza contesto non si disegna nulla."
+  },
+  "checklist": {
+    "so_fare": [
+      "Ottenere il contesto 2D e disegnare rettangoli con fillRect e strokeRect",
+      "Costruire un percorso con beginPath e arc e applicare fill e stroke",
+      "Convertire dati in coordinate tenendo conto che la y cresce verso il basso",
+      "Allineare risoluzione della bitmap e dimensione CSS per evitare sfocature"
+    ],
+    "so_dire": [
+      "Spiegare differenza tra attributi width/height e dimensioni CSS del canvas",
+      "Distinguere modello immediato del canvas dal modello a oggetti di SVG",
+      "Indicare il limite di accessibilità del canvas come semplice bitmap"
+    ]
+  }
+}

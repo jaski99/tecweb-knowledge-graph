@@ -1,0 +1,125 @@
+{
+  "perche_ti_serve": "Gruppo C (punti ciechi, ~15%): è codice pratico da scrivere a memoria, e nella tesina collega il front-end alle API del back-end.",
+  "scenario_fil_rouge": "La pagina del catalogo della libreria non deve ricaricarsi a ogni ricerca: quando il lettore digita «Dune», JavaScript chiede in background all'API del negozio l'elenco dei titoli e aggiorna solo la griglia dei risultati. La richiesta parte subito ma la risposta arriva dopo: fetch, Promise e async/await sono gli strumenti per gestirla senza bloccare la pagina.",
+  "definizione_esame": {
+    "definizione": "fetch() è la funzione delle Web API che avvia una richiesta HTTP asincrona e restituisce subito una Promise; async/await è la sintassi che permette di attendere le Promise scrivendo il codice in sequenza, come se fosse sincrono, senza bloccare il thread principale.",
+    "scopo_vantaggio": "Permettono di scambiare dati con un server senza ricaricare la pagina e senza congelare l'interfaccia durante l'attesa, con codice leggibile e gestione degli errori tramite try/catch.",
+    "esempio": "Nella ricerca del catalogo: const risposta = await fetch('/api/libri?q=dune') attende le intestazioni, poi const libri = await risposta.json() attende e interpreta il corpo JSON con i titoli trovati."
+  },
+  "spiegazione": "## Prerequisiti in una riga\n\nNessun prerequisito nel grafo: bastano funzioni JavaScript e l'idea che una richiesta HTTP produca una risposta con stato (per esempio 200 o 404) e corpo (per esempio JSON).\n\n## Prima le Promise: il «buono» per un valore futuro\n\nUn'operazione asincrona non ha il risultato subito. In JavaScript la rappresenta una **Promise**: un oggetto che sta in uno di tre stati:\n\n- **pending**: in corso, non ancora conclusa;\n- **fulfilled**: conclusa con successo, con un valore;\n- **rejected**: fallita, con un motivo (tipicamente un errore).\n\nFulfilled e rejected insieme si dicono **settled** (conclusa). A una Promise si agganciano i gestori con `.then()` (successo), `.catch()` (fallimento) e `.finally()` (in ogni caso); ogni chiamata restituisce una **nuova Promise**, quindi i gestori si possono mettere **in catena**.\n\n```mermaid\nflowchart TD\n    A[\"Promise pending\"] --> B[\"Esito positivo\"]\n    A --> C[\"Esito negativo\"]\n    B --> D[\"Fulfilled: valore disponibile\"]\n    C --> E[\"Rejected: errore disponibile\"]\n```\n\n## fetch: la richiesta in due tempi\n\n`fetch(url)` avvia la richiesta e restituisce **subito** una Promise. Quando la Promise si risolve, hai un oggetto **Response**: contiene lo **stato** HTTP, ma il **corpo va ancora letto** con un secondo metodo asincrono, per esempio `response.json()` (che restituisce a sua volta una Promise) o `response.text()`.\n\nL'errore più importante da evitare riguarda gli **stati HTTP**: la Promise di `fetch` diventa **rejected** quando la richiesta **non può completarsi** (per esempio errore di rete), ma **non** quando il server risponde con uno stato di errore come 404 o 500. In quel caso la Promise si risolve normalmente e sei tu a dover controllare `response.ok` (vero per gli stati da 200 a 299) o `response.status`.\n\n| Situazione | Promise di fetch | Come la intercetti |\n|---|---|---|\n| Server risponde 200 con JSON valido | Fulfilled; anche `json()` fulfilled | Prosegui con i dati |\n| Server risponde 404 o 500 | **Fulfilled** lo stesso | Controlla `response.ok` e lancia un errore tu |\n| Rete assente o richiesta bloccata | **Rejected** | `catch` (o blocco catch del try) |\n| Corpo non è JSON valido | Fulfilled, ma `json()` rejected | `catch` sul secondo passaggio |\n\nPer inviare dati si usa il secondo argomento: `method`, `headers` e `body`. Per un corpo JSON servono l'intestazione `Content-Type: application/json` e la serializzazione con `JSON.stringify`. Le richieste GET (e HEAD) **non hanno corpo**.\n\n```javascript\nconst risposta = await fetch('/api/prestiti', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ libroId: 42 })\n});\n```\n\n## async/await: la stessa Promise, una sintassi in sequenza\n\nUna funzione dichiarata **`async`** restituisce **sempre una Promise**. Dentro, **`await`** davanti a una Promise **sospende quella funzione** finché la Promise non si conclude, e restituisce il valore fulfilled; se la Promise è rejected, `await` **lancia** il motivo come eccezione, catturabile con `try/catch`:\n\n- la sospensione riguarda **solo quella funzione**: il resto della pagina (rendering, altri eventi) continua a girare; `await` **non blocca** il thread principale;\n- `await` è valido dentro le funzioni `async` (e al livello più alto dei moduli): fuori, è un errore di sintassi;\n- `await` si applica anche a valori normali, ma serve con le Promise; le due attese tipiche con fetch sono **due**: Response e poi corpo letto.\n\nIl modello da sapere a memoria, con gestione errori completa:\n\n```javascript\nasync function caricaLibri() {\n  try {\n    const risposta = await fetch('/api/libri');\n    if (!risposta.ok) {\n      throw new Error('Risposta HTTP ' + risposta.status);\n    }\n    const libri = await risposta.json();\n    return libri;\n  } catch (errore) {\n    console.error('Caricamento fallito:', errore);\n    return [];\n  }\n}\n```\n\nLo stesso flusso con la catena di Promise sarebbe: `fetch(...).then(r => { if (!r.ok) throw ...; return r.json(); }).then(libri => ...).catch(...)`. Le due forme sono **equivalenti**: async/await non introduce un meccanismo nuovo, rende più leggibile lo stesso.\n\nUltima precisione utile: due `await` in sequenza su richieste **indipendenti** le eseguono una dopo l'altra; se non dipendono tra loro possono partire insieme, per esempio raccogliendo le Promise con `Promise.all`. Non serializzare per abitudine ciò che è indipendente.",
+  "analogia": {
+    "testo": "Ordinare un libro non disponibile in libreria: lasci il tuo nome e ricevi una ricevuta con un numero (la Promise). La ricevuta non è il libro: ti dice che l'ordine è in corso. Giorni dopo o il libro arriva (fulfilled) o la libreria ti chiama per dirti che è fuori catalogo (rejected). fetch è la telefonata che lascia l'ordine; await è restare reperibile alla chiamata di risposta continuando intanto a fare altro.",
+    "limite": "Nella libreria fisica, se il libro non esiste te lo dicono alla consegna mancata; con fetch invece una risposta «non esiste» (404) arriva regolarmente come risposta e la Promise risulta fulfilled: l'errore HTTP lo devi riconoscere tu controllando response.ok, non lo segnala il meccanismo delle Promise."
+  },
+  "worked_example": {
+    "titolo": "Caricare il catalogo dall'API e mostrarlo in pagina",
+    "problema": "All'apertura della pagina del catalogo, carica da /api/libri un array JSON di libri con campi titolo e prezzo e crea una riga di elenco per ciascuno dentro <ul id=\"risultati\">. Se il caricamento fallisce per qualsiasi motivo, mostra nella lista il messaggio «Catalogo non disponibile» invece di lasciare la pagina vuota.",
+    "passi": [
+      "Dichiara una funzione async caricaCatalogo, perché dentro userai await.",
+      "Apri un try: fa da rete per errori di rete, errori lanciati da te sugli stati HTTP e JSON non valido.",
+      "Attendi la Response con await fetch('/api/libri') e subito controlla risposta.ok: se è falso, lancia un Error con lo stato.",
+      "Attendi il corpo con await risposta.json(): ricorda che anche questo passaggio è asincrono.",
+      "Per ogni libro crea un elemento li, impostane il testo con textContent e appendilo alla lista.",
+      "Nel catch scrivi il messaggio di riserva nella lista, così l'utente vede un esito in ogni caso; infine richiama la funzione per farla partire."
+    ],
+    "soluzione": "```javascript\nconst risultati = document.getElementById('risultati');\n\nasync function caricaCatalogo() {\n  try {\n    const risposta = await fetch('/api/libri');\n    if (!risposta.ok) {\n      throw new Error('Risposta HTTP ' + risposta.status);\n    }\n    const libri = await risposta.json();\n    libri.forEach((libro) => {\n      const riga = document.createElement('li');\n      riga.textContent = libro.titolo + ' - ' + libro.prezzo;\n      risultati.appendChild(riga);\n    });\n  } catch (errore) {\n    const riga = document.createElement('li');\n    riga.textContent = 'Catalogo non disponibile';\n    risultati.appendChild(riga);\n    console.error(errore);\n  }\n}\n\ncaricaCatalogo();\n```\n\nI due `await` corrispondono ai due tempi della risposta: prima stato e intestazioni (oggetto Response), poi il corpo interpretato come JSON.",
+    "perche_funziona": "fetch restituisce una Promise che await attende senza bloccare la pagina; il controllo su ok trasforma gli stati di errore HTTP in eccezioni gestite dallo stesso catch che intercetta errori di rete e JSON malformato; i dati arrivano quindi alla creazione degli elementi solo quando sono realmente disponibili e validi."
+  },
+  "completion_problem": {
+    "titolo": "Completa l'invio di un nuovo prestito con POST",
+    "testo": "Devi inviare all'API un nuovo prestito: POST su /api/prestiti con corpo JSON { libroId: 42 } e, a invio riuscito, leggere la risposta JSON con il prestito creato. Ti vengono dati URL e dati; mancano le opzioni della richiesta e i controlli. Completa la funzione.",
+    "passi_mancanti": [
+      "Passa a fetch le opzioni: method POST e intestazione Content-Type corretta per JSON",
+      "Serializza l'oggetto dei dati nel body con JSON.stringify",
+      "Controlla risposta.ok prima di leggere il corpo e gestisci gli errori con try/catch"
+    ],
+    "soluzione": "```javascript\nasync function creaPrestito() {\n  try {\n    const risposta = await fetch('/api/prestiti', {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify({ libroId: 42 })\n    });\n    if (!risposta.ok) {\n      throw new Error('Risposta HTTP ' + risposta.status);\n    }\n    const prestito = await risposta.json();\n    console.log('Prestito creato:', prestito);\n  } catch (errore) {\n    console.error('Invio fallito:', errore);\n  }\n}\n```"
+  },
+  "esercizio_autonomo": {
+    "titolo": "Trova e correggi i tre errori di questa funzione",
+    "testo": "La funzione seguente dovrebbe caricare un libro e restituirlo, ma contiene tre errori indipendenti: function caricaLibro() { const risposta = await fetch('/api/libri/1'); const libro = risposta.json(); console.log(libro.titolo); } — oltre a non controllare affatto gli stati HTTP di errore. Elenca gli errori e riscrivi la versione corretta e robusta.",
+    "suggerimento": "Controlla in ordine: dove può stare await; che cosa restituisce davvero risposta.json(); che cosa succede se il server risponde 404.",
+    "soluzione_attesa": "Errori: 1) `await` dentro una funzione non `async` (errore di sintassi fuori dai moduli); 2) manca `await` su `risposta.json()`, quindi `libro` è una Promise e `libro.titolo` è undefined; 3) nessuno controlla `risposta.ok`, così un 404 verrebbe trattato come successo. Versione corretta:\n\n```javascript\nasync function caricaLibro() {\n  const risposta = await fetch('/api/libri/1');\n  if (!risposta.ok) {\n    throw new Error('Risposta HTTP ' + risposta.status);\n  }\n  const libro = await risposta.json();\n  console.log(libro.titolo);\n  return libro;\n}\n```"
+  },
+  "errori_trappole": [
+    {
+      "errore": "Aspettarsi che fetch fallisca da solo quando il server risponde 404",
+      "perche_sbagliato": "La Promise di fetch diventa rejected per i fallimenti nel completare la richiesta (come gli errori di rete), non per gli stati HTTP di errore: un 404 produce una Response normale. Va controllato response.ok o response.status e gestito esplicitamente.",
+      "distrattore": "Su 404 fetch entra automaticamente nel catch"
+    },
+    {
+      "errore": "Dimenticare await davanti a risposta.json()",
+      "perche_sbagliato": "json() restituisce una Promise, non i dati già interpretati: senza await ottieni la Promise e ogni accesso ai campi dà undefined. La lettura del corpo è il secondo tempo asincrono dopo l'arrivo della Response.",
+      "distrattore": "La risposta di fetch contiene già i dati JSON pronti"
+    },
+    {
+      "errore": "Usare await in una funzione normale o pensare che blocchi tutta la pagina",
+      "perche_sbagliato": "await sta nelle funzioni async (o al livello più alto dei moduli) e sospende solo quella funzione: il browser continua a disegnare e a gestire gli eventi durante l'attesa.",
+      "distrattore": "Await blocca il browser finché risponde il server"
+    },
+    {
+      "errore": "Presentare async/await come alternativa che sostituisce le Promise",
+      "perche_sbagliato": "async/await è sintassi costruita sulle Promise: una funzione async restituisce una Promise e await ne attende la conclusione. Cambia la leggibilità, non il meccanismo sottostante.",
+      "distrattore": "Con async e await le Promise non esistono più"
+    },
+    {
+      "errore": "Mandare un corpo JSON dimenticando intestazione o serializzazione",
+      "perche_sbagliato": "Nel body va una stringa prodotta con JSON.stringify e l'intestazione Content-Type: application/json dice al server come interpretarla. Senza, il server può non riconoscere i dati o leggerli nel formato sbagliato.",
+      "distrattore": "Il server capisce da solo che il corpo è JSON"
+    }
+  ],
+  "mnemonica": "«Due attese e un controllo»: attendi la Response, attendi il corpo con json(), e in mezzo controlla sempre ok. Se ricordi la sequenza A-O-A (await, ok, await), il modello non si rompe.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quali sono gli stati di una Promise e che cosa significano settled e rejected?",
+        "risposta": "Pending (in corso), fulfilled (successo con valore), rejected (fallimento con motivo). Una Promise è settled quando è fulfilled oppure rejected, cioè conclusa in uno dei due modi."
+      },
+      {
+        "domanda": "Il server risponde 500: la Promise di fetch è rejected? Come gestisci il caso?",
+        "risposta": "No: è fulfilled con una Response il cui ok è falso. Controllo risposta.ok (o lo status) e lancio un errore, così lo gestisco nello stesso catch degli errori di rete."
+      },
+      {
+        "domanda": "Che cosa restituisce una funzione dichiarata async anche se dentro fai return di un numero?",
+        "risposta": "Restituisce sempre una Promise: il numero diventa il valore con cui quella Promise è fulfilled. Per usarlo servono await o un then sul risultato della chiamata."
+      },
+      {
+        "domanda": "Perché nella lettura dei dati servono in genere due await con fetch?",
+        "risposta": "Il primo await attende l'oggetto Response (stato e intestazioni); il secondo attende la lettura e l'interpretazione del corpo, per esempio risposta.json(), che è anch'essa asincrona e restituisce una Promise."
+      }
+    ],
+    "spiega_con_parole_tue": "Racconta con parole tue il percorso completo della ricerca «Dune»: che cosa succede appena chiami fetch, che cosa hai in mano dopo il primo await, che cosa manca ancora e dove possono nascondersi i tre tipi di fallimento (rete, stato HTTP, JSON non valido).",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "rest-metodi-http",
+        "collegamento": "fetch accetta qualsiasi metodo HTTP: collega GET, POST, PUT, PATCH e DELETE delle API REST all'opzione method di fetch e spiega quale useresti per creare un prestito e quale per modificare solo la data di restituzione."
+      },
+      {
+        "nodo": "codice-404-not-found",
+        "collegamento": "Il 404 è lo stato che fetch non segnala come rejected: collega il significato del codice 404 (risorsa non trovata) al motivo per cui il controllo su response.ok va scritto a mano nel codice client."
+      },
+      {
+        "nodo": "ajax-fetch-xhr",
+        "collegamento": "AJAX è il modello di comunicazione asincrona senza ricaricare la pagina: fetch con le Promise è il suo strumento moderno, successore di XMLHttpRequest basato sulle callback. Che cosa resta uguale nel modello e che cosa cambia nella sintassi?"
+      }
+    ]
+  },
+  "riepilogo": "fetch() avvia una richiesta HTTP e restituisce una Promise che si risolve con la Response; il corpo si legge con un secondo passaggio asincrono come json(). Gli stati HTTP di errore non rendono la Promise rejected: vanno controllati con response.ok. async/await scrive lo stesso flusso in sequenza, con try/catch per gli errori, senza bloccare la pagina.",
+  "flashcard": {
+    "fronte": "Fetch: qual è la sequenza corretta per leggere dati JSON in sicurezza?",
+    "retro": "await fetch per ottenere la Response, controllo di response.ok (gli stati di errore non causano rejected), poi await risposta.json() per i dati; il tutto in una funzione async con try/catch per rete, stati HTTP e JSON non valido."
+  },
+  "checklist": {
+    "so_fare": [
+      "Scrivere il modello fetch con doppio await e controllo di response.ok",
+      "Inviare un corpo JSON con method, Content-Type e JSON.stringify",
+      "Gestire con un unico try/catch errori di rete, stati HTTP e JSON malformato",
+      "Riscrivere una catena then/catch in forma async/await e viceversa"
+    ],
+    "so_dire": [
+      "Descrivere stati pending, fulfilled, rejected e il significato di settled",
+      "Spiegare perché 404 e 500 non rendono rejected la Promise di fetch",
+      "Chiarire che async/await è sintassi sopra le Promise e non blocca il thread principale"
+    ]
+  }
+}

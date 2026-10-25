@@ -1,0 +1,118 @@
+{
+  "perche_ti_serve": "Gruppo B (varianti isolate, ~20% dello scritto da MATERIALE_UTENTE): è la classica domanda di definizione con abbinamenti e distrattori fuori contesto.",
+  "scenario_fil_rouge": "Nella scheda di un libro della libreria, passando il mouse sulla copertina questa si evidenzia; cliccando «Trama» il testo compare sotto senza ricaricare la pagina; se il libro è esaurito il pulsante cambia colore e testo. Nessuna di queste azioni chiede dati nuovi al server: è la pagina stessa che si trasforma nel browser. Questo modo di rendere le pagine interattive lato client ha un nome storico: DHTML.",
+  "definizione_esame": {
+    "definizione": "DHTML (Dynamic HTML) è il termine storico che indica l'uso combinato di HTML, CSS e JavaScript con manipolazione del DOM per rendere le pagine web dinamiche e interattive lato client, modificando contenuto e presentazione in risposta agli eventi senza ricaricare la pagina.",
+    "scopo_vantaggio": "Supera la pagina statica di sola lettura: feedback immediato (mostrare e nascondere, evidenziare, validare mentre scrivi) usando solo ciò che è già nel browser, senza nuove richieste al server per le interazioni locali.",
+    "esempio": "Il pulsante «Trama» della scheda libro: al click, JavaScript aggiunge o toglie una classe al paragrafo della trama e il CSS lo mostra o lo nasconde. Struttura HTML, stili CSS e comportamento JavaScript cooperano sulla pagina già caricata."
+  },
+  "spiegazione": "## Prerequisiti in una riga\n\nPrerequisito (hard): `dom-virtual-dom` — il DHTML è, in pratica, JavaScript che manipola il DOM e reagisce agli eventi; qui ci interessa dargli il nome e i confini corretti.\n\n## Che cosa significa davvero DHTML\n\nDHTML **non è** un linguaggio nuovo, **non è** una versione di HTML e **non è** uno standard a sé: è il **nome collettivo** (un'espressione «a ombrello») nato quando i browser hanno cominciato a esporre il DOM a JavaScript, per indicare tre tecnologie che lavorano insieme:\n\n- **HTML**: la struttura e il contenuto della pagina;\n- **CSS**: la presentazione (colori, visibilità, posizioni);\n- **JavaScript + DOM**: il comportamento, cioè modificare struttura e stili al verificarsi di **eventi** come click, passaggio del mouse o digitazione.\n\n```mermaid\nflowchart TD\n    A[\"Evento nel browser: click su Trama\"] --> B[\"JavaScript intercetta l'evento\"]\n    B --> C[\"Modifica il DOM: cambia una classe\"]\n    C --> D[\"Il CSS associato mostra o nasconde il testo\"]\n```\n\nEffetti tipicamente indicati come DHTML: mostrare e nascondere parti della pagina, menu che si aprono, evidenziazioni al passaggio del mouse (rollover), testi che si aggiornano, controlli immediati nei form mentre l'utente scrive.\n\nUna distinzione moderna, utile anche in pratica: se l'effetto è solo di presentazione al passaggio del mouse, spesso basta il CSS con `:hover`, senza JavaScript. JavaScript entra quando serve **logica**: decidere in base allo stato, cambiare contenuti, reagire a eventi complessi.\n\n```javascript\nconst trama = document.getElementById('trama');\ndocument.getElementById('pulsante-trama')\n  .addEventListener('click', () => {\n    trama.classList.toggle('nascosta'); // il come si nasconde lo decide il CSS\n  });\n```\n\n```css\n.nascosta { display: none; }\n```\n\nNota lo stile del codice: JavaScript **cambia le classi**, il CSS **decide l'aspetto**. È la separazione struttura, presentazione e comportamento che il modello DHTML ha reso naturale.\n\n## I confini: pagina statica, DHTML, AJAX\n\nIl posto giusto del DHTML si capisce per confronto con ciò che ha intorno:\n\n| | Pagina statica | DHTML | AJAX (per esempio con fetch) |\n|---|---|---|---|\n| La pagina cambia dopo il caricamento? | No | Sì, per mano di JavaScript sul DOM | Sì, anche con dati nuovi dal server |\n| Servono nuove richieste al server? | Solo il caricamento iniziale | No, lavora su ciò che è già nel client | Sì, richieste asincrone in background |\n| Esempio in libreria | Una pagina «chi siamo» sempre uguale | Mostrare la trama al click, rollover sulla copertina | Ricerca nel catalogo che aggiorna i risultati senza ricaricare |\n\nQuindi: il DHTML è la dinamicità **lato client** che non richiede, di per sé, nuovi dati dal server. AJAX aggiunge a questo quadro lo **scambio asincrono di dati** con il server; nelle pagine moderne le due cose si combinano (arrivano i dati con fetch, poi il DOM si aggiorna), ma nelle domande di definizione vanno tenute distinte.\n\n## Perché oggi la parola si sente poco\n\nLe tecniche indicate dal termine DHTML non sono sparite: sono diventate il **normale sviluppo front-end** (DOM, eventi, CSS dinamico, poi framework). Proprio perché ormai è «come si fanno le pagine», l'etichetta storica si usa raramente nel lavoro quotidiano, ma resta tra gli argomenti del materiale di studio (gruppo B) e nelle domande di definizione e di abbinamento.\n\nPer gli abbinamenti, ricorda il consiglio del materiale di studio: la docente inserisce **distrattori fuori contesto** (per esempio «LAN» tra i tipi di Web o «Installazione Sistema Operativo» tra le fasi di sviluppo). Se un'opzione non c'entra con HTML, CSS, JavaScript e DOM, per il DHTML va scartata.",
+  "analogia": {
+    "testo": "Una pagina statica è una locandina cartacea in vetrina: resta uguale finché qualcuno non la sostituisce. Una pagina DHTML è la stessa vetrina dotata di parti mobili e sensori: quando passi davanti, una freccia si accende e un pannello ruota mostrando la trama del libro. Tutto avviene con i meccanismi già nella vetrina, senza telefonare in magazzino.",
+    "limite": "I pannelli della vetrina possono mostrare solo ciò che è stato preparato in vetrina; allo stesso modo il DHTML, da solo, non ottiene informazioni nuove (come la disponibilità aggiornata in magazzino): per quelle serve comunicare con il server, ed è il passo ulteriore di AJAX."
+  },
+  "worked_example": {
+    "titolo": "Scheda libro interattiva: trama a comparsa e stato esaurito",
+    "problema": "Nella scheda di un libro vuoi due comportamenti senza ricaricare la pagina e senza chiamare il server: 1) il pulsante «Trama» mostra o nasconde il paragrafo della trama; 2) se il libro è esaurito (informazione già presente in pagina in un attributo data-disponibile), il pulsante di acquisto deve disattivarsi e mostrare la scritta «Esaurito». Realizzali nel modello DHTML, separando comportamento e presentazione.",
+    "passi": [
+      "Nell'HTML dai un id al pulsante trama, al paragrafo e al pulsante di acquisto; segnala la disponibilità con data-disponibile=\"no\" sulla scheda.",
+      "Nel CSS definisci la classe nascosta con display: none e una classe per l'aspetto del pulsante disattivato: la presentazione resta nel CSS.",
+      "In JavaScript registra un listener sul click del pulsante trama che attiva o disattiva la classe nascosta con classList.toggle.",
+      "Sempre in JavaScript, leggi l'attributo data: se il libro non è disponibile, imposta disabled sul pulsante di acquisto e cambiane il testo con textContent.",
+      "Verifica che tutto funzioni sulla pagina già caricata: nessuna richiesta di rete è necessaria, quindi è dinamicità lato client (DHTML), non AJAX."
+    ],
+    "soluzione": "```html\n<article class=\"card\" data-disponibile=\"no\">\n  <h3>Dune</h3>\n  <p id=\"trama\" class=\"nascosta\">Sul pianeta desertico Arrakis...</p>\n  <button type=\"button\" id=\"pulsante-trama\">Trama</button>\n  <button type=\"button\" id=\"acquista\">Aggiungi al carrello</button>\n</article>\n```\n\n```css\n.nascosta { display: none; }\nbutton:disabled { opacity: 0.5; cursor: not-allowed; }\n```\n\n```javascript\ndocument.getElementById('pulsante-trama')\n  .addEventListener('click', () => {\n    document.getElementById('trama').classList.toggle('nascosta');\n  });\n\nconst scheda = document.querySelector('.card');\nif (scheda.dataset.disponibile === 'no') {\n  const acquista = document.getElementById('acquista');\n  acquista.disabled = true;\n  acquista.textContent = 'Esaurito';\n}\n```",
+    "perche_funziona": "Ogni ingrediente sta al suo posto: HTML fornisce struttura e dati già in pagina, JavaScript reagisce agli eventi e modifica il DOM (classi, attributi, testo), CSS traduce quegli stati in aspetto. È esattamente la combinazione che il termine DHTML descrive."
+  },
+  "completion_problem": {
+    "titolo": "Classifica tre comportamenti: statico, DHTML o AJAX?",
+    "testo": "Per ciascuno dei tre comportamenti indica la categoria corretta e il criterio che hai usato: 1) La pagina «Orari della libreria» è identica per tutti e non cambia mai finché non viene ripubblicata. 2) Muovendo il mouse su una copertina compare un badge «Novità». 3) Digitando nel campo di ricerca, i risultati si aggiornano con dati richiesti al server a ogni battuta.",
+    "passi_mancanti": [
+      "Decidi per ciascun caso se la pagina cambia dopo il caricamento",
+      "Decidi se il cambiamento richiede dati nuovi dal server",
+      "Assegna la categoria: statico, DHTML oppure AJAX"
+    ],
+    "soluzione": "1) **Statico**: nessun cambiamento lato client, contenuto uguale per tutti. 2) **DHTML**: la pagina reagisce a un evento locale (passaggio del mouse) modificando presentazione e DOM con risorse già nel browser; volendo, si può fare anche con il solo CSS `:hover`. 3) **AJAX**: oltre a modificare la pagina, a ogni battuta parte una richiesta asincrona di dati nuovi al server. Criterio decisivo: cambia dopo il caricamento? Se sì, servono dati nuovi dal server?"
+  },
+  "esercizio_autonomo": {
+    "titolo": "Rollover sulla copertina in due modi",
+    "testo": "Realizza l'effetto «al passaggio del mouse la copertina si evidenzia con un bordo colorato» in due modi: solo con CSS e con JavaScript che ascolta gli eventi del mouse. Poi dì quale dei due preferisci per questo effetto e perché, e indica un caso della stessa pagina in cui invece JavaScript è indispensabile.",
+    "suggerimento": "Per il CSS basta una pseudo-classe di stato sull'elemento. Per JavaScript servono due listener, all'entrata e all'uscita del mouse, che aggiungono e tolgono una classe.",
+    "soluzione_attesa": "Solo CSS (preferibile qui: meno codice, nessun comportamento da gestire):\n\n```css\n.copertina:hover { border: 2px solid darkred; }\n```\n\nCon JavaScript:\n\n```javascript\nconst copertina = document.querySelector('.copertina');\ncopertina.addEventListener('mouseover', () => copertina.classList.add('evidenziata'));\ncopertina.addEventListener('mouseout', () => copertina.classList.remove('evidenziata'));\n```\n\nJavaScript diventa indispensabile quando serve logica, per esempio mostrare il badge solo se il libro è uscito di recente in base a un dato, oppure aggiornare il conteggio del carrello a ogni aggiunta."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Definire DHTML come un linguaggio di programmazione o una nuova versione di HTML",
+      "perche_sbagliato": "DHTML è un termine collettivo storico per l'uso combinato di HTML, CSS e JavaScript con il DOM. Non ha una sua sintassi né una sua specifica: le tecnologie restano quelle, già note singolarmente.",
+      "distrattore": "DHTML è il linguaggio che sostituisce HTML"
+    },
+    {
+      "errore": "Affermare che con DHTML la pagina ottiene dati aggiornati dal server senza ricaricarsi",
+      "perche_sbagliato": "Quello è il contributo di AJAX (richieste asincrone di dati). Il DHTML da solo trasforma ciò che è già arrivato nel browser: struttura, stili e contenuti locali.",
+      "distrattore": "DHTML scarica dati dal server in background"
+    },
+    {
+      "errore": "Credere che ogni effetto dinamico richieda JavaScript, compreso un rollover",
+      "perche_sbagliato": "Effetti di sola presentazione legati a stati come il passaggio del mouse si esprimono in CSS con :hover. JavaScript serve quando l'effetto dipende da una logica o da uno stato da elaborare.",
+      "distrattore": "Senza JavaScript nessun effetto al passaggio del mouse"
+    },
+    {
+      "errore": "Negli abbinamenti, associare DHTML a opzioni fuori dal contesto web",
+      "perche_sbagliato": "È la trappola segnalata nel materiale di studio: opzioni come reti locali o installazione di sistemi operativi sono distrattori fuori contesto. DHTML coinvolge solo HTML, CSS, JavaScript e DOM nel browser.",
+      "distrattore": "DHTML riguarda la configurazione della rete locale"
+    }
+  ],
+  "mnemonica": "«Tre attori, un nome»: HTML costruisce, CSS veste, JavaScript anima. Se una definizione di DHTML non li nomina tutti e tre sul DOM, è la risposta sbagliata.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cos'è DHTML e perché non è un linguaggio?",
+        "risposta": "È il termine storico per l'uso combinato di HTML, CSS e JavaScript che manipola il DOM per rendere le pagine interattive lato client. Non è un linguaggio perché non ha sintassi o specifica proprie: nomina una combinazione di tecnologie esistenti."
+      },
+      {
+        "domanda": "Quale criterio distingue un comportamento DHTML da uno AJAX?",
+        "risposta": "Se il cambiamento della pagina usa solo ciò che è già nel browser è DHTML; se richiede nuove richieste asincrone di dati al server, entra in gioco AJAX (oggi tipicamente con fetch), che poi comunque aggiorna la pagina via DOM."
+      },
+      {
+        "domanda": "Nel codice ben fatto, che cosa cambia JavaScript e che cosa decide il CSS in un effetto di mostra/nascondi?",
+        "risposta": "JavaScript cambia lo stato, per esempio attiva o disattiva una classe con classList.toggle; il CSS decide che cosa quello stato significa a video, per esempio display: none per nascondere."
+      },
+      {
+        "domanda": "Perché oggi il termine DHTML si usa poco nel lavoro quotidiano?",
+        "risposta": "Perché le tecniche che indicava (DOM, eventi, stili dinamici) sono diventate il normale sviluppo front-end: l'etichetta storica è rimasta soprattutto nei programmi e nelle domande di definizione."
+      }
+    ],
+    "spiega_con_parole_tue": "Partendo dalla scheda del libro, racconta a parole tue i tre ruoli (HTML, CSS, JavaScript sul DOM) e poi indica il momento esatto in cui smetteresti di parlare di solo DHTML e cominceresti a parlare di AJAX.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "dom-virtual-dom",
+        "collegamento": "Il DHTML si appoggia interamente sulle API del DOM: ripensa a createElement, classList e ai listener di quel nodo e spiega perché senza DOM esposto a JavaScript il DHTML non sarebbe esistito."
+      },
+      {
+        "nodo": "statico-vs-dinamico",
+        "collegamento": "Colloca il DHTML nella distinzione statico e dinamico: è dinamismo generato nel client sulla pagina già servita, diverso sia dalla pagina statica sia dalla pagina generata dinamicamente dal server a ogni richiesta."
+      },
+      {
+        "nodo": "ajax-fetch-xhr",
+        "collegamento": "AJAX aggiunge al quadro DHTML lo scambio asincrono di dati col server: nella ricerca del catalogo, quale parte è AJAX (la richiesta dei titoli) e quale parte resta manipolazione del DOM in stile DHTML (mostrare i risultati)?"
+      }
+    ]
+  },
+  "riepilogo": "DHTML è il nome storico della combinazione HTML + CSS + JavaScript che, tramite il DOM e gli eventi, rende la pagina interattiva lato client senza ricaricarla e senza nuovi dati dal server. Non è un linguaggio né uno standard. AJAX è il passo successivo: aggiunge le richieste asincrone di dati, che poi vengono mostrati sempre manipolando il DOM.",
+  "flashcard": {
+    "fronte": "DHTML: definizione e differenza rispetto ad AJAX?",
+    "retro": "DHTML = HTML, CSS e JavaScript sul DOM per pagine interattive lato client con ciò che è già nel browser. AJAX aggiunge richieste asincrone di dati nuovi al server senza ricaricare la pagina."
+  },
+  "checklist": {
+    "so_fare": [
+      "Mostrare e nascondere un elemento al click cambiando una classe CSS",
+      "Realizzare un rollover con il solo CSS e con i listener del mouse",
+      "Classificare un comportamento come statico, DHTML o AJAX con il criterio dei dati dal server"
+    ],
+    "so_dire": [
+      "Definire DHTML citando HTML, CSS, JavaScript e DOM, senza chiamarlo linguaggio",
+      "Spiegare la separazione tra comportamento (JavaScript) e presentazione (CSS)",
+      "Riconoscere e scartare i distrattori fuori contesto negli abbinamenti"
+    ]
+  }
+}

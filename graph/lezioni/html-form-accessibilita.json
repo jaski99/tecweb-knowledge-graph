@@ -1,0 +1,125 @@
+{
+  "perche_ti_serve": "Gruppo A (iper-riciclati, ~65% dello scritto da MATERIALE_UTENTE): costruire un form accessibile e valido è un'abilità pratica, riusata anche nella tesina.",
+  "scenario_fil_rouge": "La nostra libreria online deve far registrare un nuovo lettore: nome, email, password, genere preferito e iscrizione alla newsletter. Il modulo di registrazione è un form HTML: se è scritto male, chi usa uno screen reader non capisce quale campo sta compilando, chi naviga da tastiera si blocca e il server riceve dati senza nome o non validi.",
+  "definizione_esame": {
+    "definizione": "Un form HTML è una sezione del documento con controlli interattivi (input, select, textarea, button) che raccolgono dati dell'utente e li inviano a un URL; è accessibile quando ogni controllo ha un nome comprensibile (label) e può essere usato anche da tastiera e con tecnologie assistive.",
+    "scopo_vantaggio": "È il principale canale di input dell'utente verso l'applicazione: registrazioni, login, ricerche e ordini passano da qui; label corrette e validazione riducono errori e abbandoni.",
+    "esempio": "Nel modulo di registrazione della libreria, il campo email ha una label «Email» collegata con for e id: cliccando la label il focus va sul campo e lo screen reader annuncia «Email, campo obbligatorio»."
+  },
+  "spiegazione": "## Prerequisiti in una riga\n\nNessun prerequisito nel grafo: servono solo le basi HTML (elementi e attributi), richiamate man mano negli esempi.\n\n## L'elemento form e l'invio dei dati\n\nL'elemento `<form>` raggruppa i **controlli** e decide **dove** e **come** inviare i dati:\n\n- `action`: l'URL che elabora l'invio;\n- `method`: `get` appende i dati all'URL come **query string**, `post` li mette nel **corpo** della richiesta HTTP.\n\nAl momento dell'invio il browser costruisce coppie **nome = valore** prendendo l'attributo **`name`** di ogni controllo. Un controllo senza `name` non viene inviato, anche se ha un `id`: `id` serve a label, CSS e JavaScript, `name` serve al server.\n\n```html\n<form action=\"/registrazione\" method=\"post\">\n  <div>\n    <label for=\"email\">Email</label>\n    <input type=\"email\" id=\"email\" name=\"email\" required autocomplete=\"email\">\n  </div>\n  <button type=\"submit\">Crea account</button>\n</form>\n```\n\n### GET o POST? Il contrasto da sapere\n\n| Aspetto | `method=\"get\"` | `method=\"post\"` |\n|---|---|---|\n| Dove viaggiano i dati | Nell'URL (query string) | Nel corpo della richiesta |\n| Visibilità | Visibili in barra degli indirizzi e cronologia | Non visibili nell'URL |\n| Uso tipico | Ricerche e filtri (letture) | Registrazione, login, ordini (scritture) |\n| Password e dati sensibili | Mai: resterebbero nell'URL | Sì, sempre con HTTPS |\n\nAttenzione: un form HTML dichiara nativamente solo `get` e `post`. Per inviare `PATCH` o `PUT` verso un'API REST serve JavaScript con `fetch` (nodo `javascript-fetch-async-await`), non `method=\"patch\"`.\n\n## I controlli principali\n\n- `<input>`: il valore di `type` cambia il controllo mostrato e, su mobile, anche la tastiera proposta: `text`, `email`, `password`, `checkbox`, `radio`, `submit`.\n- **Radio**: scelte mutuamente esclusive; condividono lo stesso `name` e si distinguono per `value`.\n- **Checkbox**: scelta sì/no indipendente; se non è selezionata, la coppia nome-valore non viene inviata.\n- `<select>` con `<option>`: viene inviato il `value` dell'opzione scelta (o il suo testo, se `value` manca).\n- `<textarea>`: testo su più righe; il valore è il **contenuto** dell'elemento, non esiste un attributo `value`.\n- `<button>`: dentro un form, senza `type` vale `type=\"submit\"` e invia il form; per un'azione JavaScript generica usa `type=\"button\"`.\n\n## Accessibilità: prima le label, poi ARIA\n\nOgni controllo deve avere una **`<label>`** associata, in due modi equivalenti:\n\n1. **esplicita**: `for=\"email\"` sulla label e `id=\"email\"` sul controllo;\n2. **implicita**: il controllo è **dentro** la label (wrapping).\n\nLa label non è decorativa: è il nome del campo per le tecnologie assistive e amplia l'area cliccabile. Il `placeholder` invece è solo un esempio che sparisce mentre scrivi: **non sostituisce mai la label**.\n\n```mermaid\nflowchart TD\n    A[\"Label con for\"] --> B[\"Input con id uguale\"]\n    B --> C[\"Il browser collega nome e campo\"]\n    C --> D[\"Click sulla label: focus sul campo\"]\n    C --> E[\"Screen reader: annuncia nome e obbligatorietà\"]\n```\n\nRegole pratiche che completano il quadro:\n\n- raggruppa radio e checkbox correlati con `<fieldset>` e titolo del gruppo in `<legend>`;\n- gli elementi HTML nativi sono già accessibili: **prima regola ARIA** di MDN, se esiste l'elemento semantico giusto usalo invece di ricostruirlo con `div` e attributi `aria-*`;\n- usa `aria-describedby` per collegare aiuti ed errori testuali al campo;\n- non comunicare gli errori **solo con il colore**: aggiungi sempre un testo;\n- evita `tabindex` positivi (rompono l'ordine naturale di navigazione da tastiera): l'ordine della pagina deve già essere quello giusto;\n- `autocomplete` con valori come `email` o `new-password` aiuta browser e tecnologie assistive a riconoscere lo scopo del campo.\n\n## Validazione: utile, mai una garanzia di sicurezza\n\nIl browser offre la **validazione vincolata** dichiarativa: `required`, `type=\"email\"`, `minlength`, `maxlength`, `min` e `max` per i numeri, `pattern` per un formato con espressione regolare. Se un vincolo fallisce, l'invio viene bloccato e il browser segnala il campo.\n\n```html\n<label for=\"pw\">Password (almeno 8 caratteri)</label>\n<input type=\"password\" id=\"pw\" name=\"password\"\n       required minlength=\"8\" autocomplete=\"new-password\">\n```\n\nLa validazione lato client dà **feedback immediato**, ma è aggirabile: chiunque può inviare una richiesta HTTP costruita a mano. Per questo il server deve **sempre rivalidare** i dati ricevuti.",
+  "analogia": {
+    "testo": "Un form è il modulo cartaceo allo sportello della biblioteca comunale: ogni casella ha sopra scritto che cosa va inserito (la label), alcune caselle sono obbligatorie (required) e l'impiegato dietro lo sportello sarebbe il server, che ricontrolla tutto prima di archiviare la pratica.",
+    "limite": "Sulla carta nessuno può modificare il modulo dopo averlo consegnato; sul web invece i dati viaggiano in una richiesta HTTP che un utente esperto può costruire a mano, saltando del tutto il form e i suoi controlli nel browser."
+  },
+  "worked_example": {
+    "titolo": "Modulo di registrazione accessibile per la libreria",
+    "problema": "Costruisci il form di registrazione della libreria online: nome, email, password di almeno 8 caratteri, genere preferito tra tre opzioni esclusive e consenso facoltativo alla newsletter. Ogni campo deve essere usabile da tastiera e comprensibile con uno screen reader, e il server deve ricevere tutte le coppie nome-valore.",
+    "passi": [
+      "Apri il form con action=\"/registrazione\" e method=\"post\": è una scrittura con password, quindi niente dati nell'URL.",
+      "Per nome, email e password usa label esplicite (for e id uguali) e l'attributo name su ogni input, altrimenti il server non riceve il valore.",
+      "Imposta type=\"email\" e type=\"password\" con required; sulla password aggiungi minlength=\"8\" e autocomplete=\"new-password\".",
+      "Raggruppa i tre radio del genere in un fieldset con legend «Genere preferito»: stesso name=\"genere\", un value diverso per opzione e una label per ciascuno.",
+      "Aggiungi la checkbox newsletter con label implicita (input dentro la label) per mostrare anche la seconda forma di associazione.",
+      "Chiudi con un button type=\"submit\" dal testo descrittivo («Crea account»), non «OK»."
+    ],
+    "soluzione": "```html\n<form action=\"/registrazione\" method=\"post\">\n  <div>\n    <label for=\"nome\">Nome</label>\n    <input type=\"text\" id=\"nome\" name=\"nome\" required autocomplete=\"name\">\n  </div>\n  <div>\n    <label for=\"email\">Email</label>\n    <input type=\"email\" id=\"email\" name=\"email\" required autocomplete=\"email\">\n  </div>\n  <div>\n    <label for=\"pw\">Password (almeno 8 caratteri)</label>\n    <input type=\"password\" id=\"pw\" name=\"password\"\n           required minlength=\"8\" autocomplete=\"new-password\">\n  </div>\n  <fieldset>\n    <legend>Genere preferito</legend>\n    <label><input type=\"radio\" name=\"genere\" value=\"narrativa\" checked> Narrativa</label>\n    <label><input type=\"radio\" name=\"genere\" value=\"saggi\"> Saggi</label>\n    <label><input type=\"radio\" name=\"genere\" value=\"fumetti\"> Fumetti</label>\n  </fieldset>\n  <label>\n    <input type=\"checkbox\" name=\"newsletter\" value=\"si\">\n    Voglio ricevere la newsletter\n  </label>\n  <button type=\"submit\">Crea account</button>\n</form>\n```\n\nVerifica a colpo d'occhio: ogni controllo ha `name` (server), ogni campo ha una label (utente e tecnologie assistive), i vincoli sono dichiarati con `required`, `type` e `minlength`.",
+    "perche_funziona": "Il browser costruisce l'invio dai name, applica i vincoli dichiarati prima di inviare e collega ogni label al proprio controllo: chi usa mouse, tastiera o screen reader percorre lo stesso modulo senza ostacoli, e il server riceve dati già filtrati (che poi rivaliderà comunque)."
+  },
+  "completion_problem": {
+    "titolo": "Completa il campo di ricerca del catalogo",
+    "testo": "La libreria vuole un form di ricerca nel catalogo: una sola casella di testo «Cerca un titolo» e un pulsante. Deve usare GET (la ricerca è una lettura e l'URL deve poter essere condiviso), la casella deve avere nome accessibile e il server deve ricevere il parametro q. Scrivi i pezzi mancanti.",
+    "passi_mancanti": [
+      "Imposta method e action corretti per una ricerca in lettura",
+      "Collega una label visibile alla casella con for e id",
+      "Dai alla casella name=\"q\" e un type adatto alla ricerca"
+    ],
+    "soluzione": "```html\n<form action=\"/catalogo\" method=\"get\">\n  <label for=\"q\">Cerca un titolo</label>\n  <input type=\"search\" id=\"q\" name=\"q\">\n  <button type=\"submit\">Cerca</button>\n</form>\n```\n\nCon `method=\"get\"` l'invio produce un URL del tipo `/catalogo?q=divina+commedia`: leggibile, salvabile nei preferiti e condivisibile, come ci si aspetta da una ricerca."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Rendi accessibile un form di prestito difettoso",
+    "testo": "Questo form chiede il codice del libro solo tramite placeholder, non invia nulla al server e il secondo pulsante dovrebbe solo svuotare il campo con JavaScript ma invece invia il form. Riscrivilo corretto: <form action=\"/prestito\" method=\"post\"><input placeholder=\"Codice libro\"><button>Conferma</button><button>Svuota</button></form>.",
+    "suggerimento": "Controlla tre cose, in ordine: nome accessibile del campo (label, non placeholder), attributo name per l'invio, type dei due button dentro un form.",
+    "soluzione_attesa": "```html\n<form action=\"/prestito\" method=\"post\">\n  <label for=\"codice\">Codice libro</label>\n  <input type=\"text\" id=\"codice\" name=\"codice\" required>\n  <button type=\"submit\">Conferma prestito</button>\n  <button type=\"button\">Svuota campo</button>\n</form>\n```\n\nLa label dà il nome accessibile, `name=\"codice\"` fa arrivare il valore al server e `type=\"button\"` impedisce che «Svuota campo» invii il form (senza `type`, un button in un form è un submit)."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Usare il placeholder come unica etichetta del campo",
+      "perche_sbagliato": "Il placeholder è un esempio che sparisce durante la digitazione e non è un nome affidabile per le tecnologie assistive. Ogni controllo vuole una label permanente, collegata con for e id oppure per wrapping.",
+      "distrattore": "Il placeholder sostituisce la label"
+    },
+    {
+      "errore": "Dimenticare l'attributo name e dare solo l'id al controllo",
+      "perche_sbagliato": "L'invio del form costruisce coppie a partire dai name: senza name il valore non parte nemmeno. L'id serve a label, CSS e JavaScript, non al server.",
+      "distrattore": "Il server legge i campi tramite id"
+    },
+    {
+      "errore": "Credere che la validazione nel browser renda sicuri i dati",
+      "perche_sbagliato": "Required, pattern e controlli JavaScript vivono nel client e si possono aggirare inviando una richiesta costruita a mano. La validazione lato client serve all'esperienza utente; il server deve sempre rivalidare.",
+      "distrattore": "Se il form valida, il server può fidarsi"
+    },
+    {
+      "errore": "Scrivere method=\"patch\" in un form per aggiornare una risorsa REST",
+      "perche_sbagliato": "I form HTML supportano nativamente get e post. PATCH, PUT e DELETE verso un'API si inviano con JavaScript (fetch), oppure il server deve accettare un POST e interpretarlo lato suo.",
+      "distrattore": "Un form può dichiarare method PATCH"
+    },
+    {
+      "errore": "Lasciare un button senza type dentro il form per un'azione secondaria",
+      "perche_sbagliato": "Senza type, un button dentro un form si comporta come submit e invia i dati. Per azioni JavaScript che non devono inviare va scritto esplicitamente type=\"button\".",
+      "distrattore": "Un button senza type non fa nulla"
+    }
+  ],
+  "mnemonica": "«Nome doppio»: ogni campo vuole due nomi, la label per la persona e il name per il server. Se manca uno dei due, il form è rotto per qualcuno.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quali sono i due modi per associare una label a un controllo e perché il placeholder non basta?",
+        "risposta": "Associazione esplicita con for sulla label e id uguale sul controllo, oppure implicita con il controllo dentro la label. Il placeholder sparisce mentre si scrive e non è un nome accessibile permanente."
+      },
+      {
+        "domanda": "Un input ha id ma non name: che cosa arriva al server all'invio del form?",
+        "risposta": "Nulla per quel campo: l'invio costruisce coppie nome-valore dai name. L'id serve solo a label, CSS e JavaScript lato client."
+      },
+      {
+        "domanda": "Quando scegli GET e quando POST in un form? Fai un esempio per ciascuno.",
+        "risposta": "GET per letture con parametri condivisibili nell'URL, per esempio la ricerca nel catalogo; POST per scritture e dati che non devono stare nell'URL, per esempio registrazione e login (con HTTPS)."
+      },
+      {
+        "domanda": "Perché la validazione lato client non è una misura di sicurezza sufficiente?",
+        "risposta": "Perché gira nel browser dell'utente e si aggira inviando richieste HTTP costruite a mano. Migliora l'esperienza con feedback immediato, ma il server deve sempre rivalidare i dati."
+      }
+    ],
+    "spiega_con_parole_tue": "Immagina di spiegare a un compagno perché il modulo di registrazione della libreria «funziona» a video ma è inaccessibile e non invia dati: riusa le tre verifiche label, name e type dei button con parole tue.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "javascript-fetch-async-await",
+        "collegamento": "Confronta l'invio classico del form (solo GET e POST, ricarica la pagina) con l'invio via fetch: quando il form della libreria deve mandare un PATCH all'API, quale dei due strumenti serve?"
+      },
+      {
+        "nodo": "rest-metodi-http",
+        "collegamento": "Collega method GET e POST del form ai metodi HTTP delle API REST: la ricerca nel catalogo è una lettura sicura e ripetibile, la registrazione crea una risorsa. Quale metodo useresti lato API per ciascuna?"
+      },
+      {
+        "nodo": "quiz-form",
+        "collegamento": "Lo stesso modulo accessibile diventa un quiz a scelta multipla: radio con lo stesso name per le risposte esclusive, fieldset e legend per la domanda. Quali parti riusi senza modifiche?"
+      }
+    ]
+  },
+  "riepilogo": "Un form raccoglie dati con controlli e li invia ad action con method get (dati nell'URL, per letture) o post (dati nel corpo, per scritture). L'invio usa i name, l'accessibilità usa label collegate, fieldset e HTML semantico prima di ARIA. La validazione nel browser aiuta l'utente, ma il server rivalida sempre.",
+  "flashcard": {
+    "fronte": "Form accessibile: che cosa devono avere tutti i controlli e chi legge name e label?",
+    "retro": "Ogni controllo vuole una label associata (for/id o wrapping) come nome accessibile per persone e tecnologie assistive, e un attributo name perché il valore venga inviato al server. Il placeholder non sostituisce la label."
+  },
+  "checklist": {
+    "so_fare": [
+      "Costruire un form con label esplicite e implicite, fieldset e legend",
+      "Scegliere tra GET e POST in base a lettura o scrittura e sensibilità dei dati",
+      "Dichiarare vincoli con required, type, minlength e pattern",
+      "Impedire invii indesiderati con type=\"button\" sui pulsanti secondari"
+    ],
+    "so_dire": [
+      "Spiegare la differenza tra name (invio al server) e id (label, CSS, JavaScript)",
+      "Giustificare perché la validazione lato client non basta per la sicurezza",
+      "Enunciare la prima regola ARIA: preferire l'elemento HTML semantico nativo"
+    ]
+  }
+}
