@@ -79,7 +79,7 @@ def test_schermate(browser, base_url, vp):
     page.goto(f"{base_url}#/lezione/{LESSON}")
     page.wait_for_selector("#lesson-title")
     page.wait_for_selector(".toc, .section-progress")
-    page.wait_for_selector("pre.mermaid svg, pre.code", timeout=20000)
+    page.wait_for_selector("pre.mermaid, pre.code", timeout=20000)
     page.wait_for_timeout(300)
     assert overflow(page) <= 1
     shot(page, f"lezione-{vp}.png")

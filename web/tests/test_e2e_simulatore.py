@@ -58,7 +58,7 @@ def test_simulatore_due_ore_salvataggio_pausa_e_soluzioni(browser, base_url, vie
     page.click("#sim-consegna")
     page.wait_for_selector(".sim-soluzione-testo")
     assert page.locator(".sim-soluzione-testo").first.inner_text().strip()
-    assert "nessun voto" in page.inner_text("#sim-riepilogo").lower()
+    assert "non viene calcolato un voto" in page.inner_text("#sim-riepilogo").lower()
     assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
     assert not errors, errors
     context.close()

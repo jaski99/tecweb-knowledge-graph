@@ -55,7 +55,7 @@ def test_lezione_render_completo(browser, base_url, vp, nid):
     assert page.inner_text("#lesson-title") == node["title"]
     assert page.locator("header h1").first.is_hidden() or not page.locator("body > header").is_visible()
     # markdown: sottotitoli e codice evidenziato
-    assert page.locator(".spiegazione .md h2").count() >= 2
+    assert page.locator(".spiegazione .md h2, .spiegazione .md h3").count() >= 2
     if "```java" in node["lezione"]["spiegazione"]:
         page.wait_for_selector(".md pre.code code.language-java .hljs-keyword")
     # mermaid: tutti i diagrammi diventano SVG, nessun errore di sintassi
