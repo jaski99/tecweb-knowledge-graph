@@ -1,0 +1,109 @@
+{
+  "perche_ti_serve": "Competenza del Gruppo C per costruire quiz di ripasso; HTML e JavaScript sono nel programma ricostruito, ma non è confermato come specifico quesito d’esame.",
+  "scenario_fil_rouge": "Una biblioteca vuole proporre un quiz online sulle regole del prestito. Ogni domanda deve essere leggibile da tastiera e screen reader, consentire una sola risposta, distinguere mancata selezione da risposta errata e comunicare il risultato senza affidarsi solo a un colore.",
+  "definizione_esame": {
+    "definizione": "Un quiz a scelta multipla presenta una domanda, un insieme finito di opzioni e una regola per valutare la risposta selezionata.",
+    "scopo_vantaggio": "I controlli nativi e le etichette associate favoriscono usabilità e accessibilità; JavaScript gestisce valutazione e feedback.",
+    "esempio": "Un form può raggruppare radio button con lo stesso name e aggiornare un messaggio di esito dopo l’invio."
+  },
+  "spiegazione": "## Prima la struttura semantica\nUsa un `<form>` per raccogliere la risposta. Un `<fieldset>` raggruppa gli input della domanda e `<legend>` ne fornisce il titolo. Ogni `input type=\"radio\"` deve avere lo stesso `name` per permettere una sola scelta nel gruppo e un’etichetta associata tramite `label` o `for`/`id`. Il controllo nativo supporta tastiera e comportamento standard del browser.\n\n### Valutazione e casi distinti\nAlla submit, interrompi l’invio tradizionale solo se la pagina valuterà la risposta via JavaScript. Se nessun radio è selezionato, comunica che serve una scelta; non trattarla come risposta errata. Confronta il valore selezionato con la chiave prevista e mostra un testo esplicito. `aria-live=\"polite\"` può annunciare gli aggiornamenti dinamici, mentre un colore può integrare ma non sostituire il messaggio.\n\n```html\n<form id=\"quiz\">\n  <fieldset>\n    <legend>Quale metodo HTTP è idempotente?</legend>\n    <label><input type=\"radio\" name=\"q1\" value=\"put\"> PUT</label>\n    <label><input type=\"radio\" name=\"q1\" value=\"post\"> POST</label>\n  </fieldset>\n  <button type=\"submit\">Verifica</button>\n  <p id=\"feedback\" aria-live=\"polite\"></p>\n</form>\n```\n\n### Logica di valutazione\n```javascript\nconst form = document.querySelector(\"#quiz\");\nconst feedback = document.querySelector(\"#feedback\");\nform.addEventListener(\"submit\", (event) => {\n  event.preventDefault();\n  const risposta = form.querySelector('input[name=\"q1\"]:checked');\n  if (!risposta) {\n    feedback.textContent = \"Seleziona una risposta.\";\n  } else if (risposta.value === \"put\") {\n    feedback.textContent = \"Corretto: PUT è idempotente.\";\n  } else {\n    feedback.textContent = \"Non corretto: ripassa la semantica dei metodi.\";\n  }\n});\n```\nIn un quiz reale, l’array delle domande e le chiavi vanno mantenuti in una struttura dati coerente invece di duplicare codice per ogni elemento. Non mettere dati sensibili in una chiave JavaScript lato client: le risposte consegnate al browser sono ispezionabili.\n\n### Punteggio e spiegazioni\nConta una risposta corretta una sola volta per domanda; impedisci incrementi ripetuti a ogni click. Mostra punteggio e spiegazione collegati alla domanda, e decidi come gestire tentativi vuoti. Se la valutazione ha conseguenze reali, il server deve calcolare e verificare il risultato. Un quiz didattico client-side non costituisce un sistema sicuro di esame.\n\n### Verifica accessibile\nProva a navigare con Tab e frecce, controlla che l’etichetta selezioni il radio corretto e che l’ordine di lettura sia sensato. Il feedback deve avere testo comprensibile e non solo “verde/rosso”. Testa invio senza scelta, scelta corretta e scelta errata; per più domande, associa in modo univoco id, opzioni e spiegazione.",
+  "analogia": {
+    "testo": "Il fieldset è come una busta con un titolo: tiene insieme le opzioni di una domanda e rende chiaro a quale scelta appartengono.",
+    "limite": "La struttura HTML non determina da sola se una domanda è pedagogicamente valida o se la chiave di risposta è corretta."
+  },
+  "worked_example": {
+    "titolo": "Valutare una risposta singola",
+    "problema": "Creare una domanda con due opzioni, impedire l’invio senza scelta e mostrare feedback testuale.",
+    "passi": [
+      "Raggruppare le opzioni radio con lo stesso name dentro fieldset e legend.",
+      "Associare label descrittive a entrambi i controlli.",
+      "Alla submit, distinguere nessuna scelta da valore scelto.",
+      "Aggiornare un messaggio aria-live con esito e spiegazione."
+    ],
+    "soluzione": "Se nessun input è checked, chiedi di selezionare; se il value è put, mostra la spiegazione; altrimenti mostra feedback correttivo.",
+    "perche_funziona": "Il comportamento è distinguibile per tastiera e tecnologia assistiva, e il caso vuoto non viene conteggiato come errore."
+  },
+  "completion_problem": {
+    "titolo": "Completare l’accessibilità del feedback",
+    "testo": "Il quiz aggiorna un simbolo verde o rosso quando l’utente invia la risposta. Completa il feedback per includere anche selezione vuota e testo annunciabile.",
+    "passi_mancanti": [
+      "Aggiungere un messaggio testuale distinguibile dal solo colore.",
+      "Esprimere il risultato in un’area aggiornata annunciabile e trattare separatamente il caso non selezionato."
+    ],
+    "soluzione": "Usa testo esplicito in aria-live; se manca la scelta chiedi di selezionare, altrimenti comunica corretto o errato con spiegazione."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Quiz di tre domande",
+    "testo": "Progetta un quiz di tre domande con radio group accessibili, spiegazioni e punteggio calcolato una sola volta all’invio.",
+    "suggerimento": "Separa dati delle domande, chiave di risposta e funzione che aggiorna l’interfaccia.",
+    "soluzione_attesa": "Crea un fieldset/legend per domanda, label e radio con name univoco per gruppo; all’invio leggi le selezioni, gestisci quelle assenti, confronta con le chiavi e calcola lo score da zero. Aggiorna feedback testuali e area live; non esporre dati sensibili in codice client."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Affidarsi al solo colore per il feedback",
+      "perche_sbagliato": "Il significato deve essere comunicato anche con testo, perché il colore da solo non è sufficiente.",
+      "distrattore": "La pressione atmosferica"
+    },
+    {
+      "errore": "Usare name diversi per ogni radio della stessa domanda",
+      "perche_sbagliato": "Si perderebbe il comportamento di selezione esclusiva nativo del gruppo.",
+      "distrattore": "Un endpoint DNS"
+    },
+    {
+      "errore": "Trattare il submit vuoto come risposta errata",
+      "perche_sbagliato": "La mancata scelta è un caso distinto e può richiedere un messaggio di completamento.",
+      "distrattore": "Il ciclo dell’acqua"
+    }
+  ],
+  "mnemonica": "F-L-R: Fieldset raggruppa, Legend nomina, Radio seleziona una risposta nel gruppo.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Perché si usa fieldset e legend?",
+        "risposta": "Per raggruppare le opzioni correlate e comunicarne il titolo."
+      },
+      {
+        "domanda": "Come si ottiene una sola scelta tra radio?",
+        "risposta": "Si assegna lo stesso attributo name a tutti i radio della domanda."
+      },
+      {
+        "domanda": "Perché response visivo non dovrebbe basarsi soltanto sul colore?",
+        "risposta": "Serve un messaggio testuale percepibile anche da chi non distingue quei colori o usa tecnologie assistive."
+      },
+      {
+        "domanda": "Una risposta vuota equivale a una risposta errata?",
+        "risposta": "No: va gestita separatamente, per esempio chiedendo di selezionare un’opzione."
+      }
+    ],
+    "spiega_con_parole_tue": "Descrivi come testeresti navigazione da tastiera, risposta mancante e feedback annunciato.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "html-form-accessibilita",
+        "collegamento": "Il quiz riutilizza i controlli HTML, le etichette e le pratiche accessibili dei form."
+      },
+      {
+        "nodo": "javascript-fetch-async-await",
+        "collegamento": "JavaScript gestisce gli eventi e aggiorna il feedback dopo la risposta."
+      },
+      {
+        "nodo": "tesina-esercitazione-guidata",
+        "collegamento": "La costruzione incrementale e i test manuali si applicano anche al quiz interattivo."
+      }
+    ]
+  },
+  "riepilogo": "Usa form, fieldset, legend, label e radio semanticamente associati.\nRadio con lo stesso name consentono una sola scelta per domanda.\nGestisci risposta vuota, corretta ed errata in modo distinto.\nAnnuncia feedback testuale; il colore non deve essere l’unico segnale.\nIl codice client è ispezionabile e non protegge una valutazione ad alto rischio.",
+  "flashcard": {
+    "fronte": "Come strutturare e valutare un quiz accessibile?",
+    "retro": "Raggruppa le opzioni con fieldset/legend, associa label e radio con name condiviso, gestisci il caso vuoto e comunica feedback testuale in un’area live."
+  },
+  "checklist": {
+    "so_fare": [
+      "Creare un quiz navigabile da tastiera",
+      "Valutare risposte e presentare feedback testuale"
+    ],
+    "so_dire": [
+      "Spiegare radio group e semantica HTML",
+      "Distinguere quiz client-side da valutazione verificata dal server"
+    ]
+  }
+}

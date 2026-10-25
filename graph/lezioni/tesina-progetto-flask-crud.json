@@ -1,0 +1,109 @@
+{
+  "perche_ti_serve": "Competenza pratica del Gruppo C, legata alla tesina secondo il materiale utente; non sono documentati criteri ufficiali di valutazione.",
+  "scenario_fil_rouge": "Immagina una piccola biblioteca di quartiere che vuole catalogare i libri. La bibliotecaria deve cercarli, registrarne uno nuovo, correggerne i dati o rimuoverlo; lo studente deve trasformare queste azioni in un flusso chiaro tra browser, Flask e archivio.",
+  "definizione_esame": {
+    "definizione": "Un’applicazione CRUD consente di creare, leggere, aggiornare ed eliminare risorse attraverso operazioni ben definite.",
+    "scopo_vantaggio": "Separare interfaccia, logica server e persistenza rende il sistema più comprensibile, verificabile e modificabile.",
+    "esempio": "Nel catalogo, il browser mostra i libri, Flask espone endpoint e SQLite conserva i record."
+  },
+  "spiegazione": "## Dall’esigenza alla risorsa\nPrima del codice, scegli una risorsa concreta: qui è il **libro**. Descrivine i campi, per esempio `id`, `titolo` e `autore`, e specifica quali sono obbligatori. Il client non deve decidere se un dato è valido: il server ripete i controlli perché una richiesta può provenire da qualunque client.\n\n### Tre livelli e responsabilità\nIl browser presenta la lista e invia richieste; Flask interpreta URL, metodo e corpo; il database conserva i dati. La separazione è logica: non implica che i tre livelli siano necessariamente su macchine diverse.\n\n```mermaid\nflowchart LR\n  B[Browser: HTML CSS JS] -->|HTTP JSON| F[Flask: rotte e validazione]\n  F -->|query parametrizzate| D[(SQLite)]\n  D --> F -->|status e JSON| B\n```\n\n### Contratto CRUD e semantica\nUn possibile contratto usa `GET /api/libri` per leggere la raccolta, `GET /api/libri/7` per un elemento, `POST /api/libri` per chiedere la creazione, `PUT /api/libri/7` per sostituire la rappresentazione, `PATCH /api/libri/7` per applicare una modifica parziale e `DELETE /api/libri/7` per chiedere l’eliminazione. Non sono intercambiabili: PUT è idempotente per definizione HTTP, mentre PATCH non è necessariamente idempotente; la semantica precisa di PATCH dipende dal formato e dalle regole dell’API.\n\n### Validazione e risposte\nPer dati malformati si può rispondere `400`; per un identificatore non trovato `404`; una creazione riuscita può rispondere `201`. Una cancellazione riuscita può rispondere `204 No Content`, senza corpo, oppure un altro status appropriato al contratto. Non inviare JSON insieme a `204`.\n\n```python\nfrom flask import Flask, jsonify, request\napp = Flask(__name__)\n\n@app.post(\"/api/libri\")\ndef crea_libro():\n    dati = request.get_json(silent=True)\n    if not isinstance(dati, dict) or not dati.get(\"titolo\"):\n        return jsonify(errore=\"titolo obbligatorio\"), 400\n    # La persistenza usa parametri SQL, mai concatenazione di input.\n    libro = salva_libro(dati[\"titolo\"], dati.get(\"autore\", \"\"))\n    return jsonify(libro), 201\n```\n`salva_libro` rappresenta una funzione di persistenza da implementare e testare; non è una funzione integrata di Flask.\n\n### Front-end e gestione errori\nIl `fetch` restituisce una Promise anche quando la risposta HTTP è 404: occorre controllare `response.ok`. Dopo una scrittura, aggiorna l’interfaccia solo se il server conferma l’esito; mostra errori comprensibili senza assumere che la rete sia sempre disponibile. HTTP è stateless: lo stato visibile della pagina e l’eventuale sessione sono concetti distinti.\n\n### Checklist di qualità\nDefinisci il contratto prima di implementare, convalida sul server, usa query parametrizzate, chiudi correttamente le connessioni al database e prova percorso riuscito e casi d’errore. Un’app didattica non è automaticamente pronta per la produzione: autenticazione, autorizzazione, protezione CSRF, configurazione segreta e deploy richiedono attenzione specifica.",
+  "analogia": {
+    "testo": "Pensa a un archivio bibliotecario: il front-end è il banco dove si inoltra una richiesta, Flask è l’addetto che verifica la scheda e SQLite è il catalogo conservato.",
+    "limite": "Una richiesta HTTP non è una persona e il database non controlla da solo ogni regola applicativa."
+  },
+  "worked_example": {
+    "titolo": "Aggiungere un libro senza fidarsi del client",
+    "problema": "Il form invia titolo e autore; il server deve rifiutare un titolo vuoto e registrare un dato valido.",
+    "passi": [
+      "Definire i campi ammessi e i vincoli minimi della risorsa.",
+      "Leggere il JSON e verificare tipo e campi obbligatori.",
+      "Eseguire una INSERT parametrizzata e confermare la transazione.",
+      "Restituire la risorsa creata con status 201; mostrare un errore se la richiesta non è valida."
+    ],
+    "soluzione": "Validazione lato server, inserimento parametrizzato, commit e risposta JSON con 201; il client controlla response.ok prima di aggiornare la lista.",
+    "perche_funziona": "Il controllo server-side non è aggirabile semplicemente saltando il form, e la query parametrizzata separa i valori dai comandi SQL."
+  },
+  "completion_problem": {
+    "titolo": "Completare l’aggiornamento",
+    "testo": "Un endpoint PATCH riceve il JSON e un id; completa la sequenza per aggiornare soltanto i campi presenti e gestire un record assente.",
+    "passi_mancanti": [
+      "Verificare che il corpo sia un oggetto JSON valido e che i campi siano ammessi.",
+      "Cercare l’id e restituire 404 se non esiste; poi aggiornare solo i campi forniti."
+    ],
+    "soluzione": "Convalida il JSON, verifica l’id, applica esclusivamente i campi ammessi e restituisci il risultato aggiornato."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Progetta l’API di una lista di attività",
+    "testo": "Definisci gli endpoint e le risposte per elencare, creare, aggiornare e rimuovere una singola attività.",
+    "suggerimento": "Specifica per ogni rotta metodo, input, validazione e status; scegli PATCH solo per aggiornamenti parziali.",
+    "soluzione_attesa": "GET legge; POST crea; PUT sostituisce la risorsa oppure PATCH modifica i campi previsti; DELETE elimina. Usa 400 per input non valido, 404 per risorsa assente e status di successo coerenti. Parametrizza SQL e controlla response.ok nel client."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Inviare al database direttamente i valori del form",
+      "perche_sbagliato": "Il client è sotto il controllo dell’utente: i dati vanno validati sul server.",
+      "distrattore": "Una giraffa"
+    },
+    {
+      "errore": "Usare PUT come sinonimo automatico di aggiornamento parziale",
+      "perche_sbagliato": "PUT sostituisce la rappresentazione secondo il contratto; PATCH serve agli aggiornamenti parziali.",
+      "distrattore": "Una tabella periodica"
+    },
+    {
+      "errore": "Restituire un corpo insieme a 204",
+      "perche_sbagliato": "204 indica che la risposta non contiene contenuto; usa un altro status se invii una rappresentazione.",
+      "distrattore": "La fase lunare"
+    }
+  ],
+  "mnemonica": "CRUD ricorda le quattro intenzioni: Crea, Leggi, Aggiorna, Elimina. La sigla non determina da sola il metodo HTTP: contano le semantiche del contratto.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Qual è la responsabilità del server nella validazione?",
+        "risposta": "Validare di nuovo i dati perché il client può essere aggirato o sostituito."
+      },
+      {
+        "domanda": "Quando usare PATCH invece di PUT?",
+        "risposta": "Quando il contratto prevede una modifica parziale; PUT ha semantica di sostituzione della rappresentazione."
+      },
+      {
+        "domanda": "Perché controllare response.ok dopo fetch?",
+        "risposta": "Perché una risposta HTTP di errore non fa rifiutare automaticamente la Promise di fetch."
+      },
+      {
+        "domanda": "Che cosa significa CRUD?",
+        "risposta": "Create, Read, Update, Delete: creare, leggere, aggiornare ed eliminare risorse."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega il percorso completo di una modifica dal clic nel browser fino alla persistenza, includendo un caso di errore.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "flask-rotte-jsonify",
+        "collegamento": "Le rotte e le risposte JSON di Flask sono il confine applicativo tra browser e persistenza."
+      },
+      {
+        "nodo": "sqlite-crud",
+        "collegamento": "SQLite implementa le operazioni sui record che il progetto espone via HTTP."
+      },
+      {
+        "nodo": "javascript-fetch-async-await",
+        "collegamento": "fetch collega il front-end all’API e richiede controllo esplicito della risposta HTTP."
+      }
+    ]
+  },
+  "riepilogo": "Una risorsa ben definita rende CRUD verificabile.\nIl browser presenta; Flask valida e applica le regole; SQLite persiste.\nGET legge, POST crea, PUT sostituisce, PATCH modifica parzialmente, DELETE elimina.\nStatus e corpi devono rispettare il contratto, per esempio 204 senza contenuto.\nConvalida lato server, usa SQL parametrizzato e controlla gli errori di fetch.",
+  "flashcard": {
+    "fronte": "Come si progetta un CRUD Web affidabile?",
+    "retro": "Definire risorsa e contratto, separare client/server/dati, validare sul server, usare query parametrizzate, scegliere metodi e status coerenti e gestire gli errori nel client."
+  },
+  "checklist": {
+    "so_fare": [
+      "Progettare endpoint e validazioni CRUD",
+      "Collegare il front-end con fetch e gestire errori HTTP"
+    ],
+    "so_dire": [
+      "Distinguere PUT da PATCH",
+      "Spiegare il ruolo di browser, Flask e SQLite"
+    ]
+  }
+}

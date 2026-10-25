@@ -2634,12 +2634,11 @@
       "area": 6,
       "gruppo": "C",
       "tipo": "abilita",
-      "sapere": "I quiz sono una forma di valutazione interattiva. Un quiz form raccoglie risposte dall'utente e le valuta automaticamente. Deve includere: domande (testo), opzioni di risposta (scelta multipla o aperte), risposta corretta, feedback immediato, punteggio. Può essere implementato con HTML form + JavaScript per la logica.",
+      "sapere": "Un quiz a scelta multipla usa controlli HTML per raccogliere una risposta e JavaScript per confrontarla con una chiave, calcolare un esito e comunicarlo. Il markup deve associare domande e opzioni in modo accessibile; il feedback va esposto anche alle tecnologie assistive e non deve basarsi solo sul colore.",
       "saper_fare": [
-        "Creare un quiz con domande a scelta multipla",
-        "Implementare la logica di valutazione",
-        "Fornire feedback immediato all'utente",
-        "Calcolare il punteggio automaticamente"
+        "Strutturare una domanda con fieldset, legend, label e input radio associati",
+        "Valutare risposte senza confondere risposta non selezionata e risposta errata",
+        "Comunicare esito e spiegazione con testo accessibile e gestione chiara del punteggio"
       ],
       "prerequisiti": [
         {
@@ -2655,25 +2654,20 @@
       ],
       "esercizi": [
         {
-          "tipo_esame": "pratico: crea quiz",
-          "testo": "Crea un quiz di 5 domande su HTTP con: domanda, 4 opzioni (1 corretta), feedback immediato, punteggio finale.",
-          "soluzione": "# HTML\n<form id=\"quiz-form\">\n  <div class=\"question\" data-correct=\"A\">\n    <p>1. Quale metodo HTTP è idempotente?</p>\n    <input type=\"radio\" name=\"q1\" value=\"A\"> A) GET\n    <input type=\"radio\" name=\"q1\" value=\"B\"> B) POST\n    <input type=\"radio\" name=\"q1\" value=\"C\"> C) PATCH\n    <input type=\"radio\" name=\"q1\" value=\"D\"> D) DELETE\n    <span class=\"feedback\"></span>\n  </div>\n  <button type=\"submit\">Calcola punteggio</button>\n  <p>Punteggio: <span id=\"score\">0</span>/5</p>\n</form>\n\n# JavaScript\n<script>\nconst quizForm = document.getElementById('quiz-form');\nconst questions = quizForm.querySelectorAll('.question');\n\nquizForm.addEventListener('submit', (e) => {\n  e.preventDefault();\n  let score = 0;\n  questions.forEach(q => {\n    const correct = q.dataset.correct;\n    const selected = q.querySelector('input:checked');\n    const feedback = q.querySelector('.feedback');\n    if (selected && selected.value === correct) {\n      score++;\n      feedback.textContent = '✓ Corretto!';\n      feedback.style.color = 'green';\n    } else {\n      feedback.textContent = `✗ Sbagliato! Corretta: ${correct}`;\n      feedback.style.color = 'red';\n    }\n  });\n  document.getElementById('score').textContent = score;\n});\n</script>"
+          "tipo_esame": "pratico: quiz accessibile",
+          "testo": "Crea una domanda a risposta singola con tre opzioni, feedback testuale e conteggio corretto dopo l’invio.",
+          "soluzione": "Raggruppa gli input radio con lo stesso name dentro fieldset e usa legend per la domanda; associa ogni radio alla sua label. All’invio impedisci la navigazione se serve, verifica quale input è selezionato e confronta il suo valore con la chiave della domanda. Aggiorna un elemento aria-live con “Corretto” o “Riprova”; se nessuna risposta è selezionata, chiedi di scegliere senza conteggiarla come errore."
         }
       ],
       "tempo_studio_min": 45,
       "priorita": {
         "livello": "media",
-        "motivazione": "Gruppo C. Utile per preparazione quiz di ripasso."
+        "motivazione": "Gruppo C: competenza utile per costruire quiz di ripasso, coerente con il programma ricostruito; non è un formato ufficiale accertato."
       },
       "risorse": [
         {
-          "titolo": "MDN: HTML forms",
-          "url": "https://developer.mozilla.org/en-US/docs/Learn/Forms",
-          "verificato": true
-        },
-        {
-          "titolo": "W3C: Web Forms",
-          "url": "https://www.w3.org/TR/html52/sec-forms.html",
+          "titolo": "MDN: Web forms",
+          "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms",
           "verificato": true
         }
       ],
@@ -2691,7 +2685,116 @@
         "JavaScript: logica valutazione",
         "Feedback: immediato per ogni domanda"
       ],
-      "worker": "W4"
+      "worker": "W4",
+      "lezione": {
+        "perche_ti_serve": "Competenza del Gruppo C per costruire quiz di ripasso; HTML e JavaScript sono nel programma ricostruito, ma non è confermato come specifico quesito d’esame.",
+        "scenario_fil_rouge": "Una biblioteca vuole proporre un quiz online sulle regole del prestito. Ogni domanda deve essere leggibile da tastiera e screen reader, consentire una sola risposta, distinguere mancata selezione da risposta errata e comunicare il risultato senza affidarsi solo a un colore.",
+        "definizione_esame": {
+          "definizione": "Un quiz a scelta multipla presenta una domanda, un insieme finito di opzioni e una regola per valutare la risposta selezionata.",
+          "scopo_vantaggio": "I controlli nativi e le etichette associate favoriscono usabilità e accessibilità; JavaScript gestisce valutazione e feedback.",
+          "esempio": "Un form può raggruppare radio button con lo stesso name e aggiornare un messaggio di esito dopo l’invio."
+        },
+        "spiegazione": "## Prima la struttura semantica\nUsa un `<form>` per raccogliere la risposta. Un `<fieldset>` raggruppa gli input della domanda e `<legend>` ne fornisce il titolo. Ogni `input type=\"radio\"` deve avere lo stesso `name` per permettere una sola scelta nel gruppo e un’etichetta associata tramite `label` o `for`/`id`. Il controllo nativo supporta tastiera e comportamento standard del browser.\n\n### Valutazione e casi distinti\nAlla submit, interrompi l’invio tradizionale solo se la pagina valuterà la risposta via JavaScript. Se nessun radio è selezionato, comunica che serve una scelta; non trattarla come risposta errata. Confronta il valore selezionato con la chiave prevista e mostra un testo esplicito. `aria-live=\"polite\"` può annunciare gli aggiornamenti dinamici, mentre un colore può integrare ma non sostituire il messaggio.\n\n```html\n<form id=\"quiz\">\n  <fieldset>\n    <legend>Quale metodo HTTP è idempotente?</legend>\n    <label><input type=\"radio\" name=\"q1\" value=\"put\"> PUT</label>\n    <label><input type=\"radio\" name=\"q1\" value=\"post\"> POST</label>\n  </fieldset>\n  <button type=\"submit\">Verifica</button>\n  <p id=\"feedback\" aria-live=\"polite\"></p>\n</form>\n```\n\n### Logica di valutazione\n```javascript\nconst form = document.querySelector(\"#quiz\");\nconst feedback = document.querySelector(\"#feedback\");\nform.addEventListener(\"submit\", (event) => {\n  event.preventDefault();\n  const risposta = form.querySelector('input[name=\"q1\"]:checked');\n  if (!risposta) {\n    feedback.textContent = \"Seleziona una risposta.\";\n  } else if (risposta.value === \"put\") {\n    feedback.textContent = \"Corretto: PUT è idempotente.\";\n  } else {\n    feedback.textContent = \"Non corretto: ripassa la semantica dei metodi.\";\n  }\n});\n```\nIn un quiz reale, l’array delle domande e le chiavi vanno mantenuti in una struttura dati coerente invece di duplicare codice per ogni elemento. Non mettere dati sensibili in una chiave JavaScript lato client: le risposte consegnate al browser sono ispezionabili.\n\n### Punteggio e spiegazioni\nConta una risposta corretta una sola volta per domanda; impedisci incrementi ripetuti a ogni click. Mostra punteggio e spiegazione collegati alla domanda, e decidi come gestire tentativi vuoti. Se la valutazione ha conseguenze reali, il server deve calcolare e verificare il risultato. Un quiz didattico client-side non costituisce un sistema sicuro di esame.\n\n### Verifica accessibile\nProva a navigare con Tab e frecce, controlla che l’etichetta selezioni il radio corretto e che l’ordine di lettura sia sensato. Il feedback deve avere testo comprensibile e non solo “verde/rosso”. Testa invio senza scelta, scelta corretta e scelta errata; per più domande, associa in modo univoco id, opzioni e spiegazione.",
+        "analogia": {
+          "testo": "Il fieldset è come una busta con un titolo: tiene insieme le opzioni di una domanda e rende chiaro a quale scelta appartengono.",
+          "limite": "La struttura HTML non determina da sola se una domanda è pedagogicamente valida o se la chiave di risposta è corretta."
+        },
+        "worked_example": {
+          "titolo": "Valutare una risposta singola",
+          "problema": "Creare una domanda con due opzioni, impedire l’invio senza scelta e mostrare feedback testuale.",
+          "passi": [
+            "Raggruppare le opzioni radio con lo stesso name dentro fieldset e legend.",
+            "Associare label descrittive a entrambi i controlli.",
+            "Alla submit, distinguere nessuna scelta da valore scelto.",
+            "Aggiornare un messaggio aria-live con esito e spiegazione."
+          ],
+          "soluzione": "Se nessun input è checked, chiedi di selezionare; se il value è put, mostra la spiegazione; altrimenti mostra feedback correttivo.",
+          "perche_funziona": "Il comportamento è distinguibile per tastiera e tecnologia assistiva, e il caso vuoto non viene conteggiato come errore."
+        },
+        "completion_problem": {
+          "titolo": "Completare l’accessibilità del feedback",
+          "testo": "Il quiz aggiorna un simbolo verde o rosso quando l’utente invia la risposta. Completa il feedback per includere anche selezione vuota e testo annunciabile.",
+          "passi_mancanti": [
+            "Aggiungere un messaggio testuale distinguibile dal solo colore.",
+            "Esprimere il risultato in un’area aggiornata annunciabile e trattare separatamente il caso non selezionato."
+          ],
+          "soluzione": "Usa testo esplicito in aria-live; se manca la scelta chiedi di selezionare, altrimenti comunica corretto o errato con spiegazione."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Quiz di tre domande",
+          "testo": "Progetta un quiz di tre domande con radio group accessibili, spiegazioni e punteggio calcolato una sola volta all’invio.",
+          "suggerimento": "Separa dati delle domande, chiave di risposta e funzione che aggiorna l’interfaccia.",
+          "soluzione_attesa": "Crea un fieldset/legend per domanda, label e radio con name univoco per gruppo; all’invio leggi le selezioni, gestisci quelle assenti, confronta con le chiavi e calcola lo score da zero. Aggiorna feedback testuali e area live; non esporre dati sensibili in codice client."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Affidarsi al solo colore per il feedback",
+            "perche_sbagliato": "Il significato deve essere comunicato anche con testo, perché il colore da solo non è sufficiente.",
+            "distrattore": "La pressione atmosferica"
+          },
+          {
+            "errore": "Usare name diversi per ogni radio della stessa domanda",
+            "perche_sbagliato": "Si perderebbe il comportamento di selezione esclusiva nativo del gruppo.",
+            "distrattore": "Un endpoint DNS"
+          },
+          {
+            "errore": "Trattare il submit vuoto come risposta errata",
+            "perche_sbagliato": "La mancata scelta è un caso distinto e può richiedere un messaggio di completamento.",
+            "distrattore": "Il ciclo dell’acqua"
+          }
+        ],
+        "mnemonica": "F-L-R: Fieldset raggruppa, Legend nomina, Radio seleziona una risposta nel gruppo.",
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Perché si usa fieldset e legend?",
+              "risposta": "Per raggruppare le opzioni correlate e comunicarne il titolo."
+            },
+            {
+              "domanda": "Come si ottiene una sola scelta tra radio?",
+              "risposta": "Si assegna lo stesso attributo name a tutti i radio della domanda."
+            },
+            {
+              "domanda": "Perché response visivo non dovrebbe basarsi soltanto sul colore?",
+              "risposta": "Serve un messaggio testuale percepibile anche da chi non distingue quei colori o usa tecnologie assistive."
+            },
+            {
+              "domanda": "Una risposta vuota equivale a una risposta errata?",
+              "risposta": "No: va gestita separatamente, per esempio chiedendo di selezionare un’opzione."
+            }
+          ],
+          "spiega_con_parole_tue": "Descrivi come testeresti navigazione da tastiera, risposta mancante e feedback annunciato.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "html-form-accessibilita",
+              "collegamento": "Il quiz riutilizza i controlli HTML, le etichette e le pratiche accessibili dei form."
+            },
+            {
+              "nodo": "javascript-fetch-async-await",
+              "collegamento": "JavaScript gestisce gli eventi e aggiorna il feedback dopo la risposta."
+            },
+            {
+              "nodo": "tesina-esercitazione-guidata",
+              "collegamento": "La costruzione incrementale e i test manuali si applicano anche al quiz interattivo."
+            }
+          ]
+        },
+        "riepilogo": "Usa form, fieldset, legend, label e radio semanticamente associati.\nRadio con lo stesso name consentono una sola scelta per domanda.\nGestisci risposta vuota, corretta ed errata in modo distinto.\nAnnuncia feedback testuale; il colore non deve essere l’unico segnale.\nIl codice client è ispezionabile e non protegge una valutazione ad alto rischio.",
+        "flashcard": {
+          "fronte": "Come strutturare e valutare un quiz accessibile?",
+          "retro": "Raggruppa le opzioni con fieldset/legend, associa label e radio con name condiviso, gestisci il caso vuoto e comunica feedback testuale in un’area live."
+        },
+        "checklist": {
+          "so_fare": [
+            "Creare un quiz navigabile da tastiera",
+            "Valutare risposte e presentare feedback testuale"
+          ],
+          "so_dire": [
+            "Spiegare radio group e semantica HTML",
+            "Distinguere quiz client-side da valutazione verificata dal server"
+          ]
+        }
+      }
     },
     {
       "id": "tesina-domande-revisione-codice",
@@ -2699,11 +2802,11 @@
       "area": 6,
       "gruppo": "C",
       "tipo": "tipo_esercizio",
-      "sapere": "Durante la revisione codice della tesina, il docente può chiedere di spiegare: 1) Dove e come si usano i metodi HTTP (GET, POST, PATCH, PUT, DELETE) nel progetto; 2) Come è gestito lo stato lato client (cookie, session, localStorage) e lato server; 3) Come funzionano le chiamate asincrone (fetch, async/await); 4) Error handling e validazione.",
+      "sapere": "Una revisione del codice richiede di motivare il flusso tra interfaccia, endpoint Flask e persistenza. Occorre distinguere i metodi HTTP, la gestione dello stato applicativo, le chiamate asincrone, la validazione e gli errori. Le domande qui sono esercizi di preparazione ricavati dai temi indicati nel materiale utente, non una lista ufficiale di quesiti.",
       "saper_fare": [
-        "Spiegare le scelte architetturali",
-        "Descrivere il flusso dei dati",
-        "Gestire domande tecniche sul codice"
+        "Tracciare una richiesta dal gesto nell’interfaccia fino alla risposta del server",
+        "Motivare metodo HTTP, codice di stato e forma dei dati scambiati",
+        "Individuare validazioni, errori e limiti della gestione dello stato nel codice"
       ],
       "prerequisiti": [
         {
@@ -2719,20 +2822,25 @@
       ],
       "esercizi": [
         {
-          "tipo_esame": "orale: revisione codice",
-          "testo": "Spiega come sono implementate le operazioni CRUD nel tuo progetto Flask.",
-          "soluzione": "GET /api/libri: recupera tutti i libri (Read - lista)\nGET /api/libri/<id>: recupera un libro specifico (Read - dettaglio)\nPOST /api/libri: crea un nuovo libro (Create) - request.get_json() per dati\nPUT /api/libri/<id>: sostituisce completamente un libro (Update) - tutti i campi devono essere forniti\nPATCH /api/libri/<id>: aggiorna parzialmente un libro (Update) - solo i campi forniti vengono aggiornati\nDELETE /api/libri/<id>: elimina un libro (Delete)\n\nStato lato server: non mantenuto (HTTP stateless), ogni richiesta è indipendente.\nStato lato client: gestito dal front-end che mantiene lo stato dell'interfaccia.\nChiamate asincrone: fetch() con async/await per comunicazione front-end ↔ back-end."
+          "tipo_esame": "revisione: tracciare una modifica",
+          "testo": "Nel progetto, l’utente cambia il titolo di un libro. Spiega cosa succede nel browser, nel server e nel database, includendo il caso di ID inesistente.",
+          "soluzione": "Il browser invia i dati con fetch e attende la risposta; il metodo dipende dal contratto: PUT sostituisce l’intera rappresentazione, PATCH applica una modifica parziale. Flask valida JSON e ID, esegue una query parametrizzata e restituisce il libro aggiornato oppure 404. Il browser controlla response.ok prima di aggiornare la vista. HTTP è stateless: eventuale login/sessione è un meccanismo applicativo separato."
         }
       ],
       "tempo_studio_min": 45,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo C. Parte fondamentale della valutazione della tesina."
+        "motivazione": "Gruppo C: preparazione pratica alla tesina secondo il materiale utente; il formato e i criteri ufficiali non sono confermati."
       },
       "risorse": [
         {
-          "titolo": "Flask: HTTP Methods",
-          "url": "https://flask.palletsprojects.com/en/3.0.x/quickstart/#http-methods",
+          "titolo": "Flask: Quickstart",
+          "url": "https://flask.palletsprojects.com/en/stable/quickstart/",
+          "verificato": true
+        },
+        {
+          "titolo": "MDN: Fetch API",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API",
           "verificato": true
         }
       ],
@@ -2747,7 +2855,116 @@
         "Chiamate asincrone: fetch, async/await",
         "Error handling: try/catch, status code"
       ],
-      "worker": "W4"
+      "worker": "W4",
+      "lezione": {
+        "perche_ti_serve": "Allenamento del Gruppo C alla spiegazione del codice della tesina, basato sui temi del materiale utente; non costituisce una lista ufficiale di domande.",
+        "scenario_fil_rouge": "Durante una revisione, una persona indica una modifica al titolo di un libro e chiede di seguirla dal browser fino al database. Per rispondere bene non basta nominare Flask: occorre descrivere metodo HTTP, payload, validazione, persistenza, risposta ed eventuale stato dell’interfaccia.",
+        "definizione_esame": {
+          "definizione": "La revisione del codice è una spiegazione ragionata di come un requisito è tradotto in flusso di dati e decisioni implementative.",
+          "scopo_vantaggio": "Collegare ogni scelta a un requisito permette di verificare coerenza, correttezza e limiti del programma.",
+          "esempio": "Per una modifica, si può seguire la richiesta fetch, la rotta Flask, l’aggiornamento SQLite e la risposta visualizzata."
+        },
+        "spiegazione": "## Rispondi seguendo il percorso\nParti dall’azione dell’utente, non dal nome della libreria. Il browser costruisce una richiesta; Flask riceve URL, metodo, header e possibile corpo; il server valida, applica le regole e interroga la persistenza; la risposta torna al browser, che aggiorna la vista. Questa sequenza evita descrizioni vaghe come “il front-end comunica col back-end”.\n\n### Metodo, payload e stato\n`GET` è usato per leggere e ha semantica safe; `POST` invia una richiesta di elaborazione, spesso per creare una risorsa. `PUT` sostituisce la rappresentazione bersaglio ed è idempotente; `PATCH` applica modifiche parziali ma non è necessariamente idempotente. `DELETE` richiede l’eliminazione e ha semantica idempotente secondo HTTP, anche se le risposte possono cambiare tra richieste. Il contratto concreto stabilisce quali campi accetta l’API.\n\n```mermaid\nsequenceDiagram\n  actor U as Utente\n  participant B as Browser\n  participant F as Flask\n  participant D as Database\n  U->>B: modifica titolo\n  B->>F: PATCH /api/libri/7 (JSON)\n  F->>F: valida input e permessi\n  F->>D: aggiorna campi ammessi\n  D-->>F: esito\n  F-->>B: status e JSON\n  B-->>U: aggiorna vista o mostra errore\n```\n\n### Errori e codici di risposta\nIl client deve controllare lo status. `fetch()` non rigetta la Promise solo perché la risposta è 404 o 500; la rete non disponibile, invece, può causare un errore di rete. Spiega come il codice distingue questi casi e cosa vede l’utente. Il server deve rifiutare input non validi e non rivelare dettagli interni non necessari.\n\n### Stato applicativo\nHTTP è stateless: ogni richiesta deve portare il contesto necessario. La sessione può usare un identificatore in cookie con stato conservato dal server; l’interfaccia può mantenere temporaneamente filtri o dati di visualizzazione. Non confondere questi meccanismi: localStorage non è una sessione server e i cookie non rendono HTTP stateful per definizione.\n\n### Dimostra la tua comprensione\nPer ogni blocco, rispondi: quale requisito realizza? Quali dati attraversano il confine? Quali condizioni di errore gestisce? Quale alternativa hai considerato? Distingui sempre ciò che il codice fa da ciò che dovrebbe fare: se non gestisce autorizzazione o validazione, riconosci il limite invece di inventare una protezione.\n\n### Preparazione pratica\nScegli una rotta e prepara una traccia con input, controlli, accesso ai dati, risposta e aggiornamento del client. Provala con un caso valido e uno invalido. Questa preparazione favorisce spiegazioni precise, ma non predice le domande effettive di una revisione.",
+        "analogia": {
+          "testo": "Seguire una richiesta è come ricostruire il tragitto di un pacco: mittente, sportelli di controllo, deposito, ricevuta e aggiornamento della consegna.",
+          "limite": "Un programma può eseguire più operazioni in parallelo e i livelli software non corrispondono sempre a sportelli fisici distinti."
+        },
+        "worked_example": {
+          "titolo": "Spiegare una modifica parziale",
+          "problema": "Un utente cambia il titolo del libro con id 7. Traccia richiesta, validazioni, database e risposta.",
+          "passi": [
+            "Il client invia PATCH con il campo titolo e controlla la risposta HTTP.",
+            "Flask valida formato, campi ammessi e autorizzazione se prevista.",
+            "Il server cerca l’id; se manca risponde 404, altrimenti aggiorna il solo campo previsto.",
+            "La rotta restituisce status e rappresentazione coerenti; il client aggiorna l’interfaccia."
+          ],
+          "soluzione": "Una spiegazione completa cita PATCH, JSON, validazione, ricerca per id, persistenza, status e gestione di response.ok.",
+          "perche_funziona": "La risposta copre l’intero flusso e distingue aggiornamento parziale, errori applicativi e aggiornamento della UI."
+        },
+        "completion_problem": {
+          "titolo": "Completare la spiegazione del flusso",
+          "testo": "La risposta dichiara che “fetch aggiorna il database”. Completa la spiegazione con i passaggi omessi e un errore possibile.",
+          "passi_mancanti": [
+            "Descrivere la rotta server che valida input e interagisce con la persistenza.",
+            "Citare un errore HTTP e il controllo effettuato dal client prima di cambiare la vista."
+          ],
+          "soluzione": "fetch invia la richiesta; Flask valida e aggiorna il database; il client controlla response.ok e mostra 404 o altro errore senza fingere successo."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Revisione orale simulata",
+          "testo": "Scegli una rotta del tuo progetto e spiega input, metodo, validazione, persistenza, status, gestione errori e limite residuo.",
+          "suggerimento": "Usa la sequenza: gesto → richiesta → route → regole → dati → risposta → UI.",
+          "soluzione_attesa": "La spiegazione deve identificare il requisito, motivare il metodo in base al contratto, illustrare controlli e query, distinguere successi/errori e descrivere l’aggiornamento client. Riconosci esplicitamente ogni protezione o controllo che manca."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Dire che fetch lancia un errore per ogni status 4xx",
+            "perche_sbagliato": "Una risposta 404 è una risposta HTTP; occorre controllare response.ok o status.",
+            "distrattore": "Una costellazione"
+          },
+          {
+            "errore": "Definire PUT e PATCH equivalenti",
+            "perche_sbagliato": "PUT sostituisce la rappresentazione secondo il contratto, PATCH applica una modifica parziale.",
+            "distrattore": "Una ricetta di pasta"
+          },
+          {
+            "errore": "Dire che il cookie conserva automaticamente lo stato nel server",
+            "perche_sbagliato": "Il cookie è trasmesso dal browser; il server deve definire e gestire il meccanismo di sessione.",
+            "distrattore": "Una montagna"
+          }
+        ],
+        "mnemonica": "Richiesta → Regole → Dati → Risposta: quattro tappe per spiegare una rotta senza saltare il server.",
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Che cosa controlla response.ok?",
+              "risposta": "Indica se lo status HTTP è nella fascia di successo; fetch non rigetta automaticamente su 404."
+            },
+            {
+              "domanda": "Qual è la differenza di semantica tra PUT e PATCH?",
+              "risposta": "PUT sostituisce la rappresentazione del bersaglio; PATCH applica modifiche parziali secondo il formato concordato."
+            },
+            {
+              "domanda": "HTTP stateless significa che non si possono usare sessioni?",
+              "risposta": "No: lo stato applicativo può essere gestito con meccanismi come cookie e sessioni, pur restando HTTP stateless."
+            },
+            {
+              "domanda": "Quali passaggi descrivere in una revisione di rotta?",
+              "risposta": "Input, metodo, validazione, logica e persistenza, risposta e comportamento del client."
+            }
+          ],
+          "spiega_con_parole_tue": "Spiega una scelta del tuo codice, indicando una possibile alternativa e il suo compromesso.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "rest-metodi-http",
+              "collegamento": "La revisione richiede di motivare il metodo secondo le sue semantiche HTTP."
+            },
+            {
+              "nodo": "flask-request-response",
+              "collegamento": "La rotta Flask interpreta la richiesta e costruisce una risposta che il client deve gestire."
+            },
+            {
+              "nodo": "javascript-fetch-async-await",
+              "collegamento": "fetch è asincrono e il codice deve distinguere errori di rete da status HTTP non riusciti."
+            }
+          ]
+        },
+        "riepilogo": "Segui il flusso dal gesto dell’utente fino all’aggiornamento dell’interfaccia.\nMotiva metodo, payload, validazione, persistenza e risposta.\nPUT sostituisce, PATCH applica modifiche parziali; PATCH non è sempre idempotente.\nfetch richiede un controllo esplicito dello status, per esempio response.ok.\nDescrivi ciò che il codice fa e riconosci con chiarezza i suoi limiti.",
+        "flashcard": {
+          "fronte": "Come spiegare una rotta durante una revisione?",
+          "retro": "Percorri gesto, richiesta, metodo e payload, validazione server, persistenza, status e aggiornamento della UI; esplicita errori e limiti."
+        },
+        "checklist": {
+          "so_fare": [
+            "Tracciare una richiesta fino al database e ritorno",
+            "Verificare casi validi, errori HTTP e comportamento della UI"
+          ],
+          "so_dire": [
+            "Motivare metodi e codici di risposta",
+            "Distinguere stato HTTP, sessione server e stato dell’interfaccia"
+          ]
+        }
+      }
     },
     {
       "id": "tesina-esercitazione-guidata",
@@ -2755,34 +2972,34 @@
       "area": 6,
       "gruppo": "C",
       "tipo": "tipo_esercizio",
-      "sapere": "L'esercitazione guidata aiuta a preparare la tesina: 1) Scegliere un tema adatto (es. gestione libri, task manager, blog); 2) Progettare il database (tabelle, relazioni); 3) Implementare le rotte Flask; 4) Creare il front-end; 5) Preparare la presentazione. Il modello di presentazione fornisce una struttura predefinita per le slide.",
+      "sapere": "L’esercitazione guida dalla scelta di una risorsa piccola e verificabile fino a una demo e a una presentazione. Il modello è una traccia riutilizzabile, non una prescrizione del docente: specifica requisiti, dati, endpoint, interfaccia, test manuali e narrazione tecnica.",
       "saper_fare": [
-        "Seguire una guida passo-passo per lo sviluppo",
-        "Usare un modello di presentazione",
-        "Organizzare il lavoro in fasi"
+        "Scomporre il progetto in passi incrementali con risultati controllabili",
+        "Compilare una traccia di presentazione collegando ogni affermazione a una prova nel progetto",
+        "Verificare i percorsi CRUD e preparare una demo senza dipendenze fragili"
       ],
       "prerequisiti": [],
       "esercizi": [
         {
-          "tipo_esame": "pratico: esercitazione",
-          "testo": "Segui questi passi per creare la tua tesina: 1) Scegli un tema, 2) Definisci il modello dati, 3) Implementa 1 endpoint, 4) Testa con Postman/curl.",
-          "soluzione": "Passo 1: Scegli tema (es. gestione ricette)\nPasso 2: Modello dati:\n  Tabella: ricette (id, titolo, ingredienti, tempo_preparazione)\nPasso 3: Implementa endpoint GET /api/ricette:\n  @app.route('/api/ricette', methods=['GET'])\n  def get_ricette():\n      # codice per recuperare ricette\n      return jsonify(ricette)\nPasso 4: Testa con:\n  curl http://localhost:5000/api/ricette\n  Oppure Postman: GET http://localhost:5000/api/ricette"
+          "tipo_esame": "laboratorio: catalogo di ricette",
+          "testo": "Completa una mini-app per ricette definendo i dati, una rotta di lettura, il form front-end e una traccia di presentazione.",
+          "soluzione": "Definisci id, titolo e ingredienti; crea GET /api/ricette con risposta JSON; implementa poi POST con validazione e persistenza. Collega un form tramite fetch, gestendo risposta non valida e successo. Prova dati validi e mancanti; infine annota problema, architettura, codice da mostrare e demo. Estendi a modifica e cancellazione solo dopo aver verificato questi passaggi."
         }
       ],
       "tempo_studio_min": 60,
       "priorita": {
         "livello": "media",
-        "motivazione": "Gruppo C. Utile per preparazione, ma non valutato direttamente."
+        "motivazione": "Gruppo C: preparazione pratica alla tesina secondo il materiale utente; il formato e i criteri ufficiali non sono confermati."
       },
       "risorse": [
         {
-          "titolo": "Postman: API Testing",
-          "url": "https://www.postman.com/",
+          "titolo": "Flask: Tutorial",
+          "url": "https://flask.palletsprojects.com/en/stable/tutorial/",
           "verificato": true
         },
         {
-          "titolo": "curl: Command Line Tool",
-          "url": "https://curl.se/",
+          "titolo": "MDN: Web forms",
+          "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms",
           "verificato": true
         }
       ],
@@ -2793,7 +3010,116 @@
         "Implementa endpoint",
         "Testa con Postman/curl"
       ],
-      "worker": "W4"
+      "worker": "W4",
+      "lezione": {
+        "perche_ti_serve": "Esercitazione del Gruppo C per trasformare la traccia della tesina in passi verificabili; modello operativo ricostruito dal materiale utente, non prescrizione ufficiale.",
+        "scenario_fil_rouge": "Una studentessa sceglie di gestire ricette e vuole arrivare a una piccola applicazione dimostrabile. Per non perdersi in funzionalità secondarie, procede per incrementi: definisce i dati, prova una rotta, costruisce il form, completa CRUD e prepara una presentazione che corrisponde davvero al codice.",
+        "definizione_esame": {
+          "definizione": "Un’esercitazione guidata suddivide un obiettivo di progetto in attività ordinate e risultati controllabili.",
+          "scopo_vantaggio": "La progressione riduce i rischi: ogni livello è verificato prima di aggiungere complessità e interfacce ulteriori.",
+          "esempio": "Per una tesina CRUD si può partire dalla risorsa ricetta, verificare una rotta GET e poi ampliare l’applicazione."
+        },
+        "spiegazione": "## Parti da un perimetro piccolo\nScegli una risorsa e un caso d’uso concreto, per esempio una ricetta con `id`, `titolo` e `ingredienti`. Definisci cosa deve poter fare l’utente e quali campi sono obbligatori. Evita di iniziare da login, notifiche o grafici se non sono necessari all’obiettivo minimo.\n\n### Incrementi verificabili\nPrimo, prepara l’ambiente e il modello dati. Secondo, implementa e prova una rotta di lettura. Terzo, aggiungi creazione con validazione e persistenza. Quarto, collega un form accessibile via `fetch`. Quinto, completa modifica e cancellazione, aggiungendo gestione degli errori. Infine prova i percorsi e costruisci la narrazione. Ogni fase deve lasciare un risultato osservabile.\n\n```mermaid\nflowchart TD\n  A[Requisito e risorsa] --> B[Modello dati]\n  B --> C[Endpoint e test]\n  C --> D[Interfaccia e fetch]\n  D --> E[CRUD completo e casi d’errore]\n  E --> F[Demo e presentazione]\n```\n\n### Modello di scheda progetto\nPer ogni funzione annota: requisito, endpoint, metodo, input, risposta attesa, comportamento quando l’elemento manca e prova manuale. Esempio: “aggiungere ricetta” → `POST /api/ricette`, JSON con titolo e ingredienti, validazione lato server, risposta 201 quando creata. L’esempio non sostituisce una specifica completa: gli status e la struttura JSON vanno scelti coerentemente.\n\n### Modello per le quattro slide\nLa traccia dell’utente propone slide 1 problema/obiettivo, slide 2 architettura client–Flask–database, slide 3 codice (route, richiesta asincrona, gestione stato se presente), slide 4 demo o schermate. La ripartizione suggerita è 1, 2, 3 e 2 minuti. Costruisci le slide dopo aver deciso cosa mostrare: ogni affermazione deve essere dimostrabile dal progetto.\n\n### Collaudo manuale\nProva un input valido, un campo obbligatorio assente, un identificatore inesistente e un errore di rete o server. Verifica status e messaggio della UI. Non descrivere il progetto come sicuro o completo senza aver controllato autorizzazioni, gestione dei segreti e altre esigenze pertinenti.\n\n### Modello riutilizzabile\n**Problema:** chi usa l’app e quale attività vuole completare? **Dati:** quale risorsa e quali vincoli? **API:** quali rotte e semantiche? **Interfaccia:** come si invia e si comunica l’esito? **Prove:** quali casi dimostrano il comportamento? **Presentazione:** quale evidenza mostra ciascuna slide? Questa traccia mantiene allineati progetto, test e racconto.",
+        "analogia": {
+          "testo": "Costruire il progetto per incrementi è come preparare una ricetta: si controllano ingredienti e passaggi prima di servire il piatto, invece di aggiungere tutto all’ultimo momento.",
+          "limite": "Lo sviluppo software permette di tornare ai passaggi precedenti e modificare il progetto dopo il primo risultato."
+        },
+        "worked_example": {
+          "titolo": "Dal requisito alla prima rotta",
+          "problema": "Realizzare un catalogo di ricette con un elenco consultabile e una base solida per aggiungere altre operazioni CRUD.",
+          "passi": [
+            "Definire la risorsa ricetta e i campi minimi.",
+            "Scrivere il requisito “mostrare le ricette salvate”.",
+            "Implementare GET /api/ricette con risposta JSON e provarla.",
+            "Collegare una pagina che legge i dati e gestisce una risposta non riuscita."
+          ],
+          "soluzione": "Una rotta di lettura testata end-to-end costituisce il primo incremento; solo dopo si aggiungono POST, modifica e cancellazione.",
+          "perche_funziona": "Il perimetro ridotto rende più facile individuare errori e verificare ogni confine tra componenti."
+        },
+        "completion_problem": {
+          "titolo": "Completare una scheda di test",
+          "testo": "La rotta POST /api/ricette richiede titolo e ingredienti. Completa la prova con input valido e campo mancante, specificando cosa osservare.",
+          "passi_mancanti": [
+            "Inviare dati validi e controllare status e record creato.",
+            "Ripetere senza titolo e verificare rifiuto senza scrittura nel database."
+          ],
+          "soluzione": "Input valido: verifica creazione e risposta di successo coerente; titolo mancante: verifica 400 e nessun record aggiunto."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Pianifica un mini-progetto CRUD",
+          "testo": "Scegli una risorsa diversa da ricette e prepara requisiti, campi, endpoint, prove e scaletta di quattro slide.",
+          "suggerimento": "Mantieni un solo tipo di risorsa e almeno un caso di errore per operazione.",
+          "soluzione_attesa": "Dichiara destinatario e problema, definisci campi e vincoli, abbina endpoint e metodi a operazioni CRUD, annota risposte e test, quindi prepara slide su problema, architettura, codice ed evidenza di funzionamento."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Implementare tutte le funzioni prima di provarne una",
+            "perche_sbagliato": "Gli errori precoci si accumulano e diventano più difficili da isolare.",
+            "distrattore": "Un pianeta nano"
+          },
+          {
+            "errore": "Copiare il modello di slide senza adattarlo al progetto",
+            "perche_sbagliato": "Il racconto deve corrispondere a componenti e comportamenti realmente presenti.",
+            "distrattore": "Una formula chimica"
+          },
+          {
+            "errore": "Considerare una demo riuscita come test completo",
+            "perche_sbagliato": "La demo mostra un percorso; non verifica automaticamente input invalidi e fallimenti.",
+            "distrattore": "La temperatura di ebollizione"
+          }
+        ],
+        "mnemonica": "R-D-A-I-P: Requisito, Dati, API, Interfaccia, Prove; poi prepara il racconto usando le stesse evidenze.",
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Perché iniziare con una sola rotta?",
+              "risposta": "Per ottenere un risultato osservabile e verificare presto confini e dati."
+            },
+            {
+              "domanda": "Quali casi oltre al successo provare?",
+              "risposta": "Input non valido, risorsa inesistente ed errori di rete o server."
+            },
+            {
+              "domanda": "Quando preparare le slide?",
+              "risposta": "Dopo aver scelto comportamento e prove, così ogni affermazione rispecchia il progetto."
+            },
+            {
+              "domanda": "Cosa significa “incremento verificabile”?",
+              "risposta": "Una piccola aggiunta con un risultato e una prova che ne controlla il comportamento."
+            }
+          ],
+          "spiega_con_parole_tue": "Scegli una funzione e scrivi come la verificheresti sia dal server sia dall’interfaccia.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "tesina-progetto-flask-crud",
+              "collegamento": "L’esercitazione prepara i contratti e i controlli necessari al progetto CRUD."
+            },
+            {
+              "nodo": "flask-rotte-jsonify",
+              "collegamento": "La rotta Flask fornisce un primo confine concreto da implementare e provare."
+            },
+            {
+              "nodo": "tesina-presentazione-8-minuti",
+              "collegamento": "La scaletta di presentazione deve riutilizzare evidenze ottenute durante le prove."
+            }
+          ]
+        },
+        "riepilogo": "Riduci il perimetro a una risorsa e a requisiti osservabili.\nProcedi da modello dati a endpoint, interfaccia, CRUD completo e prove.\nVerifica successo, input non valido, risorsa assente ed errori di comunicazione.\nAdatta il modello di slide al codice e alle evidenze realmente disponibili.\nLa traccia delle quattro slide è un suggerimento del materiale utente.",
+        "flashcard": {
+          "fronte": "Qual è la sequenza di lavoro proposta per la tesina?",
+          "retro": "Requisito e modello dati → endpoint e test → interfaccia → CRUD e casi d’errore → demo e presentazione."
+        },
+        "checklist": {
+          "so_fare": [
+            "Pianificare passi incrementali e testabili",
+            "Preparare una scaletta aderente al progetto"
+          ],
+          "so_dire": [
+            "Motivare perimetro e prove scelte",
+            "Distinguere demo, test e requisito ufficiale"
+          ]
+        }
+      }
     },
     {
       "id": "tesina-presentazione-8-minuti",
@@ -2801,11 +3127,11 @@
       "area": 6,
       "gruppo": "C",
       "tipo": "abilita",
-      "sapere": "La presentazione della tesina deve essere di esattamente 8 minuti e strutturata in 4 slide: 1) Obiettivi e problema (1 minuto): cosa fa l'applicazione e perché è utile; 2) Architettura a 3-tier (2 minuti): Client (HTML/CSS/JS) → Server Flask → Database; 3) Punti chiave del codice (3 minuti): rotte REST, gestione stato, chiamate asincrone; 4) Demo dal vivo o screen (2 minuti): mostrare l'applicazione funzionante.",
+      "sapere": "Il materiale utente propone una presentazione della tesina di 8 minuti organizzata in 4 slide: problema e obiettivi, architettura, codice significativo, dimostrazione. La scansione temporale suggerita è 1 + 2 + 3 + 2 minuti; va trattata come traccia di preparazione, non come regola ufficiale verificata.",
       "saper_fare": [
-        "Strutturare una presentazione tecnica in 8 minuti",
-        "Creare slide chiare e professionali",
-        "Eseguire una demo dal vivo"
+        "Selezionare evidenze tecniche che sostengano problema, scelte e risultato",
+        "Distribuire il discorso nelle quattro slide e rispettare il tempo complessivo previsto",
+        "Preparare una demo ripetibile e un’alternativa con schermate statiche"
       ],
       "prerequisiti": [
         {
@@ -2816,25 +3142,25 @@
       ],
       "esercizi": [
         {
-          "tipo_esame": "orale: presentazione",
-          "testo": "Prepara le 4 slide per presentare il tuo progetto Flask CRUD.",
-          "soluzione": "Slide 1 - Obiettivi e problema:\n- Titolo: Gestione Libri\n- Problema: Necessità di catalogare e gestire una collezione di libri\n- Soluzione: Applicazione web con Flask\n- Tempo: 1 minuto\n\nSlide 2 - Architettura a 3-tier:\n- Livello Presentazione: HTML/CSS/JavaScript (fetch API)\n- Livello Logica: Flask (route, request/response, jsonify)\n- Livello Dati: SQLite (tabella libri)\n- Diagramma: Client ↔ Server Flask ↔ Database\n- Tempo: 2 minuti\n\nSlide 3 - Punti chiave del codice:\n- Backend: @app.route, request.get_json(), jsonify, sqlite3\n- Front-end: fetch, async/await, DOM manipulation\n- Esempio codice: route POST /api/libri\n- Tempo: 3 minuti\n\nSlide 4 - Demo:\n- Mostrare: lista libri, aggiunta, modifica, eliminazione\n- Evidenziare: interazione fluida, error handling\n- Tempo: 2 minuti"
+          "tipo_esame": "presentazione: quattro slide",
+          "testo": "Prepara una traccia di quattro slide per un catalogo di libri Flask CRUD, usando la scansione proposta nel materiale utente.",
+          "soluzione": "Slide 1 (1 min): problema e obiettivi misurabili. Slide 2 (2 min): client, server Flask e persistenza, con flusso dati. Slide 3 (3 min): una rotta CRUD, validazione e richiesta fetch; commenta una scelta e un limite. Slide 4 (2 min): demo breve dell’interazione completa oppure schermate preparate. Prova la scaletta con cronometro e riduci i dettagli se superi il tempo."
         }
       ],
       "tempo_studio_min": 60,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo C. Parte fondamentale della tesina (punti per presentazione)."
+        "motivazione": "Gruppo C: preparazione pratica alla tesina secondo il materiale utente; il formato e i criteri ufficiali non sono confermati."
       },
       "risorse": [
         {
-          "titolo": "Google Slides",
-          "url": "https://slides.google.com",
+          "titolo": "Flask: Tutorial",
+          "url": "https://flask.palletsprojects.com/en/stable/tutorial/",
           "verificato": true
         },
         {
-          "titolo": "Canva: Presentations",
-          "url": "https://www.canva.com/",
+          "titolo": "MDN: Web APIs",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/API",
           "verificato": true
         }
       ],
@@ -2845,7 +3171,116 @@
         "Tempi: 1 + 2 + 3 + 2 minuti",
         "Demo dal vivo o screen"
       ],
-      "worker": "W4"
+      "worker": "W4",
+      "lezione": {
+        "perche_ti_serve": "Competenza di comunicazione tecnica per il Gruppo C, sulla base della traccia di presentazione fornita dall’utente; i dettagli ufficiali vanno confermati.",
+        "scenario_fil_rouge": "Hai realizzato un catalogo di libri per una piccola biblioteca. In otto minuti devi aiutare il pubblico a capire quale problema risolve, come sono divise le responsabilità, quale scelta tecnica hai implementato e come verificarne il funzionamento, senza trasformare le slide in un manuale.",
+        "definizione_esame": {
+          "definizione": "Una presentazione tecnica comunica problema, soluzione, evidenze di implementazione e risultato in una sequenza comprensibile.",
+          "scopo_vantaggio": "Una struttura temporizzata aiuta a selezionare i dettagli e lascia spazio a una dimostrazione verificabile.",
+          "esempio": "Nel modello proposto, quattro slide coprono problema, architettura, codice e demo con tempi 1+2+3+2 minuti."
+        },
+        "spiegazione": "## Parti da ciò che vuoi far capire\nLa presentazione non è un elenco di tecnologie: racconta il passaggio da un problema a una soluzione osservabile. Per il catalogo, il problema potrebbe essere la difficoltà di trovare e aggiornare schede cartacee; il risultato dimostrabile è una sequenza concreta di operazioni CRUD. Evita di attribuire alla traccia un valore ufficiale che non è documentato.\n\n### Quattro slide, una funzione ciascuna\nLa scansione suggerita nel materiale utente è **1 + 2 + 3 + 2 minuti**, per un totale di otto. Slide 1: problema, destinatari e obiettivo. Slide 2: architettura e flusso dei dati. Slide 3: un esempio di codice scelto per mostrare una decisione. Slide 4: demo dal vivo o schermate preparate. I tempi sono una traccia di prova, non una regola universale.\n\n```mermaid\nflowchart LR\n  S1[Problema e obiettivi: 1 min] --> S2[Architettura: 2 min]\n  S2 --> S3[Codice: 3 min] --> S4[Demo o schermate: 2 min]\n```\n\n### Architettura raccontata con un flusso\nMostra il browser che invia una richiesta HTTP a Flask; il server valida e interagisce con SQLite, poi restituisce una risposta. Spiega quali componenti sono livelli logici, quali dati attraversano il confine e dove risiede la responsabilità di una regola. Non serve elencare ogni file del repository.\n\n### Codice: una decisione, non un inventario\nScegli una rotta rappresentativa, per esempio la creazione di una risorsa. Evidenzia il metodo, la validazione, l’accesso ai dati e lo status di risposta. Se mostri `fetch`, spiega che `response.ok` va controllato: un 404 è comunque una risposta HTTP e non causa automaticamente il rigetto della Promise. Proteggi il tempo: un blocco breve e leggibile vale più di una schermata piena.\n\n### Demo robusta\nPrepara una sequenza con dati già disponibili, avvia il progetto prima di presentare e prova il percorso completo. Se la rete, il server o il proiettore non funzionano, usa schermate o una registrazione locale come alternativa. Una schermata deve essere autentica e coerente con la versione del progetto; descrivi ciò che mostra, senza presentare un mockup come prova di esecuzione.\n\n### Prova e revisione\nCronometra ad alta voce e annota il tempo per slide. Se sfori, rimuovi dettagli secondari invece di accelerare la spiegazione. Verifica che ogni affermazione sia dimostrabile dal codice o dalla demo. Prepara una frase di transizione tra slide e una chiusura che riassuma utilità e limite principale.",
+        "analogia": {
+          "testo": "Una presentazione tecnica è come una visita guidata: scegli un percorso breve, mostri i punti più importanti e accompagni il pubblico senza lasciarlo davanti a una mappa illeggibile.",
+          "limite": "A differenza di una visita, il pubblico potrebbe già conoscere parte dei dettagli e una demo può dipendere da componenti tecniche."
+        },
+        "worked_example": {
+          "titolo": "Costruire la scaletta del catalogo",
+          "problema": "Presentare un progetto Flask CRUD in otto minuti mantenendo un collegamento chiaro tra bisogno, architettura, codice e risultato.",
+          "passi": [
+            "Scrivere in una frase il problema e l’obiettivo osservabile.",
+            "Disegnare il flusso browser → Flask → SQLite e associare una responsabilità a ogni livello.",
+            "Selezionare una rotta e una scelta tecnica da spiegare in tre minuti.",
+            "Provare il percorso CRUD e preparare un’alternativa alla demo dal vivo."
+          ],
+          "soluzione": "Quattro slide: problema (1), architettura (2), codice (3), demo/schermate (2 minuti). La traccia deriva dal materiale utente.",
+          "perche_funziona": "Ogni parte risponde a una domanda diversa e la somma dei tempi esplicita il vincolo di otto minuti."
+        },
+        "completion_problem": {
+          "titolo": "Completare il filo narrativo",
+          "testo": "La slide 2 mostra il browser e Flask. Completa la spiegazione indicando dove risiedono i dati e quale flusso mostrerai nella demo.",
+          "passi_mancanti": [
+            "Aggiungere il livello di persistenza e la responsabilità di Flask.",
+            "Collegare la demo a una specifica operazione CRUD e al suo esito visibile."
+          ],
+          "soluzione": "Mostro browser → Flask → SQLite; poi creo un elemento nell’interfaccia e verifico che ricompaia nell’elenco."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Prova cronometrata",
+          "testo": "Prepara una scaletta personale di quattro slide per il tuo progetto e presentala in otto minuti senza leggere le slide.",
+          "suggerimento": "Scrivi per ogni slide messaggio chiave, evidenza visiva, transizione e tempo previsto.",
+          "soluzione_attesa": "Problema e obiettivo, architettura con flusso dati, esempio di codice motivato, demo ripetibile o schermate. Cronometra la prova e semplifica le parti che superano la traccia 1+2+3+2."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Riempire ogni slide di codice",
+            "perche_sbagliato": "Il testo fitto distrae dall’argomento e non aiuta a capire una scelta.",
+            "distrattore": "Il colore del mantello"
+          },
+          {
+            "errore": "Presentare i tempi proposti come valutazione ufficiale",
+            "perche_sbagliato": "La scansione 1+2+3+2 compare nel materiale utente ma non è stata verificata come regola ufficiale.",
+            "distrattore": "L’orbita di Giove"
+          },
+          {
+            "errore": "Affidarsi a una demo mai provata",
+            "perche_sbagliato": "Un guasto interrompe il discorso e impedisce di verificare il flusso.",
+            "distrattore": "Una ricetta di pane"
+          }
+        ],
+        "mnemonica": "Problema → Architettura → Codice → Demo: P-A-C-D è il filo narrativo della traccia proposta.",
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Qual è il compito della prima slide?",
+              "risposta": "Presentare problema e obiettivo dell’applicazione."
+            },
+            {
+              "domanda": "Che cosa dovrebbe chiarire il diagramma architetturale?",
+              "risposta": "Componenti, responsabilità e flusso dei dati tra client, server e persistenza."
+            },
+            {
+              "domanda": "Perché preparare un’alternativa alla demo?",
+              "risposta": "Per mantenere la dimostrazione comprensibile se l’esecuzione dal vivo non è disponibile."
+            },
+            {
+              "domanda": "Come si usa la traccia dei tempi?",
+              "risposta": "Come pianificazione e prova suggerita dal materiale utente, non come criterio ufficiale accertato."
+            }
+          ],
+          "spiega_con_parole_tue": "Racconta il tuo progetto in quattro passaggi, motivando cosa hai escluso per rispettare il tempo.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "tesina-progetto-flask-crud",
+              "collegamento": "La presentazione deve mostrare comportamenti e scelte del progetto effettivamente implementato."
+            },
+            {
+              "nodo": "architettura-3-tier",
+              "collegamento": "Il disegno dei livelli aiuta a spiegare le responsabilità, senza confondere livelli logici e macchine fisiche."
+            },
+            {
+              "nodo": "tesina-domande-revisione-codice",
+              "collegamento": "La selezione di codice prepara a motivare metodi HTTP e flusso dei dati."
+            }
+          ]
+        },
+        "riepilogo": "La presentazione racconta un problema e una soluzione dimostrabile.\nLa traccia utente propone quattro slide: problema, architettura, codice e demo.\nLa ripartizione 1+2+3+2 minuti è un suggerimento, non un dato ufficiale.\nSeleziona una decisione tecnica e una demo breve, ripetibile e verificabile.\nCronometra la prova e prepara schermate alternative alla demo dal vivo.",
+        "flashcard": {
+          "fronte": "Qual è il filo narrativo delle quattro slide?",
+          "retro": "Problema e obiettivi → architettura e flusso dati → codice significativo → demo o schermate; la traccia di tempo proposta è 1+2+3+2 minuti."
+        },
+        "checklist": {
+          "so_fare": [
+            "Preparare e cronometrare una presentazione tecnica",
+            "Dimostrare un flusso reale o predisporre schermate coerenti"
+          ],
+          "so_dire": [
+            "Spiegare l’architettura e le responsabilità",
+            "Distinguere una traccia suggerita da un requisito ufficiale"
+          ]
+        }
+      }
     },
     {
       "id": "tesina-progetto-flask-crud",
@@ -2853,11 +3288,11 @@
       "area": 6,
       "gruppo": "C",
       "tipo": "abilita",
-      "sapere": "La tesina consiste in un progetto pratico: applicazione web Flask con operazioni CRUD (Create, Read, Update, Delete) su una risorsa. Deve includere: backend Flask con rotte RESTful, front-end HTML/CSS/JS per l'interfaccia utente, database (SQLite o JSON), e gestione dello stato.",
+      "sapere": "Un progetto CRUD espone operazioni di creazione, lettura, aggiornamento ed eliminazione di una risorsa attraverso un’interfaccia web. Un backend Flask valida le richieste e dialoga con SQLite o con un archivio JSON; il front-end HTML/CSS/JavaScript invia richieste HTTP e mostra gli esiti. La scelta di PUT o PATCH dipende dalla semantica di aggiornamento implementata.",
       "saper_fare": [
-        "Progettare un'applicazione CRUD completa",
-        "Implementare backend Flask con API REST",
-        "Creare front-end per interagire con l'API"
+        "Definire risorsa, campi, vincoli e contratto degli endpoint CRUD",
+        "Implementare rotte Flask con validazione, persistenza e codici di risposta coerenti",
+        "Collegare un’interfaccia accessibile al backend con fetch e gestione degli errori"
       ],
       "prerequisiti": [
         {
@@ -2878,20 +3313,20 @@
       ],
       "esercizi": [
         {
-          "tipo_esame": "progetto: CRUD completo",
-          "testo": "Implementa un'applicazione Flask per gestire una collezione di libri con: lista, dettaglio, creazione, modifica, eliminazione.",
-          "soluzione": "# Backend (app.py)\nfrom flask import Flask, jsonify, request, abort\nimport sqlite3\n\napp = Flask(__name__)\n\n# Inizializza DB\ndef init_db():\n    conn = sqlite3.connect('libri.db')\n    cursor = conn.cursor()\n    cursor.execute('''\n        CREATE TABLE IF NOT EXISTS libri (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            titolo TEXT NOT NULL,\n            autore TEXT NOT NULL,\n            anno INTEGER\n        )\n    ''')\n    conn.commit()\n    conn.close()\n\ninit_db()\n\n@app.route('/api/libri', methods=['GET'])\ndef get_libri():\n    conn = sqlite3.connect('libri.db')\n    cursor = conn.cursor()\n    cursor.execute('SELECT * FROM libri')\n    libri = [{'id': row[0], 'titolo': row[1], 'autore': row[2], 'anno': row[3]} for row in cursor.fetchall()]\n    conn.close()\n    return jsonify(libri)\n\n@app.route('/api/libri/<int:id>', methods=['GET'])\ndef get_libro(id):\n    conn = sqlite3.connect('libri.db')\n    cursor = conn.cursor()\n    cursor.execute('SELECT * FROM libri WHERE id = ?', (id,))\n    row = cursor.fetchone()\n    conn.close()\n    if row:\n        return jsonify({'id': row[0], 'titolo': row[1], 'autore': row[2], 'anno': row[3]})\n    return jsonify({'error': 'Libro non trovato'}), 404\n\n@app.route('/api/libri', methods=['POST'])\ndef create_libro():\n    data = request.get_json()\n    if not data or 'titolo' not in data or 'autore' not in data:\n        return jsonify({'error': 'Titolo e autore obbligatori'}), 400\n    conn = sqlite3.connect('libri.db')\n    cursor = conn.cursor()\n    cursor.execute('INSERT INTO libri (titolo, autore, anno) VALUES (?, ?, ?)',\n                   (data['titolo'], data['autore'], data.get('anno', None)))\n    conn.commit()\n    libro_id = cursor.lastrowid\n    conn.close()\n    return jsonify({'id': libro_id, 'message': 'Libro creato'}), 201\n\n@app.route('/api/libri/<int:id>', methods=['PUT'])\ndef update_libro(id):\n    data = request.get_json()\n    conn = sqlite3.connect('libri.db')\n    cursor = conn.cursor()\n    cursor.execute('UPDATE libri SET titolo = ?, autore = ?, anno = ? WHERE id = ?',\n                   (data.get('titolo'), data.get('autore'), data.get('anno'), id))\n    conn.commit()\n    conn.close()\n    return jsonify({'message': 'Libro aggiornato'})\n\n@app.route('/api/libri/<int:id>', methods=['DELETE'])\ndef delete_libro(id):\n    conn = sqlite3.connect('libri.db')\n    cursor = conn.cursor()\n    cursor.execute('DELETE FROM libri WHERE id = ?', (id,))\n    conn.commit()\n    conn.close()\n    return jsonify({'message': 'Libro eliminato'}), 204\n\nif __name__ == '__main__':\n    app.run(debug=True)"
+          "tipo_esame": "progetto: applicazione CRUD",
+          "testo": "Progetta un catalogo di libri con elenco, dettaglio, creazione, modifica e cancellazione; indica endpoint, validazioni e persistenza.",
+          "soluzione": "GET /api/libri e GET /api/libri/<id> leggono; POST /api/libri crea e risponde 201; PUT /api/libri/<id> sostituisce la rappresentazione oppure PATCH applica una modifica parziale secondo il contratto; DELETE rimuove e può rispondere 204 senza corpo. Parametrizza le query SQL, valida titolo/autore e restituisci 404 se l’ID non esiste. Il front-end controlla response.ok prima di leggere il risultato."
         }
       ],
       "tempo_studio_min": 180,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo C. Progetto pratico fondamentale per la tesina (10 punti)."
+        "motivazione": "Gruppo C: preparazione pratica alla tesina secondo il materiale utente; il formato e i criteri ufficiali non sono confermati."
       },
       "risorse": [
         {
           "titolo": "Flask: Tutorial",
-          "url": "https://flask.palletsprojects.com/en/3.0.x/tutorial/",
+          "url": "https://flask.palletsprojects.com/en/stable/tutorial/",
           "verificato": true
         },
         {
@@ -2914,7 +3349,116 @@
         "Database: SQLite o JSON",
         "CRUD: Create, Read, Update, Delete"
       ],
-      "worker": "W4"
+      "worker": "W4",
+      "lezione": {
+        "perche_ti_serve": "Competenza pratica del Gruppo C, legata alla tesina secondo il materiale utente; non sono documentati criteri ufficiali di valutazione.",
+        "scenario_fil_rouge": "Immagina una piccola biblioteca di quartiere che vuole catalogare i libri. La bibliotecaria deve cercarli, registrarne uno nuovo, correggerne i dati o rimuoverlo; lo studente deve trasformare queste azioni in un flusso chiaro tra browser, Flask e archivio.",
+        "definizione_esame": {
+          "definizione": "Un’applicazione CRUD consente di creare, leggere, aggiornare ed eliminare risorse attraverso operazioni ben definite.",
+          "scopo_vantaggio": "Separare interfaccia, logica server e persistenza rende il sistema più comprensibile, verificabile e modificabile.",
+          "esempio": "Nel catalogo, il browser mostra i libri, Flask espone endpoint e SQLite conserva i record."
+        },
+        "spiegazione": "## Dall’esigenza alla risorsa\nPrima del codice, scegli una risorsa concreta: qui è il **libro**. Descrivine i campi, per esempio `id`, `titolo` e `autore`, e specifica quali sono obbligatori. Il client non deve decidere se un dato è valido: il server ripete i controlli perché una richiesta può provenire da qualunque client.\n\n### Tre livelli e responsabilità\nIl browser presenta la lista e invia richieste; Flask interpreta URL, metodo e corpo; il database conserva i dati. La separazione è logica: non implica che i tre livelli siano necessariamente su macchine diverse.\n\n```mermaid\nflowchart LR\n  B[Browser: HTML CSS JS] -->|HTTP JSON| F[Flask: rotte e validazione]\n  F -->|query parametrizzate| D[(SQLite)]\n  D --> F -->|status e JSON| B\n```\n\n### Contratto CRUD e semantica\nUn possibile contratto usa `GET /api/libri` per leggere la raccolta, `GET /api/libri/7` per un elemento, `POST /api/libri` per chiedere la creazione, `PUT /api/libri/7` per sostituire la rappresentazione, `PATCH /api/libri/7` per applicare una modifica parziale e `DELETE /api/libri/7` per chiedere l’eliminazione. Non sono intercambiabili: PUT è idempotente per definizione HTTP, mentre PATCH non è necessariamente idempotente; la semantica precisa di PATCH dipende dal formato e dalle regole dell’API.\n\n### Validazione e risposte\nPer dati malformati si può rispondere `400`; per un identificatore non trovato `404`; una creazione riuscita può rispondere `201`. Una cancellazione riuscita può rispondere `204 No Content`, senza corpo, oppure un altro status appropriato al contratto. Non inviare JSON insieme a `204`.\n\n```python\nfrom flask import Flask, jsonify, request\napp = Flask(__name__)\n\n@app.post(\"/api/libri\")\ndef crea_libro():\n    dati = request.get_json(silent=True)\n    if not isinstance(dati, dict) or not dati.get(\"titolo\"):\n        return jsonify(errore=\"titolo obbligatorio\"), 400\n    # La persistenza usa parametri SQL, mai concatenazione di input.\n    libro = salva_libro(dati[\"titolo\"], dati.get(\"autore\", \"\"))\n    return jsonify(libro), 201\n```\n`salva_libro` rappresenta una funzione di persistenza da implementare e testare; non è una funzione integrata di Flask.\n\n### Front-end e gestione errori\nIl `fetch` restituisce una Promise anche quando la risposta HTTP è 404: occorre controllare `response.ok`. Dopo una scrittura, aggiorna l’interfaccia solo se il server conferma l’esito; mostra errori comprensibili senza assumere che la rete sia sempre disponibile. HTTP è stateless: lo stato visibile della pagina e l’eventuale sessione sono concetti distinti.\n\n### Checklist di qualità\nDefinisci il contratto prima di implementare, convalida sul server, usa query parametrizzate, chiudi correttamente le connessioni al database e prova percorso riuscito e casi d’errore. Un’app didattica non è automaticamente pronta per la produzione: autenticazione, autorizzazione, protezione CSRF, configurazione segreta e deploy richiedono attenzione specifica.",
+        "analogia": {
+          "testo": "Pensa a un archivio bibliotecario: il front-end è il banco dove si inoltra una richiesta, Flask è l’addetto che verifica la scheda e SQLite è il catalogo conservato.",
+          "limite": "Una richiesta HTTP non è una persona e il database non controlla da solo ogni regola applicativa."
+        },
+        "worked_example": {
+          "titolo": "Aggiungere un libro senza fidarsi del client",
+          "problema": "Il form invia titolo e autore; il server deve rifiutare un titolo vuoto e registrare un dato valido.",
+          "passi": [
+            "Definire i campi ammessi e i vincoli minimi della risorsa.",
+            "Leggere il JSON e verificare tipo e campi obbligatori.",
+            "Eseguire una INSERT parametrizzata e confermare la transazione.",
+            "Restituire la risorsa creata con status 201; mostrare un errore se la richiesta non è valida."
+          ],
+          "soluzione": "Validazione lato server, inserimento parametrizzato, commit e risposta JSON con 201; il client controlla response.ok prima di aggiornare la lista.",
+          "perche_funziona": "Il controllo server-side non è aggirabile semplicemente saltando il form, e la query parametrizzata separa i valori dai comandi SQL."
+        },
+        "completion_problem": {
+          "titolo": "Completare l’aggiornamento",
+          "testo": "Un endpoint PATCH riceve il JSON e un id; completa la sequenza per aggiornare soltanto i campi presenti e gestire un record assente.",
+          "passi_mancanti": [
+            "Verificare che il corpo sia un oggetto JSON valido e che i campi siano ammessi.",
+            "Cercare l’id e restituire 404 se non esiste; poi aggiornare solo i campi forniti."
+          ],
+          "soluzione": "Convalida il JSON, verifica l’id, applica esclusivamente i campi ammessi e restituisci il risultato aggiornato."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Progetta l’API di una lista di attività",
+          "testo": "Definisci gli endpoint e le risposte per elencare, creare, aggiornare e rimuovere una singola attività.",
+          "suggerimento": "Specifica per ogni rotta metodo, input, validazione e status; scegli PATCH solo per aggiornamenti parziali.",
+          "soluzione_attesa": "GET legge; POST crea; PUT sostituisce la risorsa oppure PATCH modifica i campi previsti; DELETE elimina. Usa 400 per input non valido, 404 per risorsa assente e status di successo coerenti. Parametrizza SQL e controlla response.ok nel client."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Inviare al database direttamente i valori del form",
+            "perche_sbagliato": "Il client è sotto il controllo dell’utente: i dati vanno validati sul server.",
+            "distrattore": "Una giraffa"
+          },
+          {
+            "errore": "Usare PUT come sinonimo automatico di aggiornamento parziale",
+            "perche_sbagliato": "PUT sostituisce la rappresentazione secondo il contratto; PATCH serve agli aggiornamenti parziali.",
+            "distrattore": "Una tabella periodica"
+          },
+          {
+            "errore": "Restituire un corpo insieme a 204",
+            "perche_sbagliato": "204 indica che la risposta non contiene contenuto; usa un altro status se invii una rappresentazione.",
+            "distrattore": "La fase lunare"
+          }
+        ],
+        "mnemonica": "CRUD ricorda le quattro intenzioni: Crea, Leggi, Aggiorna, Elimina. La sigla non determina da sola il metodo HTTP: contano le semantiche del contratto.",
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Qual è la responsabilità del server nella validazione?",
+              "risposta": "Validare di nuovo i dati perché il client può essere aggirato o sostituito."
+            },
+            {
+              "domanda": "Quando usare PATCH invece di PUT?",
+              "risposta": "Quando il contratto prevede una modifica parziale; PUT ha semantica di sostituzione della rappresentazione."
+            },
+            {
+              "domanda": "Perché controllare response.ok dopo fetch?",
+              "risposta": "Perché una risposta HTTP di errore non fa rifiutare automaticamente la Promise di fetch."
+            },
+            {
+              "domanda": "Che cosa significa CRUD?",
+              "risposta": "Create, Read, Update, Delete: creare, leggere, aggiornare ed eliminare risorse."
+            }
+          ],
+          "spiega_con_parole_tue": "Spiega il percorso completo di una modifica dal clic nel browser fino alla persistenza, includendo un caso di errore.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "flask-rotte-jsonify",
+              "collegamento": "Le rotte e le risposte JSON di Flask sono il confine applicativo tra browser e persistenza."
+            },
+            {
+              "nodo": "sqlite-crud",
+              "collegamento": "SQLite implementa le operazioni sui record che il progetto espone via HTTP."
+            },
+            {
+              "nodo": "javascript-fetch-async-await",
+              "collegamento": "fetch collega il front-end all’API e richiede controllo esplicito della risposta HTTP."
+            }
+          ]
+        },
+        "riepilogo": "Una risorsa ben definita rende CRUD verificabile.\nIl browser presenta; Flask valida e applica le regole; SQLite persiste.\nGET legge, POST crea, PUT sostituisce, PATCH modifica parzialmente, DELETE elimina.\nStatus e corpi devono rispettare il contratto, per esempio 204 senza contenuto.\nConvalida lato server, usa SQL parametrizzato e controlla gli errori di fetch.",
+        "flashcard": {
+          "fronte": "Come si progetta un CRUD Web affidabile?",
+          "retro": "Definire risorsa e contratto, separare client/server/dati, validare sul server, usare query parametrizzate, scegliere metodi e status coerenti e gestire gli errori nel client."
+        },
+        "checklist": {
+          "so_fare": [
+            "Progettare endpoint e validazioni CRUD",
+            "Collegare il front-end con fetch e gestire errori HTTP"
+          ],
+          "so_dire": [
+            "Distinguere PUT da PATCH",
+            "Spiegare il ruolo di browser, Flask e SQLite"
+          ]
+        }
+      }
     }
   ]
 }

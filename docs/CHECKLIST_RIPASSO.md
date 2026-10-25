@@ -28,6 +28,41 @@
 **Retro**: 4 componenti: Content (contenuto), Padding (spazio interno), Border (bordo), Margin (spazio esterno). Dimensione box = width + padding-left + padding-right + border-left + border-right. Dimensione totale = dimensione box + margin-left + margin-right. Con box-sizing: border-box, width include gia padding e border.
 
 
+### Tesina: Progetto Flask + CRUD
+
+**Fronte**: Come si progetta un CRUD Web affidabile?
+
+**Retro**: Definire risorsa e contratto, separare client/server/dati, validare sul server, usare query parametrizzate, scegliere metodi e status coerenti e gestire gli errori nel client.
+
+
+### Tesina: Domande di revisione codice
+
+**Fronte**: Come spiegare una rotta durante una revisione?
+
+**Retro**: Percorri gesto, richiesta, metodo e payload, validazione server, persistenza, status e aggiornamento della UI; esplicita errori e limiti.
+
+
+### Tesina: Presentazione di 8 minuti con 4 slide
+
+**Fronte**: Qual è il filo narrativo delle quattro slide?
+
+**Retro**: Problema e obiettivi → architettura e flusso dati → codice significativo → demo o schermate; la traccia di tempo proposta è 1+2+3+2 minuti.
+
+
+### Quiz e form: domande a scelta multipla e raccolta risposte
+
+**Fronte**: Come strutturare e valutare un quiz accessibile?
+
+**Retro**: Raggruppa le opzioni con fieldset/legend, associa label e radio con name condiviso, gestisci il caso vuoto e comunica feedback testuale in un’area live.
+
+
+### Tesina: Esercitazione guidata e modello presentazione
+
+**Fronte**: Qual è la sequenza di lavoro proposta per la tesina?
+
+**Retro**: Requisito e modello dati → endpoint e test → interfaccia → CRUD e casi d’errore → demo e presentazione.
+
+
 ## Checklist per area
 
 
@@ -364,3 +399,18 @@
 - [ ] **CSS: Box Model**: Applicare width e height a elementi inline (span, a) → Gli elementi inline ignorano width e height. Per applicare dimensioni, devi usare display: inline-block o block.
 - [ ] **CSS: Box Model**: Dimenticare il margin collapsing → I margin verticali adiacenti si fondono, portando a spazi minori di quelli attesi. Questo puo rompere il layout.
 - [ ] **CSS: Box Model**: Confondere padding con margin → Padding e spazio interno tra content e border (mostra lo sfondo), margin e spazio esterno fuori dal border (non mostra lo sfondo).
+- [ ] **Tesina: Progetto Flask + CRUD**: Inviare al database direttamente i valori del form → Il client è sotto il controllo dell’utente: i dati vanno validati sul server.
+- [ ] **Tesina: Progetto Flask + CRUD**: Usare PUT come sinonimo automatico di aggiornamento parziale → PUT sostituisce la rappresentazione secondo il contratto; PATCH serve agli aggiornamenti parziali.
+- [ ] **Tesina: Progetto Flask + CRUD**: Restituire un corpo insieme a 204 → 204 indica che la risposta non contiene contenuto; usa un altro status se invii una rappresentazione.
+- [ ] **Tesina: Domande di revisione codice**: Dire che fetch lancia un errore per ogni status 4xx → Una risposta 404 è una risposta HTTP; occorre controllare response.ok o status.
+- [ ] **Tesina: Domande di revisione codice**: Definire PUT e PATCH equivalenti → PUT sostituisce la rappresentazione secondo il contratto, PATCH applica una modifica parziale.
+- [ ] **Tesina: Domande di revisione codice**: Dire che il cookie conserva automaticamente lo stato nel server → Il cookie è trasmesso dal browser; il server deve definire e gestire il meccanismo di sessione.
+- [ ] **Tesina: Presentazione di 8 minuti con 4 slide**: Riempire ogni slide di codice → Il testo fitto distrae dall’argomento e non aiuta a capire una scelta.
+- [ ] **Tesina: Presentazione di 8 minuti con 4 slide**: Presentare i tempi proposti come valutazione ufficiale → La scansione 1+2+3+2 compare nel materiale utente ma non è stata verificata come regola ufficiale.
+- [ ] **Tesina: Presentazione di 8 minuti con 4 slide**: Affidarsi a una demo mai provata → Un guasto interrompe il discorso e impedisce di verificare il flusso.
+- [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Affidarsi al solo colore per il feedback → Il significato deve essere comunicato anche con testo, perché il colore da solo non è sufficiente.
+- [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Usare name diversi per ogni radio della stessa domanda → Si perderebbe il comportamento di selezione esclusiva nativo del gruppo.
+- [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Trattare il submit vuoto come risposta errata → La mancata scelta è un caso distinto e può richiedere un messaggio di completamento.
+- [ ] **Tesina: Esercitazione guidata e modello presentazione**: Implementare tutte le funzioni prima di provarne una → Gli errori precoci si accumulano e diventano più difficili da isolare.
+- [ ] **Tesina: Esercitazione guidata e modello presentazione**: Copiare il modello di slide senza adattarlo al progetto → Il racconto deve corrispondere a componenti e comportamenti realmente presenti.
+- [ ] **Tesina: Esercitazione guidata e modello presentazione**: Considerare una demo riuscita come test completo → La demo mostra un percorso; non verifica automaticamente input invalidi e fallimenti.

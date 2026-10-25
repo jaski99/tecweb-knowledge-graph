@@ -1,0 +1,109 @@
+{
+  "perche_ti_serve": "Allenamento del Gruppo C alla spiegazione del codice della tesina, basato sui temi del materiale utente; non costituisce una lista ufficiale di domande.",
+  "scenario_fil_rouge": "Durante una revisione, una persona indica una modifica al titolo di un libro e chiede di seguirla dal browser fino al database. Per rispondere bene non basta nominare Flask: occorre descrivere metodo HTTP, payload, validazione, persistenza, risposta ed eventuale stato dell’interfaccia.",
+  "definizione_esame": {
+    "definizione": "La revisione del codice è una spiegazione ragionata di come un requisito è tradotto in flusso di dati e decisioni implementative.",
+    "scopo_vantaggio": "Collegare ogni scelta a un requisito permette di verificare coerenza, correttezza e limiti del programma.",
+    "esempio": "Per una modifica, si può seguire la richiesta fetch, la rotta Flask, l’aggiornamento SQLite e la risposta visualizzata."
+  },
+  "spiegazione": "## Rispondi seguendo il percorso\nParti dall’azione dell’utente, non dal nome della libreria. Il browser costruisce una richiesta; Flask riceve URL, metodo, header e possibile corpo; il server valida, applica le regole e interroga la persistenza; la risposta torna al browser, che aggiorna la vista. Questa sequenza evita descrizioni vaghe come “il front-end comunica col back-end”.\n\n### Metodo, payload e stato\n`GET` è usato per leggere e ha semantica safe; `POST` invia una richiesta di elaborazione, spesso per creare una risorsa. `PUT` sostituisce la rappresentazione bersaglio ed è idempotente; `PATCH` applica modifiche parziali ma non è necessariamente idempotente. `DELETE` richiede l’eliminazione e ha semantica idempotente secondo HTTP, anche se le risposte possono cambiare tra richieste. Il contratto concreto stabilisce quali campi accetta l’API.\n\n```mermaid\nsequenceDiagram\n  actor U as Utente\n  participant B as Browser\n  participant F as Flask\n  participant D as Database\n  U->>B: modifica titolo\n  B->>F: PATCH /api/libri/7 (JSON)\n  F->>F: valida input e permessi\n  F->>D: aggiorna campi ammessi\n  D-->>F: esito\n  F-->>B: status e JSON\n  B-->>U: aggiorna vista o mostra errore\n```\n\n### Errori e codici di risposta\nIl client deve controllare lo status. `fetch()` non rigetta la Promise solo perché la risposta è 404 o 500; la rete non disponibile, invece, può causare un errore di rete. Spiega come il codice distingue questi casi e cosa vede l’utente. Il server deve rifiutare input non validi e non rivelare dettagli interni non necessari.\n\n### Stato applicativo\nHTTP è stateless: ogni richiesta deve portare il contesto necessario. La sessione può usare un identificatore in cookie con stato conservato dal server; l’interfaccia può mantenere temporaneamente filtri o dati di visualizzazione. Non confondere questi meccanismi: localStorage non è una sessione server e i cookie non rendono HTTP stateful per definizione.\n\n### Dimostra la tua comprensione\nPer ogni blocco, rispondi: quale requisito realizza? Quali dati attraversano il confine? Quali condizioni di errore gestisce? Quale alternativa hai considerato? Distingui sempre ciò che il codice fa da ciò che dovrebbe fare: se non gestisce autorizzazione o validazione, riconosci il limite invece di inventare una protezione.\n\n### Preparazione pratica\nScegli una rotta e prepara una traccia con input, controlli, accesso ai dati, risposta e aggiornamento del client. Provala con un caso valido e uno invalido. Questa preparazione favorisce spiegazioni precise, ma non predice le domande effettive di una revisione.",
+  "analogia": {
+    "testo": "Seguire una richiesta è come ricostruire il tragitto di un pacco: mittente, sportelli di controllo, deposito, ricevuta e aggiornamento della consegna.",
+    "limite": "Un programma può eseguire più operazioni in parallelo e i livelli software non corrispondono sempre a sportelli fisici distinti."
+  },
+  "worked_example": {
+    "titolo": "Spiegare una modifica parziale",
+    "problema": "Un utente cambia il titolo del libro con id 7. Traccia richiesta, validazioni, database e risposta.",
+    "passi": [
+      "Il client invia PATCH con il campo titolo e controlla la risposta HTTP.",
+      "Flask valida formato, campi ammessi e autorizzazione se prevista.",
+      "Il server cerca l’id; se manca risponde 404, altrimenti aggiorna il solo campo previsto.",
+      "La rotta restituisce status e rappresentazione coerenti; il client aggiorna l’interfaccia."
+    ],
+    "soluzione": "Una spiegazione completa cita PATCH, JSON, validazione, ricerca per id, persistenza, status e gestione di response.ok.",
+    "perche_funziona": "La risposta copre l’intero flusso e distingue aggiornamento parziale, errori applicativi e aggiornamento della UI."
+  },
+  "completion_problem": {
+    "titolo": "Completare la spiegazione del flusso",
+    "testo": "La risposta dichiara che “fetch aggiorna il database”. Completa la spiegazione con i passaggi omessi e un errore possibile.",
+    "passi_mancanti": [
+      "Descrivere la rotta server che valida input e interagisce con la persistenza.",
+      "Citare un errore HTTP e il controllo effettuato dal client prima di cambiare la vista."
+    ],
+    "soluzione": "fetch invia la richiesta; Flask valida e aggiorna il database; il client controlla response.ok e mostra 404 o altro errore senza fingere successo."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Revisione orale simulata",
+    "testo": "Scegli una rotta del tuo progetto e spiega input, metodo, validazione, persistenza, status, gestione errori e limite residuo.",
+    "suggerimento": "Usa la sequenza: gesto → richiesta → route → regole → dati → risposta → UI.",
+    "soluzione_attesa": "La spiegazione deve identificare il requisito, motivare il metodo in base al contratto, illustrare controlli e query, distinguere successi/errori e descrivere l’aggiornamento client. Riconosci esplicitamente ogni protezione o controllo che manca."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dire che fetch lancia un errore per ogni status 4xx",
+      "perche_sbagliato": "Una risposta 404 è una risposta HTTP; occorre controllare response.ok o status.",
+      "distrattore": "Una costellazione"
+    },
+    {
+      "errore": "Definire PUT e PATCH equivalenti",
+      "perche_sbagliato": "PUT sostituisce la rappresentazione secondo il contratto, PATCH applica una modifica parziale.",
+      "distrattore": "Una ricetta di pasta"
+    },
+    {
+      "errore": "Dire che il cookie conserva automaticamente lo stato nel server",
+      "perche_sbagliato": "Il cookie è trasmesso dal browser; il server deve definire e gestire il meccanismo di sessione.",
+      "distrattore": "Una montagna"
+    }
+  ],
+  "mnemonica": "Richiesta → Regole → Dati → Risposta: quattro tappe per spiegare una rotta senza saltare il server.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa controlla response.ok?",
+        "risposta": "Indica se lo status HTTP è nella fascia di successo; fetch non rigetta automaticamente su 404."
+      },
+      {
+        "domanda": "Qual è la differenza di semantica tra PUT e PATCH?",
+        "risposta": "PUT sostituisce la rappresentazione del bersaglio; PATCH applica modifiche parziali secondo il formato concordato."
+      },
+      {
+        "domanda": "HTTP stateless significa che non si possono usare sessioni?",
+        "risposta": "No: lo stato applicativo può essere gestito con meccanismi come cookie e sessioni, pur restando HTTP stateless."
+      },
+      {
+        "domanda": "Quali passaggi descrivere in una revisione di rotta?",
+        "risposta": "Input, metodo, validazione, logica e persistenza, risposta e comportamento del client."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega una scelta del tuo codice, indicando una possibile alternativa e il suo compromesso.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "rest-metodi-http",
+        "collegamento": "La revisione richiede di motivare il metodo secondo le sue semantiche HTTP."
+      },
+      {
+        "nodo": "flask-request-response",
+        "collegamento": "La rotta Flask interpreta la richiesta e costruisce una risposta che il client deve gestire."
+      },
+      {
+        "nodo": "javascript-fetch-async-await",
+        "collegamento": "fetch è asincrono e il codice deve distinguere errori di rete da status HTTP non riusciti."
+      }
+    ]
+  },
+  "riepilogo": "Segui il flusso dal gesto dell’utente fino all’aggiornamento dell’interfaccia.\nMotiva metodo, payload, validazione, persistenza e risposta.\nPUT sostituisce, PATCH applica modifiche parziali; PATCH non è sempre idempotente.\nfetch richiede un controllo esplicito dello status, per esempio response.ok.\nDescrivi ciò che il codice fa e riconosci con chiarezza i suoi limiti.",
+  "flashcard": {
+    "fronte": "Come spiegare una rotta durante una revisione?",
+    "retro": "Percorri gesto, richiesta, metodo e payload, validazione server, persistenza, status e aggiornamento della UI; esplicita errori e limiti."
+  },
+  "checklist": {
+    "so_fare": [
+      "Tracciare una richiesta fino al database e ritorno",
+      "Verificare casi validi, errori HTTP e comportamento della UI"
+    ],
+    "so_dire": [
+      "Motivare metodi e codici di risposta",
+      "Distinguere stato HTTP, sessione server e stato dell’interfaccia"
+    ]
+  }
+}

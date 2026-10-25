@@ -1,0 +1,109 @@
+{
+  "perche_ti_serve": "Esercitazione del Gruppo C per trasformare la traccia della tesina in passi verificabili; modello operativo ricostruito dal materiale utente, non prescrizione ufficiale.",
+  "scenario_fil_rouge": "Una studentessa sceglie di gestire ricette e vuole arrivare a una piccola applicazione dimostrabile. Per non perdersi in funzionalità secondarie, procede per incrementi: definisce i dati, prova una rotta, costruisce il form, completa CRUD e prepara una presentazione che corrisponde davvero al codice.",
+  "definizione_esame": {
+    "definizione": "Un’esercitazione guidata suddivide un obiettivo di progetto in attività ordinate e risultati controllabili.",
+    "scopo_vantaggio": "La progressione riduce i rischi: ogni livello è verificato prima di aggiungere complessità e interfacce ulteriori.",
+    "esempio": "Per una tesina CRUD si può partire dalla risorsa ricetta, verificare una rotta GET e poi ampliare l’applicazione."
+  },
+  "spiegazione": "## Parti da un perimetro piccolo\nScegli una risorsa e un caso d’uso concreto, per esempio una ricetta con `id`, `titolo` e `ingredienti`. Definisci cosa deve poter fare l’utente e quali campi sono obbligatori. Evita di iniziare da login, notifiche o grafici se non sono necessari all’obiettivo minimo.\n\n### Incrementi verificabili\nPrimo, prepara l’ambiente e il modello dati. Secondo, implementa e prova una rotta di lettura. Terzo, aggiungi creazione con validazione e persistenza. Quarto, collega un form accessibile via `fetch`. Quinto, completa modifica e cancellazione, aggiungendo gestione degli errori. Infine prova i percorsi e costruisci la narrazione. Ogni fase deve lasciare un risultato osservabile.\n\n```mermaid\nflowchart TD\n  A[Requisito e risorsa] --> B[Modello dati]\n  B --> C[Endpoint e test]\n  C --> D[Interfaccia e fetch]\n  D --> E[CRUD completo e casi d’errore]\n  E --> F[Demo e presentazione]\n```\n\n### Modello di scheda progetto\nPer ogni funzione annota: requisito, endpoint, metodo, input, risposta attesa, comportamento quando l’elemento manca e prova manuale. Esempio: “aggiungere ricetta” → `POST /api/ricette`, JSON con titolo e ingredienti, validazione lato server, risposta 201 quando creata. L’esempio non sostituisce una specifica completa: gli status e la struttura JSON vanno scelti coerentemente.\n\n### Modello per le quattro slide\nLa traccia dell’utente propone slide 1 problema/obiettivo, slide 2 architettura client–Flask–database, slide 3 codice (route, richiesta asincrona, gestione stato se presente), slide 4 demo o schermate. La ripartizione suggerita è 1, 2, 3 e 2 minuti. Costruisci le slide dopo aver deciso cosa mostrare: ogni affermazione deve essere dimostrabile dal progetto.\n\n### Collaudo manuale\nProva un input valido, un campo obbligatorio assente, un identificatore inesistente e un errore di rete o server. Verifica status e messaggio della UI. Non descrivere il progetto come sicuro o completo senza aver controllato autorizzazioni, gestione dei segreti e altre esigenze pertinenti.\n\n### Modello riutilizzabile\n**Problema:** chi usa l’app e quale attività vuole completare? **Dati:** quale risorsa e quali vincoli? **API:** quali rotte e semantiche? **Interfaccia:** come si invia e si comunica l’esito? **Prove:** quali casi dimostrano il comportamento? **Presentazione:** quale evidenza mostra ciascuna slide? Questa traccia mantiene allineati progetto, test e racconto.",
+  "analogia": {
+    "testo": "Costruire il progetto per incrementi è come preparare una ricetta: si controllano ingredienti e passaggi prima di servire il piatto, invece di aggiungere tutto all’ultimo momento.",
+    "limite": "Lo sviluppo software permette di tornare ai passaggi precedenti e modificare il progetto dopo il primo risultato."
+  },
+  "worked_example": {
+    "titolo": "Dal requisito alla prima rotta",
+    "problema": "Realizzare un catalogo di ricette con un elenco consultabile e una base solida per aggiungere altre operazioni CRUD.",
+    "passi": [
+      "Definire la risorsa ricetta e i campi minimi.",
+      "Scrivere il requisito “mostrare le ricette salvate”.",
+      "Implementare GET /api/ricette con risposta JSON e provarla.",
+      "Collegare una pagina che legge i dati e gestisce una risposta non riuscita."
+    ],
+    "soluzione": "Una rotta di lettura testata end-to-end costituisce il primo incremento; solo dopo si aggiungono POST, modifica e cancellazione.",
+    "perche_funziona": "Il perimetro ridotto rende più facile individuare errori e verificare ogni confine tra componenti."
+  },
+  "completion_problem": {
+    "titolo": "Completare una scheda di test",
+    "testo": "La rotta POST /api/ricette richiede titolo e ingredienti. Completa la prova con input valido e campo mancante, specificando cosa osservare.",
+    "passi_mancanti": [
+      "Inviare dati validi e controllare status e record creato.",
+      "Ripetere senza titolo e verificare rifiuto senza scrittura nel database."
+    ],
+    "soluzione": "Input valido: verifica creazione e risposta di successo coerente; titolo mancante: verifica 400 e nessun record aggiunto."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Pianifica un mini-progetto CRUD",
+    "testo": "Scegli una risorsa diversa da ricette e prepara requisiti, campi, endpoint, prove e scaletta di quattro slide.",
+    "suggerimento": "Mantieni un solo tipo di risorsa e almeno un caso di errore per operazione.",
+    "soluzione_attesa": "Dichiara destinatario e problema, definisci campi e vincoli, abbina endpoint e metodi a operazioni CRUD, annota risposte e test, quindi prepara slide su problema, architettura, codice ed evidenza di funzionamento."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Implementare tutte le funzioni prima di provarne una",
+      "perche_sbagliato": "Gli errori precoci si accumulano e diventano più difficili da isolare.",
+      "distrattore": "Un pianeta nano"
+    },
+    {
+      "errore": "Copiare il modello di slide senza adattarlo al progetto",
+      "perche_sbagliato": "Il racconto deve corrispondere a componenti e comportamenti realmente presenti.",
+      "distrattore": "Una formula chimica"
+    },
+    {
+      "errore": "Considerare una demo riuscita come test completo",
+      "perche_sbagliato": "La demo mostra un percorso; non verifica automaticamente input invalidi e fallimenti.",
+      "distrattore": "La temperatura di ebollizione"
+    }
+  ],
+  "mnemonica": "R-D-A-I-P: Requisito, Dati, API, Interfaccia, Prove; poi prepara il racconto usando le stesse evidenze.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Perché iniziare con una sola rotta?",
+        "risposta": "Per ottenere un risultato osservabile e verificare presto confini e dati."
+      },
+      {
+        "domanda": "Quali casi oltre al successo provare?",
+        "risposta": "Input non valido, risorsa inesistente ed errori di rete o server."
+      },
+      {
+        "domanda": "Quando preparare le slide?",
+        "risposta": "Dopo aver scelto comportamento e prove, così ogni affermazione rispecchia il progetto."
+      },
+      {
+        "domanda": "Cosa significa “incremento verificabile”?",
+        "risposta": "Una piccola aggiunta con un risultato e una prova che ne controlla il comportamento."
+      }
+    ],
+    "spiega_con_parole_tue": "Scegli una funzione e scrivi come la verificheresti sia dal server sia dall’interfaccia.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "tesina-progetto-flask-crud",
+        "collegamento": "L’esercitazione prepara i contratti e i controlli necessari al progetto CRUD."
+      },
+      {
+        "nodo": "flask-rotte-jsonify",
+        "collegamento": "La rotta Flask fornisce un primo confine concreto da implementare e provare."
+      },
+      {
+        "nodo": "tesina-presentazione-8-minuti",
+        "collegamento": "La scaletta di presentazione deve riutilizzare evidenze ottenute durante le prove."
+      }
+    ]
+  },
+  "riepilogo": "Riduci il perimetro a una risorsa e a requisiti osservabili.\nProcedi da modello dati a endpoint, interfaccia, CRUD completo e prove.\nVerifica successo, input non valido, risorsa assente ed errori di comunicazione.\nAdatta il modello di slide al codice e alle evidenze realmente disponibili.\nLa traccia delle quattro slide è un suggerimento del materiale utente.",
+  "flashcard": {
+    "fronte": "Qual è la sequenza di lavoro proposta per la tesina?",
+    "retro": "Requisito e modello dati → endpoint e test → interfaccia → CRUD e casi d’errore → demo e presentazione."
+  },
+  "checklist": {
+    "so_fare": [
+      "Pianificare passi incrementali e testabili",
+      "Preparare una scaletta aderente al progetto"
+    ],
+    "so_dire": [
+      "Motivare perimetro e prove scelte",
+      "Distinguere demo, test e requisito ufficiale"
+    ]
+  }
+}

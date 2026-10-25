@@ -38,10 +38,14 @@ def _blocks(md):
     return re.findall(r"^```(\w*)\n(.*?)^```", md, re.S | re.M)
 
 
-# Test per le 3 lezioni seed (devono essere testate al 100% ORA)
-@pytest.mark.parametrize("lezione_id", ["http-stateless-vs-stateful", "rest-metodi-http", "css-box-model"])
-def test_lezione_seed_completa_v4(lezione_id):
-    """Testa che le 3 lezioni seed abbiano TUTTI i 10 campi obbligatori secondo DIDATTICA.md."""
+# Lezioni seed e tutte le lezioni completate da W4: verifica integrale dello schema didattico v4.
+@pytest.mark.parametrize("lezione_id", [
+    "http-stateless-vs-stateful", "rest-metodi-http", "css-box-model",
+    "tesina-progetto-flask-crud", "tesina-presentazione-8-minuti",
+    "tesina-domande-revisione-codice", "tesina-esercitazione-guidata", "quiz-form",
+])
+def test_lezione_completa_v4(lezione_id):
+    """Verifica che ogni lezione completata abbia tutti i campi obbligatori secondo DIDATTICA.md."""
     from kg import load_lessons
     lezioni = load_lessons()
     assert lezione_id in lezioni, f"Lezione {lezione_id} non trovata nei file"
