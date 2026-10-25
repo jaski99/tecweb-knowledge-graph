@@ -38,6 +38,10 @@ jobs:
           pytest -q --tb=short > /tmp/pytest-output.txt 2>&1
           result=$?
           cat /tmp/pytest-output.txt
+          if grep -Eq '(^|, )[1-9][0-9]* skipped([ ,]|$)' /tmp/pytest-output.txt; then
+            echo "::error::pytest ha saltato test: in CI sono richiesti zero test saltati"
+            result=1
+          fi
           if [ "$result" -ne 0 ]; then
             while IFS= read -r failure; do
               echo "::error title=Errore pytest::$failure"
