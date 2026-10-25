@@ -1,0 +1,104 @@
+{
+  "perche_ti_serve": "Gruppo A: tema previsto dal syllabus/materiale disponibile; non è documentato un punteggio specifico per questo singolo nodo.",
+  "scenario_fil_rouge": "La biblioteca ha pubblicato un grafo RDF e vuole rispondere a richieste come “quali libri hanno un autore?” oppure “quali libri sono usciti dal 2020?”. SPARQL seleziona le combinazioni di triple che corrispondono a ciascun pattern.",
+  "definizione_esame": {
+    "definizione": "SPARQL è il linguaggio di query per grafi RDF, basato su corrispondenza di pattern; può produrre soluzioni tabellari o grafi RDF a seconda della forma della query.",
+    "scopo_vantaggio": "Le query permettono di estrarre, verificare o trasformare informazioni in triple, senza codificare manualmente ogni relazione.",
+    "esempio": "Una SELECT trova libri e autori con `?libro ex:haAutore ?autore` e restituisce i valori associati alle variabili."
+  },
+  "spiegazione": "## Query come pattern sul grafo\n\nUn pattern SPARQL descrive triple attese nel grafo RDF. Le variabili (per esempio `?libro`) si legano ai termini che rendono vere le triple; i risultati sono soluzioni, una per ogni combinazione compatibile. `PREFIX` assegna un prefisso abbreviato a un IRI. La forma essenziale è `SELECT ... WHERE { ... }`. Il punto separa pattern; il punto e virgola riusa il soggetto per un altro predicato.\n\n## Dataset minimo e query eseguibile\n\nIl seguente Turtle costituisce un piccolo grafo, da caricare in un archivio/endpoint compatibile con RDF. La query successiva è SPARQL 1.1 standard e può essere eseguita su un motore SPARQL dopo aver caricato il grafo. Non presuppone un endpoint pubblico specifico.\n\n```turtle\n@prefix ex: <https://example.org/biblioteca/> .\nex:libro1 a ex:Libro ; ex:titolo \"Il Web\" ;\n    ex:autore ex:ada ; ex:anno 2021 .\nex:libro2 a ex:Libro ; ex:titolo \"Reti\" ;\n    ex:autore ex:lia ; ex:anno 2018 .\nex:ada a ex:Persona .\nex:lia a ex:Persona .\n```\n\n```sparql\nPREFIX ex: <https://example.org/biblioteca/>\nSELECT ?libro ?titolo ?autore ?anno\nWHERE {\n  ?libro a ex:Libro ;\n         ex:titolo ?titolo ;\n         ex:autore ?autore ;\n         ex:anno ?anno .\n  FILTER(?anno >= 2020)\n}\nORDER BY ?titolo\n```\n\nIl risultato contiene `libro1`, titolo “Il Web”, autore `ada` e anno 2021. `libro2` non compare perché 2018 non soddisfa il filtro. I numeri nel Turtle sono letterali interi. `ORDER BY` stabilisce un ordinamento; senza `ORDER BY` non bisogna presumere l’ordine dei risultati.\n\n## Altre forme comuni\n\n`OPTIONAL { ... }` aggiunge variabili quando il pattern opzionale corrisponde, senza scartare altrimenti la soluzione. `FILTER` limita le soluzioni con un’espressione. `ASK` restituisce un booleano per verificare se esiste una corrispondenza. `CONSTRUCT` crea un nuovo grafo RDF dai risultati. `DESCRIBE` richiede una descrizione di risorse, ma i dettagli della descrizione dipendono dall’implementazione. `UNION` combina alternative di pattern. Le forme non sono intercambiabili: scegli l’output adatto alla domanda.\n\n## Procedura per risolvere query\n\n1. Traduci la domanda in variabili: quali valori devono comparire nell’output?\n2. Per ogni relazione richiesta, scrivi un triple pattern soggetto-predicato-oggetto.\n3. Controlla i prefissi e collega pattern con variabili aventi lo stesso nome.\n4. Aggiungi FILTER solo per condizioni richieste; controlla i tipi dei letterali.\n5. Se serve un ordine o un limite, aggiungi `ORDER BY` o `LIMIT`.\n\nSPARQL interroga i dati RDF e non definisce da solo le classi dell’ontologia. Per la relazione fra RDF, OWL e SPARQL, rivedi `web-semantico-rdf-owl`.",
+  "analogia": {
+    "testo": "Una query SPARQL è come un modulo di ricerca con campi collegati: la risposta contiene le schede in cui tutte le relazioni richieste combaciano, e ogni variabile diventa un valore di risultato.",
+    "limite": "Un grafo può avere molte corrispondenze e le regole di inferenza non sono applicate automaticamente da ogni endpoint."
+  },
+  "worked_example": {
+    "titolo": "Filtrare libri per anno",
+    "problema": "Dato il grafo Turtle sopra, trovare libri pubblicati dal 2020 e restituire titolo e autore ordinati per titolo.",
+    "passi": [
+      "1. Definire le variabili necessarie: libro, titolo, autore e anno.",
+      "2. Scrivere i pattern che collegano il libro a tipo, titolo, autore e anno.",
+      "3. Filtrare con `?anno >= 2020`.",
+      "4. Selezionare le colonne richieste e ordinare per titolo."
+    ],
+    "soluzione": "La query restituisce solo `libro1`, con titolo Il Web e autore ada; `libro2` è escluso dal filtro.",
+    "perche_funziona": "Il join implicito tra triple che condividono `?libro` garantisce che i valori appartengano allo stesso soggetto; FILTER seleziona gli anni validi."
+  },
+  "completion_problem": {
+    "titolo": "Completare un pattern facoltativo",
+    "testo": "La query deve restituire tutti i libri e, quando presente, anche il sottotitolo; libri senza sottotitolo devono restare nei risultati.",
+    "passi_mancanti": [
+      "Scrivere il pattern obbligatorio per la classe ex:Libro.",
+      "Racchiudere il pattern ex:sottotitolo dentro OPTIONAL."
+    ],
+    "soluzione": "Dentro WHERE usa `?libro a ex:Libro . OPTIONAL { ?libro ex:sottotitolo ?sottotitolo . }`."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Costruire una query di esistenza",
+    "testo": "Con il grafo dell’esempio, stabilisci se esiste almeno un libro di Ada e scrivi la query che restituisce un booleano.",
+    "suggerimento": "Usa la forma ASK e un pattern per libro, tipo e autore.",
+    "soluzione_attesa": "La query è `PREFIX ex: <https://example.org/biblioteca/> ASK { ?libro a ex:Libro ; ex:autore ex:ada . }`; sul dataset dato restituisce true."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dimenticare che variabili uguali collegano triple.",
+      "perche_sbagliato": "Variabili con lo stesso nome sono la condizione di join; variabili diverse non impongono uguaglianza.",
+      "distrattore": "Configurazione della scheda madre"
+    },
+    {
+      "errore": "Affermare che i risultati sono sempre ordinati.",
+      "perche_sbagliato": "L’ordine non è garantito senza una clausola `ORDER BY`.",
+      "distrattore": "Calcolo di indirizzi IP"
+    },
+    {
+      "errore": "Usare SELECT quando la domanda richiede solo vero/falso.",
+      "perche_sbagliato": "ASK restituisce un booleano di esistenza; SELECT genera soluzioni tabellari.",
+      "distrattore": "Installazione di un sistema operativo"
+    }
+  ],
+  "mnemonica": "PREFIX abbrevia, WHERE abbina, FILTER restringe, SELECT restituisce.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa rappresenta un triple pattern?",
+        "risposta": "Una tripla con termini costanti e/o variabili che deve corrispondere a una tripla del grafo."
+      },
+      {
+        "domanda": "Che cosa cambia tra SELECT e ASK?",
+        "risposta": "SELECT restituisce soluzioni con variabili; ASK restituisce true o false sull’esistenza di corrispondenze."
+      },
+      {
+        "domanda": "A cosa serve OPTIONAL?",
+        "risposta": "A rendere facoltativo un pattern, mantenendo le soluzioni anche quando non ha corrispondenza."
+      },
+      {
+        "domanda": "Perché usare ORDER BY?",
+        "risposta": "Per richiedere un ordinamento esplicito, dato che l’ordine non è garantito altrimenti."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega a un collega la differenza tra i concetti centrali di «SPARQL: esempi di query» e porta un esempio concreto della biblioteca.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "web-semantico-rdf-owl",
+        "collegamento": "Una query SPARQL abbina triple RDF; OWL definisce l’ontologia, mentre SPARQL formula interrogazioni."
+      },
+      {
+        "nodo": "json-formato-dati",
+        "collegamento": "I risultati possono serializzarsi in JSON, ma la sintassi della query SPARQL resta distinta."
+      }
+    ]
+  },
+  "riepilogo": "SPARQL è il linguaggio di query per grafi RDF, basato su corrispondenza di pattern; può produrre soluzioni tabellari o grafi RDF a seconda della forma della query. Le query permettono di estrarre, verificare o trasformare informazioni in triple, senza codificare manualmente ogni relazione. Una SELECT trova libri e autori con `?libro ex:haAutore ?autore` e restituisce i valori associati alle variabili.",
+  "flashcard": {
+    "fronte": "SPARQL: esempi di query: qual è la definizione, lo scopo e un esempio?",
+    "retro": "SPARQL è il linguaggio di query per grafi RDF, basato su corrispondenza di pattern; può produrre soluzioni tabellari o grafi RDF a seconda della forma della query. Le query permettono di estrarre, verificare o trasformare informazioni in triple, senza codificare manualmente ogni relazione. Una SELECT trova libri e autori con `?libro ex:haAutore ?autore` e restituisce i valori associati alle variabili."
+  },
+  "checklist": {
+    "so_fare": [
+      "Costruire una query di esistenza: Con il grafo dell’esempio, stabilisci se esiste almeno un libro di Ada e scrivi la query che restituisce un booleano."
+    ],
+    "so_dire": [
+      "SPARQL è il linguaggio di query per grafi RDF, basato su corrispondenza di pattern; può produrre soluzioni tabellari o grafi RDF a seconda della forma della query.",
+      "Le query permettono di estrarre, verificare o trasformare informazioni in triple, senza codificare manualmente ogni relazione."
+    ]
+  }
+}

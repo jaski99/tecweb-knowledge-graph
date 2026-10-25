@@ -1,0 +1,104 @@
+{
+  "perche_ti_serve": "Gruppo C: tema previsto dal syllabus/materiale disponibile; non è documentato un punteggio specifico per questo singolo nodo.",
+  "scenario_fil_rouge": "Il catalogo della biblioteca deve sopravvivere alla chiusura del programma. Una tabella SQLite conserva i libri e permette all’applicazione di crearli, leggerli, modificarli e cancellarli usando SQL parametrizzato.",
+  "definizione_esame": {
+    "definizione": "SQLite è un motore relazionale incorporabile che memorizza dati in un file senza richiedere un server database separato; CRUD indica Create, Read, Update e Delete.",
+    "scopo_vantaggio": "SQL consente operazioni dichiarative sui dati; le transazioni rendono controllabili le modifiche e i parametri separano i valori dalla query.",
+    "esempio": "Una connessione Python a SQLite inserisce un libro con INSERT, lo legge con SELECT, lo aggiorna con UPDATE e lo elimina con DELETE."
+  },
+  "spiegazione": "## Un database relazionale integrato\n\nSQLite è una libreria di database SQL che non richiede un processo server separato. Il modulo standard Python `sqlite3` apre una connessione, esegue istruzioni e restituisce righe. Una connessione a un file crea il file se non esiste; `:memory:` crea un database temporaneo in RAM, utile per dimostrazioni e test. Il database relazionale organizza dati in tabelle con righe e colonne e consente vincoli come `PRIMARY KEY`, `NOT NULL` e `UNIQUE`.\n\n## CRUD e transazioni\n\nCRUD è un mnemonico per quattro operazioni: Create corrisponde tipicamente a `INSERT`, Read a `SELECT`, Update a `UPDATE`, Delete a `DELETE`. `CREATE TABLE` definisce la struttura. Le modifiche vanno confermate con `commit`; se un’operazione fallisce, una transazione può essere annullata. Il context manager della connessione gestisce commit o rollback, ma non chiude automaticamente la connessione: chiudila esplicitamente o usa una gestione di contesto adeguata.\n\n## Parametri, non concatenazione\n\nPassa i valori con placeholder `?` e una tupla di parametri. Non concatenare input utente nell’SQL: così si evita di confondere dati con sintassi e si riduce il rischio di SQL injection. I placeholder si usano per i valori, non per nomi di tabelle o colonne: questi vanno scelti da un insieme fisso e fidato.\n\n## Programma Python completo ed eseguibile\n\nLo script usa un database in memoria e attraversa tutte le fasi; eseguilo con Python 3, senza pacchetti aggiuntivi. La SELECT dopo l’UPDATE mostra il titolo aggiornato.\n\n```python\nimport sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.row_factory = sqlite3.Row\ntry:\n    conn.execute(\"\"\"\n        CREATE TABLE libri (\n            id INTEGER PRIMARY KEY,\n            titolo TEXT NOT NULL,\n            autore TEXT NOT NULL\n        )\n    \"\"\")\n    cur = conn.execute(\n        \"INSERT INTO libri (titolo, autore) VALUES (?, ?)\",\n        (\"Il Web\", \"Ada\")\n    )\n    libro_id = cur.lastrowid\n    libro = conn.execute(\n        \"SELECT id, titolo, autore FROM libri WHERE id = ?\", (libro_id,)\n    ).fetchone()\n    print(dict(libro))\n    conn.execute(\"UPDATE libri SET titolo = ? WHERE id = ?\",\n                 (\"Il Web semantico\", libro_id))\n    print(conn.execute(\"SELECT titolo FROM libri WHERE id = ?\",\n                       (libro_id,)).fetchone()[\"titolo\"])\n    conn.execute(\"DELETE FROM libri WHERE id = ?\", (libro_id,))\n    conn.commit()\nfinally:\n    conn.close()\n```\n\nL’esempio non mostra tutta la gestione degli errori di un’applicazione reale, ma chiude la connessione anche se avviene un’eccezione. In un’app web, evita una singola connessione globale condivisa tra richieste concorrenti: definisci una strategia di connessione per richiesta e configura i vincoli necessari.\n\n## SQL e JSON hanno ruoli diversi\n\nSQLite memorizza dati relazionali; JSON è un formato di scambio, non un database relazionale alternativo. SQLite offre anche funzioni JSON in versioni/configurazioni correnti, ma non sono necessarie per le operazioni CRUD di base mostrate. Le query qui sono `CREATE TABLE`, `INSERT`, `SELECT`, `UPDATE` e `DELETE`.\n\n```mermaid\nflowchart LR\n    Py[Python sqlite3] --> Conn[Connessione]\n    Conn --> SQL[Query parametrizzata]\n    SQL --> Tx[Transazione]\n    Tx --> DB[(Database SQLite)]\n    DB --> Rows[Righe lette]\n```\n\nUna rotta Flask può delegare a funzioni di persistenza e restituire poi JSON. Mantenere distinti routing, query e serializzazione semplifica i test.",
+  "analogia": {
+    "testo": "SQLite è come un archivio catalografico custodito nello stesso ufficio: non serve un ufficio server separato per consultarlo, ma si usano schede strutturate e operazioni precise per inserire o trovare registrazioni.",
+    "limite": "Un database gestisce transazioni, vincoli, concorrenza e query; uno schedario fisico non ha queste proprietà né la sintassi SQL."
+  },
+  "worked_example": {
+    "titolo": "Inserire e aggiornare un libro",
+    "problema": "Crea una tabella libri, inserisci un record parametrizzato e cambia il titolo solo per l’ID restituito da SQLite.",
+    "passi": [
+      "1. Creare la tabella con id chiave primaria e campi non nulli.",
+      "2. Eseguire INSERT con placeholder `?` e parametri in tupla.",
+      "3. Leggere `lastrowid` per ottenere l’ID generato.",
+      "4. Eseguire UPDATE con valore e ID parametrizzati; confermare con commit."
+    ],
+    "soluzione": "Il programma crea il record “Il Web”, lo legge e poi aggiorna il titolo a “Il Web semantico”.",
+    "perche_funziona": "I placeholder trattano titolo e autore come valori; la chiave primaria identifica univocamente il record."
+  },
+  "completion_problem": {
+    "titolo": "Completare un UPDATE sicuro",
+    "testo": "Hai `conn` e `libro_id`; completa la query per aggiornare il titolo ricevuto in `nuovo_titolo` senza concatenare input.",
+    "passi_mancanti": [
+      "Usare un placeholder per il nuovo titolo e un altro per l’ID.",
+      "Eseguire commit dopo l’aggiornamento."
+    ],
+    "soluzione": "Esegui `conn.execute(\"UPDATE libri SET titolo = ? WHERE id = ?\", (nuovo_titolo, libro_id))`, poi `conn.commit()`."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Cancellare solo un libro",
+    "testo": "Aggiungi una funzione che elimina il libro identificato da un ID e distingue una riga esistente da un ID inesistente.",
+    "suggerimento": "Usa `DELETE ... WHERE id = ?` e verifica `cursor.rowcount`.",
+    "soluzione_attesa": "Parametrizza l’ID; se `rowcount == 0` nessuna riga è stata eliminata, altrimenti una riga è stata eliminata. Conferma la transazione secondo la strategia scelta."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Inserire input utente concatenandolo nella query.",
+      "perche_sbagliato": "Il dato può essere interpretato come SQL; i placeholder separano codice e valore.",
+      "distrattore": "Installazione di un router Wi-Fi"
+    },
+    {
+      "errore": "Dimenticare WHERE in UPDATE o DELETE.",
+      "perche_sbagliato": "La query potrebbe modificare o cancellare tutte le righe della tabella.",
+      "distrattore": "Configurazione del DNS"
+    },
+    {
+      "errore": "Pensare che `with conn` chiuda automaticamente la connessione.",
+      "perche_sbagliato": "Il context manager gestisce la transazione; la connessione resta da chiudere esplicitamente.",
+      "distrattore": "Disegno di un diagramma UML"
+    }
+  ],
+  "mnemonica": "CRUD: Crea, Ricerca, Aggiorna, Distruggi (INSERT, SELECT, UPDATE, DELETE).",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "A quali istruzioni corrisponde CRUD?",
+        "risposta": "Create: INSERT; Read: SELECT; Update: UPDATE; Delete: DELETE."
+      },
+      {
+        "domanda": "Perché usare `?` in sqlite3?",
+        "risposta": "Per passare valori come parametri, separandoli dalla sintassi SQL e prevenendo injection dai valori."
+      },
+      {
+        "domanda": "Che cosa fa `commit()`?",
+        "risposta": "Conferma la transazione corrente rendendo persistenti le modifiche confermate."
+      },
+      {
+        "domanda": "SQLite richiede un server dedicato?",
+        "risposta": "No: SQLite è incorporabile e non richiede un processo server database separato."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega a un collega la differenza tra i concetti centrali di «SQLite: operazioni CRUD» e porta un esempio concreto della biblioteca.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "flask-request-response",
+        "collegamento": "Una vista Flask valida l’input HTTP prima di passarlo a una query parametrizzata SQLite."
+      },
+      {
+        "nodo": "json-formato-dati",
+        "collegamento": "SQLite conserva righe relazionali; JSON è spesso il formato di scambio tra API e client."
+      }
+    ]
+  },
+  "riepilogo": "SQLite è un motore relazionale incorporabile che memorizza dati in un file senza richiedere un server database separato; CRUD indica Create, Read, Update e Delete. SQL consente operazioni dichiarative sui dati; le transazioni rendono controllabili le modifiche e i parametri separano i valori dalla query. Una connessione Python a SQLite inserisce un libro con INSERT, lo legge con SELECT, lo aggiorna con UPDATE e lo elimina con DELETE.",
+  "flashcard": {
+    "fronte": "SQLite: operazioni CRUD: qual è la definizione, lo scopo e un esempio?",
+    "retro": "SQLite è un motore relazionale incorporabile che memorizza dati in un file senza richiedere un server database separato; CRUD indica Create, Read, Update e Delete. SQL consente operazioni dichiarative sui dati; le transazioni rendono controllabili le modifiche e i parametri separano i valori dalla query. Una connessione Python a SQLite inserisce un libro con INSERT, lo legge con SELECT, lo aggiorna con UPDATE e lo elimina con DELETE."
+  },
+  "checklist": {
+    "so_fare": [
+      "Cancellare solo un libro: Aggiungi una funzione che elimina il libro identificato da un ID e distingue una riga esistente da un ID inesistente."
+    ],
+    "so_dire": [
+      "SQLite è un motore relazionale incorporabile che memorizza dati in un file senza richiedere un server database separato; CRUD indica Create, Read, Update e Delete.",
+      "SQL consente operazioni dichiarative sui dati; le transazioni rendono controllabili le modifiche e i parametri separano i valori dalla query."
+    ]
+  }
+}

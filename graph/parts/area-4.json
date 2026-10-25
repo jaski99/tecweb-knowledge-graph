@@ -22,22 +22,17 @@
     "tempo_studio_min": 60,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo C (punti ciechi). Fondamentale per lo sviluppo back-end."
+      "motivazione": "Gruppo C; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
     },
     "risorse": [
       {
-        "titolo": "Flask: Quickstart",
-        "url": "https://flask.palletsprojects.com/en/3.0.x/quickstart/",
+        "titolo": "Flask Quickstart",
+        "url": "https://flask.palletsprojects.com/en/stable/quickstart/",
         "verificato": true
       },
       {
-        "titolo": "Flask: Routing",
-        "url": "https://flask.palletsprojects.com/en/3.0.x/api/#flask.Flask.route",
-        "verificato": true
-      },
-      {
-        "titolo": "Flask: jsonify",
-        "url": "https://flask.palletsprojects.com/en/3.0.x/api/#flask.jsonify",
+        "titolo": "Flask API: jsonify",
+        "url": "https://flask.palletsprojects.com/en/stable/api/#flask.json.jsonify",
         "verificato": true
       }
     ],
@@ -47,10 +42,9 @@
       }
     ],
     "checklist_ripasso": [
-      "@app.route('percorso') per definire rotte",
-      "methods=['GET', 'POST', ...] per limitare i metodi",
-      "jsonify() per convertire Python → JSON",
-      "Parametri URL: <tipo:nome> (es. <int:id>, <string:nome>)"
+      "@app.route/@app.get associa URL e metodi a una vista",
+      "I parametri dinamici sono passati alla funzione secondo il converter",
+      "jsonify restituisce JSON; status HTTP distingue successo ed errore"
     ],
     "worker": "W3"
   },
@@ -83,22 +77,17 @@
     "tempo_studio_min": 50,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo C. Fondamentale per gestire input/output."
+      "motivazione": "Gruppo C; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
     },
     "risorse": [
       {
-        "titolo": "Flask: Request",
-        "url": "https://flask.palletsprojects.com/en/3.0.x/api/#flask.Request",
+        "titolo": "Flask Quickstart",
+        "url": "https://flask.palletsprojects.com/en/stable/quickstart/",
         "verificato": true
       },
       {
-        "titolo": "Flask: Response",
-        "url": "https://flask.palletsprojects.com/en/3.0.x/api/#flask.Response",
-        "verificato": true
-      },
-      {
-        "titolo": "Flask: make_response",
-        "url": "https://flask.palletsprojects.com/en/3.0.x/api/#flask.make_response",
+        "titolo": "Flask API",
+        "url": "https://flask.palletsprojects.com/en/stable/api/",
         "verificato": true
       }
     ],
@@ -108,11 +97,9 @@
       }
     ],
     "checklist_ripasso": [
-      "request.args: query string (GET)",
-      "request.form: dati form (POST, application/x-www-form-urlencoded)",
-      "request.json: body JSON (POST, application/json)",
-      "request.cookies: cookie in entrata",
-      "make_response: creare risposte personalizzate"
+      "request.args: query string; request.form: campi form; get_json: body JSON",
+      "Validare tipo, presenza e vincoli prima di usare l’input",
+      "Response: status, header e corpo; 400 input errato, 404 risorsa assente"
     ],
     "worker": "W3"
   },
@@ -139,22 +126,17 @@
     "tempo_studio_min": 50,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo C. Fondamentale per persistenza dati."
+      "motivazione": "Gruppo C; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
     },
     "risorse": [
       {
-        "titolo": "SQLite: Python sqlite3",
+        "titolo": "Python sqlite3",
         "url": "https://docs.python.org/3/library/sqlite3.html",
         "verificato": true
       },
       {
-        "titolo": "SQLite: SQL Syntax",
-        "url": "https://www.sqlite.org/lang.html",
-        "verificato": true
-      },
-      {
-        "titolo": "Flask-SQLAlchemy",
-        "url": "https://flask-sqlalchemy.palletsprojects.com/",
+        "titolo": "SQLite INSERT",
+        "url": "https://www.sqlite.org/lang_insert.html",
         "verificato": true
       }
     ],
@@ -164,10 +146,9 @@
       }
     ],
     "checklist_ripasso": [
-      "CRUD: Create (INSERT), Read (SELECT), Update (UPDATE), Delete (DELETE)",
-      "sqlite3: connect(), cursor(), execute(), commit(), close()",
-      "Parametri sicuri: ? placeholder per evitare SQL injection",
-      "Flask-SQLAlchemy: ORM per Flask"
+      "CRUD: INSERT, SELECT, UPDATE, DELETE",
+      "Usare placeholder ? e parametri per i valori SQL",
+      "Confermare la transazione e chiudere la connessione"
     ],
     "worker": "W3"
   },
@@ -199,22 +180,22 @@
     "tempo_studio_min": 50,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo C. Fondamentale per lavoro collaborativo."
+      "motivazione": "Gruppo C; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
     },
     "risorse": [
       {
-        "titolo": "Git: Documentation",
-        "url": "https://git-scm.com/doc",
-        "verificato": true
-      },
-      {
-        "titolo": "Git: Basic Commands",
+        "titolo": "Git Tutorial",
         "url": "https://git-scm.com/docs/gittutorial",
         "verificato": true
       },
       {
-        "titolo": "GitHub: Understanding the GitHub flow",
-        "url": "https://docs.github.com/en/get-started/quickstart/github-flow",
+        "titolo": "Git merge",
+        "url": "https://git-scm.com/docs/git-merge",
+        "verificato": true
+      },
+      {
+        "titolo": "GitHub Flow",
+        "url": "https://docs.github.com/en/get-started/using-github/github-flow",
         "verificato": true
       }
     ],
@@ -224,15 +205,9 @@
       }
     ],
     "checklist_ripasso": [
-      "init: inizializza repository",
-      "add: aggiungi file allo staging area",
-      "commit: salva cambiamenti localmente",
-      "branch: gestione rami",
-      "checkout/switch: cambia branch",
-      "merge: unisci branch",
-      "push/pull: sincronizzazione con remote",
-      "clone: copia repository",
-      "Pull request: richiesta di merge su GitHub (non comando Git)"
+      "branch/switch: creare e cambiare linea di sviluppo",
+      "merge integra nel branch corrente; gestire conflitti con status/add",
+      "push pubblica; pull aggiorna; pull request è una funzione della piattaforma"
     ],
     "worker": "W3"
   },
@@ -259,21 +234,16 @@
     "tempo_studio_min": 30,
     "priorita": {
       "livello": "media",
-      "motivazione": "Gruppo C. Importante per scambio dati."
+      "motivazione": "Gruppo C nel grafo e argomento di supporto al syllabus; priorità media senza attribuire un peso d’esame non documentato."
     },
     "risorse": [
       {
-        "titolo": "MDN: JSON",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+        "titolo": "RFC 8259: JSON",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259.html",
         "verificato": true
       },
       {
-        "titolo": "JSON Official Site",
-        "url": "https://www.json.org/json-en.html",
-        "verificato": true
-      },
-      {
-        "titolo": "Python: json module",
+        "titolo": "Python json",
         "url": "https://docs.python.org/3/library/json.html",
         "verificato": true
       }
@@ -284,11 +254,9 @@
       }
     ],
     "checklist_ripasso": [
-      "JSON: JavaScript Object Notation",
-      "Sintassi: {chiave: valore, ...}",
-      "Tipi: string, number, boolean, null, object, array",
-      "Python: json.dumps() (ser), json.loads() (deser)",
-      "JavaScript: JSON.stringify(), JSON.parse()"
+      "JSON: oggetti, array, stringhe, numeri, booleani e null",
+      "Python: dumps/loads per stringa, dump/load per file",
+      "Validare i dati dopo il parsing; JSON non è un database"
     ],
     "worker": "W3"
   }

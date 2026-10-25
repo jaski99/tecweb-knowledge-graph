@@ -1,0 +1,104 @@
+{
+  "perche_ti_serve": "Gruppo C: tema previsto dal syllabus/materiale disponibile; non è documentato un punteggio specifico per questo singolo nodo.",
+  "scenario_fil_rouge": "La biblioteca online vuole esporre un catalogo: il browser chiede /api/libri, Flask seleziona la funzione associata alla rotta e restituisce una risposta JSON che il client può leggere senza ricevere una pagina HTML.",
+  "definizione_esame": {
+    "definizione": "Una rotta Flask associa un URL e, facoltativamente, metodi HTTP a una funzione Python; jsonify serializza dati Python compatibili in una risposta HTTP JSON.",
+    "scopo_vantaggio": "Il routing separa gli indirizzi dalle funzioni applicative; JSON consente a client diversi di scambiare dati strutturati con un formato interoperabile.",
+    "esempio": "GET /api/libri/7 restituisce con jsonify un oggetto che descrive il libro con identificativo 7."
+  },
+  "spiegazione": "## Dall’URL alla funzione\n\nFlask è un micro-framework WSGI. Un’istanza `Flask` raccoglie regole URL e funzioni di vista. Il decoratore `@app.route` registra la funzione: non è il client a chiamare direttamente Python. Quando arriva una richiesta, il server WSGI e Flask selezionano la rotta, costruiscono il contesto della richiesta, invocano la vista e trasformano il valore restituito in una risposta HTTP.\n\nUn parametro dinamico come `<int:libro_id>` viene convertito e passato alla funzione come argomento nominato. `methods` dichiara i metodi accettati. Se non si specificano, una rotta `@app.route` accetta GET (oltre al comportamento automatico per HEAD/OPTIONS). Se il percorso non corrisponde a una regola, Flask risponde normalmente 404; se la rotta esiste ma non ammette il metodo, risponde 405.\n\n## JSON non è una pagina HTML\n\n`jsonify` serializza dizionari e liste Python in JSON e produce una risposta con media type JSON. Nelle versioni moderne di Flask sono supportati anche valori JSON nativi restituiti direttamente, ma `jsonify` rende esplicita l’intenzione. Una coppia `(risposta, codice)` imposta lo status HTTP. Un errore 404 significa che la risorsa richiesta non è stata trovata, non che il JSON non sia stato capito.\n\n## Esempio completo eseguibile\n\nSalva il modulo come `app.py`, installa Flask nell’ambiente Python e avvialo con `flask --app app run`. L’applicazione espone il catalogo in memoria; è dimostrativa, non una persistenza condivisa tra riavvii.\n\n```python\nfrom flask import Flask, jsonify\n\napp = Flask(__name__)\nLIBRI = {\n    7: {\"id\": 7, \"titolo\": \"Il Web\", \"disponibile\": True},\n    8: {\"id\": 8, \"titolo\": \"RDF in pratica\", \"disponibile\": False},\n}\n\n@app.get(\"/api/libri\")\ndef elenco_libri():\n    return jsonify(list(LIBRI.values()))\n\n@app.get(\"/api/libri/<int:libro_id>\")\ndef dettaglio_libro(libro_id):\n    libro = LIBRI.get(libro_id)\n    if libro is None:\n        return jsonify({\"errore\": \"Libro non trovato\"}), 404\n    return jsonify(libro), 200\n\nif __name__ == \"__main__\":\n    app.run()  # Server di sviluppo: non usare in produzione.\n```\n\n`GET /api/libri/7` produce status 200 e un corpo JSON; `GET /api/libri/99` produce 404. Per provarlo in un test senza avviare un server si può usare `app.test_client()`. Non attivare il debugger esposto in rete: il server integrato serve allo sviluppo.\n\n## Flusso della richiesta\n\n```mermaid\nsequenceDiagram\n    participant B as Browser/client\n    participant F as Flask\n    B->>F: GET /api/libri/7\n    F->>F: abbina la rotta e converte libro_id\n    F->>F: esegue la funzione di vista\n    F-->>B: 200 + application/json oppure 404\n```\n\n## Confini e buona progettazione\n\nLa funzione dell’esempio svolge routing e accesso a una struttura dati piccola. In un’applicazione più ampia conviene delegare logica e persistenza a funzioni/moduli distinti, validare gli input e non usare dati globali mutabili come archivio condiviso. La risposta JSON non rende automaticamente un endpoint REST corretto: vanno scelti metodi e status coerenti, temi trattati nel nodo `rest-metodi-http`. Una vista deve terminare restituendo una risposta valida; un errore di programmazione non va mascherato da un successo HTTP.",
+  "analogia": {
+    "testo": "La rotta è come il numero dello sportello in biblioteca: una richiesta con un certo indirizzo viene indirizzata al servizio corrispondente; jsonify è come consegnare la scheda del libro in un formato standard leggibile da sistemi diversi.",
+    "limite": "Uno sportello fisico non negozia metodi HTTP né serializza dati; inoltre la funzione Flask gira sul server, non nel browser."
+  },
+  "worked_example": {
+    "titolo": "Restituire un libro per identificativo",
+    "problema": "Il client richiede il libro con ID 7 e deve ricevere JSON, oppure un errore HTTP se l’ID non esiste.",
+    "passi": [
+      "1. Definire GET /api/libri/<int:libro_id>.",
+      "2. Cercare l’identificativo nella collezione dei libri.",
+      "3. Se il risultato è None, restituire JSON e status 404.",
+      "4. Altrimenti restituire il record serializzato e status 200."
+    ],
+    "soluzione": "La funzione `dettaglio_libro` restituisce il record JSON con 200 e un oggetto di errore con 404 per un ID assente.",
+    "perche_funziona": "La ricerca precede la risposta; il codice di stato descrive l’esito HTTP e il corpo JSON fornisce dettagli leggibili dal client."
+  },
+  "completion_problem": {
+    "titolo": "Completare una rotta di dettaglio",
+    "testo": "Nel catalogo in memoria completa la vista GET per il dettaglio: recupera il libro, distingue assente da presente e invia JSON.",
+    "passi_mancanti": [
+      "Aggiungere `<int:libro_id>` alla rotta e il parametro omonimo alla funzione.",
+      "Restituire un errore 404 se il libro non è presente; altrimenti serializzarlo."
+    ],
+    "soluzione": "Usa `libro = LIBRI.get(libro_id)`; se è None restituisci `jsonify({\"errore\":\"Libro non trovato\"}), 404`, altrimenti `jsonify(libro), 200`."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Rotta filtrata per disponibilità",
+    "testo": "Aggiungi GET /api/libri/disponibili al catalogo; restituisci solo i libri disponibili, senza modificare la collezione.",
+    "suggerimento": "Filtra i valori con `libro[\"disponibile\"]` e passa la lista a `jsonify`.",
+    "soluzione_attesa": "Definisci una vista GET che crea `[libro for libro in LIBRI.values() if libro[\"disponibile\"]]` e restituisce `jsonify(lista), 200`."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Restituire un dizionario Python credendo che sia testo HTML.",
+      "perche_sbagliato": "Il client si aspetta JSON; una risposta HTML non rispetta il formato concordato dell’endpoint.",
+      "distrattore": "Installazione del sistema operativo"
+    },
+    {
+      "errore": "Usare 404 per ogni input non valido.",
+      "perche_sbagliato": "404 riguarda la risorsa non trovata; un corpo malformato è tipicamente un errore di richiesta, per esempio 400.",
+      "distrattore": "Calcolo della subnet LAN"
+    },
+    {
+      "errore": "Pensare che jsonify memorizzi i dati nel database.",
+      "perche_sbagliato": "jsonify serializza la risposta, non fornisce persistenza né accesso al database.",
+      "distrattore": "Scelta della scheda video"
+    }
+  ],
+  "mnemonica": "URL → vista → JSON: l’indirizzo seleziona la funzione, la funzione prepara la risposta.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa registra `@app.route`?",
+        "risposta": "Registra la regola URL e associa a essa la funzione di vista indicata."
+      },
+      {
+        "domanda": "Che differenza c’è tra status 404 e 405?",
+        "risposta": "404: non esiste una corrispondenza per la risorsa/rotta; 405: la rotta esiste ma non ammette quel metodo."
+      },
+      {
+        "domanda": "Che cosa restituisce jsonify?",
+        "risposta": "Una risposta Flask con dati serializzati in JSON e il relativo media type."
+      },
+      {
+        "domanda": "Dove viene eseguita la funzione della rotta?",
+        "risposta": "Sul server Flask, dopo che il server ha inoltrato la richiesta all’applicazione."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega a un collega la differenza tra i concetti centrali di «Flask: rotte e jsonify» e porta un esempio concreto della biblioteca.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "rest-metodi-http",
+        "collegamento": "La rotta sceglie i metodi ammessi; la semantica di GET, POST e altri metodi va rispettata per progettare l’API."
+      },
+      {
+        "nodo": "codici-stato-http",
+        "collegamento": "Una risposta JSON include anche uno status HTTP: il client interpreta entrambi, non solo il corpo."
+      }
+    ]
+  },
+  "riepilogo": "Una rotta Flask associa un URL e, facoltativamente, metodi HTTP a una funzione Python; jsonify serializza dati Python compatibili in una risposta HTTP JSON. Il routing separa gli indirizzi dalle funzioni applicative; JSON consente a client diversi di scambiare dati strutturati con un formato interoperabile. GET /api/libri/7 restituisce con jsonify un oggetto che descrive il libro con identificativo 7.",
+  "flashcard": {
+    "fronte": "Flask: rotte e jsonify: qual è la definizione, lo scopo e un esempio?",
+    "retro": "Una rotta Flask associa un URL e, facoltativamente, metodi HTTP a una funzione Python; jsonify serializza dati Python compatibili in una risposta HTTP JSON. Il routing separa gli indirizzi dalle funzioni applicative; JSON consente a client diversi di scambiare dati strutturati con un formato interoperabile. GET /api/libri/7 restituisce con jsonify un oggetto che descrive il libro con identificativo 7."
+  },
+  "checklist": {
+    "so_fare": [
+      "Rotta filtrata per disponibilità: Aggiungi GET /api/libri/disponibili al catalogo; restituisci solo i libri disponibili, senza modificare la collezione."
+    ],
+    "so_dire": [
+      "Una rotta Flask associa un URL e, facoltativamente, metodi HTTP a una funzione Python; jsonify serializza dati Python compatibili in una risposta HTTP JSON.",
+      "Il routing separa gli indirizzi dalle funzioni applicative; JSON consente a client diversi di scambiare dati strutturati con un formato interoperabile."
+    ]
+  }
+}

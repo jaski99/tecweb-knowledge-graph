@@ -1,0 +1,104 @@
+{
+  "perche_ti_serve": "Gruppo C: tema previsto dal syllabus/materiale disponibile; non è documentato un punteggio specifico per questo singolo nodo.",
+  "scenario_fil_rouge": "Una studentessa deve aggiungere la ricerca nel catalogo senza destabilizzare il ramo condiviso. Crea un branch, registra commit piccoli, pubblica il ramo e apre una pull request per far revisionare e integrare il lavoro.",
+  "definizione_esame": {
+    "definizione": "Git è un sistema distribuito di controllo versione; un branch è un riferimento mobile a una linea di sviluppo, merge integra storie di commit e una pull request è una proposta di revisione e integrazione offerta da una piattaforma.",
+    "scopo_vantaggio": "I branch isolano il lavoro e i commit ne registrano la storia; revisione e integrazione esplicita riducono il rischio di introdurre modifiche non controllate.",
+    "esempio": "Si crea `feat/ricerca`, si pubblica con push e si propone una pull request da quel ramo verso `main`."
+  },
+  "spiegazione": "## Tre livelli da non confondere\n\nGit è distribuito: repository e commit possono esistere localmente e su un remote. `git branch` crea o mostra riferimenti di branch; `git switch` cambia il branch corrente. `git add` prepara contenuti nello staging area e `git commit` registra uno snapshot nella storia locale. `git push` invia commit al remote; `git fetch` scarica riferimenti e oggetti senza integrarli; `git pull` in genere esegue fetch e poi integra gli aggiornamenti secondo la configurazione (merge o rebase).\n\n`git merge altro-ramo` integra la storia indicata nel branch corrente. Prima ci si sposta quindi sul branch di destinazione. Un merge può essere fast-forward oppure creare un merge commit; `--no-ff` richiede un merge commit quando possibile, ma non è sempre necessario. Conflitti si verificano quando Git non può combinare automaticamente modifiche sovrapposte: si risolvono nei file, poi si aggiungono allo staging per completare il merge.\n\n## La pull request non è un comando Git\n\nUna pull request (PR), detta merge request in altre piattaforme, è una funzione del servizio di hosting: propone di integrare un branch in un branch di destinazione, permette commenti, controlli automatici e revisione. Non è `git pull`, non modifica automaticamente il repository locale e non è un comando della CLI Git. La PR può essere approvata, aggiornata o chiusa; l’integrazione finale dipende dalla piattaforma e dalle regole del progetto.\n\n## Flusso esemplificativo\n\n```bash\ngit switch main\ngit pull --ff-only origin main\ngit switch -c feat/ricerca\n\n# Dopo aver modificato i file:\ngit status\ngit add percorso/file.py\ngit commit -m \"Aggiunge ricerca nel catalogo\"\ngit push -u origin feat/ricerca\n```\n\nOra, sulla piattaforma Git, apri una PR con sorgente `feat/ricerca` e destinazione `main`. I comandi presuppongono che `origin` e `main` esistano e siano configurati. `--ff-only` rifiuta un aggiornamento che non possa essere fast-forward, invece di creare implicitamente un merge commit.\n\n## Risolvere un conflitto nel merge locale\n\n```bash\ngit switch main\ngit merge feat/ricerca\n# Se il merge segnala conflitti: modifica i file e rimuovi i marcatori\n# <<<<<<<, ======= e >>>>>>> dopo aver scelto la soluzione corretta.\ngit add percorso/file-risolto.py\ngit commit  # necessario se il merge non si è già completato\n```\n\nSe c’è un conflitto, `git status` mostra i file non risolti. Dopo averli sistemati, `git add` li marca come risolti; il commit completa un merge non fast-forward. Se decidi di annullare il merge in corso, `git merge --abort` è l’operazione prevista quando possibile. Leggi il messaggio di Git prima di assumere che il merge sia completato.\n\n```mermaid\nflowchart LR\n    Main[main] --> Branch[branch di funzionalità]\n    Branch --> Commit[commit locali]\n    Commit --> Push[push al remote]\n    Push --> PR[pull request e revisione]\n    PR --> Merge[integr. nel branch di destinazione]\n```\n\nQuesto è un flusso comune, non una regola obbligatoria di Git. Le policy di revisione e il pulsante di merge dipendono dall’hosting e dal repository.",
+  "analogia": {
+    "testo": "Un branch è come una copia di lavoro con una propria cronologia; una pull request è come consegnare quella proposta a un gruppo di revisione, che valuta le modifiche prima di inserirle nella linea condivisa.",
+    "limite": "Un branch Git non copia tutti i file come una cartella indipendente e una PR è un oggetto di piattaforma, non un passaggio automatico di approvazione."
+  },
+  "worked_example": {
+    "titolo": "Proporre una funzione senza lavorare su main",
+    "problema": "Crea un branch per la ricerca, salva un commit, pubblica le modifiche e prepara l’integrazione revisionabile.",
+    "passi": [
+      "1. Aggiornare main e creare/switchare sul branch `feat/ricerca`.",
+      "2. Modificare i file e controllare lo staging con `git status`.",
+      "3. Eseguire add e commit per registrare la modifica localmente.",
+      "4. Fare push del branch e aprire una PR verso main sulla piattaforma."
+    ],
+    "soluzione": "La storia locale contiene un commit sul branch; il remote riceve il branch e la PR propone revisione e integrazione in main.",
+    "perche_funziona": "Commit, push e PR hanno ruoli distinti: registrazione locale, pubblicazione remota, proposta collaborativa."
+  },
+  "completion_problem": {
+    "titolo": "Completare il flusso di pubblicazione",
+    "testo": "Hai un branch locale `feat/catalogo` con un commit. Completa i passaggi per pubblicarlo e richiedere la revisione verso main.",
+    "passi_mancanti": [
+      "Pubblicare il branch impostando upstream sul remote origin.",
+      "Aprire sulla piattaforma una PR da feat/catalogo verso main."
+    ],
+    "soluzione": "Esegui `git push -u origin feat/catalogo`; poi crea una pull request con sorgente `feat/catalogo` e destinazione `main` nell’hosting del progetto."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Integrare un branch con conflitto",
+    "testo": "Descrivi cosa fai se `git merge feat/filtro` su main segnala conflitto in un file e non crea il merge commit.",
+    "suggerimento": "Usa `git status`, risolvi i marcatori nel file, aggiungi il risultato e completa il merge.",
+    "soluzione_attesa": "Controlla i file con `git status`, modifica il file scegliendo la soluzione corretta, esegui `git add <file>` e `git commit` per completare. In alternativa abortisci con `git merge --abort` se rinunci."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dire che `git pull` crea una pull request.",
+      "perche_sbagliato": "`git pull` aggiorna il repository locale; una PR è una richiesta gestita dalla piattaforma di hosting.",
+      "distrattore": "Progettazione elettronica"
+    },
+    {
+      "errore": "Eseguire merge mentre si è sul branch sorgente pensando di integrare main nel branch destinazione.",
+      "perche_sbagliato": "Il merge integra il branch nominato nel branch corrente; va prima selezionata la destinazione.",
+      "distrattore": "Indirizzamento IPv6"
+    },
+    {
+      "errore": "Credere che un push equivalga a un merge.",
+      "perche_sbagliato": "Push pubblica commit sul remote; non integra da solo il branch in main.",
+      "distrattore": "Installazione di un sistema operativo"
+    }
+  ],
+  "mnemonica": "Commit registra, push pubblica, PR propone, merge integra.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa salva un commit?",
+        "risposta": "Uno snapshot nella storia Git locale, riferito al branch corrente e costruito dai contenuti nello staging area."
+      },
+      {
+        "domanda": "In quale branch confluisce `git merge feature`?",
+        "risposta": "Nel branch attualmente checkout; `feature` viene integrato nella storia corrente."
+      },
+      {
+        "domanda": "Pull request e `git pull` sono sinonimi?",
+        "risposta": "No: la prima è una proposta di revisione sulla piattaforma; il secondo scarica e integra aggiornamenti nel repository locale."
+      },
+      {
+        "domanda": "Cosa fare dopo aver risolto i marcatori di conflitto?",
+        "risposta": "Aggiungere i file risolti allo staging con `git add` e completare il merge secondo lo stato mostrato da Git."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega a un collega la differenza tra i concetti centrali di «Git: branch, merge e pull request» e porta un esempio concreto della biblioteca.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "flask-rotte-jsonify",
+        "collegamento": "Un branch può contenere nuove rotte API; una revisione verifica metodi e risposte coerenti."
+      },
+      {
+        "nodo": "sqlite-crud",
+        "collegamento": "Una PR che cambia persistenza SQLite va controllata per parametri sicuri, transazioni e test CRUD."
+      }
+    ]
+  },
+  "riepilogo": "Git è un sistema distribuito di controllo versione; un branch è un riferimento mobile a una linea di sviluppo, merge integra storie di commit e una pull request è una proposta di revisione e integrazione offerta da una piattaforma. I branch isolano il lavoro e i commit ne registrano la storia; revisione e integrazione esplicita riducono il rischio di introdurre modifiche non controllate. Si crea `feat/ricerca`, si pubblica con push e si propone una pull request da quel ramo verso `main`.",
+  "flashcard": {
+    "fronte": "Git: branch, merge e pull request: qual è la definizione, lo scopo e un esempio?",
+    "retro": "Git è un sistema distribuito di controllo versione; un branch è un riferimento mobile a una linea di sviluppo, merge integra storie di commit e una pull request è una proposta di revisione e integrazione offerta da una piattaforma. I branch isolano il lavoro e i commit ne registrano la storia; revisione e integrazione esplicita riducono il rischio di introdurre modifiche non controllate. Si crea `feat/ricerca`, si pubblica con push e si propone una pull request da quel ramo verso `main`."
+  },
+  "checklist": {
+    "so_fare": [
+      "Integrare un branch con conflitto: Descrivi cosa fai se `git merge feat/filtro` su main segnala conflitto in un file e non crea il merge commit."
+    ],
+    "so_dire": [
+      "Git è un sistema distribuito di controllo versione; un branch è un riferimento mobile a una linea di sviluppo, merge integra storie di commit e una pull request è una proposta di revisione e integrazione offerta da una piattaforma.",
+      "I branch isolano il lavoro e i commit ne registrano la storia; revisione e integrazione esplicita riducono il rischio di introdurre modifiche non controllate."
+    ]
+  }
+}

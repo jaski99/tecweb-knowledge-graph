@@ -1,0 +1,104 @@
+{
+  "perche_ti_serve": "Gruppo C: tema previsto dal syllabus/materiale disponibile; non è documentato un punteggio specifico per questo singolo nodo.",
+  "scenario_fil_rouge": "La biblioteca restituisce un risultato di ricerca al browser e riceve una prenotazione dall’utente. JSON descrive gli oggetti scambiati, mentre HTTP trasporta il messaggio e Flask li converte tra dati Python e testo JSON.",
+  "definizione_esame": {
+    "definizione": "JSON (JavaScript Object Notation) è un formato testuale indipendente dal linguaggio per rappresentare valori strutturati: oggetti, array, stringhe, numeri, booleani e null.",
+    "scopo_vantaggio": "Un formato condiviso rende interoperabile lo scambio di dati tra client e server; parser e serializer convertono tra testo JSON e strutture native.",
+    "esempio": "La stringa `{\"titolo\":\"Il Web\",\"disponibile\":true}` rappresenta un oggetto con due membri JSON."
+  },
+  "spiegazione": "## JSON è testo strutturato\n\nJSON è una sintassi testuale per serializzare valori. I valori ammessi sono oggetto, array, stringa, numero, `true`, `false` e `null`; un documento JSON è un singolo valore. Gli oggetti contengono coppie nome/valore con nomi stringa tra virgolette doppie; gli array sono sequenze ordinate. Il formato non ammette commenti né virgole finali. Le stringhe usano escape definiti e i numeri non sono valori Python arbitrari.\n\nJSON non è un protocollo di trasporto né un database: in una API viaggia spesso nel corpo di una richiesta o risposta HTTP, normalmente con media type `application/json`. Metodo HTTP, URL e status restano distinti dal formato del corpo. JSON può essere letto e generato da molti linguaggi, non soltanto JavaScript.\n\n## Serializzare e analizzare in Python\n\nIl modulo standard `json` converte strutture Python compatibili con `dumps` (oggetto Python → stringa JSON) e `loads` (stringa JSON → oggetto Python). Per file si usano `dump` e `load`. Non confondere le funzioni che lavorano con una stringa con quelle che lavorano con un file. Le strutture tipiche: `dict` → oggetto, `list` → array, `str` → stringa, `bool` → booleano, `None` → null. I dati decodificati vanno comunque validati.\n\n```python\nimport json\n\nlibro = {\"id\": 7, \"titolo\": \"Il Web\", \"disponibile\": True}\ntesto = json.dumps(libro, ensure_ascii=False)\nprint(testo)  # {\"id\": 7, \"titolo\": \"Il Web\", \"disponibile\": true}\nricostruito = json.loads(testo)\nassert ricostruito[\"disponibile\"] is True\nassert ricostruito[\"id\"] == 7\n```\n\nIl codice è eseguibile con Python 3. `ensure_ascii=False` mantiene leggibili i caratteri non ASCII nell’output, pur producendo testo JSON valido in Unicode. In Flask, `jsonify` serializza dati Python e costruisce la risposta HTTP; `json.loads` è utile quando si controlla direttamente una stringa JSON.\n\n## Integrità e sicurezza\n\nUn JSON sintatticamente valido può avere struttura o valori non adatti all’applicazione. Dopo il parsing controlla che il valore radice sia del tipo atteso, che i campi obbligatori esistano e che i valori rispettino vincoli. Evita di inserire dati JSON in HTML come markup non attendibile: per mostrare testo nel DOM usa API sicure come `textContent`. La serializzazione non cifra né autentica i dati.\n\n```mermaid\nflowchart LR\n    Obj[Oggetto Python] -->|json.dumps| Text[Testo JSON]\n    Text -->|HTTP body| Client[Client Web]\n    Client -->|JSON.parse| Value[Oggetto JavaScript]\n```\n\nJSON è collegato a Flask perché `jsonify` emette una risposta JSON e ad AJAX perché `fetch().json()` legge il corpo. SQLite può salvare dati relazionali indipendentemente dal formato usato dall’API.",
+  "analogia": {
+    "testo": "JSON è come un modulo con campi etichettati e regole condivise: il mittente compila il modulo in testo, il destinatario lo legge e ricostruisce i valori corrispondenti.",
+    "limite": "Il formato non valida da solo le regole di business, non stabilisce il trasporto e non garantisce che mittente e destinatario concordino sul significato di ogni campo."
+  },
+  "worked_example": {
+    "titolo": "Scambiare un record JSON",
+    "problema": "Serializza un record Python con booleano e testo Unicode, poi ricostruiscilo e verifica che il valore booleano sia rimasto un booleano.",
+    "passi": [
+      "1. Costruire un dizionario Python con titolo e disponibilità.",
+      "2. Serializzarlo con `json.dumps`.",
+      "3. Analizzare la stringa con `json.loads`.",
+      "4. Verificare il tipo e il valore dei campi ricostruiti."
+    ],
+    "soluzione": "Lo script stampa JSON valido con `true` minuscolo e ricostruisce un dict Python il cui campo disponibilità è `True`.",
+    "perche_funziona": "Il serializer traduce i tipi Python nei token JSON; il parser ripristina tipi nativi compatibili."
+  },
+  "completion_problem": {
+    "titolo": "Completare una conversione JSON",
+    "testo": "Hai un dizionario `utente = {\"nome\":\"Ada\",\"attivo\":True}` e devi ottenere una stringa JSON, poi tornare al dizionario.",
+    "passi_mancanti": [
+      "Usare `json.dumps` per creare la stringa.",
+      "Usare `json.loads` sulla stringa ottenuta."
+    ],
+    "soluzione": "Scrivi `payload = json.dumps(utente, ensure_ascii=False)` e `dato = json.loads(payload)`; `dato[\"attivo\"]` è il booleano Python `True`."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Validare dati JSON ricevuti",
+    "testo": "Dopo aver decodificato un body JSON, accetta solo un oggetto con `titolo` stringa non vuota e `disponibile` booleano.",
+    "suggerimento": "Controlla prima il tipo del valore radice, poi esistenza e tipi dei campi; non usare controlli basati solo sulla truthiness.",
+    "soluzione_attesa": "Verifica `isinstance(data, dict)`, `isinstance(data.get(\"titolo\"), str)` e `isinstance(data.get(\"disponibile\"), bool)`, richiedendo titolo non vuoto dopo strip. Rifiuta input non conforme."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Scrivere `True`, `False` e `None` come token JSON.",
+      "perche_sbagliato": "La sintassi JSON usa `true`, `false` e `null`; i token Python non sono validi in JSON.",
+      "distrattore": "Installazione di un router"
+    },
+    {
+      "errore": "Aggiungere commenti o virgole finali a un documento JSON.",
+      "perche_sbagliato": "Non fanno parte della grammatica JSON standard e causano errori di parsing.",
+      "distrattore": "Configurazione di un firewall"
+    },
+    {
+      "errore": "Pensare che JSON valido significhi dati sicuri o corretti.",
+      "perche_sbagliato": "JSON garantisce la sintassi, non schema applicativo, autorizzazione o sicurezza.",
+      "distrattore": "Calcolo della tensione elettrica"
+    }
+  ],
+  "mnemonica": "Dump porta fuori in testo; load riporta dentro come valore.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quali tipi di valore ammette JSON?",
+        "risposta": "Oggetti, array, stringhe, numeri, booleani e null."
+      },
+      {
+        "domanda": "Che differenza c’è tra `json.dumps` e `json.loads`?",
+        "risposta": "`dumps` serializza un oggetto Python in stringa JSON; `loads` analizza una stringa JSON in un valore Python."
+      },
+      {
+        "domanda": "JSON è un database?",
+        "risposta": "No, è un formato testuale di scambio; può essere memorizzato in file o DB, ma non è di per sé un DBMS."
+      },
+      {
+        "domanda": "Perché validare dopo il parsing?",
+        "risposta": "La sintassi può essere valida ma campi, tipi o valori possono violare il contratto applicativo."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega a un collega la differenza tra i concetti centrali di «JSON: formato dati per il Web» e porta un esempio concreto della biblioteca.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "flask-rotte-jsonify",
+        "collegamento": "Flask usa jsonify per esporre dati Python come corpo di una risposta JSON."
+      },
+      {
+        "nodo": "ajax-fetch-xhr",
+        "collegamento": "Il client asincrono legge il corpo con `response.json()`, distinto dal controllo HTTP di `response.ok`."
+      }
+    ]
+  },
+  "riepilogo": "JSON (JavaScript Object Notation) è un formato testuale indipendente dal linguaggio per rappresentare valori strutturati: oggetti, array, stringhe, numeri, booleani e null. Un formato condiviso rende interoperabile lo scambio di dati tra client e server; parser e serializer convertono tra testo JSON e strutture native. La stringa `{\"titolo\":\"Il Web\",\"disponibile\":true}` rappresenta un oggetto con due membri JSON.",
+  "flashcard": {
+    "fronte": "JSON: formato dati per il Web: qual è la definizione, lo scopo e un esempio?",
+    "retro": "JSON (JavaScript Object Notation) è un formato testuale indipendente dal linguaggio per rappresentare valori strutturati: oggetti, array, stringhe, numeri, booleani e null. Un formato condiviso rende interoperabile lo scambio di dati tra client e server; parser e serializer convertono tra testo JSON e strutture native. La stringa `{\"titolo\":\"Il Web\",\"disponibile\":true}` rappresenta un oggetto con due membri JSON."
+  },
+  "checklist": {
+    "so_fare": [
+      "Validare dati JSON ricevuti: Dopo aver decodificato un body JSON, accetta solo un oggetto con `titolo` stringa non vuota e `disponibile` booleano."
+    ],
+    "so_dire": [
+      "JSON (JavaScript Object Notation) è un formato testuale indipendente dal linguaggio per rappresentare valori strutturati: oggetti, array, stringhe, numeri, booleani e null.",
+      "Un formato condiviso rende interoperabile lo scambio di dati tra client e server; parser e serializer convertono tra testo JSON e strutture native."
+    ]
+  }
+}
