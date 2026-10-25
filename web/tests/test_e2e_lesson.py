@@ -67,7 +67,7 @@ def test_lezione_render_completo(browser, base_url, vp, nid):
         assert "Syntax error" not in txt and "Unsupported markdown" not in txt
     # esempio svolto: passi uno alla volta, poi soluzione
     ex = page.locator("article.worked").first
-    steps = len(node["lezione"]["esempi_svolti"][0]["passi"])
+    steps = len(node["lezione"]["worked_example"]["passi"])
     btn = ex.locator(".ex-actions .btn.primary")
     assert ex.locator(".passi li").count() == 0 and ex.locator(".ex-sol").is_hidden()
     btn.click()

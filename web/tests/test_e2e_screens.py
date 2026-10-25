@@ -52,6 +52,15 @@ def shot(page, name):
     page.screenshot(path=str(SHOTS / name), full_page=False)
 
 
+def wait_for_app(page, selector, errors, timeout=30000):
+    try:
+        page.wait_for_selector(selector, timeout=timeout)
+    except Exception as error:
+        status = page.locator('#status').inner_text() if page.locator('#status').count() else '(senza stato)'
+        graph = page.locator('#cy').inner_text() if page.locator('#cy').count() else '(senza grafo)'
+        raise AssertionError(f"Timeout su {selector}; stato={status!r}; pannello grafo={graph!r}; errori JS={errors!r}") from error
+
+
 @pytest.mark.parametrize("vp", list(VIEWPORTS))
 def test_schermate(browser, base_url, vp):
     ctx = browser.new_context(viewport=VIEWPORTS[vp], device_scale_factor=1, is_mobile=vp == "mobile", has_touch=vp == "mobile")
@@ -59,11 +68,11 @@ def test_schermate(browser, base_url, vp):
     errors = []
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.goto(base_url)
-    page.wait_for_selector("#resume:not([hidden])")
+    wait_for_app(page, "#resume:not([hidden])", errors)
     if vp == "desktop":
-        page.wait_for_selector("#cy canvas")
+        wait_for_app(page, "#cy canvas", errors)
     else:
-        page.wait_for_selector("#graph-mobile-list .graph-mobile-item")
+        wait_for_app(page, "#graph-mobile-list .graph-mobile-item", errors)
     page.wait_for_timeout(400)
     assert overflow(page) <= 1
     shot(page, f"home-{vp}.png")
@@ -73,13 +82,13 @@ def test_schermate(browser, base_url, vp):
     graph_target = ".graph-wrap" if vp == "desktop" else "#graph-mobile-list"
     page.locator(graph_target).screenshot(path=str(SHOTS / f"grafo-{vp}.png"))
     page.click("#tab-percorso")
-    page.wait_for_selector("#view-percorso:not([hidden]) .path li")
+    wait_for_app(page, "#view-percorso:not([hidden]) .path li", errors)
     assert overflow(page) <= 1
     shot(page, f"percorso-{vp}.png")
     page.goto(f"{base_url}#/lezione/{LESSON}")
-    page.wait_for_selector("#lesson-title")
-    page.wait_for_selector(".toc, .section-progress")
-    page.wait_for_selector("pre.mermaid, pre.code", timeout=20000)
+    wait_for_app(page, "#lesson-title", errors)
+    wait_for_app(page, ".toc, .section-progress", errors)
+    wait_for_app(page, "pre.mermaid, pre.code", errors, timeout=20000)
     page.wait_for_timeout(300)
     assert overflow(page) <= 1
     shot(page, f"lezione-{vp}.png")
