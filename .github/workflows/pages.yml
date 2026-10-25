@@ -23,10 +23,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Cache browser Playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
       - name: Installa dipendenze Python
         run: pip install -r requirements.txt playwright
+      - name: Installa dipendenze di sistema per Playwright
+        run: sudo apt-get update && sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2
       - name: Installa Chromium per Playwright
-        run: python -m playwright install --with-deps chromium
+        run: python -m playwright install chromium
       - name: Controlla knowledge graph
         run: python scripts/kg.py check
       - name: Test dei moduli JavaScript

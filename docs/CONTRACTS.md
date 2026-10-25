@@ -285,3 +285,78 @@
   }
 }
 ```
+
+---
+
+## Banca Quiz — Formato ufficiale
+
+La banca quiz è **separata** da `graph/graph.json` e versionata in:
+- **File dati**: `graph/quiz.json` (banca di quesiti)
+- **Schema**: `graph/quiz.schema.json` (Draft 2020-12, JSON Schema)
+- **Specifica**: `docs/QUIZ_FORMAT.md` (formato dettagliato)
+
+### Struttura radice (`graph/quiz.json`)
+```json
+{
+  "versione": 1,
+  "descrizione": "Banca di ripasso per le sei aree del corso.",
+  "elementi": [...]
+}
+```
+
+### Tipi di quesito
+
+#### 1. Scelta multipla
+```json
+{
+  "id": "a2-put-patch",
+  "tipo": "scelta_multipla",
+  "area": 2,
+  "titolo": "Sostituzione e modifica parziale",
+  "domanda": "Quale metodo HTTP...?",
+  "opzioni": [
+    {"id": "a", "testo": "..."},
+    {"id": "b", "testo": "..."}
+  ],
+  "risposta_corretta": "a",
+  "spiegazione": "La risposta è corretta perché...",
+  "nodo_id": "rest-metodi-http"
+}
+```
+- `opzioni`: 3-6 scelte con ID distinti
+- `risposta_corretta`: deve corrispondere a un ID in `opzioni`
+- `spiegazione`: motivazione per la risposta corretta
+- `nodo_id`: collegamento a nodo esistente in `graph/graph.json`
+
+#### 2. Abbinamento
+```json
+{
+  "id": "match-a2",
+  "tipo": "abbinamento",
+  "area": 2,
+  "titolo": "Abbinamento: API e architetture",
+  "istruzioni": "Abbina i termini alle descrizioni; scarta i distrattori.",
+  "opzioni": [{"id": "a", "testo": "..."}],
+  "distrattori": [
+    {"testo": "...", "tipo": "plausibile"},
+    {"testo": "...", "tipo": "fuori_contesto"}
+  ],
+  "abbinamenti": [
+    {"elemento": "PUT", "risposta_id": "b", "spiegazione": "...", "nodo_id": "rest-metodi-http"}
+  ]
+}
+```
+- `distrattori.tipo`: `plausibile` (pertinente ma confondibile) o `fuori_contesto` (estraneo al tema)
+- Ogni `abbinamento` ha `spiegazione` autonoma
+
+### Regole di qualità
+- Coprire **tutte le 6 aree** con almeno 1 scelta multipla e 1 abbinamento per area
+- Ogni quesito deve dichiarare `area` (1-6) e `nodo_id` esistente
+- ID univoci in kebab-case
+- Validazione: `jsonschema.Draft202012Validator` + test in `tests/test_quiz.py`
+- Test verificano: ID univoci, copertura aree, riferimenti a nodi esistenti, spiegazioni per ogni risposta
+
+### Differenze da `graph/graph.json`
+- **Separazione**: `quiz.json` non è parte di `graph.json` (può essere aggiornato indipendentemente)
+- **Schema dedicato**: `quiz.schema.json` definisce il formato specifico per i quiz
+- **Validazione**: I test Python verificano coerenza con il grafo (nodi esistenti, aree valide)

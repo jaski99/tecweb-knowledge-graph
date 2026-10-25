@@ -26,12 +26,9 @@ def test_almeno_3_lezioni_seed():
 
 
 def test_lezioni_complete():
-    """In Fase 1, verificiamo che ci siano le 3 lezioni seed. In Fase 2, tutti i nodi avranno lezione."""
+    """In Fase 2, TUTTI i 41 nodi devono avere lezione."""
     todo = sorted(IDS - LEZIONI_IDS)
-    # In Fase 1, ci sono nodi senza lezione (da completare in Fase 2)
-    # Verifichiamo solo che ci siano le 3 lezioni seed
-    seed_ids = {"http-stateless-vs-stateful", "rest-metodi-http", "css-box-model"}
-    assert seed_ids.issubset(LEZIONI_IDS), f"Mancano lezioni seed: {seed_ids - LEZIONI_IDS}"
+    assert not todo, f"{len(todo)} nodi senza lezione: {', '.join(todo)}"
 
 
 def _blocks(md):
@@ -159,17 +156,13 @@ def test_lezione_completa_v4(lezione_id):
     assert len(cl["so_fare"]) >= 1 and len(cl["so_dire"]) >= 1, f"{lezione_id}: checklist.so_fare e so_dire >=1"
 
 
-# Test parametrizzati per nodi senza lezione (xfail esplicito)
-@pytest.mark.parametrize("nodo_id", NODI_SENZA_LEZIONE)
-def test_nodo_senza_lezione_xfail(nodo_id):
-    """Test che fallisce per nodi senza lezione (da completare in Fase 2)."""
-    pytest.xfail(f"Nodo {nodo_id} non ha lezione (da completare in Fase 2)")
-    node = next((n for n in NODES if n["id"] == nodo_id), None)
-    assert node is not None
-    assert "lezione" in node, f"Nodo {nodo_id} deve avere lezione"
+def test_tutte_le_lezioni_complete():
+    """Verifica che TUTTI i 41 nodi abbiano lezione (Fase 2 completata)."""
+    todo = sorted(IDS - LEZIONI_IDS)
+    assert not todo, f"{len(todo)} nodi senza lezione: {', '.join(todo)}"
 
 
-def test_file_lezioni_validi():
+def test_almeno_3_lezioni_seed():
     """Verifica che le lezioni siano in file separati e non inline."""
     from kg import load_parts, load_lessons
     ids = {n["id"] for part in load_parts().values() for n in part}
