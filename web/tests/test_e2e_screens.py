@@ -13,7 +13,7 @@ WEB = Path(__file__).resolve().parent.parent
 ROOT = WEB.parent
 GRAPH = json.loads((ROOT / "graph" / "graph.json").read_text(encoding="utf-8"))
 # Usa un nodo con blocchi di codice per il test di overflow
-LESSON = "http-stateless-vs-stateful"
+LESSON = "rest-metodi-http"
 SHOTS = Path(os.environ.get("KG_SHOTS", "/tmp/tecweb-kg-shots"))
 VIEWPORTS = {
     "mobile": {"width": 390, "height": 844},
