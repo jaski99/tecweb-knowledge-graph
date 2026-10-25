@@ -1,0 +1,374 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/ids-kg/node.schema.json",
+  "title": "Nodo del knowledge graph IdS (schema v3)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "area",
+    "tipo",
+    "sapere",
+    "saper_fare",
+    "prerequisiti",
+    "esercizi",
+    "tempo_studio_min",
+    "priorita",
+    "risorse",
+    "riferimenti_testo"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3
+    },
+    "area": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "tipo": {
+      "enum": [
+        "concetto",
+        "abilita",
+        "tipo_esercizio"
+      ]
+    },
+    "sapere": {
+      "type": "string",
+      "minLength": 10
+    },
+    "saper_fare": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 5
+      }
+    },
+    "prerequisiti": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "forza",
+          "motivo"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "forza": {
+            "enum": [
+              "hard",
+              "soft"
+            ]
+          },
+          "motivo": {
+            "type": "string",
+            "minLength": 5
+          }
+        }
+      }
+    },
+    "esercizi": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tipo_esame",
+          "testo",
+          "soluzione"
+        ],
+        "properties": {
+          "tipo_esame": {
+            "type": "string",
+            "minLength": 3
+          },
+          "testo": {
+            "type": "string",
+            "minLength": 5
+          },
+          "soluzione": {
+            "type": "string",
+            "minLength": 10
+          }
+        }
+      }
+    },
+    "tempo_studio_min": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 600
+    },
+    "priorita": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "livello",
+        "motivazione"
+      ],
+      "properties": {
+        "livello": {
+          "enum": [
+            "alta",
+            "media",
+            "bassa"
+          ]
+        },
+        "motivazione": {
+          "type": "string",
+          "minLength": 5
+        }
+      }
+    },
+    "risorse": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "titolo",
+          "url",
+          "verificato"
+        ],
+        "properties": {
+          "titolo": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "pattern": "^https?://"
+          },
+          "verificato": {
+            "const": true
+          }
+        }
+      }
+    },
+    "riferimenti_testo": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "libro"
+        ],
+        "properties": {
+          "libro": {
+            "enum": [
+              "TSUI",
+              "HFDP",
+              "GOF",
+              "FOWLER",
+              "MILES",
+              "UMLCLASS",
+              "MARTIN"
+            ]
+          },
+          "capitolo_o_sezione": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "checklist_ripasso": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 3
+      }
+    },
+    "lezione": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intuizione",
+        "spiegazione",
+        "analogia",
+        "collegamenti_prior",
+        "esempi_svolti",
+        "errori_comuni",
+        "domande_autoverifica",
+        "riepilogo"
+      ],
+      "properties": {
+        "intuizione": {
+          "type": "string",
+          "minLength": 80
+        },
+        "spiegazione": {
+          "type": "string",
+          "minLength": 1500
+        },
+        "analogia": {
+          "type": "string",
+          "minLength": 40
+        },
+        "collegamenti_prior": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "conoscenza",
+              "collegamento"
+            ],
+            "properties": {
+              "conoscenza": {
+                "type": "string",
+                "minLength": 3
+              },
+              "collegamento": {
+                "type": "string",
+                "minLength": 20
+              },
+              "nodo": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "esempi_svolti": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "titolo",
+              "problema",
+              "passi",
+              "soluzione",
+              "perche_funziona"
+            ],
+            "properties": {
+              "titolo": {
+                "type": "string",
+                "minLength": 3
+              },
+              "problema": {
+                "type": "string",
+                "minLength": 20
+              },
+              "passi": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "string",
+                  "minLength": 5
+                }
+              },
+              "soluzione": {
+                "type": "string",
+                "minLength": 10
+              },
+              "perche_funziona": {
+                "type": "string",
+                "minLength": 20
+              }
+            }
+          }
+        },
+        "errori_comuni": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string",
+            "minLength": 10
+          }
+        },
+        "domande_autoverifica": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "domanda",
+              "risposta"
+            ],
+            "properties": {
+              "domanda": {
+                "type": "string",
+                "minLength": 10
+              },
+              "risposta": {
+                "type": "string",
+                "minLength": 10
+              }
+            }
+          }
+        },
+        "riepilogo": {
+          "type": "string",
+          "minLength": 40,
+          "maxLength": 800
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "tipo": {
+            "enum": [
+              "abilita",
+              "tipo_esercizio"
+            ]
+          }
+        },
+        "required": [
+          "tipo"
+        ]
+      },
+      "then": {
+        "properties": {
+          "esercizi": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "tipo": {
+            "enum": [
+              "abilita",
+              "tipo_esercizio"
+            ]
+          }
+        },
+        "required": [
+          "tipo",
+          "lezione"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lezione": {
+            "properties": {
+              "esempi_svolti": {
+                "minItems": 2
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
