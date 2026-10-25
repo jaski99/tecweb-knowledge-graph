@@ -3,25 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <title>Tecnologie Web — Knowledge graph di studio (UNIMORE)</title>
-  <meta name="description" content="Grafo delle conoscenze, percorso di studio e checklist di ripasso per Tecnologie Web (UNIMORE).">
-  <!-- Percorsi provati in ordine: copia generata da build.sh, poi sorgente nel repo. Override: ?graph=URL -->
+  <meta name="description" content="Grafo, percorso topologico, lezioni e ripasso per Tecnologie Web UNIMORE.">
   <meta name="kg-graph-url" content="graph.json ../graph/graph.json">
-  <!-- Stessa chiave di THEME_STORAGE_KEY in js/core/theme.js: evita il lampo del tema sbagliato. -->
+  <meta name="kg-quiz-url" content="quiz.json ../graph/quiz.json">
+  <title>Tecnologie Web — Knowledge graph di studio (UNIMORE)</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <script>
     try {
-      var t = localStorage.getItem('tecweb-kg:tema:v1');
-      if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', t);
-    } catch (e) {}
+      let tema = localStorage.getItem('ids-kg:tema:v1');
+      if (tema !== 'light' && tema !== 'dark') tema = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = tema;
+    } catch (_) { document.documentElement.dataset.theme = 'light'; }
   </script>
   <link rel="stylesheet" href="css/style.css">
   <script defer src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
   <script defer src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
   <script defer src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/styles/github.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/marked@12.0.2/dist/marked.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/highlight.min.js"></script>
   <script type="module" src="js/main.js"></script>
@@ -40,34 +39,44 @@
   <div class="layout">
     <aside class="side" aria-label="Filtri e progresso">
       <details open class="panel"><summary><h2>Filtri</h2></summary><div id="filters"></div><p id="count" class="muted" aria-live="polite"></p></details>
-      <details open class="panel"><summary><h2>Progresso</h2></summary><div id="progress" aria-live="polite"></div></details>
+      <details open class="panel"><summary><h2>Progresso</h2></summary><div id="progress"></div></details>
     </aside>
     <main id="main">
       <p id="status" role="status">Caricamento…</p>
       <div id="resume" class="resume" aria-label="Riprendi lo studio" hidden></div>
-      <div role="tablist" aria-label="Viste">
+      <div class="tablist" role="tablist" aria-label="Viste del knowledge graph">
         <button role="tab" id="tab-grafo" data-tab="grafo" aria-controls="view-grafo" aria-selected="true">Grafo</button>
         <button role="tab" id="tab-percorso" data-tab="percorso" aria-controls="view-percorso" aria-selected="false" tabindex="-1">Percorso</button>
-        <button role="tab" id="tab-ripasso" data-tab="ripasso" aria-controls="view-ripasso" aria-selected="false" tabindex="-1">Ripasso</button>
-        <button role="tab" id="tab-simulatore" data-tab="simulatore" aria-controls="view-simulatore" aria-selected="false" tabindex="-1">Simulatore</button>
+        <button role="tab" id="tab-ripasso" data-tab="ripasso" aria-controls="view-ripasso" aria-selected="false" tabindex="-1">Ripasso guidato</button>
       </div>
-      <div id="view-grafo" role="tabpanel" aria-labelledby="tab-grafo" hidden>
-        <svg id="cy" aria-label="Grafo interattivo: usa i tasti freccia per muoverti, Invio per selezionare, Esc per deselezionare."></svg>
-      </div>
-      <div id="view-percorso" role="tabpanel" aria-labelledby="tab-percorso" hidden>
-        <ol id="percorso" aria-label="Percorso di studio"></ol>
-      </div>
-      <div id="view-ripasso" role="tabpanel" aria-labelledby="tab-ripasso" hidden>
-        <div id="ripasso"></div>
-      </div>
-      <div id="view-simulatore" role="tabpanel" aria-labelledby="tab-simulatore" hidden>
-        <div id="simulatore"></div>
-      </div>
+      <section id="view-grafo" role="tabpanel" aria-labelledby="tab-grafo">
+        <div class="graph-layout">
+          <div>
+            <div class="graph-wrap">
+              <div class="graph-tools" aria-label="Controlli del grafo">
+                <button id="zoom-in" class="btn" type="button" aria-label="Ingrandisci">+</button>
+                <button id="zoom-out" class="btn" type="button" aria-label="Riduci">−</button>
+                <button id="zoom-fit" class="btn" type="button">Adatta</button>
+              </div>
+              <div id="cy" role="img" tabindex="0" aria-label="Grafo interattivo; usa le frecce per spostarti e Invio per aprire una lezione."></div>
+              <canvas id="minimap" class="minimap" aria-label="Minimappa del grafo"></canvas>
+            </div>
+            <div id="graph-mobile-list" class="graph-mobile-list"></div>
+          </div>
+          <aside id="details" class="details" aria-label="Dettagli del nodo selezionato" hidden></aside>
+        </div>
+      </section>
+      <section id="view-percorso" role="tabpanel" aria-labelledby="tab-percorso" hidden>
+        <h2>Percorso di studio</h2>
+        <p class="muted">Ordine topologico: i prerequisiti precedono i concetti che li richiedono. Puoi spuntare ciò che hai studiato.</p>
+        <div id="path"></div>
+      </section>
+      <section id="view-ripasso" role="tabpanel" aria-labelledby="tab-ripasso" hidden>
+        <h2>Checklist di ripasso</h2><div id="review"></div>
+      </section>
     </main>
   </div>
-  <dialog id="lezione" aria-label="Lettore lezioni" aria-modal="true">
-    <div id="lezione-contents"></div>
-    <form method="dialog"><menu type="toolbar"><button type="submit" value="chiudi">Chiudi</button></menu></form>
-  </dialog>
+  <div id="module-root" hidden></div>
+  <div id="lesson" class="lesson-page" hidden></div>
 </body>
 </html>

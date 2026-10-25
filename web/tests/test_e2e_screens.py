@@ -1,6 +1,7 @@
 """Screenshot di home, grafo, lettore e percorso, più un controllo di overflow a 360px.
 Saltato se Playwright non è installato. Le immagini finite stanno in docs/screens/."""
 import json
+import os
 import threading
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -12,7 +13,7 @@ WEB = Path(__file__).resolve().parent.parent
 ROOT = WEB.parent
 GRAPH = json.loads((ROOT / "graph" / "graph.json").read_text(encoding="utf-8"))
 LESSON = next(n["id"] for n in GRAPH["nodi"] if n.get("lezione", {}).get("spiegazione"))
-SHOTS = ROOT / "docs" / "screens"
+SHOTS = Path(os.environ.get("KG_SHOTS", "/tmp/tecweb-kg-shots"))
 VIEWPORTS = {
     "mobile": {"width": 390, "height": 844},
     "desktop": {"width": 1440, "height": 900},

@@ -12,7 +12,7 @@ WEB = Path(__file__).resolve().parent.parent
 GRAPH = json.loads((WEB.parent / "graph" / "graph.json").read_text(encoding="utf-8"))
 PILOTS = [n["id"] for n in GRAPH["nodi"] if "lezione" in n][:4]
 SHOTS = Path(os.environ.get("KG_SHOTS", "/tmp/ids-kg-shots"))
-VIEWPORTS = {"mobile": {"width": 390, "height": 844}, "desktop": {"width": 1280, "height": 800}}
+VIEWPORTS = {"mobile": {"width": 390, "height": 844}, "desktop": {"width": 1440, "height": 900}}
 
 
 class Quiet(SimpleHTTPRequestHandler):

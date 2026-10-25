@@ -1,6 +1,8 @@
 name: Pages
 on:
   push:
+    branches: ['**']
+  pull_request:
     branches: [main]
   workflow_dispatch:
 permissions:
@@ -8,7 +10,7 @@ permissions:
   pages: write
   id-token: write
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   build:
@@ -16,32 +18,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: { python-version: '3.12' }
+        with:
+          python-version: '3.12'
       - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - run: npm install -g pnpm  # Per gestire dipendenze se necessario
-      - run: pip install -r requirements.txt
-      - run: python scripts/kg.py check
-      - run: pytest -q
-      # Installa Playwright e dipendenze per test JS
-      - run: npm init -y  # Crea package.json se non esiste
-      - run: npm install -D playwright  # Installa Playwright
-      - run: npx playwright install chromium  # Installa browser
-      # Esegue test JS se esistono
-      - run: |
-          if [ -f "web/tests/test_webapp.py" ]; then
-            python -m pytest web/tests/test_webapp.py -v
-          fi
-      - run: sh web/build.sh
+        with:
+          node-version: '20'
+      - name: Installa dipendenze Python
+        run: pip install -r requirements.txt playwright
+      - name: Installa Chromium per Playwright
+        run: python -m playwright install --with-deps chromium
+      - name: Controlla knowledge graph
+        run: python scripts/kg.py check
+      - name: Test dei moduli JavaScript
+        run: npm test --prefix web
+      - name: Test Python ed e2e Playwright
+        run: pytest -q
+      - name: Prepara sito statico
+        run: sh web/build.sh
       - uses: actions/configure-pages@v5
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
       - uses: actions/upload-pages-artifact@v3
-        with: { path: web }
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        with:
+          path: web
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4

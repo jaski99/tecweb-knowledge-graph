@@ -59,8 +59,81 @@ export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, o
       list, h('div', { class: 'ex-actions' }, btn, allBtn), sol);
   }
 
+  function lessonBodyV4(n) {
+    const L = n.lezione;
+    const checkedKey = `ids-kg:checklist:${n.id}:v1`;
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(checkedKey) || '{}'); } catch { saved = {}; }
+    const checklist = (items, prefix) => h('ul', { class: 'lesson-checklist' }, items.map((text, i) => {
+      const key = `${prefix}-${i}`;
+      return h('li', {}, h('label', { class: 'check' }, h('input', {
+        type: 'checkbox', checked: Boolean(saved[key]),
+        onchange: (e) => {
+          saved[key] = e.target.checked;
+          try { localStorage.setItem(checkedKey, JSON.stringify(saved)); } catch { /* storage non disponibile */ }
+        },
+      }), text));
+    }));
+    const def = L.definizione_esame || {};
+    const ex = L.worked_example || {};
+    const cp = L.completion_problem || {};
+    const solo = L.esercizio_autonomo || {};
+    const active = L.richiamo_attivo || {};
+    const flash = L.flashcard || {};
+    const an = L.analogia || {};
+    const contrast = h('table', { class: 'contrast-table' },
+      h('caption', {}, 'Confronto tra errori e concetti corretti'),
+      h('thead', {}, h('tr', {}, h('th', { scope: 'col' }, 'Errore / distrattore'), h('th', { scope: 'col' }, 'Perché non è corretto'))),
+      h('tbody', {}, (L.errori_trappole || []).map((item) => h('tr', {},
+        h('td', {}, h('strong', {}, item.errore), h('br'), h('span', { class: 'muted' }, `Distrattore: ${item.distrattore}`)),
+        h('td', {}, item.perche_sbagliato)))));
+    const worked = ex.titolo ? workedExample({ ...ex, passi: ex.passi || [] }, 0) : null;
+    return [
+      block('intuizione', '💡 Perché ti serve', h('p', {}, L.perche_ti_serve)),
+      block('scenario', '📖 Scenario fil rouge', h('p', {}, L.scenario_fil_rouge)),
+      block('definizione', '🎯 Definizione da ricordare',
+        h('dl', { class: 'definition-points' }, h('dt', {}, 'Definizione'), h('dd', {}, def.definizione),
+          h('dt', {}, 'Scopo o vantaggio'), h('dd', {}, def.scopo_vantaggio), h('dt', {}, 'Esempio'), h('dd', {}, def.esempio))),
+      block('analogia', '🔁 Analogia e limite', h('p', {}, an.testo), h('p', {}, h('strong', {}, 'Dove l’analogia non vale: '), an.limite)),
+      block('spiegazione', '📘 Spiegazione', mdElement(L.spiegazione)),
+      worked ? block('esempi', '✍️ Esempio svolto', h('p', {}, ex.problema), worked) : null,
+      block('completion', '🧩 Completa i passaggi', h('h3', {}, cp.titolo), h('p', {}, cp.testo),
+        h('ol', {}, (cp.passi_mancanti || []).map((step) => h('li', {}, step))),
+        h('details', {}, h('summary', {}, 'Mostra soluzione'), mdElement(cp.soluzione))),
+      block('autonomo', '📝 Esercizio autonomo', h('h3', {}, solo.titolo), h('p', {}, solo.testo),
+        h('details', {}, h('summary', {}, 'Mostra un suggerimento'), h('p', {}, solo.suggerimento)),
+        h('details', {}, h('summary', {}, 'Mostra soluzione attesa'), mdElement(solo.soluzione_attesa))),
+      block('errori', '⚠️ Errori e trappole', contrast),
+      L.mnemonica ? block('mnemonica', '🧠 Mnemonica', h('p', {}, L.mnemonica)) : null,
+      block('richiamo', '🧠 Richiamo attivo',
+        h('p', { class: 'muted' }, 'Prova a rispondere prima di rivelare la soluzione.'),
+        h('ol', { class: 'quiz' }, (active.domande || []).map((q) => h('li', {}, h('p', { class: 'q' }, q.domanda),
+          h('details', {}, h('summary', {}, 'Mostra risposta'), h('div', { class: 'quiz-answer' }, mdElement(q.risposta)),
+            h('button', { type: 'button', class: 'btn', onclick: (e) => { e.target.closest('details').open = false; } }, 'Nascondi risposta'))))),
+        active.spiega_con_parole_tue ? h('p', {}, h('strong', {}, 'Spiega con parole tue: '), active.spiega_con_parole_tue) : null,
+        (active.collegamenti_interleaving || []).length ? h('ul', {}, active.collegamenti_interleaving.map((c) => h('li', {},
+          graph.byId.has(c.nodo) ? lessonLink(c.nodo) : c.nodo, ' — ', c.collegamento))) : null),
+      block('riepilogo', '📌 Riepilogo', h('p', {}, L.riepilogo)),
+      block('flashcard', '🃏 Flashcard per il ripasso', (() => {
+        let retroVisibile = false;
+        const button = h('button', { type: 'button', class: 'flashcard', 'aria-pressed': 'false', onclick: (e) => {
+          retroVisibile = !retroVisibile;
+          e.currentTarget.setAttribute('aria-pressed', String(retroVisibile));
+          e.currentTarget.textContent = retroVisibile ? flash.retro : flash.fronte;
+          e.currentTarget.setAttribute('aria-label', retroVisibile ? 'Retro della flashcard; tocca per tornare al fronte' : 'Fronte della flashcard; tocca per girare');
+        } }, flash.fronte);
+        button.setAttribute('aria-label', 'Fronte della flashcard; tocca per girare');
+        return button;
+      })()),
+      block('checklist', '✅ Checklist: so fare / so dire',
+        h('h3', {}, 'So fare'), checklist(L.checklist?.so_fare || [], 'fare'),
+        h('h3', {}, 'So dire'), checklist(L.checklist?.so_dire || [], 'dire')),
+    ].filter(Boolean);
+  }
+
   function lessonBody(n) {
     const L = n.lezione;
+    if (L.perche_ti_serve) return lessonBodyV4(n);
     return [
       block('intuizione', '💡 Perché esiste', h('p', {}, L.intuizione)),
       block('analogia', '🔁 Analogia', h('p', {}, L.analogia)),

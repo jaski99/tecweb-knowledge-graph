@@ -1,5 +1,5 @@
 // Composition root: collega dati, stato e viste. Unico modulo che conosce tutti gli altri.
-import { graphUrls, STORAGE_KEYS } from './config.js';
+import { graphUrls, quizUrls, STORAGE_KEYS } from './config.js';
 import { loadGraph } from './data.js';
 import { createState } from './core/state.js';
 import { createSetStore } from './core/store.js';
@@ -24,7 +24,7 @@ const $ = (s) => document.querySelector(s);
 
 async function main() {
   let graph;
-  try { graph = await loadGraph(graphUrls()); }
+  try { graph = await loadGraph(graphUrls(), fetch, quizUrls()); }
   catch (e) { $('#status').textContent = e.message; $('#status').classList.add('error'); return; }
   $('#status').textContent = '';
   $('#exam-note').textContent = graph.nota_esame || '';
