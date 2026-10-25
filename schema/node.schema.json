@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.local/tecweb-kg/node.schema.json",
-  "title": "Nodo del knowledge graph — Tecnologie Web (schema v3)",
+  "title": "Nodo del knowledge graph — Tecnologie Web (schema v4)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -232,198 +232,235 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "intuizione",
+        "perche_ti_serve",
+        "scenario_fil_rouge",
+        "definizione_esame",
         "spiegazione",
         "analogia",
-        "collegamenti_prior",
-        "esempi_svolti",
-        "errori_comuni",
-        "domande_autoverifica",
-        "riepilogo"
+        "worked_example",
+        "completion_problem",
+        "esercizio_autonomo",
+        "errori_trappole",
+        "richiamo_attivo",
+        "riepilogo",
+        "flashcard",
+        "checklist"
       ],
       "properties": {
-        "intuizione": {
+        "perche_ti_serve": {
           "type": "string",
-          "minLength": 80,
-          "description": "2-4 frasi: l'idea in parole semplici"
+          "minLength": 20,
+          "maxLength": 200,
+          "description": "1-2 righe: dove esce all'esame, gruppo A/B/C, quanti punti vale"
+        },
+        "scenario_fil_rouge": {
+          "type": "string",
+          "minLength": 50,
+          "description": "Storia/scenario concreto fil rouge (es. carrello e-commerce, biblioteca) riusato in tutto il corso"
+        },
+        "definizione_esame": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["definizione", "scopo_vantaggio", "esempio"],
+          "properties": {
+            "definizione": {
+              "type": "string",
+              "minLength": 10,
+              "description": "Definizione esatta da memorizzare"
+            },
+            "scopo_vantaggio": {
+              "type": "string",
+              "minLength": 10,
+              "description": "Scopo o vantaggio principale"
+            },
+            "esempio": {
+              "type": "string",
+              "minLength": 10,
+              "description": "Esempio concreto"
+            }
+          },
+          "description": "Definizione d'esame esatta con la regola dei 3 punti"
         },
         "spiegazione": {
           "type": "string",
           "minLength": 1500,
-          "description": "Markdown lungo e autosufficiente con ##/###, ≥1 blocco code o mermaid; mermaid valido"
+          "description": "Spiegazione a piccoli blocchi (un'idea per blocco, frasi brevi), con ##/###, >=1 blocco code o mermaid; mermaid valido"
         },
         "analogia": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["testo", "limite"],
+          "properties": {
+            "testo": {
+              "type": "string",
+              "minLength": 40,
+              "description": "Analogia della vita quotidiana"
+            },
+            "limite": {
+              "type": "string",
+              "minLength": 10,
+              "description": "Dove l'analogia smette di funzionare"
+            }
+          },
+          "description": "Analogia quotidiana + limite"
+        },
+        "worked_example": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["titolo", "problema", "passi", "soluzione", "perche_funziona"],
+          "properties": {
+            "titolo": {"type": "string", "minLength": 3, "description": "Titolo dell'esempio"},
+            "problema": {"type": "string", "minLength": 20, "description": "Descrizione del problema"},
+            "passi": {
+              "type": "array",
+              "minItems": 2,
+              "items": {"type": "string", "minLength": 5},
+              "description": "Passi numerati per risolvere il problema"
+            },
+            "soluzione": {"type": "string", "minLength": 10, "description": "Soluzione completa"},
+            "perche_funziona": {"type": "string", "minLength": 20, "description": "Spiegazione del perché la soluzione funziona"}
+          },
+          "description": "Esempio svolto completo passo passo"
+        },
+        "completion_problem": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["titolo", "testo", "passi_mancanti", "soluzione"],
+          "properties": {
+            "titolo": {"type": "string", "minLength": 3, "description": "Titolo del completion problem"},
+            "testo": {"type": "string", "minLength": 20, "description": "Testo del problema con passi mancanti"},
+            "passi_mancanti": {
+              "type": "array",
+              "minItems": 1,
+              "items": {"type": "string", "minLength": 5},
+              "description": "Passi che l'utente deve completare"
+            },
+            "soluzione": {"type": "string", "minLength": 10, "description": "Soluzione completa con passi mancanti riempiti"}
+          },
+          "description": "Completion problem: passi mancanti da riempire"
+        },
+        "esercizio_autonomo": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["titolo", "testo", "suggerimento", "soluzione_attesa"],
+          "properties": {
+            "titolo": {"type": "string", "minLength": 3, "description": "Titolo dell'esercizio autonomo"},
+            "testo": {"type": "string", "minLength": 20, "description": "Testo dell'esercizio"},
+            "suggerimento": {"type": "string", "minLength": 10, "description": "Suggerimento per l'esercizio"},
+            "soluzione_attesa": {"type": "string", "minLength": 10, "description": "Soluzione attesa"}
+          },
+          "description": "Esercizio autonomo per fading graduale"
+        },
+        "errori_trappole": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["errore", "perche_sbagliato", "distrattore"],
+            "properties": {
+              "errore": {"type": "string", "minLength": 10, "description": "Errore comune o trappola d'esame"},
+              "perche_sbagliato": {"type": "string", "minLength": 10, "description": "Spiegazione del perché è sbagliato"},
+              "distrattore": {"type": "string", "minLength": 5, "description": "Distrattore fuori contesto"}
+            }
+          },
+          "description": "Errori comuni e trappole d'esame con distrattori fuori contesto"
+        },
+        "mnemonica": {
           "type": "string",
-          "minLength": 40,
-          "description": "Analogia della vita quotidiana, con il punto in cui smette di valere"
+          "minLength": 10,
+          "maxLength": 500,
+          "description": "Mnemonica/immagine mentale (acronimi, loci, storiella) opzionale"
         },
-        "collegamenti_prior": {
-          "type": "array",
-          "minItems": 2,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "conoscenza",
-              "collegamento"
-            ],
-            "properties": {
-              "conoscenza": {
-                "type": "string",
-                "minLength": 3,
-                "description": "Cosa si sa già"
+        "richiamo_attivo": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["domande", "spiega_con_parole_tue", "collegamenti_interleaving"],
+          "properties": {
+            "domande": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 5,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["domanda", "risposta"],
+                "properties": {
+                  "domanda": {"type": "string", "minLength": 10},
+                  "risposta": {"type": "string", "minLength": 10}
+                }
               },
-              "collegamento": {
-                "type": "string",
-                "minLength": 20,
-                "description": "Come si aggancia al nuovo argomento"
+              "description": "3-5 domande di autoverifica con risposta nascosta"
+            },
+            "spiega_con_parole_tue": {
+              "type": "string",
+              "minLength": 20,
+              "description": "Domanda per spiegare con parole proprie"
+            },
+            "collegamenti_interleaving": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["nodo", "collegamento"],
+                "properties": {
+                  "nodo": {"type": "string", "description": "ID di un nodo esistente"},
+                  "collegamento": {"type": "string", "minLength": 20, "description": "Come si collega al nodo"}
+                }
               },
-              "nodo": {
-                "type": "string",
-                "description": "ID di un nodo esistente (opzionale)"
-              }
+              "description": "Collegamenti a nodi precedenti per interleaving"
             }
           },
-          "description": "Cosa si sa già e come si aggancia"
-        },
-        "esempi_svolti": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "titolo",
-              "problema",
-              "passi",
-              "soluzione",
-              "perche_funziona"
-            ],
-            "properties": {
-              "titolo": {
-                "type": "string",
-                "minLength": 3,
-                "description": "Titolo dell'esempio"
-              },
-              "problema": {
-                "type": "string",
-                "minLength": 20,
-                "description": "Descrizione del problema"
-              },
-              "passi": {
-                "type": "array",
-                "minItems": 2,
-                "items": {
-                  "type": "string",
-                  "minLength": 5
-                },
-                "description": "Passi numerati per risolvere il problema"
-              },
-              "soluzione": {
-                "type": "string",
-                "minLength": 10,
-                "description": "Soluzione completa"
-              },
-              "perche_funziona": {
-                "type": "string",
-                "minLength": 20,
-                "description": "Spiegazione del perché la soluzione funziona"
-              }
-            }
-          },
-          "description": "≥2 per abilita/tipo_esercizio, ≥1 per concetto"
-        },
-        "errori_comuni": {
-          "type": "array",
-          "minItems": 2,
-          "items": {
-            "type": "string",
-            "minLength": 10
-          },
-          "description": "≥2 trappole concrete"
-        },
-        "domande_autoverifica": {
-          "type": "array",
-          "minItems": 3,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "domanda",
-              "risposta"
-            ],
-            "properties": {
-              "domanda": {
-                "type": "string",
-                "minLength": 10
-              },
-              "risposta": {
-                "type": "string",
-                "minLength": 10
-              }
-            }
-          },
-          "description": "≥3 domande con risposte complete"
+          "description": "Richiamo attivo: 3-5 domande + spiega con parole tue + collegamenti interleaving"
         },
         "riepilogo": {
           "type": "string",
           "minLength": 40,
           "maxLength": 800,
-          "description": "Riepilogo in ≤5 righe"
+          "description": "Riepilogo in 5 righe"
+        },
+        "flashcard": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fronte", "retro"],
+          "properties": {
+            "fronte": {"type": "string", "minLength": 5, "description": "Fronte della flashcard"},
+            "retro": {"type": "string", "minLength": 5, "description": "Retro della flashcard"}
+          },
+          "description": "Flashcard per il ripasso SM-2 (fronte/retro)"
+        },
+        "checklist": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["so_fare", "so_dire"],
+          "properties": {
+            "so_fare": {
+              "type": "array",
+              "minItems": 1,
+              "items": {"type": "string", "minLength": 3},
+              "description": "Cose che so fare"
+            },
+            "so_dire": {
+              "type": "array",
+              "minItems": 1,
+              "items": {"type": "string", "minLength": 3},
+              "description": "Cose che so dire/spiegare"
+            }
+          },
+          "description": "Checklist so fare / so dire"
         }
       },
-      "description": "Lezione v3: il nodo deve bastare per imparare (opzionale nello schema, obbligatorio per completezza)"
+      "description": "Lezione v4: struttura in 10 punti secondo DIDATTICA.md (opzionale nello schema, obbligatorio per completezza)"
     }
   },
   "allOf": [
     {
       "if": {
-        "properties": {
-          "tipo": {
-            "enum": [
-              "abilita",
-              "tipo_esercizio"
-            ]
-          }
-        },
-        "required": [
-          "tipo"
-        ]
+        "properties": {"tipo": {"enum": ["abilita", "tipo_esercizio"]}},
+        "required": ["tipo"]
       },
-      "then": {
-        "properties": {
-          "esercizi": {
-            "minItems": 1
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "tipo": {
-            "enum": [
-              "abilita",
-              "tipo_esercizio"
-            ]
-          }
-        },
-        "required": [
-          "tipo",
-          "lezione"
-        ]
-      },
-      "then": {
-        "properties": {
-          "lezione": {
-            "properties": {
-              "esempi_svolti": {
-                "minItems": 2
-              }
-            }
-          }
-        }
-      }
+      "then": {"properties": {"esercizi": {"minItems": 1}}}
     }
   ]
 }

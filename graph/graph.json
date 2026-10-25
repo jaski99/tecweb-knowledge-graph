@@ -419,58 +419,133 @@
       ],
       "worker": "W1",
       "lezione": {
-        "intuizione": "HTTP e come un sportello postale: ogni volta che fai una richiesta, il dipendente non si ricorda di te dalla volta precedente. Se vuoi che si ricordi, devi portarglielo scritto ogni volta.",
-        "spiegazione": "## HTTP Stateless: il principio fondamentale del Web\n\nHTTP Hypertext Transfer Protocol e progettato per essere stateless, cioe senza memoria tra richieste consecutive. Questo significa che ogni richiesta HTTP e completamente indipendente dalle altre. Il server non mantiene alcuna informazione sullo stato del client tra richieste consecutive. Tutte le informazioni necessarie per elaborare una richiesta devono essere contenute nella richiesta stessa.\n\nQuesto design e intenzionale e offre diversi vantaggi fondamentali:\n\n- Scalabilita: i server possono gestire un numero molto maggiore di client senza dover mantenere stato in memoria. Ogni richiesta puo essere gestita da qualsiasi server load balancing.\n- Semplificazione: il protocollo e piu semplice da implementare sia lato client che lato server.\n- Affidabilita: in caso di crash o riavvio del server, non si perde lo stato delle sessioni.\n- Flessibilita: i client possono cambiare server tra richieste senza problemi.\n\nIl paradosso di HTTP e che e stateless ma non sessionless. Il protocollo non gestisce lo stato, ma questo non significa che le applicazioni non possano avere stato. Lo stato viene gestito al di fuori del protocollo.\n\n### Meccanismi per gestire lo stato\n\n#### Cookie RFC 6265\nI cookie sono piccoli frammenti di dati che il server invia al client tramite header Set-Cookie. Il browser salva i cookie e li reinvia automaticamente in ogni richiesta successiva allo stesso dominio tramite header Cookie. I cookie possono avere attributi come Domain, Path, Max-Age, HttpOnly, Secure, SameSite.\n\n#### Token JWT\nI token sono stringhe crittografate che contengono dati claims e sono firmate digitalmente. Vengono inviate dal client nell header Authorization con schema Bearer. I token JWT JSON Web Token sono lo standard RFC 7519. I vantaggi includono statelessness server non deve mantenere stato, portabilita possono essere usati tra servizi, e sicurezza possono essere scadenti e firmati.\n\n#### Parametri URL\nLo stato puo essere passato esplicitamente nell URL tramite query string. Questo e semplice e shareable, ma ha svantaggi: visibile all utente, limitato in lunghezza, e non sicuro.\n\n#### Sessioni server-side\nIl client invia un session ID tipicamente via cookie, e il server mantiene lo stato in memoria o in un database. Il server associa il session ID ai dati dell utente. Questo approccio richiede che il server mantenga stato.\n\n### Confronto tra i meccanismi\n\n| Meccanismo | Dove memorizzato | Sicurezza | Scalabilita | Persistenza |\n|------------|-------------------|-----------|-------------|-------------|\n| Cookie | Client | Media HttpOnly/Secure | Alta | Limitata |\n| Token JWT | Client | Alta firma | Molto alta | Illimitata |\n| Parametri URL | Client URL | Bassa | Alta | Limitata |\n| Sessioni | Server | Alta | Media | Dipende da storage |\n\n```mermaid\ngraph TD\n    A[Client] -->|Request 1| B[Server]\n    A -->|Request 2| B\n    B -->|Response 1| A\n    B -->|Response 2| A\n    B -->|Set-Cookie| A\n    A -->|Cookie| B\n```\n\n### Esempio pratico: autenticazione con cookie in Flask\n\nIl seguente codice mostra come implementare autenticazione con cookie in Flask:\n\n```python\nfrom flask import Flask, request, make_response, jsonify\nimport secrets\n\napp = Flask(__name__)\nsessions = {}  # In produzione: usa Redis o database\n\n@app.route('/login', methods=['POST'])\ndef login():\n    data = request.get_json()\n    username = data.get('username')\n    password = data.get('password')\n    if username == 'alice' and password == 'password123':\n        session_id = secrets.token_hex(16)\n        sessions[session_id] = {'username': username, 'logged_in': True}\n        response = make_response(jsonify({'message': 'Login successful'}))\n        response.set_cookie('session_id', session_id, httponly=True, secure=True, samesite='Lax')\n        return response\n    return jsonify({'error': 'Invalid credentials'}), 401\n\n@app.route('/profile')\ndef profile():\n    session_id = request.cookies.get('session_id')\n    if session_id and sessions.get(session_id, {}).get('logged_in'):\n        return jsonify({'username': sessions[session_id]['username']})\n    return jsonify({'error': 'Not authenticated'}), 401\n```\n\nIl browser gestisce automaticamente i cookie. Non serve fare nulla di speciale nel client per inviare i cookie.",
-        "analogia": "HTTP stateless e come un bar dove ogni volta che ordini una birra, devi mostrare la carta di identita per dimostrare che hai piu di 18 anni. Il barista non si ricorda di te dalla volta precedente. Se vuoi che si ricordi per il conto aperto, devi lasciare la carta di identita al bar cookie o avere un braccialetto token che dimostra la tua eta. L analogia smette di valere quando: nel web, i token possono contenere informazioni crittografate che il server puo verificare senza dover mantenere una lista di client sessioni.",
-        "collegamenti_prior": [
+        "perche_ti_serve": "Argomento FONDAMENTALE che esce in TUTTE le prove scritte (Gruppo A, ~65%). Vale 3-4 punti: se non lo sai, non passi l'esame. Esce anche nelle domande orali di tesina.",
+        "scenario_fil_rouge": "Immagina un e-commerce come Amazon. Quando aggiungi un prodotto al carrello, poi passi alla cassa, poi torni indietro e aggiungi un altro prodotto, il carrello si ricorda di tutti i prodotti. Ma HTTP di base non ha memoria: e come se ogni volta che parli con il commesso, lui non si ricordasse di te. Come fa Amazon a ricordarsi del tuo carrello? Questa e la domanda che porta a capire stateless vs stateful.",
+        "definizione_esame": {
+          "definizione": "HTTP e un protocollo stateless: il server non mantiene alcuna informazione sullo stato del client tra richieste consecutive.",
+          "scopo_vantaggio": "Permette scalabilita massima: i server possono gestire milioni di client senza mantenere connessioni aperte, riducendo complessita e costo infrastrutturale.",
+          "esempio": "Quando fai login su un sito, il server ti riconosce non perche si ricorda di te (stateless), ma perche tu gli mandi un biglietto (cookie o token) con ogni richiesta che certificano la tua identita."
+        },
+        "spiegazione": "## HTTP Stateless: il principio che ha rivoluzionato il Web\n\nHTTP (Hypertext Transfer Protocol) e progettato per essere stateless (senza stato). Questo significa che:\n\n### I 3 pilastri dello stateless\n\n1. Ogni richiesta e indipendente: la richiesta per pagina1 non sa nulla della richiesta precedente per login\n2. Nessuna memoria server-side: il server non alloca risorse per ricordarsi dei client\n3. Tutte le informazioni viaggiano con la richiesta: lo stato deve essere incluso in ogni richiesta\n\n### Perché stateless? Vantaggi concreti\n\n- Scalabilita: i server possono gestire un numero molto maggiore di client senza dover mantenere stato in memoria\n- Semplificazione: protocollo piu semplice da implementare sia lato client che lato server\n- Affidabilita: in caso di crash o riavvio del server, non si perde lo stato delle sessioni\n- Flessibilita: i client possono cambiare server tra richieste senza problemi\n\n### Il paradosso: stateless != sessionless\n\nAttenzione: HTTP e stateless, ma le applicazioni web NON sono sessionless! Il protocollo non gestisce lo stato, ma le applicazioni possono averlo tramite meccanismi esterni.\n\n### 4 meccanismi per gestire lo stato\n\n#### 1. Cookie (RFC 6265)\nI cookie sono piccoli frammenti di dati che il server invia al client tramite header Set-Cookie. Il browser salva i cookie e li reinvia automaticamente in ogni richiesta successiva allo stesso dominio tramite header Cookie.\n\nEsempio:\n```http\nServer to Client: Set-Cookie: session_id=abc123; Path=/; HttpOnly; Secure\nClient to Server: Cookie: session_id=abc123\n```\n\n#### 2. Token JWT (RFC 7519)\nI token sono stringhe crittografate che contengono claims (dichiarazioni) e sono firmate digitalmente. Vengono inviate dal client nell header Authorization con schema Bearer.\n\nEsempio:\n```http\nClient to Server: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\n```\n\n#### 3. Parametri URL\nLo stato viene passato esplicitamente nell URL tramite query string.\n\nEsempio:\n```http\nGET /prodotto?id=123&session_token=xyz789\n```\n\n#### 4. Sessioni server-side\nIl client invia un session ID (tipicamente via cookie), e il server mantiene lo stato in memoria o in un database.\n\nEsempio Flask:\n```python\nfrom flask import Flask, session\napp = Flask(__name__)\napp.secret_key = 'segreto'\n\n@app.route('/login', methods=['POST'])\ndef login():\n    session['user_id'] = 123\n    return 'Login successful'\n```\n\n### Confronto tra i meccanismi\n\n| Meccanismo | Dove memorizzato | Sicurezza | Scalabilita | Persistenza |\n|------------|-------------------|-----------|-------------|-------------|\n| Cookie | Client | Media (HttpOnly/Secure) | Alta | Limitata (Max-Age) |\n| Token JWT | Client | Alta (firma) | Molto alta | Illimitata |\n| Parametri URL | Client (URL) | Bassa | Alta | Limitata |\n| Sessioni | Server | Alta | Media | Dipende da storage |\n\n```mermaid\ngraph TD\n    subgraph Client\n        A1[Browser Tab 1]\n        A2[Browser Tab 2]\n    end\n    subgraph Server Farm\n        B1[Server 1]\n        B2[Server 2]\n    end\n    A1 -->|Request 1| B1\n    A1 -->|Request 2| B2\n    B1 -->|Response 1| A1\n    B2 -->|Response 2| A1\n    B1 -->|Set-Cookie| A1\n    A1 -->|Cookie| B2\n```",
+        "analogia": {
+          "testo": "HTTP stateless e come un ristorante self-service: ogni volta che vuoi qualcosa, devi prendere un nuovo vassoio e riempirlo. Il cuoco non si ricorda di te dalla volta precedente, non sa cosa hai gia ordinato, e non sa neanche se sei lo stesso cliente di 5 minuti fa. Se vuoi che il ristorante si ricordi del tuo ordine, devi portarti dietro lo scontrino con il numero (cookie) o avere un braccialetto con il tuo nome (token).",
+          "limite": "Nel web, i token JWT possono contenere informazioni crittografate che il server puo verificare senza dover mantenere una lista di client (stateless anche lato server). Nel ristorante, il cuoco deve sempre avere una lista dei braccialetti validi per verificare chi sei."
+        },
+        "worked_example": {
+          "titolo": "Autenticazione completa con cookie in Flask",
+          "problema": "Implementare un sistema di autenticazione dove l utente fa login e il server ricorda l utente tramite cookie in tutte le pagine successive.",
+          "passi": [
+            "Creare endpoint /login che accetta POST con username e password",
+            "Validare le credenziali (es. username=alice, password=segreto)",
+            "Generare un session ID univoco e sicuro usando secrets.token_hex(16)",
+            "Salvare i dati della sessione lato server (in produzione: usa Redis o database)",
+            "Impostare cookie con Set-Cookie header (HttpOnly, Secure, SameSite)",
+            "Creare endpoint /profile che richiede autenticazione",
+            "Leggere il cookie session_id dalla richiesta",
+            "Verificare la sessione e restituire i dati dell utente"
+          ],
+          "soluzione": "from flask import Flask, request, make_response, jsonify\nimport secrets\n\nsessions = {}\n\napp = Flask(__name__)\n\n@app.route('/login', methods=['POST'])\ndef login():\n    data = request.get_json()\n    username = data.get('username')\n    password = data.get('password')\n    if username == 'alice' and password == 'segreto':\n        session_id = secrets.token_hex(16)\n        sessions[session_id] = {'username': username, 'logged_in': True}\n        response = make_response(jsonify({'message': 'Login successful'}))\n        response.set_cookie('session_id', session_id, httponly=True, secure=True, samesite='Lax')\n        return response\n    return jsonify({'error': 'Invalid credentials'}), 401\n\n@app.route('/profile')\ndef profile():\n    session_id = request.cookies.get('session_id')\n    if session_id and sessions.get(session_id, {}).get('logged_in'):\n        return jsonify({'username': sessions[session_id]['username']})\n    return jsonify({'error': 'Not authenticated'}), 401",
+          "perche_funziona": "Il browser salva automaticamente il cookie session_id e lo invia in ogni richiesta successiva allo stesso dominio. Il server puo cosi identificare l utente senza dover mantenere connessioni persistenti. L attributo HttpOnly impedisce a JavaScript di accedere al cookie (protezione XSS), Secure garantisce che sia inviato solo su HTTPS, e SameSite protegge da CSRF."
+        },
+        "completion_problem": {
+          "titolo": "Completare l autenticazione con JWT",
+          "testo": "Il codice seguente implementa l autenticazione con JWT, ma mancano 3 passi fondamentali. Completa i passi mancanti.",
+          "passi_mancanti": [
+            "Verificare che il token JWT sia valido e non scaduto",
+            "Estrare il payload dal token",
+            "Gestire il caso in cui il token e scaduto o non valido"
+          ],
+          "soluzione": "import jwt\nfrom functools import wraps\nfrom flask import request, jsonify\n\nSECRET_KEY = 'segreto_super_segreto'\n\ndef token_required(f):\n    @wraps(f)\n    def decorated(*args, **kwargs):\n        token = request.headers.get('Authorization')\n        if not token:\n            return jsonify({'error': 'Token missing'}), 401\n        try:\n            data = jwt.decode(token.split()[1], SECRET_KEY, algorithms=['HS256'])\n            current_user = data['username']\n        except jwt.ExpiredSignatureError:\n            return jsonify({'error': 'Token expired'}), 401\n        except jwt.InvalidTokenError:\n            return jsonify({'error': 'Invalid token'}), 401\n        return f(current_user, *args, **kwargs)\n    return decorated\n\n@app.route('/login', methods=['POST'])\ndef login():\n    data = request.get_json()\n    if data.get('username') == 'alice' and data.get('password') == 'segreto':\n        token = jwt.encode({'username': 'alice', 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)}, SECRET_KEY, algorithm='HS256')\n        return jsonify({'token': token})\n    return jsonify({'error': 'Invalid credentials'}), 401"
+        },
+        "esercizio_autonomo": {
+          "titolo": "Implementare gestione sessioni con Redis",
+          "testo": "Modifica il sistema di autenticazione con cookie per usare Redis invece di un dizionario Python. Assumere che Redis sia disponibile su localhost:6379.",
+          "suggerimento": "Usa la libreria redis-py. I comandi utili sono: redis.setex(key, 3600, value) per salvare con scadenza, redis.get(key) per recuperare, redis.delete(key) per eliminare.",
+          "soluzione_attesa": "import redis\nfrom flask import Flask, request, make_response, jsonify\nimport secrets\n\napp = Flask(__name__)\nr = redis.Redis(host='localhost', port=6379, db=0)\n\n@app.route('/login', methods=['POST'])\ndef login():\n    data = request.get_json()\n    if data.get('username') == 'alice' and data.get('password') == 'segreto':\n        session_id = secrets.token_hex(16)\n        r.setex(f'session:{session_id}', 3600, data.get('username'))\n        response = make_response(jsonify({'message': 'Login successful'}))\n        response.set_cookie('session_id', session_id, httponly=True, secure=True)\n        return response\n    return jsonify({'error': 'Invalid credentials'}), 401\n\n@app.route('/profile')\ndef profile():\n    session_id = request.cookies.get('session_id')\n    if session_id:\n        username = r.get(f'session:{session_id}')\n        if username:\n            return jsonify({'username': username.decode('utf-8')})\n    return jsonify({'error': 'Not authenticated'}), 401\n\n@app.route('/logout', methods=['POST'])\ndef logout():\n    session_id = request.cookies.get('session_id')\n    if session_id:\n        r.delete(f'session:{session_id}')\n    response = make_response(jsonify({'message': 'Logged out'}))\n    response.delete_cookie('session_id')\n    return response"
+        },
+        "errori_trappole": [
           {
-            "conoscenza": "Protocollo HTTP",
-            "collegamento": "HTTP e il protocollo base del web, e la sua natura stateless ne definisce il funzionamento fondamentale.",
-            "nodo": "http-protocollo-base"
+            "errore": "Confondere stateless con sessionless",
+            "perche_sbagliato": "HTTP e stateless (il protocollo non mantiene stato), ma le applicazioni web NON sono sessionless. Lo stateless si riferisce al protocollo, non all applicazione. HTTP e stateless ma non sessionless.",
+            "distrattore": "HTTP e sessionless perche non ha sessioni"
           },
           {
-            "conoscenza": "Architettura client-server",
-            "collegamento": "In un architettura client-server, lo stateless permette ai server di gestire molti client senza mantenere stato.",
-            "nodo": "architettura-3-tier"
-          }
-        ],
-        "esempi_svolti": [
-          {
-            "titolo": "Autenticazione completa con cookie in Flask",
-            "problema": "Implementare un sistema di autenticazione dove l utente fa login e il server ricorda l utente tramite cookie.",
-            "passi": [
-              "Creare endpoint /login che accetta POST con username e password",
-              "Validare le credenziali",
-              "Generare un session ID univoco",
-              "Salvare i dati della sessione lato server",
-              "Impostare cookie Set-Cookie header",
-              "Creare endpoint /profile che richiede autenticazione",
-              "Leggere il cookie session_id dalla richiesta",
-              "Verificare la sessione e restituire i dati dell utente"
-            ],
-            "soluzione": "from flask import Flask, request, make_response, jsonify\nimport secrets\napp = Flask(__name__)\nsessions = {}\n@app.route('/login', methods=['POST'])\ndef login():\n    data = request.get_json()\n    username = data.get('username')\n    password = data.get('password')\n    if username == 'alice' and password == 'password123':\n        session_id = secrets.token_hex(16)\n        sessions[session_id] = {'username': username, 'logged_in': True}\n        response = make_response(jsonify({'message': 'Login successful'}))\n        response.set_cookie('session_id', session_id, httponly=True, secure=True, samesite='Lax')\n        return response\n    return jsonify({'error': 'Invalid credentials'}), 401\n@app.route('/profile')\ndef profile():\n    session_id = request.cookies.get('session_id')\n    if session_id and sessions.get(session_id, {}).get('logged_in'):\n        return jsonify({'username': sessions[session_id]['username']})\n    return jsonify({'error': 'Not authenticated'}), 401\n@app.route('/logout', methods=['POST'])\ndef logout():\n    session_id = request.cookies.get('session_id')\n    if session_id in sessions:\n        del sessions[session_id]\n    response = make_response(jsonify({'message': 'Logged out'}))\n    response.delete_cookie('session_id')\n    return response",
-            "perche_funziona": "Il browser salva automaticamente il cookie session_id e lo invia in ogni richiesta successiva allo stesso dominio. Il server puo cosi identificare l utente senza dover mantenere connessioni persistenti. L httponly flag impedisce a JavaScript di accedere al cookie protezione XSS, secure garantisce che sia inviato solo su HTTPS, e samesite protegge da CSRF."
-          }
-        ],
-        "errori_comuni": [
-          "Confondere stateless con sessionless: HTTP e stateless il protocollo non gestisce lo stato, ma NON e sessionless le sessioni esistono e sono gestite tramite meccanismi esterni al protocollo.",
-          "Pensare che i cookie siano sicuri di default: i cookie possono essere rubati tramite XSS se non si usa il flag HttpOnly, o tramite MITM se non si usa Secure HTTPS."
-        ],
-        "domande_autoverifica": [
-          {
-            "domanda": "Cosa significa che HTTP e stateless?",
-            "risposta": "Significa che il protocollo HTTP non mantiene alcuna informazione sullo stato del client tra richieste consecutive. Ogni richiesta e trattata come completamente indipendente."
+            "errore": "Pensare che i cookie siano sicuri di default",
+            "perche_sbagliato": "I cookie senza HttpOnly possono essere rubati tramite XSS (JavaScript malizioso). Senza Secure, possono essere intercettati su connessioni non HTTPS. Senza SameSite, sono vulnerabili a CSRF.",
+            "distrattore": "I cookie sono sempre sicuri"
           },
           {
-            "domanda": "Quali sono i 4 meccanismi principali per gestire lo stato in HTTP?",
-            "risposta": "1 Cookie: dati salvati lato client e inviati automaticamente dal browser. 2 Token es JWT: stringhe crittografate inviate dal client in header Authorization. 3 Parametri URL: dati passati esplicitamente nell URL. 4 Sessioni server-side: il server mantiene lo stato in memoria o DB."
+            "errore": "Usare JWT senza scadenza",
+            "perche_sbagliato": "I token senza scadenza (exp claim) sono un rischio di sicurezza: se compromessi, possono essere usati all infinito. Inoltre, non c e modo di invalidarli prima della scadenza.",
+            "distrattore": "I JWT durano per sempre"
           },
           {
-            "domanda": "Qual e il vantaggio principale di un protocollo stateless come HTTP?",
-            "risposta": "La scalabilita: i server non devono mantenere informazioni sullo stato dei client, quindi possono gestire un numero molto maggiore di connessioni contemporanee."
+            "errore": "Memorizzare dati sensibili nei JWT",
+            "perche_sbagliato": "I JWT sono base64 encoded, NON crittografati (a meno che non si usi JWE). Chiunque puo decodificarli e leggere il payload. Non memorizzare mai password, PII, o dati sensibili.",
+            "distrattore": "I JWT sono crittografati"
           }
         ],
-        "riepilogo": "HTTP e stateless per design. Lo stato si gestisce tramite cookie, token, o parametri URL. I cookie sono il meccanismo piu comune per sessioni autenticate nel browser. JWT offre un approccio stateless anche per l autenticazione."
+        "mnemonica": "State Less Every Second: HTTP e Stateless, Libero, Efficiente, Scalabile. Per lo stato: Cookie, Token, URL params, Sessioni.",
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Cosa significa che HTTP e stateless?",
+              "risposta": "Significa che il protocollo HTTP non mantiene alcuna informazione sullo stato del client tra richieste consecutive. Ogni richiesta e trattata come completamente indipendente."
+            },
+            {
+              "domanda": "Quali sono i 4 meccanismi principali per gestire lo stato in HTTP?",
+              "risposta": "1) Cookie: dati salvati lato client e inviati automaticamente dal browser; 2) Token JWT: stringhe crittografate inviate dal client in header Authorization; 3) Parametri URL: dati passati esplicitamente nell URL; 4) Sessioni server-side: il server mantiene lo stato in memoria o DB."
+            },
+            {
+              "domanda": "Qual e il vantaggio principale di un protocollo stateless?",
+              "risposta": "La scalabilita: i server non devono mantenere informazioni sullo stato dei client, quindi possono gestire un numero molto maggiore di connessioni contemporanee."
+            },
+            {
+              "domanda": "Cosa significa HttpOnly in un cookie?",
+              "risposta": "HttpOnly e un flag che impedisce a JavaScript di accedere al cookie, proteggendo da attacchi XSS (Cross-Site Scripting)."
+            },
+            {
+              "domanda": "Qual e la differenza tra JWT e JWS?",
+              "risposta": "JWT (JSON Web Token) e lo standard che definisce la struttura (header.payload.signature). JWS (JSON Web Signature) e una specifica che definisce come firmare i JWT. JWE (JSON Web Encryption) definisce come crittografare i JWT."
+            }
+          ],
+          "spiega_con_parole_tue": "Prova a spiegare a un amico che non sa nulla di informatica: perche quando chiudi il browser e riapri Amazon, il tuo carrello c e ancora? Usa l analogia del ristorante o inventane una tua.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "http-protocollo-base",
+              "collegamento": "HTTP stateless e una proprieta fondamentale del protocollo HTTP che devi aver capito bene prima di studiare come gestire lo stato."
+            },
+            {
+              "nodo": "architettura-client-server",
+              "collegamento": "In un architettura client-server, lo stateless permette ai server di gestire molti client senza mantenere connessioni aperte, che e fondamentale per la scalabilita."
+            },
+            {
+              "nodo": "rest-principi",
+              "collegamento": "I principi REST si basano su HTTP e la sua natura stateless. Un API RESTful deve essere stateless: ogni richiesta deve contenere tutte le informazioni necessarie."
+            }
+          ]
+        },
+        "riepilogo": "HTTP e stateless per design: il server non si ricorda di te tra richieste. Lo stato si gestisce tramite: cookie (browser), token JWT (API), parametri URL (link), sessioni server-side (memoria/DB). Cookie e JWT sono i piu usati. Lo stateless abilitata scalabilita e affidabilita del web moderno.",
+        "flashcard": {
+          "fronte": "HTTP: stateless vs stateful - Qual e la differenza?",
+          "retro": "HTTP e STATLESS: il protocollo non mantiene stato. Le applicazioni possono essere STATEFUL usando cookie, token, URL params, o sessioni per mantenere lo stato tra richieste. Stateless = protocollo senza memoria; Stateful = applicazione con memoria."
+        },
+        "checklist": {
+          "so_fare": [
+            "Implementare autenticazione con cookie in Flask",
+            "Creare e validare token JWT",
+            "Configurare attributi di sicurezza dei cookie (HttpOnly, Secure, SameSite)",
+            "Scegliere il meccanismo di stato appropriato per ogni scenario",
+            "Usare Redis per sessioni distribuite"
+          ],
+          "so_dire": [
+            "Spiegare perche HTTP e stateless e quali vantaggi porta",
+            "Elencare e confrontare i 4 meccanismi per gestire lo stato",
+            "Spiegare la differenza tra stateless e sessionless",
+            "Descrivere come funzionano cookie e JWT",
+            "Spiegare i rischi di sicurezza di ogni meccanismo"
+          ]
+        }
       }
     },
     {
@@ -1089,67 +1164,135 @@
       ],
       "worker": "W1",
       "lezione": {
-        "intuizione": "PUT sostituisce completamente una risorsa, PATCH aggiorna solo alcuni campi, POST crea, GET legge, DELETE elimina.",
-        "spiegazione": "## REST: metodi HTTP e operazioni CRUD\n\nI metodi HTTP definiscono le operazioni che possono essere eseguite sulle risorse in un API RESTful. Ogni metodo ha una semantica specifica e un comportamento ben definito.\n\n### Metodi HTTP principali\n\n#### GET\n- Operazione: Read recupera una risorsa\n- Idempotente: Sì\n- Safe: Sì non modifica lo stato del server\n- Descrizione: Recupera la rappresentazione di una risorsa identificata dall URI. Non dovrebbe avere effetti collaterali.\n- Risposta: 200 OK con la risorsa, 404 Not Found se non esiste\n\n#### POST\n- Operazione: Create crea una nuova risorsa\n- Idempotente: No\n- Safe: No\n- Descrizione: Crea una nuova risorsa. Il server decide l URI della nuova risorsa. Spesso usato per creare risorse in una collezione.\n- Risposta: 201 Created con Location header che indica l URI della nuova risorsa\n\n#### PUT\n- Operazione: Update sostituisce completamente una risorsa\n- Idempotente: Sì\n- Safe: No\n- Descrizione: Sostituisce completamente la risorsa identificata dall URI. Tutti i campi devono essere forniti. Se la risorsa non esiste, PUT puo creare la risorsa.\n- Risposta: 200 OK o 204 No Content\n\n#### PATCH\n- Operazione: Update aggiorna parzialmente una risorsa\n- Idempotente: No per default\n- Safe: No\n- Descrizione: Applica modifiche parziali alla risorsa. Solo i campi forniti vengono aggiornati. Gli altri rimangono invariati.\n- Risposta: 200 OK o 204 No Content\n\n#### DELETE\n- Operazione: Delete elimina una risorsa\n- Idempotente: Sì\n- Safe: No\n- Descrizione: Elimina la risorsa identificata dall URI.\n- Risposta: 200 OK o 204 No Content\n\n### Confronto PUT vs PATCH\n\nLa differenza principale tra PUT e PATCH e fondamentale:\n\n- PUT: Sostituisce completamente la risorsa. Se il client non fornisce tutti i campi, i campi mancanti verranno impostati a null o al valore di default. PUT e idempotente: piu richieste identiche producono lo stesso risultato.\n\n- PATCH: Aggiorna parzialmente la risorsa. Solo i campi forniti vengono modificati. Gli altri campi rimangono invariati. PATCH non e necessariamente idempotente.\n\nEsempio pratico:\n\nRisorsa corrente: id:1, nome:Alice, eta:25, citta:Roma\n\nPUT /users/1 con nome:Alice, eta:26 -> Risultato: id:1, nome:Alice, eta:26, citta:null\nPATCH /users/1 con eta:26 -> Risultato: id:1, nome:Alice, eta:26, citta:Roma\n\n### Quando usare ogni metodo\n\n| Scenario | Metodo | Motivo |\n|----------|--------|--------|\n| Recuperare una risorsa | GET | Lettura senza modifiche |\n| Creare una risorsa URI sconosciuto | POST | Server decide l URI |\n| Creare una risorsa URI noto | PUT | Client specifica l URI |\n| Sostituire completamente una risorsa | PUT | Tutti i campi devono essere forniti |\n| Aggiornare solo alcuni campi | PATCH | Solo i campi forniti vengono modificati |\n| Eliminare una risorsa | DELETE | Rimuove la risorsa |\n\n### JSON Patch e JSON Merge Patch\n\nPATCH puo usare formati standard per descrivere le modifiche:\n\n#### JSON Merge Patch RFC 7396\nIl JSON fornito viene fuso con la risorsa esistente:\n- Campi presenti: aggiornati\n- Campi assenti: aggiunti\n- Campi con valore null: rimossi\n\nEsempio:\nPATCH /users/1\nContent-Type: application/merge-patch+json\n\neta: 26\n\n#### JSON Patch RFC 6902\nDescrive operazioni specifiche:\n- add: aggiunge un campo\n- remove: rimuove un campo\n- replace: sostituisce un valore\n- move: sposta un elemento\n- copy: copia un elemento\n- test: verifica un valore\n\nEsempio:\nPATCH /users/1\nContent-Type: application/json-patch+json\n\n[\n  {\"op\": \"replace\", \"path\": \"/eta\", \"value\": 26}\n]\n\n```mermaid\ngraph TD\n    GET -->|Read| Risorsa\n    POST -->|Create| Risorsa\n    PUT -->|Replace| Risorsa\n    PATCH -->|Partial Update| Risorsa\n    DELETE -->|Delete| Risorsa\n```",
-        "analogia": "I metodi HTTP sono come operazioni su un documento: GET e leggere il documento, POST e aggiungere una nuova pagina, PUT e riscrivere completamente una pagina, PATCH e correggere solo un errore di battitura, DELETE e strappare una pagina. L analogia smette di valere quando: nel web, le operazioni sono su risorse remote e non su documenti locali.",
-        "collegamenti_prior": [
+        "perche_ti_serve": "Domanda FREQUENTE allo scritto (Gruppo A, ~65%). Vale 2-3 punti. Esce anche nelle domande pratiche di API design. Se confondi PUT e PATCH, perdi punti sicuri.",
+        "scenario_fil_rouge": "Immagina di gestire un catalogo di libri in una biblioteca digitale. Devi: aggiungere nuovi libri (POST), cercare libri (GET), aggiornare il prezzo di un libro (PATCH), sostituire completamente le informazioni di un libro (PUT), eliminare un libro (DELETE). Ogni operazione ha un metodo HTTP specifico. Il carrello e-commerce usa gli stessi principi.",
+        "definizione_esame": {
+          "definizione": "I metodi HTTP (verbi HTTP) definiscono le operazioni che possono essere eseguite sulle risorse in un API RESTful. Ogni metodo ha una semantica specifica, idempotenza e sicurezza ben definite.",
+          "scopo_vantaggio": "Permettono comunicazione standardizzata tra client e server: il client sa esattamente cosa aspettarsi da ogni metodo, e il server sa come processare ogni richiesta.",
+          "esempio": "In un API di e-commerce: GET /products/123 per vedere un prodotto, POST /orders per creare un ordine, PUT /products/123 per sostituire tutte le info di un prodotto, DELETE /products/123 per eliminarlo."
+        },
+        "spiegazione": "## REST: Metodi HTTP e operazioni CRUD\n\nI metodi HTTP sono i verbi del protocollo HTTP. In un API RESTful, ogni metodo corrisponde a un operazione CRUD su una risorsa.\n\n### Mappatura CRUD to Metodi HTTP\n\n| Operazione CRUD | Metodo HTTP | Descrizione |\n|-----------------|-------------|-------------|\n| Create | POST | Crea una nuova risorsa |\n| Read | GET | Legge/recupera una risorsa |\n| Update (parziale) | PATCH | Aggiorna parzialmente una risorsa |\n| Update (completa) | PUT | Sostituisce completamente una risorsa |\n| Delete | DELETE | Elimina una risorsa |\n\n### I 5 metodi HTTP principali\n\n#### 1. GET - Lettura\n\n- Operazione: Read (recupera una risorsa)\n- Idempotente: Si\n- Safe: Si\n- Descrizione: Recupera la rappresentazione di una risorsa identificata dall URI\n- Risposta: 200 OK con la risorsa, 404 Not Found se non esiste\n- Corpo: Vuoto (parametri nell URL come query string)\n- Cache: Si\n\n#### 2. POST - Creazione\n\n- Operazione: Create\n- Idempotente: No\n- Safe: No\n- Descrizione: Crea una nuova risorsa. Il server decide l URI della nuova risorsa\n- Risposta: 201 Created con Location header\n- Corpo: Contiene i dati della nuova risorsa\n\n#### 3. PUT - Sostituzione completa\n\n- Operazione: Update (sostituisce completamente)\n- Idempotente: Si\n- Safe: No\n- Descrizione: Sostituisce completamente la risorsa. Tutti i campi devono essere forniti\n- Risposta: 200 OK o 204 No Content\n\n#### 4. PATCH - Aggiornamento parziale\n\n- Operazione: Update (aggiorna parzialmente)\n- Idempotente: No (per default)\n- Safe: No\n- Descrizione: Applica modifiche parziali. Solo i campi forniti vengono aggiornati\n- Risposta: 200 OK o 204 No Content\n\n#### 5. DELETE - Eliminazione\n\n- Operazione: Delete\n- Idempotente: Si\n- Safe: No\n- Descrizione: Elimina la risorsa identificata dall URI\n- Risposta: 200 OK, 202 Accepted, o 204 No Content\n\n### PUT vs PATCH: la differenza FONDAMENTALE\n\n```mermaid\nflowchart TD\n    A[Risorsa corrente:\n id:1, nome:Alice, eta:25, citta:Roma]\n    A --> B[PUT /users/1\n nome:Alice, eta:26]\n    A --> C[PATCH /users/1\n eta:26]\n    B --> D[Risultato:\n id:1, nome:Alice, eta:26, citta:null]\n    C --> E[Risultato:\n id:1, nome:Alice, eta:26, citta:Roma]\n```\n\n| Aspetto | PUT | PATCH |\n|---------|-----|-------|\n| Campi richiesti | Tutti i campi | Solo quelli da aggiornare |\n| Campi non forniti | Impostati a null/default | Rimangono invariati |\n| Idempotente | Si | No (per default) |\n\n### Idempotenza\n\nUn operazione e idempotente se eseguirla piu volte produce lo stesso risultato della prima esecuzione.\n\n| Metodo | Idempotente? | Esempio |\n|--------|--------------|---------|\n| GET | Si | 10 richieste = 10 risposte identiche |\n| POST | No | 3 richieste = 3 nuove risorse create |\n| PUT | Si | 5 richieste con stessi dati = stesso risultato |\n| PATCH | No | Dipende dall implementazione |\n| DELETE | Si | 10 richieste = risorsa eliminata una volta sola |\n\n### JSON Patch vs JSON Merge Patch\n\nJSON Merge Patch (RFC 7396): fonde il JSON fornito con la risorsa esistente.\n- Campi presenti: sostituiti\n- Campi assenti: aggiunti\n- Campi con valore null: rimossi\n\nJSON Patch (RFC 6902): descrive operazioni specifiche in un array.\n- Operazioni: add, remove, replace, move, copy, test\n\n```mermaid\ngraph TD\n    GET -->|Read| Risorsa\n    POST -->|Create| Risorsa\n    PUT -->|Replace| Risorsa\n    PATCH -->|Partial Update| Risorsa\n    DELETE -->|Delete| Risorsa\n```",
+        "analogia": {
+          "testo": "I metodi HTTP sono come operazioni su un documento cartaceo: GET e leggere il documento, POST e aggiungere una nuova pagina al fondo, PUT e riscrivere completamente una pagina (devi copiare tutto il contenuto), PATCH e correggere solo un errore di battitura con il correttore, DELETE e strappare una pagina.",
+          "limite": "Nel web, le operazioni sono su risorse remote e non su documenti locali. Inoltre, PUT puo creare la risorsa se non esiste, mentre riscrivere una pagina fisica non la crea se non c e."
+        },
+        "worked_example": {
+          "titolo": "Aggiornamento parziale con PATCH in Flask",
+          "problema": "Un client vuole aggiornare solo l indirizzo email di un utente senza modificare gli altri campi (nome, eta, citta).",
+          "passi": [
+            "Identificare l ID dell utente da aggiornare (es. 123)",
+            "Creare un oggetto JSON con SOLO il campo da aggiornare (email)",
+            "Inviare una richiesta PATCH all endpoint /users/<id>",
+            "Il server riceve la richiesta e estrae il campo email",
+            "Il server aggiorna solo il campo email, lasciando invariati gli altri",
+            "Il server risponde con 200 OK e i dati aggiornati"
+          ],
+          "soluzione": "# Client (JavaScript fetch)\nfetch('/api/users/123', {\n  method: 'PATCH',\n  headers: {'Content-Type': 'application/json'},\n  body: JSON.stringify({email: 'nuovo@example.com'})\n})\n.then(r => r.json())\n.then(data => console.log(data));\n\n# Server (Flask)\n@app.route('/api/users/<int:user_id>', methods=['PATCH'])\ndef update_user(user_id):\n    user = db.get_user(user_id)\n    if not user:\n        return jsonify({'error': 'User not found'}), 404\n    data = request.get_json()\n    for key, value in data.items():\n        setattr(user, key, value)\n    db.save_user(user)\n    return jsonify(user), 200",
+          "perche_funziona": "PATCH e progettato per aggiornamenti parziali. Il client invia solo i dati che vuole modificare, e il server applica quelle modifiche senza alterare gli altri campi. Questo e piu efficiente (meno dati trasmessi) e piu sicuro (minore rischio di sovrascrivere accidentalmente dati)."
+        },
+        "completion_problem": {
+          "titolo": "Completare la sostituzione completa con PUT",
+          "testo": "Il codice seguente implementa PUT per sostituire completamente un utente, ma mancano 2 passi fondamentali. Completa i passi mancanti.",
+          "passi_mancanti": [
+            "Validare che tutti i campi obbligatori siano presenti nella richiesta",
+            "Verificare che la risorsa esista prima di sostituirla"
+          ],
+          "soluzione": "@app.route('/api/users/<int:user_id>', methods=['PUT'])\ndef replace_user(user_id):\n    data = request.get_json()\n    required_fields = ['nome', 'email', 'eta', 'citta']\n    for field in required_fields:\n        if field not in data:\n            return jsonify({'error': f'Campo {field} mancante'}), 400\n    user = db.get_user(user_id)\n    if not user:\n        return jsonify({'error': 'User not found'}), 404\n    user = User(**data, id=user_id)\n    db.save_user(user)\n    return jsonify(user), 200"
+        },
+        "esercizio_autonomo": {
+          "titolo": "Implementare DELETE con soft delete",
+          "testo": "Modifica l endpoint DELETE per implementare il soft delete: invece di eliminare fisicamente la risorsa dal database, aggiungi un campo deleted_at con il timestamp corrente e nascondi la risorsa nelle query normali.",
+          "suggerimento": "Usa datetime.utcnow() per il timestamp. Aggiungi un filtro nelle query per escludere le risorse con deleted_at != NULL.",
+          "soluzione_attesa": "from datetime import datetime\n\n@app.route('/api/users/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    user = db.get_user(user_id)\n    if not user:\n        return jsonify({'error': 'User not found'}), 404\n    user.deleted_at = datetime.utcnow()\n    db.save_user(user)\n    return jsonify({'message': 'User deleted', 'id': user_id}), 200\n\n# Nelle query, filtra le risorse eliminate\n@app.route('/api/users')\ndef get_users():\n    users = db.query_users(filter_deleted=True)\n    return jsonify(users), 200"
+        },
+        "errori_trappole": [
           {
-            "conoscenza": "Protocollo HTTP",
-            "collegamento": "I metodi HTTP sono parte del protocollo HTTP.",
-            "nodo": "http-protocollo-base"
+            "errore": "Usare PUT quando si vogliono aggiornare solo alcuni campi",
+            "perche_sbagliato": "PUT sostituisce completamente la risorsa: se non fornisci tutti i campi, i campi mancanti verranno impostati a null o al valore di default, causando perdita di dati.",
+            "distrattore": "PUT e PATCH sono la stessa cosa"
           },
           {
-            "conoscenza": "REST principi",
-            "collegamento": "I metodi HTTP sono usati nelle API RESTful.",
-            "nodo": "rest-principi"
+            "errore": "Usare PATCH quando si vuole sostituire completamente la risorsa",
+            "perche_sbagliato": "PATCH aggiorna parzialmente: se il client non fornisce tutti i campi necessari, la risorsa potrebbe rimanere in uno stato incompleto o inconsistente.",
+            "distrattore": "PATCH puo sostituire tutto se invio tutti i campi"
+          },
+          {
+            "errore": "Non fornire tutti i campi in una richiesta PUT",
+            "perche_sbagliato": "PUT sostituisce completamente la risorsa. Se non fornisci tutti i campi obbligatori, la risorsa sara incompleta dopo l aggiornamento.",
+            "distrattore": "Con PUT posso omettere i campi che non voglio cambiare"
+          },
+          {
+            "errore": "Usare POST per creare una risorsa con URI noto",
+            "perche_sbagliato": "POST e per creare risorse quando il server decide l URI. Se il client conosce gia l URI completo (es. /users/123), deve usare PUT.",
+            "distrattore": "POST e PUT sono intercambiabili per la creazione"
+          },
+          {
+            "errore": "Pensare che PATCH sia sempre idempotente",
+            "perche_sbagliato": "PATCH non e necessariamente idempotente. Se l implementazione incrementa un valore (es. eta += 1), eseguire PATCH piu volte produce risultati diversi.",
+            "distrattore": "Tutti i metodi tranne POST sono idempotenti"
           }
         ],
-        "esempi_svolti": [
-          {
-            "titolo": "Aggiornamento parziale con PATCH",
-            "problema": "Un client vuole aggiornare solo l indirizzo email di un utente senza modificare gli altri campi.",
-            "passi": [
-              "Identificare l ID dell utente da aggiornare",
-              "Creare un oggetto JSON con solo il campo da aggiornare email",
-              "Inviare una richiesta PATCH all endpoint /users/<id>"
-            ],
-            "soluzione": "PATCH /users/123 HTTP/1.1\nContent-Type: application/json\n\n{\"email\": \"nuovo@example.com\"}\n\nImplementazione server Flask:\n@app.route('/users/<int:user_id>', methods=['PATCH'])\ndef update_user(user_id):\n    user = db.get_user(user_id)\n    if not user:\n        return jsonify({'error': 'User not found'}), 404\n    data = request.get_json()\n    for key, value in data.items():\n        setattr(user, key, value)\n    db.save_user(user)\n    return jsonify(user), 200",
-            "perche_funziona": "PATCH e progettato per aggiornamenti parziali. Il client invia solo i dati che vuole modificare, e il server applica quelle modifiche senza alterare gli altri campi. Questo e piu efficiente meno dati trasmessi e piu sicuro minore rischio di sovrascrivere accidentalmente dati."
-          },
-          {
-            "titolo": "Sostituzione completa con PUT",
-            "problema": "Un client vuole sostituire completamente i dati di un utente, fornendo tutti i campi aggiornati.",
-            "passi": [
-              "Recuperare i dati attuali dell utente",
-              "Modificare i campi desiderati",
-              "Creare un oggetto JSON con TUTTI i campi della risorsa",
-              "Inviare una richiesta PUT all endpoint /users/<id>"
-            ],
-            "soluzione": "PUT /users/123 HTTP/1.1\nContent-Type: application/json\n\n{\"nome\": \"Alice\", \"email\": \"alice@example.com\", \"eta\": 30, \"citta\": \"Milano\"}\n\nImplementazione server Flask:\n@app.route('/users/<int:user_id>', methods=['PUT'])\ndef replace_user(user_id):\n    data = request.get_json()\n    user = User(**data, id=user_id)\n    db.save_user(user)\n    return jsonify(user), 200",
-            "perche_funziona": "PUT e progettato per sostituzione completa. Il client deve fornire tutti i campi necessari, e il server sostituisce la risorsa esistente con i nuovi dati. Questo e utile quando si vuole garantire che la risorsa sia esattamente come specificato dal client."
-          }
-        ],
-        "errori_comuni": [
-          "Usare PUT quando si vogliono aggiornare solo alcuni campi: questo causa la perdita dei campi non forniti. Usare PATCH in questo caso.",
-          "Usare PATCH quando si vuole sostituire completamente la risorsa: questo puo causare dati incompleti se il client non fornisce tutti i campi necessari.",
-          "Non fornire tutti i campi in una richiesta PUT: la risorsa sara incompleta dopo l aggiornamento.",
-          "Confondere idempotenza di PUT: PUT e idempotente, ma solo se il client fornisce gli stessi dati. Se il client fornisce dati diversi, il risultato sara diverso."
-        ],
-        "domande_autoverifica": [
-          {
-            "domanda": "Qual e la differenza principale tra PUT e PATCH?",
-            "risposta": "PUT sostituisce completamente la risorsa tutti i campi devono essere forniti. PATCH aggiorna parzialmente solo i campi forniti vengono modificati."
-          },
-          {
-            "domanda": "PUT e idempotente? E PATCH?",
-            "risposta": "PUT e idempotente: piu richieste identiche producono lo stesso risultato. PATCH non e necessariamente idempotente: l ordine delle operazioni puo influire sul risultato finale."
-          },
-          {
-            "domanda": "Quando si dovrebbe usare PUT per creare una risorsa?",
-            "risposta": "PUT si usa per creare una risorsa quando il client conosce gia l URI completo della risorsa da creare. Ad esempio, PUT /users/123 per creare un utente con ID 123."
-          }
-        ],
-        "riepilogo": "GET legge, POST crea, PUT sostituisce completamente, PATCH aggiorna parzialmente, DELETE elimina. PUT e idempotente, PATCH no. Usare PUT per sostituzione completa, PATCH per aggiornamenti parziali."
+        "mnemonica": "Gentle People Prefer Peace: GET (safe), POST (create), PUT (replace), PATCH (partial), DELETE (remove).",
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Qual e la differenza principale tra PUT e PATCH?",
+              "risposta": "PUT sostituisce completamente la risorsa (tutti i campi devono essere forniti). PATCH aggiorna parzialmente (solo i campi forniti vengono modificati, gli altri rimangono invariati)."
+            },
+            {
+              "domanda": "PUT e idempotente? E PATCH?",
+              "risposta": "PUT e idempotente: piu richieste identiche producono lo stesso risultato. PATCH non e necessariamente idempotente: dipende dall implementazione."
+            },
+            {
+              "domanda": "Quando si dovrebbe usare PUT per creare una risorsa?",
+              "risposta": "PUT si usa per creare una risorsa quando il client conosce gia l URI completo della risorsa da creare (es. PUT /users/123 per creare l utente con ID 123)."
+            },
+            {
+              "domanda": "Qual e il codice di stato corretto per una richiesta POST che crea una risorsa?",
+              "risposta": "201 Created, con l header Location che indica l URI della nuova risorsa creata."
+            },
+            {
+              "domanda": "Cosa significa che un metodo e safe?",
+              "risposta": "Un metodo e safe se non modifica lo stato del server. GET e safe, POST/PUT/PATCH/DELETE non lo sono."
+            }
+          ],
+          "spiega_con_parole_tue": "Prova a spiegare a un amico che non sa nulla di programmazione: qual e la differenza tra modificare un documento Word (PUT) vs usare la funzione Trova e sostituisci (PATCH)?",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "rest-principi",
+              "collegamento": "I metodi HTTP sono parte dei principi REST. Un API RESTful deve usare i metodi HTTP correttamente secondo la loro semantica."
+            },
+            {
+              "nodo": "http-protocollo-base",
+              "collegamento": "I metodi HTTP fanno parte del protocollo HTTP base. Devi aver capito bene HTTP prima di studiare i metodi REST."
+            },
+            {
+              "nodo": "api-design-best-practice",
+              "collegamento": "La scelta del metodo HTTP corretto e fondamentale per un buon API design. PUT vs PATCH e una delle decisioni piu importanti."
+            }
+          ]
+        },
+        "riepilogo": "I 5 metodi HTTP: GET (leggi, safe, idempotente), POST (crea, non idempotente), PUT (sostituisci completamente, idempotente), PATCH (aggiorna parzialmente, non idempotente), DELETE (elimina, idempotente). PUT vs PATCH: PUT richiede tutti i campi, PATCH solo quelli da cambiare. Usa JSON Patch per PATCH idempotente.",
+        "flashcard": {
+          "fronte": "REST: Quali sono i 5 metodi HTTP principali e le loro caratteristiche?",
+          "retro": "1) GET: Read, safe, idempotente, 200 OK. 2) POST: Create, non idempotente, 201 Created. 3) PUT: Replace completa, non safe, idempotente, 200/204. 4) PATCH: Update parziale, non safe, non idempotente, 200/204. 5) DELETE: Delete, non safe, idempotente, 200/202/204."
+        },
+        "checklist": {
+          "so_fare": [
+            "Implementare endpoint RESTful con i metodi HTTP corretti",
+            "Scegliere tra PUT e PATCH in base al caso d uso",
+            "Validare i dati in entrata per PUT e POST",
+            "Restituire i codici di stato HTTP corretti",
+            "Usare JSON Patch per aggiornamenti parziali complessi"
+          ],
+          "so_dire": [
+            "Spiegare la differenza tra PUT e PATCH",
+            "Definire cosa significa idempotente e safe",
+            "Elencare i 5 metodi HTTP e le loro caratteristiche",
+            "Spiegare quando usare ogni metodo",
+            "Descrivere JSON Patch e JSON Merge Patch"
+          ]
+        }
       }
     },
     {
@@ -1315,71 +1458,141 @@
       ],
       "worker": "W2",
       "lezione": {
-        "intuizione": "Il box model CSS e come una scatola da regalo: content, padding, border, margin. Ogni strato aggiunge spazio e definisce come la scatola si relaziona con lo spazio circostante.",
-        "spiegazione": "## CSS Box Model: la struttura fondamentale degli elementi\n\nOgni elemento HTML e rappresentato come un rettangolo box in CSS. Il box model definisce come questo rettangolo e strutturato e come occupa spazio nella pagina. Comprendere il box model e fondamentale per il layout CSS.\n\n### I 4 componenti del Box Model\n\n#### Content\nIl content e il contenuto vero e proprio dell elemento: testo, immagini, video, ecc. Le proprieta width e height si applicano al content quando box-sizing e content-box.\n\n#### Padding\nIl padding e lo spazio interno tra il content e il border. E trasparente e mostra lo sfondo dell elemento. Puo essere specificato individualmente padding-top, padding-right, padding-bottom, padding-left o in shorthand padding: top right bottom left.\n\n#### Border\nIl border e il bordo che circonda il padding e il content. Ha tre proprieta: border-width spessore, border-style tipo solid, dashed, dotted, ecc., e border-color. Puo essere specificato in shorthand border: width style color.\n\n#### Margin\nIl margin e lo spazio esterno fuori dal border. E trasparente e non mostra lo sfondo. Puo essere specificato individualmente o in shorthand. Il margin non fa parte delle dimensioni del box stesso.\n\n### Dimensione totale del box\n\nLa dimensione totale occupata da un elemento e calcolata come:\n\n- Dimensione totale width = width + padding-left + padding-right + border-left-width + border-right-width\n- Dimensione totale height = height + padding-top + padding-bottom + border-top-width + border-bottom-width\n\n> Importante: Il margin NON fa parte della dimensione del box stesso, ma influisce sullo spazio che l elemento occupa nel layout.\n\n### box-sizing: il comportamento predefinito vs alternativo\n\n#### content-box default\nCon box-sizing: content-box il valore predefinito:\n- La proprieta width si applica SOLO al content\n- Padding e border vengono AGGIUNTI alla width\n- Questo puo portare a sorprese con le dimensioni finali\n\nEsempio:\n```css\ndiv {\n  width: 200px;\n  padding: 20px;\n  border: 5px solid black;\n  box-sizing: content-box; /* default */\n}\n/* Dimensione totale = 200 + 20*2 + 5*2 = 250px */\n```\n\n#### border-box consigliato\nCon box-sizing: border-box:\n- La proprieta width include content, padding e border\n- La dimensione specificata e la dimensione TOTALE del box\n- Questo rende piu intuitivo il controllo delle dimensioni\n\nEsempio:\n```css\ndiv {\n  width: 200px;\n  padding: 20px;\n  border: 5px solid black;\n  box-sizing: border-box; /* consigliato */\n}\n/* Dimensione totale = 200px width include padding e border */\n```\n\n> Best practice: Usare box-sizing: border-box per tutti gli elementi per evitare sorprese con le dimensioni. Questo e cosi importante che molti reset CSS lo impostano come default per tutti gli elementi.\n\n### Proprieta del Box Model\n\n#### Content\n- width: larghezza del contenuto\n- height: altezza del contenuto\n- min-width / max-width: limiti di dimensione minima e massima\n- min-height / max-height: limiti di dimensione minima e massima\n\n#### Padding\n- padding-top, padding-right, padding-bottom, padding-left: padding individuale\n- padding: shorthand con 1-4 valori\n- Valori: pixel, em, rem, percentuale rispetto alla width del contenitore\n\n#### Border\n- border-width: spessore del bordo\n- border-style: tipo di bordo solid, dashed, dotted, double, groove, ridge, inset, outset\n- border-color: colore del bordo\n- border: shorthand per width, style, color\n- border-radius: angoli arrotondati\n\n#### Margin\n- margin-top, margin-right, margin-bottom, margin-left: margin individuale\n- margin: shorthand con 1-4 valori\n- Valori: pixel, em, rem, percentuale, auto\n\n### Margin Collapsing Crollo dei margin\n\nUn fenomeno importante: i margin verticali adiacenti si fondono e solo il piu grande viene applicato. Questo vale per margin-top e margin-bottom, non per margin-left e margin-right.\n\nEsempio:\n```html\n<style>\n  .box { height: 50px; margin: 20px 0; }\n</style>\n<div class=\"box\">Box 1</div>\n<div class=\"box\">Box 2</div>\n<!-- Lo spazio tra i box e 20px, non 40px! -->\n```\n\nPer evitare il collapsing:\n- Usare padding invece di margin\n- Usare display: flex o display: grid\n- Aggiungere overflow: auto al contenitore\n\n### Box Model e display property\n\nIl box model si applica diversamente a seconda del valore di display:\n\n| display | Box Model | Comportamento |\n|---------|-----------|--------------|\n| block | Applicato completamente | Inizia su nuova riga, width: 100% per default |\n| inline | Applicato parzialmente | Non inizia su nuova riga, width/height non applicabili |\n| inline-block | Applicato completamente | Inline ma con width/height applicabili |\n| flex | Applicato con modifiche | Figli seguono modello flex |\n| grid | Applicato con modifiche | Figli seguono modello grid |\n\nPer elementi inline come span, a:\n- width e height non hanno effetto\n- margin-top e margin-bottom non hanno effetto\n- Solo margin-left e margin-right funzionano\n\n```mermaid\ngraph TD\n    Margin[Margin\nspazio esterno] --> Border[Border\nbordo]\n    Border --> Padding[Padding\nspazio interno]\n    Padding --> Content[Content\ncontenuto]\n```",
-        "analogia": "Il box model CSS e come una matrioska bambola russa: la bambola piu interna e il content il cuoricino, poi c e il padding il vestitino che avvolge il cuoricino, poi il border la bambola esterna che contiene tutto, e infine il margin lo spazio vuoto tra una matrioska e l altra sul tavolo. Ogni strato ha il suo scopo: il content e il vero contenuto, il padding e lo spazio di comfort intorno al contenuto, il border e il confine visibile, e il margin e lo spazio di rispetto verso gli altri elementi. L analogia smette di valere quando: nel CSS, il margin non fa parte delle dimensioni del box stesso non e una bambola ma lo spazio tra le bambole, mentre nella matrioska tutti gli strati sono parte fisica dell oggetto.",
-        "collegamenti_prior": [
+        "perche_ti_serve": "Argomento FONDAMENTALE per il front-end (Gruppo A, ~65%). Vale 3-4 punti allo scritto. Esce in TUTTE le prove pratiche di CSS. Se non lo capisci, non riesci a fare layout.",
+        "scenario_fil_rouge": "Immagina di dover creare la homepage di un e-commerce. Devi posizionare il logo in alto, il menu di navigazione sotto, i prodotti in una griglia, e il footer in basso. Ogni elemento (logo, menu, prodotto, footer) e un box CSS. Il box model definisce come questi box occupano spazio, si posizionano e interagiscono tra loro. Senza capire il box model, non riesci a creare layout professionali.",
+        "definizione_esame": {
+          "definizione": "Il CSS Box Model e il modello che definisce come ogni elemento HTML e rappresentato come un rettangolo (box) composto da 4 strati: content, padding, border e margin.",
+          "scopo_vantaggio": "Permette di controllare con precisione le dimensioni, lo spazio e il posizionamento di ogni elemento nella pagina, creando layout prevedibili e coerenti.",
+          "esempio": "Un bottone con testo Acquista ha: content = testo Acquista, padding = spazio intorno al testo, border = bordo visibile, margin = spazio esterno che separa il bottone dagli altri elementi."
+        },
+        "spiegazione": "## CSS Box Model: la struttura fondamentale del layout\n\nOgni elemento HTML e rappresentato come un rettangolo (box) in CSS. Il box model definisce la struttura interna di questo rettangolo.\n\n### I 4 componenti del Box Model (dall interno verso l esterno)\n\n```mermaid\ngraph TD\n    Content[Content\ncontenuto] --> Padding[Padding\nspazio interno]\n    Padding --> Border[Border\nbordo]\n    Border --> Margin[Margin\nspazio esterno]\n```\n\n#### 1. Content (Contenuto)\nIl contenuto vero e proprio dell elemento: testo, immagini, video, altri elementi HTML.\nLe proprieta width e height si applicano al content (per default).\n\n#### 2. Padding (Spazio interno)\nLo spazio trasparente tra il content e il border. Mostra lo sfondo dell elemento.\nPuò essere specificato individualmente o in shorthand.\n\n#### 3. Border (Bordo)\nIl bordo visibile che circonda padding e content. Ha 3 proprieta: border-width, border-style, border-color.\n\n#### 4. Margin (Spazio esterno)\nLo spazio trasparente fuori dal border. Non mostra lo sfondo dell elemento.\nPuò causare margin collapsing (vedi dopo).\n\n### Dimensione totale del box\nDimensione totale width = width + padding-left + padding-right + border-left-width + border-right-width\nDimensione totale height = height + padding-top + padding-bottom + border-top-width + border-bottom-width\n\nImportante: Il margin NON fa parte delle dimensioni del box stesso, ma influisce sullo spazio che l elemento occupa nel layout.\n\n### box-sizing: il comportamento che cambia tutto\n\n#### content-box (default)\nCon box-sizing: content-box (valore predefinito):\n- La proprieta width si applica SOLO al content\n- Padding e border vengono AGGIUNTI alla width\n- Questo puo portare a sorprese con le dimensioni finali\n\nEsempio:\nwidth: 200px; padding: 20px; border: 5px; box-sizing: content-box;\nDimensione totale = 200 + 20*2 + 5*2 = 250px\n\n#### border-box (consigliato)\nCon box-sizing: border-box:\n- La proprieta width INCLUDE content, padding e border\n- La dimensione specificata e la dimensione TOTALE del box\n- Questo rende piu intuitivo il controllo delle dimensioni\n\nEsempio:\nwidth: 200px; padding: 20px; border: 5px; box-sizing: border-box;\nDimensione totale = 200px\n\nBest practice: Usare box-sizing: border-box per tutti gli elementi.\n\n### Margin Collapsing (Crollo dei margin)\nUn fenomeno importante: i margin verticali adiacenti si fondono e solo il piu grande viene applicato.\n\nEsempio:\n.div { height: 50px; margin: 20px 0; }\nLo spazio tra i div e 20px, NON 40px!\n\nCome evitarlo:\n- Usare padding invece di margin\n- Usare display: flex o display: grid\n- Aggiungere overflow: auto al contenitore\n\n### Box Model e display property\nIl box model si applica diversamente a seconda del valore di display:\n\n| display | Box Model | Comportamento |\n|---------|-----------|--------------|\n| block | Applicato completamente | Inizia su nuova riga, width: 100% per default |\n| inline | Applicato parzialmente | Non inizia su nuova riga, width/height NON applicabili |\n| inline-block | Applicato completamente | Inline ma con width/height applicabili |\n\nAttenzione per elementi inline (span, a):\n- width e height non hanno effetto\n- margin-top e margin-bottom non hanno effetto\n- Solo margin-left e margin-right funzionano\n\nSoluzione: Usare display: inline-block o display: block.\n\n### Esempio pratico: centrare un box\nCentrare un div orizzontalmente:\n```css\ndiv {\n  width: 300px;\n  margin: 0 auto;\n}\n```\nFunziona solo per elementi block con width definita.",
+        "analogia": {
+          "testo": "Il box model CSS e come una scatola da regalo con 4 strati: il content e il regalo vero e proprio (il libro, il profumo), il padding e la carta da imballaggio che avvolge il regalo, il border e il nastro che chiude la scatola, il margin e lo spazio sul tavolo tra una scatola e l altra.",
+          "limite": "Nella realta, la carta da imballaggio (padding) fa parte delle dimensioni della scatola, mentre nel CSS il padding e aggiuntivo alla width del content (a meno che non si usi box-sizing: border-box). Inoltre, il margin non e una parte fisica della scatola, ma solo lo spazio tra le scatole."
+        },
+        "worked_example": {
+          "titolo": "Calcolare la dimensione totale di un elemento",
+          "problema": "Dato un div con: width: 250px, padding: 15px, border: 5px, margin: 10px, e box-sizing: content-box (default). Calcolare: 1) la dimensione del box (content + padding + border), 2) la dimensione totale occupata (box + margin).",
+          "passi": [
+            "Identificare la width del content: 250px",
+            "Aggiungere padding sinistro e destro: 15px * 2 = 30px",
+            "Aggiungere border sinistro e destro: 5px * 2 = 10px",
+            "Calcolare dimensione del box: 250 + 30 + 10 = 290px",
+            "Aggiungere margin sinistro e destro: 10px * 2 = 20px",
+            "Calcolare dimensione totale occupata: 290 + 20 = 310px"
+          ],
+          "soluzione": "Dimensione del box (content + padding + border) = 250 + 15*2 + 5*2 = 290px.\nDimensione totale occupata (box + margin) = 290 + 10*2 = 310px.\nNota: Il margin non fa parte delle dimensioni del box stesso.\nCon box-sizing: border-box, la width di 250px includerebbe gia padding e border, quindi il box sarebbe 250px e il totale 270px.",
+          "perche_funziona": "Il box model CSS definisce chiaramente come ogni componente (content, padding, border, margin) contribuisce alle dimensioni finali. La formula e standard e valida per tutti gli elementi block e inline-block."
+        },
+        "completion_problem": {
+          "titolo": "Completare il centramento di un box",
+          "testo": "Il codice CSS seguente dovrebbe centrare un div orizzontalmente, ma manca una proprieta fondamentale. Completa il codice.",
+          "passi_mancanti": [
+            "Aggiungere la proprieta width al div"
+          ],
+          "soluzione": "div {\n  width: 300px;\n  margin: 0 auto;\n}\n\nSpiegazione: margin-left: auto e margin-right: auto dicono al browser di distribuire lo spazio disponibile equamente su entrambi i lati, centrando cosi l elemento. Funziona solo per elementi block con width definita."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Creare una card con box model ben definito",
+          "testo": "Crea una card per un prodotto e-commerce con: content (immagine + titolo + prezzo), padding di 15px, border di 1px solido grigio, margin di 10px. Usa box-sizing: border-box per semplificare i calcoli. La card deve avere width totale di 250px.",
+          "suggerimento": "Con box-sizing: border-box, la width di 250px includera già padding e border. Non devi calcolare manualmente la width del content.",
+          "soluzione_attesa": ".ard {\n  width: 250px;\n  padding: 15px;\n  border: 1px solid #ccc;\n  margin: 10px;\n  box-sizing: border-box;\n}\n\n.card img {\n  width: 100%;\n  height: auto;\n  display: block;\n}\n\nCon box-sizing: border-box, il content avra automaticamente:\nwidth = 250px - 15px (padding-left) - 15px (padding-right) - 1px (border-left) - 1px (border-right) = 218px"
+        },
+        "errori_trappole": [
           {
-            "conoscenza": "CSS base",
-            "collegamento": "Il box model e il concetto fondamentale su cui si basa tutto il layout CSS. Senza capire il box model, e impossibile comprendere come gli elementi si posizionano nella pagina.",
-            "nodo": "css-origini-ereditarieta"
+            "errore": "Dimenticare che padding e border vengono aggiunti alla width con box-sizing: content-box (default)",
+            "perche_sbagliato": "Questo porta a dimensioni totali maggiore di quella attesa. Se vuoi un box di 200px totale, devi impostare width a 200px - padding - border, che e controintuitivo.",
+            "distrattore": "La width include sempre padding e border"
           },
           {
-            "conoscenza": "HTML structure",
-            "collegamento": "Ogni elemento HTML genera un box che segue il box model CSS. La struttura HTML definisce quali box esistono, CSS definisce come si comportano.",
-            "nodo": "html-form-accessibilita"
+            "errore": "Pensare che margin faccia parte delle dimensioni del box",
+            "perche_sbagliato": "Il margin e spazio esterno e non contribuisce alla dimensione del box stesso. Tuttavia, influisce sullo spazio totale occupato nel layout.",
+            "distrattore": "Margin, border e padding fanno parte delle dimensioni del box"
+          },
+          {
+            "errore": "Non usare box-sizing: border-box",
+            "perche_sbagliato": "Questo costringe a calcolare manualmente le dimensioni totali ogni volta, portando a errori e frustrazione. box-sizing: border-box e la soluzione standard moderna.",
+            "distrattore": "box-sizing: content-box e il default, quindi va bene"
+          },
+          {
+            "errore": "Applicare width e height a elementi inline (span, a)",
+            "perche_sbagliato": "Gli elementi inline ignorano width e height. Per applicare dimensioni, devi usare display: inline-block o block.",
+            "distrattore": "Posso dare width a un span"
+          },
+          {
+            "errore": "Dimenticare il margin collapsing",
+            "perche_sbagliato": "I margin verticali adiacenti si fondono, portando a spazi minori di quelli attesi. Questo puo rompere il layout.",
+            "distrattore": "Due margin di 20px = 40px di spazio"
+          },
+          {
+            "errore": "Confondere padding con margin",
+            "perche_sbagliato": "Padding e spazio interno tra content e border (mostra lo sfondo), margin e spazio esterno fuori dal border (non mostra lo sfondo).",
+            "distrattore": "Padding e margin sono la stessa cosa"
           }
         ],
-        "esempi_svolti": [
-          {
-            "titolo": "Calcolare la dimensione totale di un elemento",
-            "problema": "Dato un div con width: 250px, padding: 15px, border: 5px, margin: 10px, e box-sizing: content-box, calcolare la dimensione totale occupata.",
-            "passi": [
-              "Identificare la width del content: 250px",
-              "Aggiungere padding sinistro e destro: 15px * 2 = 30px",
-              "Aggiungere border sinistro e destro: 5px * 2 = 10px",
-              "Calcolare dimensione del box: 250 + 30 + 10 = 290px",
-              "Aggiungere margin sinistro e destro: 10px * 2 = 20px",
-              "Calcolare dimensione totale occupata: 290 + 20 = 310px"
-            ],
-            "soluzione": "Dimensione del box content + padding + border = 250 + 15*2 + 5*2 = 250 + 30 + 10 = 290px. Dimensione totale occupata box + margin = 290 + 10*2 = 310px. Note: Il margin non fa parte delle dimensioni del box stesso. Con box-sizing: border-box, la width di 250px includerebbe gia padding e border, quindi il box sarebbe 250px e il totale 250 + 20 = 270px.",
-            "perche_funziona": "Il box model CSS definisce chiaramente come ogni componente content, padding, border, margin contribuisce alle dimensioni finali. La formula e standard e valida per tutti gli elementi block e inline-block."
-          },
-          {
-            "titolo": "Centrare un box orizzontalmente",
-            "problema": "Centrare un div di 300px orizzontalmente nella pagina.",
-            "passi": [
-              "Impostare una width fissa per il div",
-              "Impostare margin-left e margin-right a auto",
-              "Il browser calcolera automaticamente i margin uguali per centrare il div"
-            ],
-            "soluzione": "div { width: 300px; margin-left: auto; margin-right: auto; } Oppure in shorthand: margin: 0 auto; Spiegazione: margin-left: auto e margin-right: auto dicono al browser usa lo spazio disponibile equamente su entrambi i lati. Funziona solo per elementi block con width definita. Non funziona per elementi inline usare display: block o inline-block.",
-            "perche_funziona": "Il valore auto per margin in un contesto block dice al browser di distribuire lo spazio disponibile equamente. Con margin-left: auto e margin-right: auto, il browser calcola automaticamente i valori che centrano l elemento orizzontalmente."
-          }
-        ],
-        "errori_comuni": [
-          "Dimenticare che padding e border vengono aggiunti alla width con box-sizing: content-box default: questo porta a dimensioni totali maggiore di quella attesa.",
-          "Pensare che margin faccia parte delle dimensioni del box: il margin e spazio esterno e non contribuisce alla dimensione del box stesso, ma influisce sul layout.",
-          "Non usare box-sizing: border-box: questo costringe a calcolare manualmente le dimensioni totali, portando a errori e frustrazione.",
-          "Applicare width e height a elementi inline: gli elementi inline come span, a ignorano width e height. Usare display: inline-block o block.",
-          "Dimenticare il margin collapsing: i margin verticali adiacenti si fondono, portando a spazi minori di quelli attesi.",
-          "Confondere padding con margin: padding e spazio interno tra content e border, margin e spazio esterno fuori dal border."
-        ],
-        "domande_autoverifica": [
-          {
-            "domanda": "Quali sono i 4 componenti del box model CSS?",
-            "risposta": "I 4 componenti sono: 1 Content contenuto, 2 Padding spazio interno tra content e border, 3 Border bordo, 4 Margin spazio esterno fuori dal border."
-          },
-          {
-            "domanda": "Qual e la differenza tra box-sizing: content-box e box-sizing: border-box?",
-            "risposta": "Con content-box default, la proprieta width si applica solo al content, e padding e border vengono aggiunti alla width totale. Con border-box, la proprieta width include content, padding e border, quindi la dimensione specificata e la dimensione totale del box."
-          },
-          {
-            "domanda": "Il margin fa parte delle dimensioni del box?",
-            "risposta": "No, il margin non fa parte delle dimensioni del box stesso. Il margin e lo spazio esterno che separa il box dagli altri elementi. Le dimensioni del box sono date da content + padding + border."
-          }
-        ],
-        "riepilogo": "Il box model CSS definisce la struttura di ogni elemento HTML come un rettangolo composto da content, padding, border e margin. Con box-sizing: content-box default, la width si applica solo al content; con border-box, la width include padding e border. Il margin non fa parte delle dimensioni del box ma influisce sul layout. Usare border-box per semplificare il controllo delle dimensioni."
+        "mnemonica": "Come Possibile Bordo Margine: Content, Padding, Border, Margin. Oppure: Cuore, Pelle, Bracciali, Mano.",
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Quali sono i 4 componenti del box model CSS?",
+              "risposta": "I 4 componenti sono: 1) Content (contenuto), 2) Padding (spazio interno tra content e border), 3) Border (bordo), 4) Margin (spazio esterno fuori dal border)."
+            },
+            {
+              "domanda": "Qual e la differenza tra box-sizing: content-box e box-sizing: border-box?",
+              "risposta": "Con content-box (default), la proprieta width si applica solo al content, e padding e border vengono aggiunti alla width totale. Con border-box, la proprieta width include content, padding e border, quindi la dimensione specificata e la dimensione totale del box."
+            },
+            {
+              "domanda": "Il margin fa parte delle dimensioni del box?",
+              "risposta": "No, il margin non fa parte delle dimensioni del box stesso. Il margin e lo spazio esterno che separa il box dagli altri elementi. Le dimensioni del box sono date da content + padding + border."
+            },
+            {
+              "domanda": "Cosa e il margin collapsing e come si evita?",
+              "risposta": "Il margin collapsing e il fenomeno per cui i margin verticali adiacenti si fondono e solo il piu grande viene applicato. Si evita usando padding invece di margin, display: flex/grid, overflow: auto, o display: inline-block."
+            },
+            {
+              "domanda": "Perche box-sizing: border-box e consigliato?",
+              "risposta": "Perche rende il controllo delle dimensioni piu intuitivo: la width specificata e la dimensione totale del box (content + padding + border), senza dover calcolare manualmente la width del content."
+            }
+          ],
+          "spiega_con_parole_tue": "Prova a spiegare a un amico che non sa nulla di CSS: perche quando dai width: 200px a un div con padding: 10px, il div non e largo 200px ma 220px? Usa l analogia della scatola da regalo o inventane una tua.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "css-origini-ereditarieta",
+              "collegamento": "Il box model e il concetto fondamentale su cui si basa tutto il layout CSS. Senza capire il box model, e impossibile comprendere come gli elementi si posizionano nella pagina."
+            },
+            {
+              "nodo": "html-form-accessibilita",
+              "collegamento": "Ogni elemento HTML genera un box che segue il box model CSS. La struttura HTML definisce quali box esistono, CSS definisce come si comportano e si posizionano."
+            },
+            {
+              "nodo": "dom-virtual-dom",
+              "collegamento": "Il DOM rappresenta la struttura degli elementi HTML, e ogni elemento nel DOM ha un box model associato che ne definisce il layout visivo."
+            }
+          ]
+        },
+        "riepilogo": "Il box model CSS definisce la struttura di ogni elemento HTML come un rettangolo composto da 4 strati: content (contenuto), padding (spazio interno), border (bordo), margin (spazio esterno). Con box-sizing: content-box (default), width si applica solo al content; con border-box (consigliato), width include padding e border. Il margin non fa parte delle dimensioni del box ma influisce sul layout. Usare border-box per semplificare il controllo delle dimensioni.",
+        "flashcard": {
+          "fronte": "CSS Box Model: Quali sono i 4 componenti e come si calcola la dimensione totale?",
+          "retro": "4 componenti: Content (contenuto), Padding (spazio interno), Border (bordo), Margin (spazio esterno). Dimensione box = width + padding-left + padding-right + border-left + border-right. Dimensione totale = dimensione box + margin-left + margin-right. Con box-sizing: border-box, width include gia padding e border."
+        },
+        "checklist": {
+          "so_fare": [
+            "Calcolare le dimensioni totali di un elemento con box model",
+            "Usare box-sizing: border-box per tutti gli elementi",
+            "Centrare un box orizzontalmente con margin: 0 auto",
+            "Creare layout con padding e margin appropriati",
+            "Evitare il margin collapsing con le tecniche appropriate",
+            "Applicare border con stili e colori diversi"
+          ],
+          "so_dire": [
+            "Spiegare i 4 componenti del box model CSS",
+            "Descrivere la differenza tra content-box e border-box",
+            "Spiegare il margin collapsing e come evitarlo",
+            "Definire cosa e padding e cosa e margin",
+            "Spiegare perche box-sizing: border-box e consigliato",
+            "Descrivere come il box model si applica a diversi valori di display"
+          ]
+        }
       }
     },
     {

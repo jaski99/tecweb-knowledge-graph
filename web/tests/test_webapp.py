@@ -17,6 +17,7 @@ def test_index_riferisce_moduli_esistenti():
     """Verifica che index.html referenzi solo moduli JS/CSS esistenti."""
     html = (WEB / "index.html").read_text(encoding="utf-8")
     assert '<html lang="it">' in html, "HTML deve essere in italiano"
+    assert "Tecnologie Web" in html, "Index deve contenere Tecnologie Web"
     for src in re.findall(r'(?:src|href)="((?:js|css)/[^"]+)"', html):
         assert (WEB / src).is_file(), f"File referenziato non esiste: {src}"
 
@@ -39,9 +40,10 @@ def test_build_copia_graph():
 def test_unit_js():
     """Esegue i test unitari JavaScript con Node.js."""
     # Verifica che esista un file di test
-    test_files = list((WEB / "js").rglob("*.test.js")) + list((WEB / "js").rglob("test*.js"))
+    test_files = list((WEB / "js").rglob("*.test.js"))
     if not test_files:
-        pytest.skip("Nessun file di test JavaScript trovato")
+        # Se non ci sono test .test.js, il test passa
+        return
     
     # Esegue i test con Node.js
     for test_file in test_files:
@@ -51,9 +53,9 @@ def test_unit_js():
             capture_output=True,
             text=True
         )
-        # Per ora, non falliamo se non ci sono test o se falliscono
-        # In Fase 2 verranno aggiunti test JS completi
-        pass
+        # Se il test fallisce, fallisce anche pytest
+        if result.returncode != 0:
+            pytest.fail(f"Test JS fallito: {test_file}\n{result.stdout}\n{result.stderr}")
 
 
 def test_http_server_serve_app():

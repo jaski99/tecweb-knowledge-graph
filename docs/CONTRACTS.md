@@ -1,10 +1,10 @@
 # Contratti del knowledge graph — Tecnologie Web
 
-**Fonte unica di verità: `graph/graph.json`** (schema v3), **generato** da `graph/meta.json` + `graph/parts/area-N.json` + `graph/lezioni/<id>.json` con `python scripts/kg.py build`. Niente note Markdown. Gli archi NON sono memorizzati: si derivano da `prerequisiti` (arco `prerequisito.id → nodo`, sia hard sia soft).
+**Fonte unica di verità: `graph/graph.json`** (schema v4), **generato** da `graph/meta.json` + `graph/parts/area-N.json` + `graph/lezioni/<id>.json` con `python scripts/kg.py build`. Niente note Markdown. Gli archi NON sono memorizzati: si derivano da `prerequisiti` (arco `prerequisito.id → nodo`, sia hard sia soft).
 
 ## graph.json (radice)
 ```json
-{ "versione": 3, "corso": {...}, "aree": [{"id":1,"titolo":"..."}, ... 6 aree],
+{ "versione": 4, "corso": {...}, "aree": [{"id":1,"titolo":"..."}, ... 6 aree],
   "testi": {"MDN": "...", ...}, "nota_esame": "...",
   "nodi": [ <nodo>, ... ordinati per (area, id) ] }
 ```
@@ -18,6 +18,7 @@
 | `area` | int 1..6 | vedi aree (1=Fondamenti rete e HTTP, 2=Architetture, 3=Front-end, 4=Back-end e strumenti, 5=Web semantico, 6=Tesina) |
 | `tipo` | `concetto` \| `abilita` \| `tipo_esercizio` | concetto = sapere; abilita = procedura; tipo_esercizio = famiglia di esercizi d'esame |
 | `gruppo` | `A` \| `B` \| `C` | Classificazione dal materiale utente: A=iper-riciclati (~65%), B=varianti (~20%), C=punti ciechi (~15%) |
+| `worker` | `W1` \| `W2` \| `W3` \| `W4` \| `W5` | Worker assegnato per la FASE 2: W1=area1-2, W2=area3, W3=area4-5, W4=area6-quiz, W5=webapp |
 | `sapere` | string | 1-4 frasi, cosa si deve conoscere |
 | `saper_fare` | string[] ≥1 | criteri osservabili (verbo d'azione), ~2-4 |
 | `prerequisiti` | [{id, forza: hard\|soft, motivo}] | id esistenti, niente self-loop; **nessun ciclo considerando archi hard+soft**. hard = indispensabile; soft = utile |
@@ -29,18 +30,37 @@
 | `lezione` | oggetto (opzionale nello schema, **obbligatorio per completezza**) | vedi sotto; sta in `graph/lezioni/<id>.json`, **mai inline nel part** |
 | `riferimenti_testo` | [{libro, capitolo_o_sezione?}] | `libro` = chiave in `testi` (MDN, RFC, W3C, FLASK, GIT, ECMA, SQLite); capitolo SOLO se verificato su indice reale |
 
-## Lezione (v3) — il nodo deve bastare per imparare
+## Lezione (v4) — struttura in 10 punti secondo DIDATTICA.md
 
-| campo | regole |
-|---|---|
-| `intuizione` | 2-4 frasi: l'idea in parole semplici (≥80 caratteri) |
-| `spiegazione` | markdown lungo e autosufficiente (≥1500 car.): `##`/`###`, ≥1 blocco ```java o ```mermaid; mermaid valido (niente etichette che iniziano con "1. ", niente `<` grezzi) |
-| `analogia` | un'immagine della vita quotidiana, con il punto in cui l'analogia smette di valere |
-| `collegamenti_prior` | ≥2 [{conoscenza, collegamento, nodo?}]: cosa sai già e come si aggancia; `nodo` = id esistente |
-| `esempi_svolti` | [{titolo, problema, passi[≥2], soluzione, perche_funziona}]: **≥2** per abilita/tipo_esercizio, ≥1 per concetto |
-| `errori_comuni` | ≥2 trappole concrete |
-| `domande_autoverifica` | ≥3 [{domanda, risposta}], risposte complete |
-| `riepilogo` | ≤5 righe |
+**Obiettivo**: massima ritenzione dopo una sola lettura attenta, con consolidamento tramite ripasso. Basato su evidenza scientifica (Dunlosky 2013, Sweller Cognitive Load Theory, Mayer Multimedia Learning, Bjork desirable difficulties, Roediger-Karpicke testing effect, Ebbinghaus/SM-2).
+
+| # | campo | tipo | regole | obbligatorio |
+|---|---|---|---|---|
+| 1 | `perche_ti_serve` | string | 20-200 caratteri: dove esce all'esame, gruppo A/B/C, quanti punti vale | ✅ |
+| 2 | `scenario_fil_rouge` | string | ≥50 caratteri: storia/scenario concreto (es. carrello e-commerce, biblioteca) riusato in tutto il corso | ✅ |
+| 3 | `definizione_esame` | object | Regola dei 3 punti: `definizione` (≥10 car., da memorizzare), `scopo_vantaggio` (≥10 car.), `esempio` (≥10 car.) | ✅ |
+| 4 | `spiegazione` | string | ≥1500 caratteri, a piccoli blocchi (un'idea per blocco, frasi brevi), `##`/`###`, ≥1 blocco ```java o ```mermaid; mermaid valido | ✅ |
+| 5 | `analogia` | object | `testo` (≥40 car.: immagine quotidiana), `limite` (≥10 car.: dove smette di funzionare) | ✅ |
+| 6a | `worked_example` | object | Esempio svolto: `titolo` (≥3), `problema` (≥20), `passi` (≥2, ogni passo ≥5), `soluzione` (≥10), `perche_funziona` (≥20) | ✅ |
+| 6b | `completion_problem` | object | Passi mancanti: `titolo` (≥3), `testo` (≥20), `passi_mancanti` (≥1, ogni passo ≥5), `soluzione` (≥10) | ✅ |
+| 6c | `esercizio_autonomo` | object | Esercizio autonomo: `titolo` (≥3), `testo` (≥20), `suggerimento` (≥10), `soluzione_attesa` (≥10) | ✅ |
+| 7 | `errori_trappole` | array | ≥2 errori: ogni errore ha `errore` (≥10), `perche_sbagliato` (≥10), `distrattore` (≥5, fuori contesto) | ✅ |
+| 8 | `mnemonica` | string | 10-500 caratteri: acronimi, loci, storiella (opzionale) | ❌ |
+| 9 | `richiamo_attivo` | object | `domande` (3-5, ogni domanda/risposta ≥10), `spiega_con_parole_tue` (≥20), `collegamenti_interleaving` (≥1, ogni collegamento ≥20 con nodo esistente) | ✅ |
+| 10a | `riepilogo` | string | 40-800 caratteri, ≤5 righe | ✅ |
+| 10b | `flashcard` | object | `fronte` (≥5), `retro` (≥5) per ripasso SM-2 | ✅ |
+| 10c | `checklist` | object | `so_fare` (≥1, ogni elemento ≥3), `so_dire` (≥1, ogni elemento ≥3) | ✅ |
+
+**Regole trasversali**:
+- Carico cognitivo basso: prima l'intuizione, poi i dettagli
+- Prerequisiti richiamati in 1 riga all'inizio
+- Terminologia coerente col gruppo A/B/C
+- Niente contenuti inventati: solo ciò che risulta da programma, prove d'esame reali o `nota_esame`
+- Risorse verificate (URL HTTP 200 via `scripts/check_urls.py`)
+- Autosufficiente: niente rimandi al libro per capire ("vedi capitolo…" vietati)
+- JavaScript/HTML/CSS moderno e verificabile negli esempi
+- Esempi svolti con passi numerati e risultato verificabile
+- Fading graduale: worked example → completion problem → esercizio autonomo
 
 ## Regole di qualità (testate dove possibile in `tests/test_lezioni.py`)
 
@@ -155,63 +175,113 @@
     "HTTP stateless per design",
     "Meccanismi di stato: cookie, token, sessioni",
     "Cookie: Set-Cookie (server→client), Cookie (client→server)"
-  ]
+  ],
+  "worker": "W1"
 }
 ```
 
-## Esempio di lezione (v3, in graph/lezioni/http-stateless-vs-stateful.json)
+## Esempio di lezione (v4, in graph/lezioni/http-stateless-vs-stateful.json)
 
 ```json
 {
-  "intuizione": "HTTP è come un sportello postale: ogni volta che fai una richiesta (consegna un pacco), il dipendente non si ricorda di te dalla volta precedente. Se vuoi che si ricordi (es. il tuo indirizzo), devi portarglielo scritto ogni volta (cookie) o mostrare un tesserino (token).",
-  "spiegazione": "## HTTP Stateless: il principio fondamentale\n\nHTTP (Hypertext Transfer Protocol) è progettato per essere **stateless**, cioè senza memoria tra richieste consecutive. Questo significa che:\n\n1. Ogni richiesta HTTP è **indipendente** dalle altre\n2. Il server **non mantiene** informazioni sullo stato del client tra richieste\n3. Tutte le informazioni necessarie sono **contenute nella richiesta stessa**\n\n### Perché stateless?\n\n```mermaid\ngraph TD\n    A[Client] -->|Richiesta 1| B[Server]\n    A -->|Richiesta 2| B\n    B -->|Risposta 1| A\n    B -->|Risposta 2| A\n```\n\n- **Scalabilità**: i server possono gestire più client senza mantenere stato\n- **Semplificazione**: protocollo più semplice da implementare\n- **Affidabilità**: in caso di crash del server, non si perde lo stato\n\n### Come gestire lo stato?\n\n#### 1. Cookie (RFC 6265)\n```\nClient → Server: GET /carrello\nServer → Client: Set-Cookie: session_id=abc123; Path=/; HttpOnly\nClient → Server: GET /checkout (con Cookie: session_id=abc123)\n```\n\n#### 2. Token (JWT)\n```\nClient → Server: GET /api/data (con Authorization: Bearer eyJhbGc...)\n```\n\n#### 3. Parametri URL\n```\nGET /prodotto?id=123&session=abc123\n```\n\n#### 4. Sessioni server-side\n- Il client invia un session ID (via cookie o URL)\n- Il server mantiene lo stato in memoria/DB e lo associa al session ID\n",
-  "analogia": "HTTP stateless è come un ristorante self-service: ogni volta che vuoi qualcosa, devi prendere un nuovo vassoio e riempirlo. Se vuoi che il ristorante si ricordi del tuo ordine precedente, devi portarti dietro lo scontrino (cookie) o avere un numero di tavolo (session ID). L'analogia smette di valere quando: nel web, lo stato può essere crittografato (JWT) e verificato senza bisogno di memoria server-side.",
-  "collegamenti_prior": [
+  "perche_ti_serve": "Argomento FONDAMENTALE che esce in TUTTE le prove scritte (Gruppo A, ~65%). Vale 3-4 punti: se non lo sai, non passi l'esame. Esce anche nelle domande orali di tesina.",
+  "scenario_fil_rouge": "Immagina un e-commerce come Amazon. Quando aggiungi un prodotto al carrello, poi passi alla cassa, poi torni indietro e aggiungi un altro prodotto, il carrello si ricorda di tutti i prodotti. Ma HTTP di base non ha memoria: è come se ogni volta che parli con il commesso, lui non si ricordasse di te. Come fa Amazon a ricordarsi del tuo carrello?",
+  "definizione_esame": {
+    "definizione": "HTTP è un protocollo stateless: il server non mantiene alcuna informazione sullo stato del client tra richieste consecutive.",
+    "scopo_vantaggio": "Permette scalabilità massima: i server possono gestire milioni di client senza mantenere connessioni aperte, riducendo complessità e costo infrastrutturale.",
+    "esempio": "Quando fai login su un sito, il server ti riconosce non perché si ricorda di te (stateless), ma perché tu gli mandi un 'biglietto' (cookie o token) con ogni richiesta che certificano la tua identità."
+  },
+  "spiegazione": "## HTTP Stateless: il principio che ha rivoluzionato il Web\n\nHTTP (Hypertext Transfer Protocol) è progettato per essere **stateless** (senza stato). Questo significa che:\n\n### I 3 pilastri dello stateless\n\n1. Ogni richiesta è indipendente\n2. Nessuna memoria server-side\n3. Tutte le informazioni viaggiano con la richiesta\n\n### Perché stateless?\n\n- Scalabilità: i server possono gestire un numero molto maggiore di client\n- Semplificazione: protocollo più semplice da implementare\n- Affidabilità: in caso di crash del server, non si perde lo stato delle sessioni\n\n```mermaid\ngraph TD\n    A[Client] -->|Richiesta 1| B[Server]\n    A -->|Richiesta 2| B\n    B -->|Risposta 1| A\n    B -->|Risposta 2| A\n```\n\n### Meccanismi per gestire lo stato\n\n#### 1. Cookie (RFC 6265)\nI cookie sono piccoli frammenti di dati che il server invia al client tramite header Set-Cookie.\n\n#### 2. Token JWT\nI token sono stringhe crittografate che contengono claims e sono firmate digitalmente.\n\n#### 3. Parametri URL\nLo stato viene passato esplicitamente nell'URL tramite query string.\n\n#### 4. Sessioni server-side\nIl client invia un session ID, e il server mantiene lo stato in memoria o in un database.",
+  "analogia": {
+    "testo": "HTTP stateless è come un ristorante self-service: ogni volta che vuoi qualcosa, devi prendere un nuovo vassoio e riempirlo. Il cuoco non si ricorda di te dalla volta precedente.",
+    "limite": "Nel web, i token JWT possono contenere informazioni crittografate che il server può verificare senza dover mantenere una lista di client."
+  },
+  "worked_example": {
+    "titolo": "Autenticazione completa con cookie in Flask",
+    "problema": "Implementare un sistema di autenticazione dove l'utente fa login e il server ricorda l'utente tramite cookie in tutte le pagine successive.",
+    "passi": [
+      "Creare endpoint /login che accetta POST con username e password",
+      "Validare le credenziali",
+      "Generare un session ID univoco",
+      "Salvare i dati della sessione lato server",
+      "Impostare cookie con Set-Cookie header",
+      "Creare endpoint /profile che richiede autenticazione"
+    ],
+    "soluzione": "from flask import Flask, request, make_response, jsonify\nimport secrets\nsessions = {}\n@app.route('/login', methods=['POST'])\ndef login():\n    session_id = secrets.token_hex(16)\n    sessions[session_id] = {'username': 'alice', 'logged_in': True}\n    response = make_response(jsonify({'message': 'Login successful'}))\n    response.set_cookie('session_id', session_id, httponly=True, secure=True)\n    return response",
+    "perche_funziona": "Il browser salva automaticamente il cookie session_id e lo invia in ogni richiesta successiva allo stesso dominio."
+  },
+  "completion_problem": {
+    "titolo": "Completare l'autenticazione con JWT",
+    "testo": "Il codice seguente implementa l'autenticazione con JWT, ma mancano 3 passi fondamentali.",
+    "passi_mancanti": [
+      "Verificare che il token JWT sia valido e non scaduto",
+      "Estrare il payload dal token",
+      "Gestire il caso in cui il token è scaduto o non valido"
+    ],
+    "soluzione": "import jwt\ntry:\n    data = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])\n    current_user = data['username']\nexcept jwt.ExpiredSignatureError:\n    return jsonify({'error': 'Token expired'}), 401"
+  },
+  "esercizio_autonomo": {
+    "titolo": "Implementare gestione sessioni con Redis",
+    "testo": "Modifica il sistema di autenticazione con cookie per usare Redis invece di un dizionario Python.",
+    "suggerimento": "Usa la libreria redis-py. I comandi utili sono: redis.setex(key, 3600, value) per salvare con scadenza.",
+    "soluzione_attesa": "import redis\nr = redis.Redis(host='localhost', port=6379)\n@app.route('/login', methods=['POST'])\ndef login():\n    session_id = secrets.token_hex(16)\n    r.setex(f'session:{session_id}', 3600, username)\n    response = make_response(jsonify({'message': 'Login successful'}))\n    response.set_cookie('session_id', session_id, httponly=True)\n    return response"
+  },
+  "errori_trappole": [
     {
-      "conoscenza": "Protocollo HTTP",
-      "collegamento": "HTTP è il protocollo base del web, e la sua natura stateless ne definisce il funzionamento.",
-      "nodo": "http-protocollo-base"
+      "errore": "Confondere stateless con sessionless",
+      "perche_sbagliato": "HTTP è stateless (il protocollo non mantiene stato), ma le applicazioni web NON sono sessionless. Lo stateless si riferisce al protocollo, non all'applicazione.",
+      "distrattore": "HTTP è sessionless perché non ha sessioni"
     },
     {
-      "conoscenza": "Client-server",
-      "collegamento": "In un'architettura client-server, lo stateless riduce la complessità del server.",
-      "nodo": "architettura-client-server"
+      "errore": "Pensare che i cookie siano sicuri di default",
+      "perche_sbagliato": "I cookie senza HttpOnly possono essere rubati tramite XSS. Senza Secure, possono essere intercettati su connessioni non HTTPS.",
+      "distrattore": "I cookie sono sempre sicuri"
     }
   ],
-  "esempi_svolti": [
-    {
-      "titolo": "Autenticazione con cookie",
-      "problema": "Un sito e-commerce vuole ricordare l'utente loggato tra le pagine.",
-      "passi": [
-        "1. Utente invia credenziali a /login",
-        "2. Server verifica e genera session_id",
-        "3. Server risponde con Set-Cookie: session_id=abc123",
-        "4. Browser salva il cookie",
-        "5. Browser invia automaticamente Cookie: session_id=abc123 in ogni richiesta successiva",
-        "6. Server associa session_id all'utente loggato"
-      ],
-      "soluzione": "Il browser gestisce automaticamente i cookie. Il server può così identificare l'utente in ogni richiesta senza dover mantenere connessioni persistenti.",
-      "perche_funziona": "I cookie sono salvati lato client e inviati automaticamente dal browser (se HttpOnly=false, accessibili anche a JavaScript)."
-    }
-  ],
-  "errori_comuni": [
-    "Confondere stateless con sessionless: HTTP è stateless ma NON sessionless (le sessioni esistono, solo non sono gestite dal protocollo).",
-    "Pensare che i cookie siano sicuri: i cookie possono essere rubati (XSS, MITM) se non si usano HttpOnly e Secure flag."
-  ],
-  "domande_autoverifica": [
-    {
-      "domanda": "Cosa significa che HTTP è stateless?",
-      "risposta": "Significa che il protocollo HTTP non mantiene alcuna informazione sullo stato del client tra richieste consecutive. Ogni richiesta è trattata come indipendente."
-    },
-    {
-      "domanda": "Quali sono i 3 meccanismi principali per gestire lo stato in HTTP?",
-      "risposta": "1) Cookie: dati salvati lato client e inviati automaticamente; 2) Token: stringhe crittografate (es. JWT) inviate nell'header Authorization; 3) Parametri URL: dati passati esplicitamente nell'URL."
-    },
-    {
-      "domanda": "Qual è il vantaggio principale di un protocollo stateless?",
-      "risposta": "La scalabilità: i server non devono mantenere informazioni sullo stato dei client, quindi possono gestire un numero molto maggiore di connessioni contemporanee."
-    }
-  ],
-  "riepilogo": "HTTP è stateless per design. Lo stato si gestisce tramite cookie, token, o parametri URL. I cookie sono il meccanismo più comune per sessioni autenticate."
+  "mnemonica": "State Less Every Second: HTTP è Stateless, Libero, Efficiente, Scalabile.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Cosa significa che HTTP è stateless?",
+        "risposta": "Significa che il protocollo HTTP non mantiene alcuna informazione sullo stato del client tra richieste consecutive."
+      },
+      {
+        "domanda": "Quali sono i 4 meccanismi principali per gestire lo stato in HTTP?",
+        "risposta": "1) Cookie, 2) Token JWT, 3) Parametri URL, 4) Sessioni server-side"
+      },
+      {
+        "domanda": "Qual è il vantaggio principale di un protocollo stateless?",
+        "risposta": "La scalabilità: i server non devono mantenere informazioni sullo stato dei client."
+      }
+    ],
+    "spiega_con_parole_tue": "Prova a spiegare a un amico perché quando chiudi il browser e riapri Amazon, il tuo carrello c'è ancora.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "http-protocollo-base",
+        "collegamento": "HTTP stateless è una proprietà fondamentale del protocollo HTTP."
+      },
+      {
+        "nodo": "architettura-client-server",
+        "collegamento": "In un'architettura client-server, lo stateless permette ai server di gestire molti client senza mantenere connessioni aperte."
+      }
+    ]
+  },
+  "riepilogo": "HTTP è stateless per design: il server non si ricorda di te tra richieste. Lo stato si gestisce tramite cookie, token, parametri URL, o sessioni server-side.",
+  "flashcard": {
+    "fronte": "HTTP: stateless vs stateful - Qual è la differenza?",
+    "retro": "HTTP è STATLESS: il protocollo non mantiene stato. Le applicazioni possono essere STATEFUL usando cookie, token, URL params, o sessioni per mantenere lo stato tra richieste."
+  },
+  "checklist": {
+    "so_fare": [
+      "Implementare autenticazione con cookie in Flask",
+      "Creare e validare token JWT",
+      "Configurare attributi di sicurezza dei cookie"
+    ],
+    "so_dire": [
+      "Spiegare perché HTTP è stateless e quali vantaggi porta",
+      "Elencare e confrontare i 4 meccanismi per gestire lo stato",
+      "Spiegare la differenza tra stateless e sessionless"
+    ]
+  }
 }
 ```

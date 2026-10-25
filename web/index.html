@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <title>Ingegneria del Software — Knowledge graph di studio</title>
-  <meta name="description" content="Grafo delle conoscenze, percorso di studio e checklist di ripasso per Ingegneria del Software (UNIMORE).">
+  <title>Tecnologie Web — Knowledge graph di studio (UNIMORE)</title>
+  <meta name="description" content="Grafo delle conoscenze, percorso di studio e checklist di ripasso per Tecnologie Web (UNIMORE).">
   <!-- Percorsi provati in ordine: copia generata da build.sh, poi sorgente nel repo. Override: ?graph=URL -->
   <meta name="kg-graph-url" content="graph.json ../graph/graph.json">
   <!-- Stessa chiave di THEME_STORAGE_KEY in js/core/theme.js: evita il lampo del tema sbagliato. -->
   <script>
     try {
-      var t = localStorage.getItem('ids-kg:tema:v1');
+      var t = localStorage.getItem('tecweb-kg:tema:v1');
       if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', t);
     } catch (e) {}
@@ -30,7 +30,7 @@
   <a class="skip" href="#main">Vai al contenuto</a>
   <header>
     <div class="head-row">
-      <h1>Ingegneria del Software · Knowledge graph</h1>
+      <h1>Tecnologie Web · Knowledge graph (UNIMORE)</h1>
       <div id="theme"></div>
     </div>
     <p id="course" class="muted"></p>
@@ -49,31 +49,25 @@
         <button role="tab" id="tab-grafo" data-tab="grafo" aria-controls="view-grafo" aria-selected="true">Grafo</button>
         <button role="tab" id="tab-percorso" data-tab="percorso" aria-controls="view-percorso" aria-selected="false" tabindex="-1">Percorso</button>
         <button role="tab" id="tab-ripasso" data-tab="ripasso" aria-controls="view-ripasso" aria-selected="false" tabindex="-1">Ripasso</button>
+        <button role="tab" id="tab-simulatore" data-tab="simulatore" aria-controls="view-simulatore" aria-selected="false" tabindex="-1">Simulatore</button>
       </div>
-      <section role="tabpanel" id="view-grafo" aria-labelledby="tab-grafo">
-        <div class="graph-wrap">
-          <div id="cy" tabindex="0" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown + - a Enter" aria-label="Grafo dei concetti. Clicca un nodo per i dettagli. Con il grafo attivo: frecce per spostare, più e meno per lo zoom, A per adattare, Invio apre la lezione. Alternativa testuale nella scheda Percorso."></div>
-          <div class="graph-tools" role="toolbar" aria-label="Zoom del grafo">
-            <button type="button" id="zoom-in" class="btn" aria-label="Ingrandisci il grafo">+</button>
-            <button type="button" id="zoom-out" class="btn" aria-label="Riduci il grafo">−</button>
-            <button type="button" id="zoom-fit" class="btn" aria-label="Adatta il grafo allo schermo">Adatta</button>
-          </div>
-          <canvas id="minimap" class="minimap" aria-label="Minimappa del grafo. Clicca per spostare la vista."></canvas>
-        </div>
-        <div id="graph-mobile-list" class="graph-mobile-list" aria-label="Elenco touch dei nodi"></div>
-        <p class="legend muted">Ingrandisci (rotellina o pizzico) per leggere i nomi · colore = area · dimensione = priorità, più grande vuol dire più alta · ● concetto · ▬ abilità · ◆ tipo d'esercizio · linea piena = prerequisito indispensabile, tratteggiata = utile · bordo verde = completato · al clic si illumina il percorso dei prerequisiti</p>
-      </section>
-      <section role="tabpanel" id="view-percorso" aria-labelledby="tab-percorso" hidden>
-        <p class="muted">Ordine topologico: ogni nodo viene dopo i suoi prerequisiti; a parità di vincoli prima la priorità alta. Le spunte restano salvate in questo browser.</p>
-        <div id="path"></div>
-      </section>
-      <section role="tabpanel" id="view-ripasso" aria-labelledby="tab-ripasso" hidden>
-        <div id="review"></div>
-      </section>
+      <div id="view-grafo" role="tabpanel" aria-labelledby="tab-grafo" hidden>
+        <svg id="cy" aria-label="Grafo interattivo: usa i tasti freccia per muoverti, Invio per selezionare, Esc per deselezionare."></svg>
+      </div>
+      <div id="view-percorso" role="tabpanel" aria-labelledby="tab-percorso" hidden>
+        <ol id="percorso" aria-label="Percorso di studio"></ol>
+      </div>
+      <div id="view-ripasso" role="tabpanel" aria-labelledby="tab-ripasso" hidden>
+        <div id="ripasso"></div>
+      </div>
+      <div id="view-simulatore" role="tabpanel" aria-labelledby="tab-simulatore" hidden>
+        <div id="simulatore"></div>
+      </div>
     </main>
-    <aside id="details" class="details" aria-labelledby="det-title" hidden></aside>
   </div>
-  <section id="lesson" class="lesson-page" aria-labelledby="lesson-title" hidden></section>
-  <section id="module-root" hidden></section>
+  <dialog id="lezione" aria-label="Lettore lezioni" aria-modal="true">
+    <div id="lezione-contents"></div>
+    <form method="dialog"><menu type="toolbar"><button type="submit" value="chiudi">Chiudi</button></menu></form>
+  </dialog>
 </body>
 </html>

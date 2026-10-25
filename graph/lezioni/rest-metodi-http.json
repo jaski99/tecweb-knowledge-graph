@@ -1,37 +1,131 @@
 {
-  "intuizione": "PUT sostituisce completamente una risorsa, PATCH aggiorna solo alcuni campi, POST crea, GET legge, DELETE elimina.",
-  "spiegazione": "## REST: metodi HTTP e operazioni CRUD\n\nI metodi HTTP definiscono le operazioni che possono essere eseguite sulle risorse in un API RESTful. Ogni metodo ha una semantica specifica e un comportamento ben definito.\n\n### Metodi HTTP principali\n\n#### GET\n- Operazione: Read recupera una risorsa\n- Idempotente: Sì\n- Safe: Sì non modifica lo stato del server\n- Descrizione: Recupera la rappresentazione di una risorsa identificata dall URI. Non dovrebbe avere effetti collaterali.\n- Risposta: 200 OK con la risorsa, 404 Not Found se non esiste\n\n#### POST\n- Operazione: Create crea una nuova risorsa\n- Idempotente: No\n- Safe: No\n- Descrizione: Crea una nuova risorsa. Il server decide l URI della nuova risorsa. Spesso usato per creare risorse in una collezione.\n- Risposta: 201 Created con Location header che indica l URI della nuova risorsa\n\n#### PUT\n- Operazione: Update sostituisce completamente una risorsa\n- Idempotente: Sì\n- Safe: No\n- Descrizione: Sostituisce completamente la risorsa identificata dall URI. Tutti i campi devono essere forniti. Se la risorsa non esiste, PUT puo creare la risorsa.\n- Risposta: 200 OK o 204 No Content\n\n#### PATCH\n- Operazione: Update aggiorna parzialmente una risorsa\n- Idempotente: No per default\n- Safe: No\n- Descrizione: Applica modifiche parziali alla risorsa. Solo i campi forniti vengono aggiornati. Gli altri rimangono invariati.\n- Risposta: 200 OK o 204 No Content\n\n#### DELETE\n- Operazione: Delete elimina una risorsa\n- Idempotente: Sì\n- Safe: No\n- Descrizione: Elimina la risorsa identificata dall URI.\n- Risposta: 200 OK o 204 No Content\n\n### Confronto PUT vs PATCH\n\nLa differenza principale tra PUT e PATCH e fondamentale:\n\n- PUT: Sostituisce completamente la risorsa. Se il client non fornisce tutti i campi, i campi mancanti verranno impostati a null o al valore di default. PUT e idempotente: piu richieste identiche producono lo stesso risultato.\n\n- PATCH: Aggiorna parzialmente la risorsa. Solo i campi forniti vengono modificati. Gli altri campi rimangono invariati. PATCH non e necessariamente idempotente.\n\nEsempio pratico:\n\nRisorsa corrente: id:1, nome:Alice, eta:25, citta:Roma\n\nPUT /users/1 con nome:Alice, eta:26 -> Risultato: id:1, nome:Alice, eta:26, citta:null\nPATCH /users/1 con eta:26 -> Risultato: id:1, nome:Alice, eta:26, citta:Roma\n\n### Quando usare ogni metodo\n\n| Scenario | Metodo | Motivo |\n|----------|--------|--------|\n| Recuperare una risorsa | GET | Lettura senza modifiche |\n| Creare una risorsa URI sconosciuto | POST | Server decide l URI |\n| Creare una risorsa URI noto | PUT | Client specifica l URI |\n| Sostituire completamente una risorsa | PUT | Tutti i campi devono essere forniti |\n| Aggiornare solo alcuni campi | PATCH | Solo i campi forniti vengono modificati |\n| Eliminare una risorsa | DELETE | Rimuove la risorsa |\n\n### JSON Patch e JSON Merge Patch\n\nPATCH puo usare formati standard per descrivere le modifiche:\n\n#### JSON Merge Patch RFC 7396\nIl JSON fornito viene fuso con la risorsa esistente:\n- Campi presenti: aggiornati\n- Campi assenti: aggiunti\n- Campi con valore null: rimossi\n\nEsempio:\nPATCH /users/1\nContent-Type: application/merge-patch+json\n\neta: 26\n\n#### JSON Patch RFC 6902\nDescrive operazioni specifiche:\n- add: aggiunge un campo\n- remove: rimuove un campo\n- replace: sostituisce un valore\n- move: sposta un elemento\n- copy: copia un elemento\n- test: verifica un valore\n\nEsempio:\nPATCH /users/1\nContent-Type: application/json-patch+json\n\n[\n  {\"op\": \"replace\", \"path\": \"/eta\", \"value\": 26}\n]\n\n```mermaid\ngraph TD\n    GET -->|Read| Risorsa\n    POST -->|Create| Risorsa\n    PUT -->|Replace| Risorsa\n    PATCH -->|Partial Update| Risorsa\n    DELETE -->|Delete| Risorsa\n```",
-  "analogia": "I metodi HTTP sono come operazioni su un documento: GET e leggere il documento, POST e aggiungere una nuova pagina, PUT e riscrivere completamente una pagina, PATCH e correggere solo un errore di battitura, DELETE e strappare una pagina. L analogia smette di valere quando: nel web, le operazioni sono su risorse remote e non su documenti locali.",
-  "collegamenti_prior": [
-    {"conoscenza": "Protocollo HTTP", "collegamento": "I metodi HTTP sono parte del protocollo HTTP.", "nodo": "http-protocollo-base"},
-    {"conoscenza": "REST principi", "collegamento": "I metodi HTTP sono usati nelle API RESTful.", "nodo": "rest-principi"}
-  ],
-  "esempi_svolti": [
+  "perche_ti_serve": "Domanda FREQUENTE allo scritto (Gruppo A, ~65%). Vale 2-3 punti. Esce anche nelle domande pratiche di API design. Se confondi PUT e PATCH, perdi punti sicuri.",
+  "scenario_fil_rouge": "Immagina di gestire un catalogo di libri in una biblioteca digitale. Devi: aggiungere nuovi libri (POST), cercare libri (GET), aggiornare il prezzo di un libro (PATCH), sostituire completamente le informazioni di un libro (PUT), eliminare un libro (DELETE). Ogni operazione ha un metodo HTTP specifico. Il carrello e-commerce usa gli stessi principi.",
+  "definizione_esame": {
+    "definizione": "I metodi HTTP (verbi HTTP) definiscono le operazioni che possono essere eseguite sulle risorse in un API RESTful. Ogni metodo ha una semantica specifica, idempotenza e sicurezza ben definite.",
+    "scopo_vantaggio": "Permettono comunicazione standardizzata tra client e server: il client sa esattamente cosa aspettarsi da ogni metodo, e il server sa come processare ogni richiesta.",
+    "esempio": "In un API di e-commerce: GET /products/123 per vedere un prodotto, POST /orders per creare un ordine, PUT /products/123 per sostituire tutte le info di un prodotto, DELETE /products/123 per eliminarlo."
+  },
+  "spiegazione": "## REST: Metodi HTTP e operazioni CRUD\n\nI metodi HTTP sono i verbi del protocollo HTTP. In un API RESTful, ogni metodo corrisponde a un operazione CRUD su una risorsa.\n\n### Mappatura CRUD to Metodi HTTP\n\n| Operazione CRUD | Metodo HTTP | Descrizione |\n|-----------------|-------------|-------------|\n| Create | POST | Crea una nuova risorsa |\n| Read | GET | Legge/recupera una risorsa |\n| Update (parziale) | PATCH | Aggiorna parzialmente una risorsa |\n| Update (completa) | PUT | Sostituisce completamente una risorsa |\n| Delete | DELETE | Elimina una risorsa |\n\n### I 5 metodi HTTP principali\n\n#### 1. GET - Lettura\n\n- Operazione: Read (recupera una risorsa)\n- Idempotente: Si\n- Safe: Si\n- Descrizione: Recupera la rappresentazione di una risorsa identificata dall URI\n- Risposta: 200 OK con la risorsa, 404 Not Found se non esiste\n- Corpo: Vuoto (parametri nell URL come query string)\n- Cache: Si\n\n#### 2. POST - Creazione\n\n- Operazione: Create\n- Idempotente: No\n- Safe: No\n- Descrizione: Crea una nuova risorsa. Il server decide l URI della nuova risorsa\n- Risposta: 201 Created con Location header\n- Corpo: Contiene i dati della nuova risorsa\n\n#### 3. PUT - Sostituzione completa\n\n- Operazione: Update (sostituisce completamente)\n- Idempotente: Si\n- Safe: No\n- Descrizione: Sostituisce completamente la risorsa. Tutti i campi devono essere forniti\n- Risposta: 200 OK o 204 No Content\n\n#### 4. PATCH - Aggiornamento parziale\n\n- Operazione: Update (aggiorna parzialmente)\n- Idempotente: No (per default)\n- Safe: No\n- Descrizione: Applica modifiche parziali. Solo i campi forniti vengono aggiornati\n- Risposta: 200 OK o 204 No Content\n\n#### 5. DELETE - Eliminazione\n\n- Operazione: Delete\n- Idempotente: Si\n- Safe: No\n- Descrizione: Elimina la risorsa identificata dall URI\n- Risposta: 200 OK, 202 Accepted, o 204 No Content\n\n### PUT vs PATCH: la differenza FONDAMENTALE\n\n```mermaid\nflowchart TD\n    A[Risorsa corrente:\n id:1, nome:Alice, eta:25, citta:Roma]\n    A --> B[PUT /users/1\n nome:Alice, eta:26]\n    A --> C[PATCH /users/1\n eta:26]\n    B --> D[Risultato:\n id:1, nome:Alice, eta:26, citta:null]\n    C --> E[Risultato:\n id:1, nome:Alice, eta:26, citta:Roma]\n```\n\n| Aspetto | PUT | PATCH |\n|---------|-----|-------|\n| Campi richiesti | Tutti i campi | Solo quelli da aggiornare |\n| Campi non forniti | Impostati a null/default | Rimangono invariati |\n| Idempotente | Si | No (per default) |\n\n### Idempotenza\n\nUn operazione e idempotente se eseguirla piu volte produce lo stesso risultato della prima esecuzione.\n\n| Metodo | Idempotente? | Esempio |\n|--------|--------------|---------|\n| GET | Si | 10 richieste = 10 risposte identiche |\n| POST | No | 3 richieste = 3 nuove risorse create |\n| PUT | Si | 5 richieste con stessi dati = stesso risultato |\n| PATCH | No | Dipende dall implementazione |\n| DELETE | Si | 10 richieste = risorsa eliminata una volta sola |\n\n### JSON Patch vs JSON Merge Patch\n\nJSON Merge Patch (RFC 7396): fonde il JSON fornito con la risorsa esistente.\n- Campi presenti: sostituiti\n- Campi assenti: aggiunti\n- Campi con valore null: rimossi\n\nJSON Patch (RFC 6902): descrive operazioni specifiche in un array.\n- Operazioni: add, remove, replace, move, copy, test\n\n```mermaid\ngraph TD\n    GET -->|Read| Risorsa\n    POST -->|Create| Risorsa\n    PUT -->|Replace| Risorsa\n    PATCH -->|Partial Update| Risorsa\n    DELETE -->|Delete| Risorsa\n```",
+  "analogia": {
+    "testo": "I metodi HTTP sono come operazioni su un documento cartaceo: GET e leggere il documento, POST e aggiungere una nuova pagina al fondo, PUT e riscrivere completamente una pagina (devi copiare tutto il contenuto), PATCH e correggere solo un errore di battitura con il correttore, DELETE e strappare una pagina.",
+    "limite": "Nel web, le operazioni sono su risorse remote e non su documenti locali. Inoltre, PUT puo creare la risorsa se non esiste, mentre riscrivere una pagina fisica non la crea se non c e."
+  },
+  "worked_example": {
+    "titolo": "Aggiornamento parziale con PATCH in Flask",
+    "problema": "Un client vuole aggiornare solo l indirizzo email di un utente senza modificare gli altri campi (nome, eta, citta).",
+    "passi": [
+      "Identificare l ID dell utente da aggiornare (es. 123)",
+      "Creare un oggetto JSON con SOLO il campo da aggiornare (email)",
+      "Inviare una richiesta PATCH all endpoint /users/<id>",
+      "Il server riceve la richiesta e estrae il campo email",
+      "Il server aggiorna solo il campo email, lasciando invariati gli altri",
+      "Il server risponde con 200 OK e i dati aggiornati"
+    ],
+    "soluzione": "# Client (JavaScript fetch)\nfetch('/api/users/123', {\n  method: 'PATCH',\n  headers: {'Content-Type': 'application/json'},\n  body: JSON.stringify({email: 'nuovo@example.com'})\n})\n.then(r => r.json())\n.then(data => console.log(data));\n\n# Server (Flask)\n@app.route('/api/users/<int:user_id>', methods=['PATCH'])\ndef update_user(user_id):\n    user = db.get_user(user_id)\n    if not user:\n        return jsonify({'error': 'User not found'}), 404\n    data = request.get_json()\n    for key, value in data.items():\n        setattr(user, key, value)\n    db.save_user(user)\n    return jsonify(user), 200",
+    "perche_funziona": "PATCH e progettato per aggiornamenti parziali. Il client invia solo i dati che vuole modificare, e il server applica quelle modifiche senza alterare gli altri campi. Questo e piu efficiente (meno dati trasmessi) e piu sicuro (minore rischio di sovrascrivere accidentalmente dati)."
+  },
+  "completion_problem": {
+    "titolo": "Completare la sostituzione completa con PUT",
+    "testo": "Il codice seguente implementa PUT per sostituire completamente un utente, ma mancano 2 passi fondamentali. Completa i passi mancanti.",
+    "passi_mancanti": [
+      "Validare che tutti i campi obbligatori siano presenti nella richiesta",
+      "Verificare che la risorsa esista prima di sostituirla"
+    ],
+    "soluzione": "@app.route('/api/users/<int:user_id>', methods=['PUT'])\ndef replace_user(user_id):\n    data = request.get_json()\n    required_fields = ['nome', 'email', 'eta', 'citta']\n    for field in required_fields:\n        if field not in data:\n            return jsonify({'error': f'Campo {field} mancante'}), 400\n    user = db.get_user(user_id)\n    if not user:\n        return jsonify({'error': 'User not found'}), 404\n    user = User(**data, id=user_id)\n    db.save_user(user)\n    return jsonify(user), 200"
+  },
+  "esercizio_autonomo": {
+    "titolo": "Implementare DELETE con soft delete",
+    "testo": "Modifica l endpoint DELETE per implementare il soft delete: invece di eliminare fisicamente la risorsa dal database, aggiungi un campo deleted_at con il timestamp corrente e nascondi la risorsa nelle query normali.",
+    "suggerimento": "Usa datetime.utcnow() per il timestamp. Aggiungi un filtro nelle query per escludere le risorse con deleted_at != NULL.",
+    "soluzione_attesa": "from datetime import datetime\n\n@app.route('/api/users/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    user = db.get_user(user_id)\n    if not user:\n        return jsonify({'error': 'User not found'}), 404\n    user.deleted_at = datetime.utcnow()\n    db.save_user(user)\n    return jsonify({'message': 'User deleted', 'id': user_id}), 200\n\n# Nelle query, filtra le risorse eliminate\n@app.route('/api/users')\ndef get_users():\n    users = db.query_users(filter_deleted=True)\n    return jsonify(users), 200"
+  },
+  "errori_trappole": [
     {
-      "titolo": "Aggiornamento parziale con PATCH",
-      "problema": "Un client vuole aggiornare solo l indirizzo email di un utente senza modificare gli altri campi.",
-      "passi": ["Identificare l ID dell utente da aggiornare", "Creare un oggetto JSON con solo il campo da aggiornare email", "Inviare una richiesta PATCH all endpoint /users/<id>"],
-      "soluzione": "PATCH /users/123 HTTP/1.1\nContent-Type: application/json\n\n{\"email\": \"nuovo@example.com\"}\n\nImplementazione server Flask:\n@app.route('/users/<int:user_id>', methods=['PATCH'])\ndef update_user(user_id):\n    user = db.get_user(user_id)\n    if not user:\n        return jsonify({'error': 'User not found'}), 404\n    data = request.get_json()\n    for key, value in data.items():\n        setattr(user, key, value)\n    db.save_user(user)\n    return jsonify(user), 200",
-      "perche_funziona": "PATCH e progettato per aggiornamenti parziali. Il client invia solo i dati che vuole modificare, e il server applica quelle modifiche senza alterare gli altri campi. Questo e piu efficiente meno dati trasmessi e piu sicuro minore rischio di sovrascrivere accidentalmente dati."
+      "errore": "Usare PUT quando si vogliono aggiornare solo alcuni campi",
+      "perche_sbagliato": "PUT sostituisce completamente la risorsa: se non fornisci tutti i campi, i campi mancanti verranno impostati a null o al valore di default, causando perdita di dati.",
+      "distrattore": "PUT e PATCH sono la stessa cosa"
     },
     {
-      "titolo": "Sostituzione completa con PUT",
-      "problema": "Un client vuole sostituire completamente i dati di un utente, fornendo tutti i campi aggiornati.",
-      "passi": ["Recuperare i dati attuali dell utente", "Modificare i campi desiderati", "Creare un oggetto JSON con TUTTI i campi della risorsa", "Inviare una richiesta PUT all endpoint /users/<id>"],
-      "soluzione": "PUT /users/123 HTTP/1.1\nContent-Type: application/json\n\n{\"nome\": \"Alice\", \"email\": \"alice@example.com\", \"eta\": 30, \"citta\": \"Milano\"}\n\nImplementazione server Flask:\n@app.route('/users/<int:user_id>', methods=['PUT'])\ndef replace_user(user_id):\n    data = request.get_json()\n    user = User(**data, id=user_id)\n    db.save_user(user)\n    return jsonify(user), 200",
-      "perche_funziona": "PUT e progettato per sostituzione completa. Il client deve fornire tutti i campi necessari, e il server sostituisce la risorsa esistente con i nuovi dati. Questo e utile quando si vuole garantire che la risorsa sia esattamente come specificato dal client."
+      "errore": "Usare PATCH quando si vuole sostituire completamente la risorsa",
+      "perche_sbagliato": "PATCH aggiorna parzialmente: se il client non fornisce tutti i campi necessari, la risorsa potrebbe rimanere in uno stato incompleto o inconsistente.",
+      "distrattore": "PATCH puo sostituire tutto se invio tutti i campi"
+    },
+    {
+      "errore": "Non fornire tutti i campi in una richiesta PUT",
+      "perche_sbagliato": "PUT sostituisce completamente la risorsa. Se non fornisci tutti i campi obbligatori, la risorsa sara incompleta dopo l aggiornamento.",
+      "distrattore": "Con PUT posso omettere i campi che non voglio cambiare"
+    },
+    {
+      "errore": "Usare POST per creare una risorsa con URI noto",
+      "perche_sbagliato": "POST e per creare risorse quando il server decide l URI. Se il client conosce gia l URI completo (es. /users/123), deve usare PUT.",
+      "distrattore": "POST e PUT sono intercambiabili per la creazione"
+    },
+    {
+      "errore": "Pensare che PATCH sia sempre idempotente",
+      "perche_sbagliato": "PATCH non e necessariamente idempotente. Se l implementazione incrementa un valore (es. eta += 1), eseguire PATCH piu volte produce risultati diversi.",
+      "distrattore": "Tutti i metodi tranne POST sono idempotenti"
     }
   ],
-  "errori_comuni": [
-    "Usare PUT quando si vogliono aggiornare solo alcuni campi: questo causa la perdita dei campi non forniti. Usare PATCH in questo caso.",
-    "Usare PATCH quando si vuole sostituire completamente la risorsa: questo puo causare dati incompleti se il client non fornisce tutti i campi necessari.",
-    "Non fornire tutti i campi in una richiesta PUT: la risorsa sara incompleta dopo l aggiornamento.",
-    "Confondere idempotenza di PUT: PUT e idempotente, ma solo se il client fornisce gli stessi dati. Se il client fornisce dati diversi, il risultato sara diverso."
-  ],
-  "domande_autoverifica": [
-    {"domanda": "Qual e la differenza principale tra PUT e PATCH?", "risposta": "PUT sostituisce completamente la risorsa tutti i campi devono essere forniti. PATCH aggiorna parzialmente solo i campi forniti vengono modificati."},
-    {"domanda": "PUT e idempotente? E PATCH?", "risposta": "PUT e idempotente: piu richieste identiche producono lo stesso risultato. PATCH non e necessariamente idempotente: l ordine delle operazioni puo influire sul risultato finale."},
-    {"domanda": "Quando si dovrebbe usare PUT per creare una risorsa?", "risposta": "PUT si usa per creare una risorsa quando il client conosce gia l URI completo della risorsa da creare. Ad esempio, PUT /users/123 per creare un utente con ID 123."}
-  ],
-  "riepilogo": "GET legge, POST crea, PUT sostituisce completamente, PATCH aggiorna parzialmente, DELETE elimina. PUT e idempotente, PATCH no. Usare PUT per sostituzione completa, PATCH per aggiornamenti parziali."
+  "mnemonica": "Gentle People Prefer Peace: GET (safe), POST (create), PUT (replace), PATCH (partial), DELETE (remove).",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Qual e la differenza principale tra PUT e PATCH?",
+        "risposta": "PUT sostituisce completamente la risorsa (tutti i campi devono essere forniti). PATCH aggiorna parzialmente (solo i campi forniti vengono modificati, gli altri rimangono invariati)."
+      },
+      {
+        "domanda": "PUT e idempotente? E PATCH?",
+        "risposta": "PUT e idempotente: piu richieste identiche producono lo stesso risultato. PATCH non e necessariamente idempotente: dipende dall implementazione."
+      },
+      {
+        "domanda": "Quando si dovrebbe usare PUT per creare una risorsa?",
+        "risposta": "PUT si usa per creare una risorsa quando il client conosce gia l URI completo della risorsa da creare (es. PUT /users/123 per creare l utente con ID 123)."
+      },
+      {
+        "domanda": "Qual e il codice di stato corretto per una richiesta POST che crea una risorsa?",
+        "risposta": "201 Created, con l header Location che indica l URI della nuova risorsa creata."
+      },
+      {
+        "domanda": "Cosa significa che un metodo e safe?",
+        "risposta": "Un metodo e safe se non modifica lo stato del server. GET e safe, POST/PUT/PATCH/DELETE non lo sono."
+      }
+    ],
+    "spiega_con_parole_tue": "Prova a spiegare a un amico che non sa nulla di programmazione: qual e la differenza tra modificare un documento Word (PUT) vs usare la funzione Trova e sostituisci (PATCH)?",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "rest-principi",
+        "collegamento": "I metodi HTTP sono parte dei principi REST. Un API RESTful deve usare i metodi HTTP correttamente secondo la loro semantica."
+      },
+      {
+        "nodo": "http-protocollo-base",
+        "collegamento": "I metodi HTTP fanno parte del protocollo HTTP base. Devi aver capito bene HTTP prima di studiare i metodi REST."
+      },
+      {
+        "nodo": "api-design-best-practice",
+        "collegamento": "La scelta del metodo HTTP corretto e fondamentale per un buon API design. PUT vs PATCH e una delle decisioni piu importanti."
+      }
+    ]
+  },
+  "riepilogo": "I 5 metodi HTTP: GET (leggi, safe, idempotente), POST (crea, non idempotente), PUT (sostituisci completamente, idempotente), PATCH (aggiorna parzialmente, non idempotente), DELETE (elimina, idempotente). PUT vs PATCH: PUT richiede tutti i campi, PATCH solo quelli da cambiare. Usa JSON Patch per PATCH idempotente.",
+  "flashcard": {
+    "fronte": "REST: Quali sono i 5 metodi HTTP principali e le loro caratteristiche?",
+    "retro": "1) GET: Read, safe, idempotente, 200 OK. 2) POST: Create, non idempotente, 201 Created. 3) PUT: Replace completa, non safe, idempotente, 200/204. 4) PATCH: Update parziale, non safe, non idempotente, 200/204. 5) DELETE: Delete, non safe, idempotente, 200/202/204."
+  },
+  "checklist": {
+    "so_fare": [
+      "Implementare endpoint RESTful con i metodi HTTP corretti",
+      "Scegliere tra PUT e PATCH in base al caso d uso",
+      "Validare i dati in entrata per PUT e POST",
+      "Restituire i codici di stato HTTP corretti",
+      "Usare JSON Patch per aggiornamenti parziali complessi"
+    ],
+    "so_dire": [
+      "Spiegare la differenza tra PUT e PATCH",
+      "Definire cosa significa idempotente e safe",
+      "Elencare i 5 metodi HTTP e le loro caratteristiche",
+      "Spiegare quando usare ogni metodo",
+      "Descrivere JSON Patch e JSON Merge Patch"
+    ]
+  }
 }

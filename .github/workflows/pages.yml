@@ -19,9 +19,19 @@ jobs:
         with: { python-version: '3.12' }
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
+      - run: npm install -g pnpm  # Per gestire dipendenze se necessario
       - run: pip install -r requirements.txt
       - run: python scripts/kg.py check
       - run: pytest -q
+      # Installa Playwright e dipendenze per test JS
+      - run: npm init -y  # Crea package.json se non esiste
+      - run: npm install -D playwright  # Installa Playwright
+      - run: npx playwright install chromium  # Installa browser
+      # Esegue test JS se esistono
+      - run: |
+          if [ -f "web/tests/test_webapp.py" ]; then
+            python -m pytest web/tests/test_webapp.py -v
+          fi
       - run: sh web/build.sh
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

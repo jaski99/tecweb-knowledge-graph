@@ -7,6 +7,27 @@
 > Usa queste flashcard per il ripasso a intervalli (1-3-7-14 giorni).
 
 
+### HTTP: Stateless vs Stateful
+
+**Fronte**: HTTP: stateless vs stateful - Qual e la differenza?
+
+**Retro**: HTTP e STATLESS: il protocollo non mantiene stato. Le applicazioni possono essere STATEFUL usando cookie, token, URL params, o sessioni per mantenere lo stato tra richieste. Stateless = protocollo senza memoria; Stateful = applicazione con memoria.
+
+
+### REST: metodi HTTP (GET, POST, PUT, PATCH, DELETE)
+
+**Fronte**: REST: Quali sono i 5 metodi HTTP principali e le loro caratteristiche?
+
+**Retro**: 1) GET: Read, safe, idempotente, 200 OK. 2) POST: Create, non idempotente, 201 Created. 3) PUT: Replace completa, non safe, idempotente, 200/204. 4) PATCH: Update parziale, non safe, non idempotente, 200/204. 5) DELETE: Delete, non safe, idempotente, 200/202/204.
+
+
+### CSS: Box Model
+
+**Fronte**: CSS Box Model: Quali sono i 4 componenti e come si calcola la dimensione totale?
+
+**Retro**: 4 componenti: Content (contenuto), Padding (spazio interno), Border (bordo), Margin (spazio esterno). Dimensione box = width + padding-left + padding-right + border-left + border-right. Dimensione totale = dimensione box + margin-left + margin-right. Con box-sizing: border-box, width include gia padding e border.
+
+
 ## Checklist per area
 
 
@@ -327,3 +348,19 @@
 
 
 ## Trappole d'esame
+
+- [ ] **HTTP: Stateless vs Stateful**: Confondere stateless con sessionless → HTTP e stateless (il protocollo non mantiene stato), ma le applicazioni web NON sono sessionless. Lo stateless si riferisce al protocollo, non all applicazione. HTTP e stateless ma non sessionless.
+- [ ] **HTTP: Stateless vs Stateful**: Pensare che i cookie siano sicuri di default → I cookie senza HttpOnly possono essere rubati tramite XSS (JavaScript malizioso). Senza Secure, possono essere intercettati su connessioni non HTTPS. Senza SameSite, sono vulnerabili a CSRF.
+- [ ] **HTTP: Stateless vs Stateful**: Usare JWT senza scadenza → I token senza scadenza (exp claim) sono un rischio di sicurezza: se compromessi, possono essere usati all infinito. Inoltre, non c e modo di invalidarli prima della scadenza.
+- [ ] **HTTP: Stateless vs Stateful**: Memorizzare dati sensibili nei JWT → I JWT sono base64 encoded, NON crittografati (a meno che non si usi JWE). Chiunque puo decodificarli e leggere il payload. Non memorizzare mai password, PII, o dati sensibili.
+- [ ] **REST: metodi HTTP (GET, POST, PUT, PATCH, DELETE)**: Usare PUT quando si vogliono aggiornare solo alcuni campi → PUT sostituisce completamente la risorsa: se non fornisci tutti i campi, i campi mancanti verranno impostati a null o al valore di default, causando perdita di dati.
+- [ ] **REST: metodi HTTP (GET, POST, PUT, PATCH, DELETE)**: Usare PATCH quando si vuole sostituire completamente la risorsa → PATCH aggiorna parzialmente: se il client non fornisce tutti i campi necessari, la risorsa potrebbe rimanere in uno stato incompleto o inconsistente.
+- [ ] **REST: metodi HTTP (GET, POST, PUT, PATCH, DELETE)**: Non fornire tutti i campi in una richiesta PUT → PUT sostituisce completamente la risorsa. Se non fornisci tutti i campi obbligatori, la risorsa sara incompleta dopo l aggiornamento.
+- [ ] **REST: metodi HTTP (GET, POST, PUT, PATCH, DELETE)**: Usare POST per creare una risorsa con URI noto → POST e per creare risorse quando il server decide l URI. Se il client conosce gia l URI completo (es. /users/123), deve usare PUT.
+- [ ] **REST: metodi HTTP (GET, POST, PUT, PATCH, DELETE)**: Pensare che PATCH sia sempre idempotente → PATCH non e necessariamente idempotente. Se l implementazione incrementa un valore (es. eta += 1), eseguire PATCH piu volte produce risultati diversi.
+- [ ] **CSS: Box Model**: Dimenticare che padding e border vengono aggiunti alla width con box-sizing: content-box (default) → Questo porta a dimensioni totali maggiore di quella attesa. Se vuoi un box di 200px totale, devi impostare width a 200px - padding - border, che e controintuitivo.
+- [ ] **CSS: Box Model**: Pensare che margin faccia parte delle dimensioni del box → Il margin e spazio esterno e non contribuisce alla dimensione del box stesso. Tuttavia, influisce sullo spazio totale occupato nel layout.
+- [ ] **CSS: Box Model**: Non usare box-sizing: border-box → Questo costringe a calcolare manualmente le dimensioni totali ogni volta, portando a errori e frustrazione. box-sizing: border-box e la soluzione standard moderna.
+- [ ] **CSS: Box Model**: Applicare width e height a elementi inline (span, a) → Gli elementi inline ignorano width e height. Per applicare dimensioni, devi usare display: inline-block o block.
+- [ ] **CSS: Box Model**: Dimenticare il margin collapsing → I margin verticali adiacenti si fondono, portando a spazi minori di quelli attesi. Questo puo rompere il layout.
+- [ ] **CSS: Box Model**: Confondere padding con margin → Padding e spazio interno tra content e border (mostra lo sfondo), margin e spazio esterno fuori dal border (non mostra lo sfondo).
