@@ -32,7 +32,18 @@ jobs:
       - name: Test dei moduli JavaScript
         run: npm test --prefix web
       - name: Test Python ed e2e Playwright
-        run: pytest -q
+        shell: bash
+        run: |
+          set +e
+          pytest -q --tb=short > /tmp/pytest-output.txt 2>&1
+          result=$?
+          cat /tmp/pytest-output.txt
+          if [ "$result" -ne 0 ]; then
+            while IFS= read -r failure; do
+              echo "::error title=Errore pytest::$failure"
+            done < <(grep -E '^(FAILED|ERROR) ' /tmp/pytest-output.txt)
+          fi
+          exit "$result"
       - name: Prepara sito statico
         run: sh web/build.sh
       - uses: actions/configure-pages@v5
