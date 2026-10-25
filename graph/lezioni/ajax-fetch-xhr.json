@@ -1,0 +1,104 @@
+{
+  "perche_ti_serve": "Gruppo B: tema previsto dal syllabus/materiale disponibile; non è documentato un punteggio specifico per questo singolo nodo.",
+  "scenario_fil_rouge": "Quando uno studente cerca un libro, la pagina invia una richiesta al server e aggiorna solo l’elenco dei risultati. La navigazione non deve interrompersi né ricaricare l’intero documento per ogni ricerca.",
+  "definizione_esame": {
+    "definizione": "AJAX è un insieme di tecniche per scambiare dati in modo asincrono con il server e aggiornare parti della pagina; oggi si usano spesso Fetch e JSON, anche se il nome conserva XML.",
+    "scopo_vantaggio": "Le richieste asincrone migliorano la continuità dell’interfaccia e riducono i ricaricamenti completi; non rendono la rete istantanea né eliminano gli errori HTTP.",
+    "esempio": "Un gestore invoca `fetch(\"/api/libri\")`, controlla lo status, legge il JSON e aggiorna un elemento della pagina."
+  },
+  "spiegazione": "## Che cosa significa AJAX\n\nAJAX sta per Asynchronous JavaScript and XML. È un nome storico per una tecnica: JavaScript invia richieste HTTP asincrone e aggiorna una parte della pagina usando la risposta, senza ricaricare tutto il documento. La risposta non deve essere XML: oggi è comune usare JSON, testo o altri formati. AJAX non è un protocollo autonomo né una singola API.\n\n## Fetch, Promise e controllo dello status\n\nLa Fetch API è basata su Promise. `fetch(url)` si risolve con un oggetto `Response` quando riceve una risposta HTTP, anche se lo status è 404 o 500. Perciò va controllato `response.ok` o lo status prima di trattare il body come un successo. `response.json()` è anch’esso asincrono e analizza il corpo come JSON. Gli errori di rete o di policy possono invece rifiutare la Promise. `async`/`await` rende leggibile la sequenza, ma non rende sincrona la rete.\n\n## Esempio browser completo\n\nInserisci in HTML `<ul id=\"risultati\"></ul>` e un pulsante `<button id=\"carica\">Carica</button>`, quindi carica lo script con `defer` oppure dopo questi elementi. Il server deve esporre GET `/api/libri` e restituire un array JSON di oggetti con campo `titolo`. Lo script aggiorna la lista usando `textContent`, non inserisce dati non attendibili come HTML.\n\n```javascript\nconst pulsante = document.querySelector(\"#carica\");\nconst lista = document.querySelector(\"#risultati\");\n\npulsante.addEventListener(\"click\", async () => {\n  lista.replaceChildren();\n  try {\n    const response = await fetch(\"/api/libri\");\n    if (!response.ok) {\n      throw new Error(`HTTP ${response.status}`);\n    }\n    const libri = await response.json();\n    for (const libro of libri) {\n      const elemento = document.createElement(\"li\");\n      elemento.textContent = libro.titolo;\n      lista.append(elemento);\n    }\n  } catch (errore) {\n    const elemento = document.createElement(\"li\");\n    elemento.textContent = `Impossibile caricare i libri: ${errore.message}`;\n    lista.append(elemento);\n  }\n});\n```\n\nL’URL relativo usa lo stesso origin della pagina. Se API e pagina sono su origin diversi, possono entrare in gioco le regole CORS. Il codice presuppone che una risposta di successo sia JSON con array e titoli; una risposta valida ma con schema differente richiede una gestione coerente.\n\n## XMLHttpRequest e confronto\n\n`XMLHttpRequest` (XHR) è l’interfaccia precedente, basata su eventi/callback, e rimane usata in codice esistente. Fetch è l’interfaccia moderna basata su Promise. Entrambe possono fare richieste HTTP, ma AJAX indica la tecnica, non la specifica API. In entrambi i casi occorre gestire errori, status HTTP, parsing e aggiornamento del DOM.\n\n## Sequenza e limiti\n\n```mermaid\nsequenceDiagram\n    participant U as Utente\n    participant J as JavaScript\n    participant S as Server\n    U->>J: attiva ricerca\n    J->>S: richiesta HTTP asincrona\n    S-->>J: risposta JSON e status\n    J->>J: controlla status e analizza dati\n    J-->>U: aggiorna una parte del DOM\n```\n\nL’interfaccia resta libera mentre la richiesta attende, ma una rete lenta resta lenta. Gestisci caricamento, errore, accessibilità e richieste concorrenti. AJAX non implica una singola pagina (SPA) e non sostituisce la navigazione HTTP.",
+  "analogia": {
+    "testo": "È come ordinare un libro allo sportello e continuare a consultare lo scaffale mentre l’addetto lo cerca; quando arriva, aggiorni solo la parte del catalogo che ti interessa.",
+    "limite": "Il browser usa richieste HTTP, Promise, regole di sicurezza e dati serializzati; non è un addetto che garantisce una risposta o un tempo fisso."
+  },
+  "worked_example": {
+    "titolo": "Caricare i risultati senza ricaricare la pagina",
+    "problema": "Al click di un pulsante, richiedi l’endpoint, verifica che la risposta sia positiva, decodifica l’array JSON e mostra i titoli in una lista.",
+    "passi": [
+      "1. Registrare un listener click sul pulsante.",
+      "2. Preparare il contenitore dei risultati.",
+      "3. Attendere `fetch` e controllare `response.ok`.",
+      "4. Attendere `response.json()` e creare elementi DOM con `textContent`."
+    ],
+    "soluzione": "Lo script mostra un `<li>` per ogni titolo e un messaggio testuale se la richiesta fallisce.",
+    "perche_funziona": "Fetch restituisce una Promise e il controllo di `ok` gestisce status HTTP non di successo; `textContent` evita di interpretare titoli come markup."
+  },
+  "completion_problem": {
+    "titolo": "Completare il controllo HTTP",
+    "testo": "Hai `const response = await fetch(\"/api/libri\")`. Completa la gestione per segnalare errori HTTP prima di leggere il JSON.",
+    "passi_mancanti": [
+      "Controllare `response.ok` e lanciare un errore se è falso.",
+      "Solo dopo il controllo invocare `await response.json()`."
+    ],
+    "soluzione": "Usa `if (!response.ok) throw new Error(`HTTP ${response.status}`);` poi `const libri = await response.json();`."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Aggiungere ricerca AJAX",
+    "testo": "Adatta l’esempio a una casella di testo e richiedi `/api/libri?q=...` senza concatenare testo non codificato nell’URL.",
+    "suggerimento": "Costruisci URL e query string con `URLSearchParams` e mantieni il controllo status.",
+    "soluzione_attesa": "Crea `const url = new URL(\"/api/libri\", location.href); url.search = new URLSearchParams({q: input.value});`, poi esegui fetch, controlla `ok` e leggi JSON."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dire che AJAX deve ricevere XML.",
+      "perche_sbagliato": "XML è nel nome storico; la tecnica può usare JSON o altri formati.",
+      "distrattore": "Calcolo di una subnet"
+    },
+    {
+      "errore": "Credere che fetch rifiuti automaticamente la Promise con status 404.",
+      "perche_sbagliato": "Una risposta HTTP 404 normalmente risolve la Promise; si deve controllare `response.ok` o `status`.",
+      "distrattore": "Installazione di un driver"
+    },
+    {
+      "errore": "Inserire titoli ricevuti con `innerHTML` senza sanificazione.",
+      "perche_sbagliato": "Testo remoto può contenere markup non attendibile; `textContent` lo tratta come testo.",
+      "distrattore": "Configurazione di una rete LAN"
+    }
+  ],
+  "mnemonica": "Richiedi → controlla status → leggi il body → aggiorna il DOM.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa descrive il termine AJAX?",
+        "risposta": "Una tecnica di richieste asincrone e aggiornamento parziale, non un protocollo o una singola API."
+      },
+      {
+        "domanda": "Perché controllare `response.ok`?",
+        "risposta": "Fetch non considera automaticamente errore una risposta HTTP 4xx/5xx; `ok` segnala uno status di successo."
+      },
+      {
+        "domanda": "Fetch richiede sempre XML?",
+        "risposta": "No: JSON è comune, ma la risposta può essere in altri formati."
+      },
+      {
+        "domanda": "Qual è la differenza d’approccio tra Fetch e XHR?",
+        "risposta": "Fetch è Promise-based; XHR è basato su eventi e callback, ed è più datato ma ancora presente."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega a un collega la differenza tra i concetti centrali di «AJAX: richieste asincrone con Fetch e XHR» e porta un esempio concreto della biblioteca.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "javascript-fetch-async-await",
+        "collegamento": "AJAX usa Promise e async/await di JavaScript per scrivere richieste HTTP non bloccanti."
+      },
+      {
+        "nodo": "dom-virtual-dom",
+        "collegamento": "Dopo aver ricevuto i dati, il client aggiorna il DOM; il modo di renderizzare è distinto dal trasporto AJAX."
+      }
+    ]
+  },
+  "riepilogo": "AJAX è un insieme di tecniche per scambiare dati in modo asincrono con il server e aggiornare parti della pagina; oggi si usano spesso Fetch e JSON, anche se il nome conserva XML. Le richieste asincrone migliorano la continuità dell’interfaccia e riducono i ricaricamenti completi; non rendono la rete istantanea né eliminano gli errori HTTP. Un gestore invoca `fetch(\"/api/libri\")`, controlla lo status, legge il JSON e aggiorna un elemento della pagina.",
+  "flashcard": {
+    "fronte": "AJAX: richieste asincrone con Fetch e XHR: qual è la definizione, lo scopo e un esempio?",
+    "retro": "AJAX è un insieme di tecniche per scambiare dati in modo asincrono con il server e aggiornare parti della pagina; oggi si usano spesso Fetch e JSON, anche se il nome conserva XML. Le richieste asincrone migliorano la continuità dell’interfaccia e riducono i ricaricamenti completi; non rendono la rete istantanea né eliminano gli errori HTTP. Un gestore invoca `fetch(\"/api/libri\")`, controlla lo status, legge il JSON e aggiorna un elemento della pagina."
+  },
+  "checklist": {
+    "so_fare": [
+      "Aggiungere ricerca AJAX: Adatta l’esempio a una casella di testo e richiedi `/api/libri?q=...` senza concatenare testo non codificato nell’URL."
+    ],
+    "so_dire": [
+      "AJAX è un insieme di tecniche per scambiare dati in modo asincrono con il server e aggiornare parti della pagina; oggi si usano spesso Fetch e JSON, anche se il nome conserva XML.",
+      "Le richieste asincrone migliorano la continuità dell’interfaccia e riducono i ricaricamenti completi; non rendono la rete istantanea né eliminano gli errori HTTP."
+    ]
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "perche_ti_serve": "Gruppo A: tema previsto dal syllabus/materiale disponibile; non è documentato un punteggio specifico per questo singolo nodo.",
+  "scenario_fil_rouge": "La biblioteca vuole collegare il proprio catalogo a dati culturali di altre fonti. Usando identificatori e relazioni esplicite, descrive libri e persone in RDF, dichiara classi e vincoli con OWL e interroga il grafo con SPARQL.",
+  "definizione_esame": {
+    "definizione": "Il Web Semantico organizza dati del Web in forma interpretabile e collegabile; RDF modella affermazioni come triple, OWL esprime ontologie con semantica formale e SPARQL interroga grafi RDF.",
+    "scopo_vantaggio": "Identificatori e vocabolari condivisi facilitano integrazione e ragionamento sui dati oltre la semplice visualizzazione di pagine.",
+    "esempio": "RDF afferma che un libro ha un autore; OWL dichiara la classe Libro e SPARQL seleziona i libri pubblicati dopo il 2020."
+  },
+  "spiegazione": "## Dal documento al dato collegato\n\nNel Web tradizionale una pagina comunica significato soprattutto a un lettore umano. Il Web Semantico aggiunge una rappresentazione strutturata, con identificatori e relazioni esplicite, così che software differenti possano integrare dati. Non significa che ogni macchina “capisca” come una persona: i programmi elaborano significati formali definiti da vocabolari, schemi e regole.\n\n## RDF: grafo di triple\n\nRDF (Resource Description Framework) rappresenta dati come triple **soggetto–predicato–oggetto**. Soggetto e predicato sono IRI; l’oggetto può essere un IRI, un nodo anonimo o un letterale, eventualmente tipizzato o con tag di lingua. Le triple formano un grafo orientato etichettato. Turtle è una sintassi compatta, non l’unico formato RDF.\n\n```turtle\n@prefix ex: <https://example.org/biblioteca/> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\nex:Libro a owl:Class .\nex:Persona a owl:Class .\nex:haAutore a owl:ObjectProperty ;\n    rdfs:domain ex:Libro ;\n    rdfs:range ex:Persona .\nex:anno a owl:DatatypeProperty .\nex:libro7 a ex:Libro ;\n    ex:haAutore ex:ada ;\n    ex:anno \"2021\"^^xsd:integer .\nex:ada a ex:Persona .\n```\n\nIl Turtle è un documento RDF valido: `a` abbrevia `rdf:type`; gli IRIs identificano vocabolario e risorse; `owl:Class` e le proprietà esprimono definizioni OWL serializzate nel grafo RDF. In progetti reali, scegli IRI e vocabolari riusabili con cura.\n\n## OWL: ontologie e inferenza\n\nOWL (Web Ontology Language) è un linguaggio con semantica logica per descrivere classi, proprietà, individui e relazioni più ricche. Una classe può essere sottoclasse di un’altra e una proprietà può avere dominio e range. Un reasoner può derivare conseguenze o rilevare incoerenze rispetto agli assiomi; il risultato dipende dalla semantica e dal profilo supportato. OWL non è un semplice elenco di etichette e non rende automaticamente vera una regola non dichiarata.\n\n## SPARQL: interrogare grafi RDF\n\nSPARQL è il linguaggio standard di query per RDF. I triple pattern corrispondono a parti del grafo; le variabili iniziano con `?`. La query cerca libri, autore e anno. Un endpoint può restituire i risultati, ma un endpoint pubblico specifico non è necessario per comprendere la sintassi.\n\n```sparql\nPREFIX ex: <https://example.org/biblioteca/>\nSELECT ?libro ?autore ?anno\nWHERE {\n  ?libro a ex:Libro ;\n         ex:haAutore ?autore ;\n         ex:anno ?anno .\n  FILTER(?anno >= 2020)\n}\nORDER BY ?libro\n```\n\n## Come si completano\n\nRDF è il modello dei dati; OWL definisce concetti e vincoli formali su quei dati; SPARQL interroga pattern nel grafo. Sono componenti collegati ma non sinonimi e non hanno lo stesso compito. IRI stabili favoriscono il collegamento tra dataset, ma l’interoperabilità richiede anche accordo su vocabolari e qualità dei dati. `sparql-query-esempi` approfondisce le forme delle query.",
+  "analogia": {
+    "testo": "RDF assomiglia a schede bibliografiche con campi e collegamenti; OWL è il regolamento che precisa categorie e relazioni ammesse; SPARQL è una richiesta che cerca schede con uno schema di campi.",
+    "limite": "Le schede non hanno la semantica formale dei grafi e degli assiomi, e un reasoner può dedurre solo ciò che segue dalle regole formalizzate."
+  },
+  "worked_example": {
+    "titolo": "Modellare e interrogare un libro",
+    "problema": "Descrivi in RDF che libro7 è un Libro, ha come autore Ada e ha anno 2021; poi formula una query per trovare libri pubblicati dal 2020.",
+    "passi": [
+      "1. Definire un namespace IRI per le risorse e i termini del catalogo.",
+      "2. Scrivere le triple libro7 rdf:type Libro, libro7 haAutore ada e libro7 anno 2021.",
+      "3. Modellare Libro e le proprietà nell’ontologia OWL, se occorrono classi e tipi di proprietà.",
+      "4. Cercare i triple pattern e filtrare l’anno nella query SPARQL."
+    ],
+    "soluzione": "Le triple Turtle del blocco descrivono il libro; la query restituisce le risorse corrispondenti se il grafo le contiene.",
+    "perche_funziona": "RDF fornisce fatti collegati, OWL il vocabolario con semantica logica, SPARQL la selezione dei fatti corrispondenti."
+  },
+  "completion_problem": {
+    "titolo": "Completare una tripla e query",
+    "testo": "La biblioteca ha il prefisso ex. Completa la descrizione di ex:libro9, autore ex:ada, e una SELECT che trovi soggetto e autore.",
+    "passi_mancanti": [
+      "Scrivere una tripla con predicato ex:haAutore e terminatore Turtle corretto.",
+      "Scrivere SELECT con variabili e pattern corrispondente nel WHERE."
+    ],
+    "soluzione": "Turtle: `ex:libro9 ex:haAutore ex:ada .` Query: `PREFIX ex: <https://example.org/biblioteca/> SELECT ?libro ?autore WHERE { ?libro ex:haAutore ?autore . }`."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Distinguere il ruolo degli standard",
+    "testo": "Per una collezione di articoli, scrivi quale parte affidare a RDF, quale a OWL e quale a SPARQL.",
+    "suggerimento": "Pensa rispettivamente a dati/triple, vocabolario e assiomi, interrogazione.",
+    "soluzione_attesa": "RDF rappresenta articoli e relazioni come triple; OWL definisce classi e proprietà con semantica formale; SPARQL cerca nel grafo i pattern richiesti."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dire che RDF è un linguaggio di query.",
+      "perche_sbagliato": "RDF è un modello di rappresentazione; il linguaggio di query dei grafi RDF è SPARQL.",
+      "distrattore": "Configurazione della rete LAN"
+    },
+    {
+      "errore": "Dire che OWL è soltanto sinonimo di RDF.",
+      "perche_sbagliato": "OWL è un linguaggio ontologico con semantica formale nell’ecosistema RDF; i ruoli sono distinti.",
+      "distrattore": "Installazione del sistema operativo"
+    },
+    {
+      "errore": "Pensare che un reasoner deduca qualsiasi significato umano implicito.",
+      "perche_sbagliato": "Il reasoner segue assiomi formali e semantica del linguaggio, non conoscenza informale non modellata.",
+      "distrattore": "Montaggio di un processore"
+    }
+  ],
+  "mnemonica": "RDF descrive, OWL organizza e assiomatizza, SPARQL cerca.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quali sono i tre componenti di una tripla RDF?",
+        "risposta": "Soggetto, predicato e oggetto; il predicato nomina la relazione."
+      },
+      {
+        "domanda": "Che cosa aggiunge OWL rispetto a triple RDF isolate?",
+        "risposta": "Una lingua formale per classi, proprietà, individui e assiomi ontologici, utile anche al ragionamento."
+      },
+      {
+        "domanda": "A cosa serve SPARQL?",
+        "risposta": "A formulare query su grafi RDF tramite pattern, variabili e operatori."
+      },
+      {
+        "domanda": "RDF, OWL e SPARQL sono sinonimi?",
+        "risposta": "No: modello dei dati, linguaggio ontologico e linguaggio di query hanno funzioni diverse."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega a un collega la differenza tra i concetti centrali di «Web Semantico: RDF, OWL, SPARQL» e porta un esempio concreto della biblioteca.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "uri-url-urn-differenze",
+        "collegamento": "Gli IRI RDF identificano risorse e termini; URI e identificatori sono quindi un prerequisito concettuale utile."
+      },
+      {
+        "nodo": "json-formato-dati",
+        "collegamento": "JSON trasporta valori strutturati, mentre RDF modella relazioni semantiche; JSON-LD è una serializzazione RDF, non sinonimo di JSON generico."
+      }
+    ]
+  },
+  "riepilogo": "Il Web Semantico organizza dati del Web in forma interpretabile e collegabile; RDF modella affermazioni come triple, OWL esprime ontologie con semantica formale e SPARQL interroga grafi RDF. Identificatori e vocabolari condivisi facilitano integrazione e ragionamento sui dati oltre la semplice visualizzazione di pagine. RDF afferma che un libro ha un autore; OWL dichiara la classe Libro e SPARQL seleziona i libri pubblicati dopo il 2020.",
+  "flashcard": {
+    "fronte": "Web Semantico: RDF, OWL, SPARQL: qual è la definizione, lo scopo e un esempio?",
+    "retro": "Il Web Semantico organizza dati del Web in forma interpretabile e collegabile; RDF modella affermazioni come triple, OWL esprime ontologie con semantica formale e SPARQL interroga grafi RDF. Identificatori e vocabolari condivisi facilitano integrazione e ragionamento sui dati oltre la semplice visualizzazione di pagine. RDF afferma che un libro ha un autore; OWL dichiara la classe Libro e SPARQL seleziona i libri pubblicati dopo il 2020."
+  },
+  "checklist": {
+    "so_fare": [
+      "Distinguere il ruolo degli standard: Per una collezione di articoli, scrivi quale parte affidare a RDF, quale a OWL e quale a SPARQL."
+    ],
+    "so_dire": [
+      "Il Web Semantico organizza dati del Web in forma interpretabile e collegabile; RDF modella affermazioni come triple, OWL esprime ontologie con semantica formale e SPARQL interroga grafi RDF.",
+      "Identificatori e vocabolari condivisi facilitano integrazione e ragionamento sui dati oltre la semplice visualizzazione di pagine."
+    ]
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "perche_ti_serve": "Gruppo C: tema previsto dal syllabus/materiale disponibile; non è documentato un punteggio specifico per questo singolo nodo.",
+  "scenario_fil_rouge": "La biblioteca riceve dal browser una ricerca `?q=RDF` oppure un invio JSON per prenotare un libro. La vista legge i dati dalla richiesta, controlla ciò che è arrivato e costruisce una risposta con contenuto e status appropriati.",
+  "definizione_esame": {
+    "definizione": "In Flask, `request` espone i dati HTTP in ingresso nel contesto della richiesta; una response è il messaggio HTTP in uscita, composto da status, header e corpo.",
+    "scopo_vantaggio": "Separare lettura, validazione e risposta rende esplicito il contratto dell’endpoint e permette di segnalare input errati senza confonderli con risorse mancanti.",
+    "esempio": "Una vista legge `request.args[\"q\"]` dalla query string e restituisce `jsonify({\"q\": q}), 200`."
+  },
+  "spiegazione": "## Leggere la richiesta giusta\n\n`request` è un proxy al contesto della richiesta corrente: non è una variabile globale con i dati dell’ultimo utente. I campi corrispondono a parti diverse del messaggio HTTP. `request.args` legge la query string (`?q=RDF`); `request.form` legge campi inviati come `application/x-www-form-urlencoded` o multipart; `request.get_json()` decodifica un corpo JSON quando il media type è appropriato. `request.method`, `request.headers` e `request.cookies` espongono altre informazioni.\n\nI dati ricevuti sono input non attendibile. Controlla tipo, presenza, formato, lunghezza e autorizzazioni prima di usarli. `request.get_json(silent=True)` restituisce `None` quando non può decodificare il JSON, così la vista può restituire 400. Per un JSON valido ma di tipo inatteso (per esempio una lista mentre ci si aspetta un oggetto), valida esplicitamente `isinstance(data, dict)`.\n\n## Costruire la risposta\n\nUna risposta HTTP comprende status, header e corpo. `jsonify` crea una risposta JSON; restituire `(payload, 201)` imposta lo status. `make_response` consente di aggiungere header o cookie quando serve, ma non è obbligatoria per le risposte semplici. Non restituire password o segreti nel corpo. Per i cookie, la sicurezza dipende anche da attributi come `HttpOnly`, `Secure` e `SameSite`, e dal contesto HTTPS.\n\n## Esempio completo eseguibile\n\nIl modulo seguente usa una mappa in memoria e supporta ricerca e prenotazione. Salvalo come `app.py`, installa Flask e avvialo con `flask --app app run`. Le verifiche sono parte del contratto; un errore di sintassi o di tipo non diventa un 404.\n\n```python\nfrom flask import Flask, jsonify, request\n\napp = Flask(__name__)\nLIBRI = {7: {\"id\": 7, \"titolo\": \"Il Web\", \"disponibile\": True}}\n\n@app.get(\"/api/libri\")\ndef cerca_libri():\n    termine = request.args.get(\"q\", \"\").strip().casefold()\n    risultati = [b for b in LIBRI.values()\n                 if termine in b[\"titolo\"].casefold()]\n    return jsonify(risultati), 200\n\n@app.post(\"/api/libri/<int:libro_id>/prenotazioni\")\ndef prenota(libro_id):\n    data = request.get_json(silent=True)\n    if (not isinstance(data, dict)\n            or not isinstance(data.get(\"utente\"), str)\n            or not data[\"utente\"].strip()):\n        return jsonify({\"errore\": \"JSON con campo utente non vuoto obbligatorio\"}), 400\n    libro = LIBRI.get(libro_id)\n    if libro is None:\n        return jsonify({\"errore\": \"Libro non trovato\"}), 404\n    if not libro[\"disponibile\"]:\n        return jsonify({\"errore\": \"Libro non disponibile\"}), 409\n    libro[\"disponibile\"] = False\n    return jsonify({\"libro_id\": libro_id, \"utente\": data[\"utente\"]}), 201\n\nif __name__ == \"__main__\":\n    app.run()  # Solo server di sviluppo.\n```\n\nLa richiesta POST deve inviare `Content-Type: application/json` e un corpo come `{\"utente\":\"Ada\"}`. 400 indica input non valido, 404 ID inesistente, 409 conflitto con lo stato corrente, 201 creazione della prenotazione. In produzione servono persistenza e controllo di concorrenza per evitare prenotazioni simultanee incoerenti.\n\n## Mappa mentale\n\n```mermaid\ngraph LR\n    Request[Richiesta HTTP] --> Args[query: request.args]\n    Request --> Body[form o JSON: request.form / get_json]\n    Args --> Validate[Validazione e logica]\n    Body --> Validate\n    Validate --> Response[status + header + corpo]\n```\n\n## Regola operativa\n\nNon confondere `request` (ingresso) con `response` (uscita). Non usare il parser JSON senza considerare body assente o non valido; non assumere che `Content-Type` e campi siano corretti. Il browser può leggere status e corpo separatamente. Rotte e `jsonify` sono introdotti in `flask-rotte-jsonify`; i codici HTTP sono richiamati da `codici-stato-http`.",
+  "analogia": {
+    "testo": "La richiesta è il modulo compilato che arriva allo sportello; `request` è la pratica che l’addetto consulta. La response è la ricevuta di ritorno, con esito, intestazione e contenuto.",
+    "limite": "HTTP è un protocollo: header e status hanno significati standard che non corrispondono sempre a una ricevuta cartacea."
+  },
+  "worked_example": {
+    "titolo": "Validare il corpo di una prenotazione",
+    "problema": "Il client invia POST con JSON e vuole prenotare il libro 7; input mancante e libro inesistente devono avere esiti diversi.",
+    "passi": [
+      "1. Decodificare il JSON senza sollevare errore per body non valido.",
+      "2. Verificare che sia un oggetto con `utente` stringa.",
+      "3. Cercare il libro e restituire 404 se manca.",
+      "4. Se disponibile, aggiornare lo stato e restituire 201."
+    ],
+    "soluzione": "Il codice restituisce 400 per JSON non conforme, 404 per ID ignoto e 201 quando crea la prenotazione.",
+    "perche_funziona": "Ogni status identifica una condizione distinta e verificabile; la validazione precede l’uso dei dati e impedisce di considerare attendibile il client."
+  },
+  "completion_problem": {
+    "titolo": "Completare la validazione JSON",
+    "testo": "La vista riceve `data = request.get_json(silent=True)`. Completa il controllo del body prima di leggere `data[\"utente\"]`.",
+    "passi_mancanti": [
+      "Verificare che data sia un dizionario e che utente sia una stringa non vuota.",
+      "Restituire un errore JSON con status 400 quando il controllo fallisce."
+    ],
+    "soluzione": "Usa `if not isinstance(data, dict) or not isinstance(data.get(\"utente\"), str) or not data[\"utente\"].strip():` e restituisci `jsonify({\"errore\":\"Input non valido\"}), 400`."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Aggiungere un filtro di ricerca",
+    "testo": "Estendi GET /api/libri accettando `?q=...`; la ricerca non deve distinguere maiuscole e minuscole e deve restituire una lista JSON.",
+    "suggerimento": "Leggi con `request.args.get`, normalizza con `casefold` e filtra i titoli.",
+    "soluzione_attesa": "Estrai q come stringa, applica `.strip().casefold()`, seleziona i record il cui titolo normalizzato contiene q e restituisci `jsonify(risultati), 200`."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Usare 404 per un JSON malformato.",
+      "perche_sbagliato": "La rotta esiste ma la richiesta è errata: 400 è più adatto; 404 riguarda la risorsa non trovata.",
+      "distrattore": "Elettronica digitale"
+    },
+    {
+      "errore": "Leggere sempre il body con `request.form` anche se il client invia JSON.",
+      "perche_sbagliato": "I dati sono in formati diversi: form e JSON hanno media type e decoder differenti.",
+      "distrattore": "Progettazione di una LAN"
+    },
+    {
+      "errore": "Restituire 200 anche quando una prenotazione viene creata.",
+      "perche_sbagliato": "201 descrive la creazione riuscita; lo status è parte del contratto della risposta.",
+      "distrattore": "Disegno di un diagramma UML"
+    }
+  ],
+  "mnemonica": "Ingresso REQUEST, controlla i dati, uscita RESPONSE: tre momenti distinti.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Dove si leggono i parametri `?q=x`?",
+        "risposta": "`request.args`, che rappresenta i parametri della query string."
+      },
+      {
+        "domanda": "Come gestire un body JSON assente o malformato?",
+        "risposta": "Decodificarlo in modo controllato e validare tipo e campi, restituendo 400 se non valido."
+      },
+      {
+        "domanda": "Che cosa contiene una risposta HTTP?",
+        "risposta": "Status, header e corpo; ognuna delle tre parti comunica informazioni al client."
+      },
+      {
+        "domanda": "Perché request non è una collezione globale ordinaria?",
+        "risposta": "È un proxy al contesto della richiesta corrente e cambia con ciascuna richiesta gestita."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega a un collega la differenza tra i concetti centrali di «Flask: request e response» e porta un esempio concreto della biblioteca.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "flask-rotte-jsonify",
+        "collegamento": "La vista associata alla rotta legge l’input dalla request e genera la response JSON."
+      },
+      {
+        "nodo": "codice-404-not-found",
+        "collegamento": "Distinguere input errato (400) da ID assente (404) mantiene coerente il significato dei codici HTTP."
+      }
+    ]
+  },
+  "riepilogo": "In Flask, `request` espone i dati HTTP in ingresso nel contesto della richiesta; una response è il messaggio HTTP in uscita, composto da status, header e corpo. Separare lettura, validazione e risposta rende esplicito il contratto dell’endpoint e permette di segnalare input errati senza confonderli con risorse mancanti. Una vista legge `request.args[\"q\"]` dalla query string e restituisce `jsonify({\"q\": q}), 200`.",
+  "flashcard": {
+    "fronte": "Flask: request e response: qual è la definizione, lo scopo e un esempio?",
+    "retro": "In Flask, `request` espone i dati HTTP in ingresso nel contesto della richiesta; una response è il messaggio HTTP in uscita, composto da status, header e corpo. Separare lettura, validazione e risposta rende esplicito il contratto dell’endpoint e permette di segnalare input errati senza confonderli con risorse mancanti. Una vista legge `request.args[\"q\"]` dalla query string e restituisce `jsonify({\"q\": q}), 200`."
+  },
+  "checklist": {
+    "so_fare": [
+      "Aggiungere un filtro di ricerca: Estendi GET /api/libri accettando `?q=...`; la ricerca non deve distinguere maiuscole e minuscole e deve restituire una lista JSON."
+    ],
+    "so_dire": [
+      "In Flask, `request` espone i dati HTTP in ingresso nel contesto della richiesta; una response è il messaggio HTTP in uscita, composto da status, header e corpo.",
+      "Separare lettura, validazione e risposta rende esplicito il contratto dell’endpoint e permette di segnalare input errati senza confonderli con risorse mancanti."
+    ]
+  }
+}

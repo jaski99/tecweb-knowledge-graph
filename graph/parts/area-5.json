@@ -5,7 +5,7 @@
     "area": 5,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "Il Web Semantico (Tim Berners-Lee) mira a rendere i dati comprensibili dalle macchine. RDF (Resource Description Framework) descrive risorse con triple: soggetto-predicato-oggetto. OWL (Web Ontology Language) definisce ontologie (gerarchie di concetti e relazioni). SPARQL è il linguaggio di query per RDF. Linked Data collega dati da fonti diverse.",
+    "sapere": "RDF rappresenta dati come triple e grafo; OWL esprime ontologie con semantica formale; SPARQL interroga grafi RDF. Il Web Semantico mira a rendere i dati collegabili e interpretabili da software secondo vocabolari espliciti.",
     "saper_fare": [
       "Spiegare il concetto di tripla RDF",
       "Distinguere RDF da OWL",
@@ -22,26 +22,26 @@
     "tempo_studio_min": 60,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Argomento ricorrente nelle prove."
+      "motivazione": "Gruppo A; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
     },
     "risorse": [
       {
-        "titolo": "W3C: Semantic Web",
-        "url": "https://www.w3.org/standards/semanticweb/",
+        "titolo": "W3C RDF 1.1 Concepts",
+        "url": "https://www.w3.org/TR/rdf11-concepts/",
         "verificato": true
       },
       {
-        "titolo": "W3C: RDF",
-        "url": "https://www.w3.org/RDF/",
-        "verificato": true
-      },
-      {
-        "titolo": "W3C: OWL",
+        "titolo": "W3C OWL",
         "url": "https://www.w3.org/OWL/",
         "verificato": true
       },
       {
-        "titolo": "W3C: SPARQL",
+        "titolo": "W3C OWL 2 Primer",
+        "url": "https://www.w3.org/TR/2012/REC-owl2-primer-20121211/",
+        "verificato": true
+      },
+      {
+        "titolo": "W3C SPARQL 1.1 Query",
         "url": "https://www.w3.org/TR/sparql11-query/",
         "verificato": true
       }
@@ -52,11 +52,9 @@
       }
     ],
     "checklist_ripasso": [
-      "Web Semantico: dati comprensibili dalle macchine",
-      "RDF: Resource Description Framework (triple: soggetto-predicato-oggetto)",
-      "OWL: Web Ontology Language (ontologie, gerarchie)",
-      "SPARQL: query language per RDF",
-      "Linked Data: collegamento dati da fonti diverse"
+      "RDF: triple soggetto-predicato-oggetto e grafi",
+      "OWL: classi, proprietà e assiomi con semantica formale",
+      "SPARQL: query dei grafi RDF"
     ],
     "worker": "W3"
   },
@@ -66,11 +64,11 @@
     "area": 5,
     "gruppo": "A",
     "tipo": "abilita",
-    "sapere": "SPARQL è il linguaggio di query per dati RDF. Sintassi base: SELECT ?variabili WHERE { pattern } con triple pattern (soggetto predicato oggetto). Filtri con FILTER, opzionali con OPTIONAL, unioni con UNION. Formati di output: JSON, XML, CSV, TSV.",
+    "sapere": "SPARQL è il linguaggio standard di query per grafi RDF. Le query abbinano triple pattern e possono selezionare soluzioni, verificare esistenza o costruire grafi.",
     "saper_fare": [
-      "Scrivere query SPARQL SELECT",
-      "Usare FILTER per condizionare i risultati",
-      "Eseguire query su endpoint SPARQL pubblici"
+      "Scrivere query SPARQL SELECT con triple pattern",
+      "Usare FILTER e OPTIONAL per condizioni e dati facoltativi",
+      "Verificare una query su un dataset RDF in un motore SPARQL compatibile"
     ],
     "prerequisiti": [
       {
@@ -88,23 +86,18 @@
     ],
     "tempo_studio_min": 40,
     "priorita": {
-      "livello": "media",
-      "motivazione": "Gruppo A. Importante per applicazioni pratiche."
+      "livello": "alta",
+      "motivazione": "Gruppo A; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
     },
     "risorse": [
       {
-        "titolo": "W3C: SPARQL 1.1 Query Language",
+        "titolo": "W3C SPARQL 1.1 Query",
         "url": "https://www.w3.org/TR/sparql11-query/",
         "verificato": true
       },
       {
-        "titolo": "DBpedia SPARQL Endpoint",
-        "url": "https://dbpedia.org/sparql",
-        "verificato": true
-      },
-      {
-        "titolo": "Wikidata Query Service",
-        "url": "https://query.wikidata.org/",
+        "titolo": "W3C RDF 1.1 Concepts",
+        "url": "https://www.w3.org/TR/rdf11-concepts/",
         "verificato": true
       }
     ],
@@ -114,11 +107,9 @@
       }
     ],
     "checklist_ripasso": [
-      "SELECT ?var WHERE { pattern }",
-      "Triple pattern: ?s ?p ?o",
-      "FILTER: condizionare risultati",
-      "OPTIONAL: risultati opzionali",
-      "UNION: combinare pattern"
+      "SELECT produce soluzioni; ASK verifica esistenza; CONSTRUCT crea un grafo",
+      "Le variabili uguali collegano pattern; FILTER restringe i risultati",
+      "ORDER BY rende esplicito l’ordinamento"
     ],
     "worker": "W3"
   },
@@ -151,22 +142,17 @@
     "tempo_studio_min": 45,
     "priorita": {
       "livello": "media",
-      "motivazione": "Gruppo B. Importante per applicazioni dinamiche."
+      "motivazione": "Gruppo B; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
     },
     "risorse": [
       {
-        "titolo": "MDN: AJAX",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX",
+        "titolo": "MDN: Using the Fetch API",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
         "verificato": true
       },
       {
         "titolo": "MDN: XMLHttpRequest",
         "url": "https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest",
-        "verificato": true
-      },
-      {
-        "titolo": "MDN: Using Fetch",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
         "verificato": true
       }
     ],
@@ -176,10 +162,9 @@
       }
     ],
     "checklist_ripasso": [
-      "AJAX: Asynchronous JavaScript And XML (ma usa JSON)",
-      "API: XMLHttpRequest (legacy), fetch() (moderna)",
-      "Passaggi: crea → invia → aspetta → elabora → aggiorna DOM",
-      "Asincrono: non blocca l'interfaccia utente"
+      "Fetch è Promise-based; XHR usa eventi/callback",
+      "Controllare response.ok: 4xx/5xx non rifiutano fetch automaticamente",
+      "Leggere il body e aggiornare il DOM in modo sicuro"
     ],
     "worker": "W3"
   },
@@ -189,11 +174,11 @@
     "area": 5,
     "gruppo": "B",
     "tipo": "concetto",
-    "sapere": "Web 1.0 (anni '90): pagine statiche, solo lettura, HTML di base, contenuto creato da esperti. Web 2.0 (2000s): pagine dinamiche, interazione utente, user-generated content, AJAX, social media, API. Web 3.0 (2010s): web semantico, dati collegati, intelligenza artificiale, personalizzazione, ontologie. Web 4.0 (emergente): web ubiquo, IoT, integrazione profonda con il mondo fisico, AI generativa, intelligenza ambientale.",
+    "sapere": "Web 1.0–4.0 sono etichette concettuali non standardizzate: consultazione, partecipazione, dati semantici/collegati (in una specifica accezione di Web 3.0) e visioni di servizi pervasivi. Definizioni e confini, soprattutto per Web 3.0 e Web 4.0, variano.",
     "saper_fare": [
-      "Distinguere le caratteristiche di ogni generazione",
-      "Fornire esempi di tecnologie per ogni generazione",
-      "Spiegare l'evoluzione tecnologica e sociale"
+      "Distinguere le tendenze associate alle quattro etichette",
+      "Fornire esempi chiarendo che la classificazione non è normativa",
+      "Spiegare la variabilità delle accezioni di Web 3.0 e Web 4.0"
     ],
     "prerequisiti": [],
     "esercizi": [
@@ -206,22 +191,12 @@
     "tempo_studio_min": 35,
     "priorita": {
       "livello": "media",
-      "motivazione": "Gruppo B. Argomento culturale/tecnologico."
+      "motivazione": "Gruppo B; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
     },
     "risorse": [
       {
-        "titolo": "Wikipedia: Web 2.0",
-        "url": "https://en.wikipedia.org/wiki/Web_2.0",
-        "verificato": true
-      },
-      {
-        "titolo": "Wikipedia: Web 3.0",
-        "url": "https://en.wikipedia.org/wiki/Web_3.0",
-        "verificato": true
-      },
-      {
-        "titolo": "W3C: Semantic Web",
-        "url": "https://www.w3.org/standards/semanticweb/",
+        "titolo": "W3C RDF 1.1 Concepts",
+        "url": "https://www.w3.org/TR/rdf11-concepts/",
         "verificato": true
       }
     ],
@@ -231,10 +206,9 @@
       }
     ],
     "checklist_ripasso": [
-      "Web 1.0: statico, lettura, HTML base",
-      "Web 2.0: dinamico, user-generated, AJAX, social",
-      "Web 3.0: semantico, Linked Data, AI",
-      "Web 4.0: ubiquo, IoT, AI generativa"
+      "1.0: consultazione; 2.0: partecipazione",
+      "3.0: semantica/Linked Data nell’accezione dichiarata",
+      "4.0: visione pervasiva; etichette non normative e definizioni variabili"
     ],
     "worker": "W3"
   }
