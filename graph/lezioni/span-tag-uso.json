@@ -1,0 +1,124 @@
+{
+  "perche_ti_serve": "Gruppo B (varianti isolate, ~20% dello scritto da MATERIALE_UTENTE): il tag span ricorre in definizioni e abbinamenti, spesso contro il div.",
+  "scenario_fil_rouge": "Nella scheda di un libro della libreria vuoi che solo il prezzo scontato sia rosso e in grassetto, nel mezzo di una frase normale: «Prezzo di copertina 19,90, da noi 14,90». Non serve un nuovo blocco né un elemento con un significato speciale: serve un contenitore neutro che avvolga quel pezzetto di testo per agganciarci uno stile. È il lavoro dello span.",
+  "definizione_esame": {
+    "definizione": "Lo <span> è il contenitore generico inline per il contenuto testuale (phrasing content): non rappresenta nulla di per sé e serve a raggruppare un frammento di contenuto in linea per applicargli stili, attributi comuni o agganci per JavaScript.",
+    "scopo_vantaggio": "Permette di marcare una parte di testo dentro un flusso (una parola, un prezzo, un termine in altra lingua) senza interrompere la riga e senza cambiare il significato, quando nessun elemento semantico è quello giusto.",
+    "esempio": "Nella frase del prezzo, <span class=\"prezzo-scontato\">14,90 euro</span> consente al CSS di colorare solo quella cifra, che resta nella stessa riga del resto della frase."
+  },
+  "spiegazione": "## Prerequisiti in una riga\n\nNessun prerequisito nel grafo: tieni solo presente la differenza tra elementi che stanno **in linea nel testo** e blocchi che vanno a capo, che qui viene richiamata e resa precisa.\n\n## Un contenitore neutro, in linea\n\nLa definizione di MDN è la frase da ricordare: `<span>` è un **contenitore inline generico** per il *phrasing content* (il contenuto di tipo testuale) che **non rappresenta intrinsecamente nulla**. Ha come soli attributi quelli **globali** (come `class`, `id`, `lang`, `data-*`): tutta la sua utilità viene da ciò che ci agganci tu.\n\nGli usi legittimi sono tre:\n\n1. **aggancio per lo stile**: evidenziare una parola o un prezzo dentro un testo, con una classe;\n2. **attributi condivisi da un frammento**: per esempio segnalare un cambio di lingua con `<span lang=\"en\">paperback</span>`, utile anche alle tecnologie assistive per la pronuncia;\n3. **aggancio per JavaScript**: un pezzo di testo che il codice aggiornerà, come il conteggio degli articoli nel carrello.\n\n```html\n<p>\n  Prezzo di copertina 19,90 euro, da noi\n  <span class=\"prezzo-scontato\">14,90 euro</span>\n  in edizione <span lang=\"en\">paperback</span>.\n</p>\n```\n\n```css\n.prezzo-scontato { color: darkred; font-weight: bold; }\n```\n\n## La regola d'oro: prima l'elemento semantico\n\nPoiché lo span non dice nulla sul **significato**, va usato **solo quando nessun altro elemento è appropriato**. Se il frammento ha un senso preciso, l'HTML ha quasi sempre l'elemento giusto, che porta significato (e spesso uno stile predefinito) gratis:\n\n| Se il frammento è... | Usa | Non usare |\n|---|---|---|\n| Importante | `<strong>` | `<span class=\"grassetto\">` |\n| Enfatizzato | `<em>` | `<span class=\"corsivo\">` |\n| Evidenziato in un contesto | `<mark>` | `<span class=\"giallo\">` |\n| Codice o comando | `<code>` | `<span class=\"mono\">` |\n| Senza alcun significato particolare | `<span>` con classe | — |\n\nCorollario di accessibilità: lo span **non ha un ruolo implicito** per le tecnologie assistive e non è focalizzabile né attivabile da tastiera. Uno span «cliccabile» al posto di un `<button>` o di un `<a>` è un errore: mouse sì, tastiera e screen reader no.\n\n## Span contro div: la coppia degli abbinamenti\n\n`<span>` e `<div>` sono i due contenitori **generici** (entrambi senza significato proprio) e si distinguono quasi solo per il **livello**:\n\n| Aspetto | `<span>` | `<div>` |\n|---|---|---|\n| Livello predefinito | **Inline**: resta nella riga del testo | **Block**: inizia una riga propria |\n| Contenuto atteso | Phrasing content (testo e inline) | Flow content (interi blocchi) |\n| Interruzione di riga | No | Sì, prima e dopo |\n| `width` e `height` di default | Ignorate (inline non sostituito) | Si applicano |\n| Uso tipico | Una parola, un prezzo, un'icona nel testo | Una sezione, una card, un raggruppamento di layout |\n\nDue conseguenze pratiche:\n\n- mettere un **blocco dentro uno span** (per esempio un `<p>` o un `<div>` dentro `<span>`) viola il modello di contenuto: lo span accetta solo contenuto testuale/inline; è l'inverso corretto, uno span dentro un paragrafo o un div, a essere normale;\n- se allo span dai `width`, `height` o margini verticali aspettandoti effetto, non succede nulla finché non cambi il suo `display` in `inline-block` o `block` (è la tabella del box model nel nodo `css-box-model`).\n\n```mermaid\nflowchart TD\n    A[\"Devo marcare un pezzo di pagina\"] --> B[\"Ha un significato preciso\"]\n    B --> C[\"Uso l'elemento semantico: strong, em, mark, code\"]\n    B --> D[\"Nessun significato particolare\"]\n    D --> E[\"Sta in linea nel testo: span\"]\n    D --> F[\"È un raggruppamento a blocco: div\"]\n```\n\nInfine, nota di stile del markup: lo span vuole **entrambi i tag**, apertura e chiusura; non è un elemento vuoto come `<img>` o `<input>`. Non è nemmeno un elemento «di stile» nel senso che non produce alcun effetto visivo da solo: senza CSS o senza codice che lo usi, il testo con o senza span appare identico.",
+  "analogia": {
+    "testo": "Lo span è l'evidenziatore passato su una parola della pagina di un libro: la parola resta dov'è, nella stessa riga e con lo stesso significato, ma ora si distingue dal resto e puoi ritrovarla al volo. Il div, nella stessa metafora, è invece ritagliare un intero paragrafo e incollarlo in una scatola a parte sulla scrivania.",
+    "limite": "L'evidenziatore su carta cambia davvero l'aspetto della parola; lo span da solo non cambia nulla finché non lo colleghi a una regola CSS o a del codice: è solo il segno che quel frammento va trattato, non il trattamento stesso."
+  },
+  "worked_example": {
+    "titolo": "Prezzo scontato e termine straniero nella scheda libro",
+    "problema": "Nella scheda di Dune la riga dei prezzi deve mostrare il prezzo di copertina barrato (è un prezzo non più valido) e quello scontato evidenziato, tutto nella stessa frase; inoltre il termine «paperback» va marcato come inglese. Scrivi markup e CSS scegliendo per ogni frammento l'elemento giusto e usando lo span solo dove serve davvero.",
+    "passi": [
+      "Individua i frammenti: prezzo non più valido, prezzo scontato da evidenziare, parola in altra lingua, resto della frase come testo normale.",
+      "Per il prezzo non più valido scegli l'elemento semantico <s> (contenuto non più accurato o rilevante), che i browser mostrano barrato già di loro.",
+      "Per lo sconto non c'è un elemento semantico specifico: usa <span class=\"prezzo-scontato\"> come contenitore neutro inline.",
+      "Per il termine inglese usa uno span con attributo lang=\"en\": qui lo span serve a portare un attributo sul frammento, non uno stile.",
+      "Nel CSS dai lo stile solo alla classe dello sconto; verifica che tutto resti sulla stessa riga perché ogni frammento è inline."
+    ],
+    "soluzione": "```html\n<p>\n  Prezzo di copertina <s>19,90 euro</s>, da noi\n  <span class=\"prezzo-scontato\">14,90 euro</span>\n  in edizione <span lang=\"en\">paperback</span>.\n</p>\n```\n\n```css\n.prezzo-scontato { color: darkred; font-weight: bold; }\n```\n\nNessun elemento va a capo: la frase resta un unico paragrafo, con tre frammenti marcati in tre modi diversi secondo il loro ruolo.",
+    "perche_funziona": "Ogni frammento usa lo strumento proporzionato: l'elemento semantico dove il significato esiste (<s>), lo span neutro dove serve solo uno stile o un attributo (sconto e cambio lingua). Essere inline mantiene tutti i frammenti nel flusso della stessa riga, come richiesto."
+  },
+  "completion_problem": {
+    "titolo": "Completa il contatore del carrello aggiornabile",
+    "testo": "Nell'intestazione della libreria c'è la scritta «Carrello: 2 libri», dove il numero sarà aggiornato da JavaScript quando cambiano gli articoli. Il numero deve restare nella stessa frase, senza significati speciali. Completa il markup con l'elemento giusto e un aggancio per il codice, poi scrivi la riga JavaScript che porta il conteggio a 3.",
+    "passi_mancanti": [
+      "Avvolgi il numero in un contenitore inline generico",
+      "Dagli un id che JavaScript possa usare per ritrovarlo",
+      "Aggiorna il suo testo con textContent tramite getElementById"
+    ],
+    "soluzione": "```html\n<p>Carrello: <span id=\"conteggio-carrello\">2</span> libri</p>\n```\n\n```javascript\ndocument.getElementById('conteggio-carrello').textContent = '3';\n```\n\nLo span non aggiunge significato né interruzioni di riga: è solo il «gancio» nel testo su cui il codice può agire."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Correggi tre usi sbagliati dello span",
+    "testo": "In una pagina trovi: 1) <span class=\"bottone\" onclick=\"compra()\">Compra</span> usato come pulsante di acquisto; 2) <p>Offerta <span style=\"font-weight:bold\">importantissima</span></p> dove l'aggettivo è davvero importante nel significato; 3) <span><div class=\"card\">Intera scheda libro...</div></span>. Per ciascuno dì che cosa non va e riscrivi il frammento corretto.",
+    "suggerimento": "Per ogni caso chiediti: lo span sta facendo il lavoro di un elemento semantico o interattivo? E il suo contenuto è davvero contenuto in linea?",
+    "soluzione_attesa": "1) Uno span non è focalizzabile né attivabile da tastiera e non ha ruolo per le tecnologie assistive: va usato <button type=\"button\" onclick=\"compra()\">Compra</button> (o meglio un listener separato). 2) Se l'importanza è nel significato, l'elemento giusto è <strong>importantissima</strong>; lo span con stile imita solo l'aspetto. 3) Lo span accetta solo contenuto testuale/inline: un div con un'intera scheda deve stare fuori dallo span, per esempio semplicemente <div class=\"card\">...</div>."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dire che lo span introduce un'interruzione di riga come il div",
+      "perche_sbagliato": "Lo span è inline: resta nel flusso del testo senza andare a capo. Il div è il contenitore generico a blocco e forza una riga propria. Confondere i due livelli è la trappola centrale negli abbinamenti su questo tag.",
+      "distrattore": "Span e div vanno entrambi a capo"
+    },
+    {
+      "errore": "Usare lo span per rendere un testo importante o enfatizzato",
+      "perche_sbagliato": "Importanza ed enfasi sono significati, e hanno i loro elementi: strong ed em. Lo span non rappresenta nulla: con uno stile lo fai solo sembrare importante per chi vede, senza dirlo a chi usa tecnologie assistive.",
+      "distrattore": "Lo span con classe grassetta vale come strong"
+    },
+    {
+      "errore": "Costruire pulsanti con span cliccabili invece di button o a",
+      "perche_sbagliato": "Lo span non è focalizzabile, non risponde alla tastiera come un controllo e non espone un ruolo adeguato. Un'azione vuole un button, un collegamento vuole un a con href.",
+      "distrattore": "Uno span con onclick è un pulsante accessibile"
+    },
+    {
+      "errore": "Aspettarsi che uno span rispetti width ed height senza cambiare display",
+      "perche_sbagliato": "Come elemento inline non sostituito, lo span ignora width, height e margini verticali ai fini del layout. Per dimensionarlo occorre display: inline-block o block.",
+      "distrattore": "A uno span basta dare width per allargarlo"
+    },
+    {
+      "errore": "Mettere blocchi come div o paragrafi dentro uno span",
+      "perche_sbagliato": "Il modello di contenuto dello span è il phrasing content (testo ed elementi inline). Contenuti a blocco dentro uno span sono markup non valido e producono comportamenti imprevedibili.",
+      "distrattore": "Lo span può contenere qualsiasi elemento HTML"
+    }
+  ],
+  "mnemonica": "«Lo span sta in riga, il div va a capo»: per scegliere tra i due contenitori generici chiediti solo se il frammento vive dentro una riga di testo (span) o è un raggruppamento a blocco (div).",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cos'è lo span e in quali tre situazioni è legittimo usarlo?",
+        "risposta": "È il contenitore inline generico senza significato proprio. Si usa per agganciare uno stile a un frammento di testo, per portare attributi su un frammento (per esempio lang) e come aggancio per JavaScript, solo quando nessun elemento semantico è appropriato."
+      },
+      {
+        "domanda": "Quali sono le differenze tra span e div su livello, interruzione di riga e contenuto ammesso?",
+        "risposta": "Span è inline, non va a capo e contiene phrasing content. Div è block, inizia su una riga propria e contiene flow content, cioè interi blocchi. Entrambi sono contenitori generici senza significato."
+      },
+      {
+        "domanda": "Perché per un testo importante si usa strong e non uno span in grassetto?",
+        "risposta": "Perché strong dichiara il significato «importante», percepibile anche dalle tecnologie assistive, mentre lo span con una classe imita solo l'aspetto visivo senza comunicare il significato."
+      },
+      {
+        "domanda": "Hai dato width: 150px a uno span e non cambia nulla: perché e come risolvi?",
+        "risposta": "Perché gli elementi inline non sostituiti ignorano width e height. Si risolve con display: inline-block (resta nel testo ma si dimensiona) o display: block se deve occupare una riga propria."
+      }
+    ],
+    "spiega_con_parole_tue": "Con l'analogia dell'evidenziatore e del paragrafo ritagliato in una scatola, spiega a parole tue quando raggiungi lo span, quando il div e quando invece esiste già l'elemento semantico giusto e nessuno dei due va usato.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "css-box-model",
+        "collegamento": "Lo span è l'esempio canonico di inline nel box model: ripensa alla tabella block, inline, inline-block e spiega quali proprietà di dimensione e margini funzionano su uno span e quali no."
+      },
+      {
+        "nodo": "css-origini-ereditarieta",
+        "collegamento": "Per stilizzare uno span usi di solito una classe: calcola la specificità di .prezzo-scontato rispetto al selettore span e previsti quale colore vince se entrambe le regole esistono."
+      },
+      {
+        "nodo": "dom-virtual-dom",
+        "collegamento": "Il contatore del carrello è uno span aggiornato via DOM con textContent: collega questo uso «aggancio» dello span alla manipolazione dei nodi vista nel nodo sul DOM."
+      }
+    ]
+  },
+  "riepilogo": "Lo span è il contenitore inline generico: non ha significato, non va a capo e accetta solo contenuto testuale. Serve ad agganciare stili, attributi (come lang) o codice a un frammento in linea, quando nessun elemento semantico (strong, em, mark, code) è quello giusto. Il suo gemello a blocco è il div.",
+  "flashcard": {
+    "fronte": "Span contro div: livello, contenuto e riga?",
+    "retro": "Span: inline, resta nella riga, contiene testo e inline (phrasing content). Div: block, occupa una riga propria, contiene interi blocchi (flow content). Entrambi generici, senza significato proprio."
+  },
+  "checklist": {
+    "so_fare": [
+      "Evidenziare un frammento di testo con span e classe senza rompere la riga",
+      "Marcare un cambio di lingua con lang su uno span",
+      "Usare uno span con id come aggancio aggiornabile da JavaScript",
+      "Riconoscere e correggere span usati come pulsanti o per contenuti a blocco"
+    ],
+    "so_dire": [
+      "Definire lo span come contenitore inline generico senza significato intrinseco",
+      "Confrontare span e div su livello, interruzione di riga e contenuto ammesso",
+      "Giustificare la regola «prima l'elemento semantico, lo span solo se manca»"
+    ]
+  }
+}

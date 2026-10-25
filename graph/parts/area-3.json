@@ -5,18 +5,18 @@
     "area": 3,
     "gruppo": "A",
     "tipo": "abilita",
-    "sapere": "I form HTML permettono l'interazione utente: input, textarea, select, button, checkbox, radio. L'accessibilità (a11y) richiede: label per ogni input (associato con for/id o wrapping), attributi aria-* per componenti complessi, tabindex per navigazione tastiera, e validazione client-side e server-side.",
+    "sapere": "I form HTML raccolgono dati con controlli (input, select, textarea, button) e li inviano all'URL di action con method get (dati nell'URL, per letture) o post (dati nel corpo, per scritture); l'invio costruisce coppie nome-valore dall'attributo name di ogni controllo. Accessibilità: label associate a ogni controllo (for/id o wrapping), fieldset e legend per i gruppi, HTML semantico prima degli attributi ARIA. La validazione dichiarativa nel browser (required, type, minlength, pattern) dà feedback immediato, ma il server deve sempre rivalidare i dati.",
     "saper_fare": [
-      "Creare un form accessibile con tutti i campi necessari",
-      "Validare un form lato client con JavaScript",
-      "Associare label a input in modi diversi"
+      "Creare un form accessibile con label esplicite (for/id) e implicite (wrapping)",
+      "Scegliere tra GET e POST in base a lettura o scrittura e sensibilità dei dati",
+      "Dichiarare vincoli di validazione con required, type, minlength e pattern"
     ],
     "prerequisiti": [],
     "esercizi": [
       {
         "tipo_esame": "scritto: crea form",
         "testo": "Crea un form HTML accessibile per il login (email, password, submit).",
-        "soluzione": "<form action=\"/login\" method=\"post\">\n  <div>\n    <label for=\"email\">Email:</label>\n    <input type=\"email\" id=\"email\" name=\"email\" required aria-required=\"true\">\n  </div>\n  <div>\n    <label for=\"password\">Password:</label>\n    <input type=\"password\" id=\"password\" name=\"password\" required aria-required=\"true\" minlength=\"8\">\n  </div>\n  <button type=\"submit\">Accedi</button>\n</form>\n\n# Oppure con label wrapping:\n<form action=\"/login\" method=\"post\">\n  <div>\n    <label>Email:\n      <input type=\"email\" name=\"email\" required>\n    </label>\n  </div>\n  <div>\n    <label>Password:\n      <input type=\"password\" name=\"password\" required minlength=\"8\">\n    </label>\n  </div>\n  <button type=\"submit\">Accedi</button>\n</form>"
+        "soluzione": "<form action=\"/login\" method=\"post\">\n  <div>\n    <label for=\"email\">Email</label>\n    <input type=\"email\" id=\"email\" name=\"email\" required autocomplete=\"email\">\n  </div>\n  <div>\n    <label for=\"password\">Password</label>\n    <input type=\"password\" id=\"password\" name=\"password\" required minlength=\"8\" autocomplete=\"current-password\">\n  </div>\n  <button type=\"submit\">Accedi</button>\n</form>\n\nI punti chiave: method post perché viaggia una password; ogni controllo ha name (per l'invio) e una label collegata con for e id (per persone e tecnologie assistive); required e minlength dichiarano i vincoli nel browser, che il server dovrà comunque rivalidare. L'associazione implicita alternativa mette l'input dentro la label."
       }
     ],
     "tempo_studio_min": 45,
@@ -26,18 +26,18 @@
     },
     "risorse": [
       {
-        "titolo": "MDN: HTML forms",
-        "url": "https://developer.mozilla.org/en-US/docs/Learn/Forms",
+        "titolo": "MDN: elemento <form>",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form",
         "verificato": true
       },
       {
-        "titolo": "MDN: ARIA",
+        "titolo": "MDN: Client-side form validation",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: ARIA (e prima regola: preferire l'HTML semantico)",
         "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA",
-        "verificato": true
-      },
-      {
-        "titolo": "W3C: WAI-ARIA",
-        "url": "https://www.w3.org/TR/wai-aria-1.2/",
         "verificato": true
       }
     ],
@@ -50,10 +50,11 @@
       }
     ],
     "checklist_ripasso": [
-      "Form: input, textarea, select, button, checkbox, radio",
-      "Accessibilità: label per ogni input",
-      "Associazione: for/id o wrapping",
-      "Validazione: required, minlength, pattern"
+      "Controlli: input, select, textarea, button; radio con stesso name in un fieldset",
+      "Invio: coppie nome-valore dall'attributo name; id serve a label, CSS e JavaScript",
+      "GET: dati nell'URL per le letture; POST: dati nel corpo per scritture e dati sensibili",
+      "Label per ogni controllo (for/id o wrapping): il placeholder non la sostituisce",
+      "Validazione nel browser per il feedback; il server rivalida sempre"
     ],
     "worker": "W2"
   },
@@ -63,7 +64,7 @@
     "area": 3,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "Il box model CSS definisce come gli elementi sono resi in uno spazio rettangolare: content (contenuto), padding (spazio interno), border (bordo), margin (spazio esterno). La dimensione totale = width + padding-left + padding-right + border-left + border-right. Il box-sizing: border-box include padding e border nella width, content-box (default) no.",
+    "sapere": "Il box model CSS descrive ogni elemento come una scatola rettangolare di quattro aree concentriche: content, padding (interno, mostra lo sfondo dell'elemento), border e margin (esterno e trasparente). Con box-sizing: content-box (valore iniziale) width misura solo il content, e la scatola fino al bordo vale width + padding sui due lati + border sui due lati; con border-box width include già padding e border. Il margin è la quarta area del modello, ma resta fuori dalla dimensione della scatola fino al bordo e può andare incontro a margin collapsing tra margin verticali adiacenti.",
     "saper_fare": [
       "Calcolare la dimensione totale di un elemento",
       "Spiegare la differenza tra box-sizing: border-box e content-box",
@@ -74,7 +75,7 @@
       {
         "tipo_esame": "scritto: calcola dimensione",
         "testo": "Un div ha width: 200px, padding: 20px, border: 5px, margin: 10px. Qual è la dimensione totale occupata (box-sizing: content-box)?",
-        "soluzione": "Content: 200px\nPadding: 20px * 2 = 40px\nBorder: 5px * 2 = 10px\nTotale = 200 + 40 + 10 = 250px\nMargin: 10px * 2 = 20px (non incluso nella dimensione del box, ma spazio esterno)\nDimensione totale occupata: 250px + 20px (margin) = 270px (ma margin non contribuisce alla dimensione del box stesso)."
+        "soluzione": "Con box-sizing: content-box la larghezza della scatola fino al bordo è: width 200px + padding 20px per lato (40px) + border 5px per lato (10px) = 250px. Lo spazio occupato in pagina aggiunge i margin orizzontali (10px per lato): 250 + 20 = 270px. Il margin non rientra nella dimensione della scatola: è l'area esterna che la separa dai vicini."
       }
     ],
     "tempo_studio_min": 40,
@@ -84,13 +85,18 @@
     },
     "risorse": [
       {
-        "titolo": "MDN: CSS Box Model",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Box_Model",
+        "titolo": "MDN: Introduction to the CSS box model",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Box_model/Introduction",
         "verificato": true
       },
       {
-        "titolo": "MDN: box-sizing",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing",
+        "titolo": "MDN: proprietà box-sizing",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/box-sizing",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: Mastering margin collapsing",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Box_model/Margin_collapsing",
         "verificato": true
       }
     ],
@@ -100,10 +106,10 @@
       }
     ],
     "checklist_ripasso": [
-      "Box model: content, padding, border, margin",
-      "box-sizing: content-box (default), border-box",
-      "Dimensione totale = width + padding*2 + border*2 (content-box)",
-      "Trappola: margin non fa parte del box model"
+      "Quattro aree dall'interno: content, padding, border, margin",
+      "Il padding mostra lo sfondo dell'elemento; il margin è trasparente e fuori dalla scatola",
+      "content-box (iniziale): width = solo content; border-box: width = content + padding + border",
+      "Margin collapsing: margin verticali adiacenti si fondono nel più grande"
     ],
     "worker": "W2"
   },
@@ -113,7 +119,7 @@
     "area": 3,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "Le origini CSS definiscono la provenienza delle regole: author (autore, più prioritario), user (utente), user agent (browser, meno prioritario). Il cascading determina quale regola applicare in caso di conflitto: !important > origine > specificità > ordine. L'ereditarietà permette ad alcuni elementi figli di ereditare proprietà dai genitori (es. color, font-family), ma non tutte (es. margin, padding, border non si ereditano).",
+    "sapere": "Le dichiarazioni CSS hanno tre origini: user agent (browser), user e author. Per le dichiarazioni normali la precedenza cresce da user agent ad author; con !important l'ordine delle origini si rovescia. A parità di origine e importanza decide la specificità del selettore (tre colonne: ID, classi/attributi/pseudo-classi, elementi/pseudo-elementi, con confronto lessicografico), e a parità di specificità l'ordine di apparizione. Se nessuna dichiarazione si applica, le proprietà ereditarie (per esempio color e font-family) prendono il valore del genitore, le altre (margin, padding, border) il valore iniziale.",
     "saper_fare": [
       "Calcolare la specificità di un selettore",
       "Spiegare il cascading con esempi",
@@ -124,7 +130,7 @@
       {
         "tipo_esame": "scritto: specificità",
         "testo": "Quale regola si applica a <p class=\"intro\"> con: 1) p { color: red; } 2) .intro { color: blue; } 3) p.intro { color: green; }?",
-        "soluzione": "Specificità: 1) p = 0,0,1; 2) .intro = 0,1,0; 3) p.intro = 0,1,1. Vince la regola 3 (p.intro) con specificità 0,1,1. Se fosse solo p.intro { color: green !important; }, vincerebbe indipendentemente dalla specificità."
+        "soluzione": "Specificità nelle tre colonne ID-classi-tipi: p vale 0-0-1, .intro vale 0-1-0, p.intro vale 0-1-1. Il confronto è lessicografico da sinistra: vince p.intro (0-1-1), quindi il testo è verde. Una dichiarazione con !important si confronterebbe prima della specificità (gruppo origine/importanza) e vincerebbe sulle tre."
       }
     ],
     "tempo_studio_min": 50,
@@ -134,18 +140,18 @@
     },
     "risorse": [
       {
-        "titolo": "MDN: CSS Cascade",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Cascade",
+        "titolo": "MDN: Introduction to the CSS cascade (origini e precedenza)",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Introduction",
         "verificato": true
       },
       {
         "titolo": "MDN: Specificity",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Specificity",
         "verificato": true
       },
       {
         "titolo": "MDN: Inheritance",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/inheritance",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Inheritance",
         "verificato": true
       }
     ],
@@ -155,10 +161,10 @@
       }
     ],
     "checklist_ripasso": [
-      "Origini: author > user > user agent",
-      "Cascading: !important > origine > specificità > ordine",
-      "Specificità: ID=0,1,0,0; classe=0,0,1,0; tag=0,0,0,1",
-      "Ereditarietà: color, font-family SÌ; margin, padding, border NO"
+      "Origini normali dalla più debole: user agent, user, author; con !important l'ordine si rovescia",
+      "Risoluzione dei conflitti: origine/importanza, specificità, ordine di apparizione",
+      "Specificità in tre colonne (ID, classi, tipi): 11 classi non battono 1 ID",
+      "Ereditarietà: color e font sì; margin, padding, border no (forzabili con inherit)"
     ],
     "worker": "W2"
   },
@@ -168,7 +174,7 @@
     "area": 3,
     "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "Il DOM (Document Object Model) è la rappresentazione ad albero di un documento HTML/CSS nel browser. Permette a JavaScript di accedere e modificare struttura, stile e contenuto. Il Virtual DOM è una rappresentazione in memoria usata da framework (React, Vue) per ottimizzare gli aggiornamenti: invece di aggiornare direttamente il DOM, il framework confronta il Virtual DOM con una versione aggiornata e applica solo le differenze (reconciliation/diffing).",
+    "sapere": "Il DOM (Document Object Model) è l'interfaccia di programmazione con cui il browser rappresenta il documento come un albero di nodi in memoria, così che gli script possano leggerne e modificarne struttura, contenuto e stile; è una Web API del browser, indipendente dal linguaggio JavaScript che di solito la usa. Il Virtual DOM è una rappresentazione leggera dell'interfaccia mantenuta in memoria dai framework (come React e Vue): a ogni cambio di stato costruiscono una nuova descrizione, la confrontano con la precedente (diffing o reconciliation) e applicano al DOM reale solo le differenze (patch).",
     "saper_fare": [
       "Manipolare il DOM con JavaScript",
       "Spiegare il funzionamento del Virtual DOM",
@@ -179,12 +185,12 @@
       {
         "tipo_esame": "scritto: manipolazione DOM",
         "testo": "Scrivi JavaScript per aggiungere un elemento <li> a un <ul> con id=\"lista\".",
-        "soluzione": "// Metodo 1: createElement + appendChild\nconst ul = document.getElementById('lista');\nconst li = document.createElement('li');\nli.textContent = 'Nuovo elemento';\nul.appendChild(li);\n\n// Metodo 2: innerHTML (meno sicuro, XSS risk)\ndocument.getElementById('lista').innerHTML += '<li>Nuovo elemento</li>';\n\n// Metodo 3: insertAdjacentHTML\ndocument.getElementById('lista').insertAdjacentHTML('beforeend', '<li>Nuovo elemento</li>');"
+        "soluzione": "// Creazione sicura del nodo e del suo testo (metodo da preferire)\nconst ul = document.getElementById('lista');\nconst li = document.createElement('li');\nli.textContent = 'Nuovo elemento'; // testo puro, non interpretato come HTML\nul.appendChild(li);\n\n// Alternative da conoscere ma usare con cautela con testi non fidati:\n// ul.innerHTML += '<li>Nuovo elemento</li>';  // la stringa viene analizzata come HTML (rischio XSS con dati utente)\n// ul.insertAdjacentHTML('beforeend', '<li>Nuovo elemento</li>'); // stessa cautela di innerHTML"
       },
       {
         "tipo_esame": "scritto: Virtual DOM",
         "testo": "Spiega cos'è il Virtual DOM e perché è utile.",
-        "soluzione": "Il Virtual DOM è una copia in memoria del DOM reale. Framework come React: 1) Creano un Virtual DOM; 2) All'aggiornamento dello stato, creano un nuovo Virtual DOM; 3) Confrontano (diffing) il vecchio e il nuovo; 4) Applicano solo le differenze al DOM reale (reconciliation). Vantaggi: performance (minori operazioni DOM), semplicità per lo sviluppatore (non deve gestire manualmente gli aggiornamenti)."
+        "soluzione": "Il Virtual DOM è una descrizione leggera dell'interfaccia (albero di oggetti JavaScript) che il framework tiene in memoria e sincronizza con il DOM reale. Ciclo: 1) dallo stato costruisce un nuovo albero virtuale; 2) lo confronta con il precedente (diffing/reconciliation); 3) applica al DOM reale solo le differenze (patch). Il vantaggio principale è il modello dichiarativo: descrivi come deve apparire l'interfaccia in funzione dello stato e lasci al framework il calcolo delle modifiche minime, invece di manipolare i nodi uno a uno."
       }
     ],
     "tempo_studio_min": 60,
@@ -194,18 +200,18 @@
     },
     "risorse": [
       {
-        "titolo": "MDN: DOM",
+        "titolo": "MDN: Document Object Model (DOM)",
         "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model",
         "verificato": true
       },
       {
-        "titolo": "React: Reconciliation",
-        "url": "https://reactjs.org/docs/reconciliation.html",
+        "titolo": "Vue: Rendering Mechanism (Virtual DOM, mount e patch)",
+        "url": "https://vuejs.org/guide/extras/rendering-mechanism.html",
         "verificato": true
       },
       {
-        "titolo": "Vue: Virtual DOM",
-        "url": "https://vuejs.org/guide/extras/rendering-mechanism.html#virtual-dom",
+        "titolo": "React: Render and Commit",
+        "url": "https://react.dev/learn/render-and-commit",
         "verificato": true
       }
     ],
@@ -215,11 +221,10 @@
       }
     ],
     "checklist_ripasso": [
-      "DOM: albero di nodi (elementi, testo, commenti)",
-      "Manipolazione: createElement, appendChild, removeChild, innerHTML",
-      "Virtual DOM: copia in memoria per ottimizzazione",
-      "Diffing: confronto tra Virtual DOM vecchi/nuovi",
-      "Reconciliation: applicazione differenze al DOM reale"
+      "DOM: albero di nodi del documento, API del browser indipendente da JavaScript",
+      "Manipolazione: querySelector, createElement, appendChild, remove, textContent contro innerHTML",
+      "Virtual DOM: descrizione leggera in memoria sincronizzata con il DOM reale",
+      "Ciclo dei framework: render, diffing/reconciliation, patch delle sole differenze"
     ],
     "worker": "W2"
   },
@@ -229,7 +234,7 @@
     "area": 3,
     "gruppo": "C",
     "tipo": "abilita",
-    "sapere": "fetch() è l'API moderna per fare richieste HTTP asincrone in JavaScript. Restituisce una Promise che risolve in Response. async/await permette di scrivere codice asincrono in modo sincrono: async function può contenere await che aspetta il risolvimento di una Promise. Le Promise gestiscono operazioni asincrone con stati: pending, fulfilled, rejected.",
+    "sapere": "fetch() è l'API moderna per le richieste HTTP asincrone: restituisce subito una Promise che si risolve con l'oggetto Response, il cui corpo si legge con un secondo passaggio asincrono (per esempio response.json()). La Promise diventa rejected per gli errori nel completare la richiesta (per esempio di rete), non per gli stati HTTP di errore come 404: va quindi controllato response.ok. Le Promise hanno stati pending, fulfilled e rejected; async/await permette di attenderle scrivendo in sequenza, con try/catch per gli errori e senza bloccare il thread principale.",
     "saper_fare": [
       "Fare richieste GET/POST con fetch",
       "Usare async/await per gestire le Promise",
@@ -250,8 +255,8 @@
     },
     "risorse": [
       {
-        "titolo": "MDN: fetch()",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/API/fetch",
+        "titolo": "MDN: Using the Fetch API",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
         "verificato": true
       },
       {
@@ -260,13 +265,13 @@
         "verificato": true
       },
       {
-        "titolo": "MDN: await",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await",
+        "titolo": "MDN: Promise",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
         "verificato": true
       },
       {
-        "titolo": "MDN: Promise",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+        "titolo": "MDN: await",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await",
         "verificato": true
       }
     ],
@@ -276,11 +281,11 @@
       }
     ],
     "checklist_ripasso": [
-      "fetch(): API moderna per HTTP requests",
-      "Response.ok: verifica status 200-299",
-      "response.json(): parse JSON body",
-      "async/await: sintassi sincrona per codice asincrono",
-      "try/catch: gestione errori"
+      "Doppio await: prima la Response, poi il corpo con response.json()",
+      "fetch è rejected per errori di rete, non per 404 o 500: controllare response.ok",
+      "Promise: pending, fulfilled, rejected; settled = conclusa in uno dei due modi",
+      "async restituisce sempre una Promise; await sospende solo quella funzione",
+      "POST JSON: method, Content-Type: application/json, body con JSON.stringify"
     ],
     "worker": "W2"
   },
@@ -290,7 +295,7 @@
     "area": 3,
     "gruppo": "B",
     "tipo": "concetto",
-    "sapere": "DHTML (Dynamic HTML) è il termine che descrive l'insieme di tecnologie (HTML, CSS, JavaScript) che permettono di creare pagine web dinamiche e interattive. Comprende: manipolazione del DOM, cambi di stile dinamici, animazioni, e risposta agli eventi utente. Non è uno standard ma un concetto che unisce tecnologie esistenti.",
+    "sapere": "DHTML (Dynamic HTML) è il termine storico per l'uso combinato di HTML, CSS e JavaScript che manipola il DOM in risposta agli eventi, rendendo la pagina dinamica e interattiva lato client (mostrare e nascondere, rollover, aggiornamenti locali) senza ricaricarla. Non è un linguaggio né uno standard separato, e di per sé non scambia dati nuovi con il server: quello è il passo ulteriore di AJAX.",
     "saper_fare": [
       "Creare effetti DHTML con JavaScript",
       "Spiegare la relazione tra DHTML e DOM",
@@ -317,13 +322,13 @@
     },
     "risorse": [
       {
-        "titolo": "MDN: DHTML",
-        "url": "https://developer.mozilla.org/en-US/docs/Glossary/DHTML",
+        "titolo": "MDN: Document Object Model (DOM)",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model",
         "verificato": true
       },
       {
-        "titolo": "Wikipedia: Dynamic HTML",
-        "url": "https://en.wikipedia.org/wiki/Dynamic_HTML",
+        "titolo": "MDN: EventTarget.addEventListener()",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener",
         "verificato": true
       }
     ],
@@ -333,10 +338,10 @@
       }
     ],
     "checklist_ripasso": [
-      "DHTML = HTML + CSS + JavaScript",
-      "Manipolazione DOM dinamica",
-      "Eventi: mouseover, mouseout, click, etc.",
-      "DHTML ≠ AJAX (DHTML è client-side, AJAX include server-side)"
+      "DHTML = HTML + CSS + JavaScript sul DOM, non un linguaggio nuovo",
+      "Dinamicità lato client: eventi, classi che cambiano, contenuti mostrati e nascosti",
+      "Solo presentazione al passaggio del mouse: spesso basta il CSS :hover",
+      "DHTML contro AJAX: AJAX aggiunge richieste asincrone di dati al server"
     ],
     "worker": "W2"
   },
@@ -346,7 +351,7 @@
     "area": 3,
     "gruppo": "B",
     "tipo": "abilita",
-    "sapere": "L'elemento <canvas> e la Canvas API permettono di disegnare grafica 2D in JavaScript. Il canvas è inizialmente vuoto; si disegna tramite scripting con metodi del contexto 2D (fillRect, strokeRect, beginPath, moveTo, lineTo, arc, fill, stroke). Supporta animazioni tramite requestAnimationFrame.",
+    "sapere": "L'elemento <canvas> e la Canvas API permettono di disegnare grafica 2D raster (una bitmap) tramite JavaScript. Il canvas in pagina è vuoto finché non si ottiene il contesto di disegno con getContext('2d') e si usano i suoi metodi (fillRect, strokeRect, beginPath, arc, fill, stroke) e il suo stato (fillStyle, strokeStyle). Gli attributi width/height definiscono la risoluzione della bitmap, il CSS la dimensione visualizzata. Il modello è immediato: non restano oggetti forma, quindi per animare si cancella e si ridisegna, tipicamente con requestAnimationFrame.",
     "saper_fare": [
       "Disegnare forme geometriche su canvas",
       "Creare animazioni con requestAnimationFrame",
@@ -383,10 +388,11 @@
       }
     ],
     "checklist_ripasso": [
-      "<canvas> elemento HTML",
-      "getContext('2d') per contesto 2D",
-      "Metodi: fillRect, strokeRect, arc, beginPath, fill, stroke",
-      "Animazioni: requestAnimationFrame"
+      "<canvas>: bitmap disegnata via script; contenuto interno come riserva (fallback)",
+      "getContext('2d') restituisce il contesto con stato e metodi di disegno",
+      "Percorsi: beginPath, arc, lineTo, poi fill o stroke; angoli in radianti",
+      "Attributi width/height = risoluzione; CSS width/height = dimensione in pagina",
+      "Animazione: clearRect e ridisegno coordinati da requestAnimationFrame"
     ],
     "worker": "W2"
   },
@@ -396,7 +402,7 @@
     "area": 3,
     "gruppo": "B",
     "tipo": "concetto",
-    "sapere": "Il tag <span> è un elemento inline generico usato per: 1) Applicare stili CSS a una parte di testo (es. evidenziare una parola); 2) Raggruppare elementi inline per scopi di scripting; 3) Aggiungere attributi semantici (es. lang, data-*). Non ha significato semantico di default e non introduce interruzioni di riga.",
+    "sapere": "Il tag <span> è il contenitore generico inline per il contenuto testuale (phrasing content): non rappresenta nulla di per sé e ha solo gli attributi globali. Serve ad agganciare a un frammento in linea stili (classi), attributi condivisi (per esempio lang) o riferimenti per JavaScript, senza interrompere la riga e solo quando nessun elemento semantico (strong, em, mark, code) è quello appropriato. Il suo corrispettivo generico a blocco è il <div>.",
     "saper_fare": [
       "Usare <span> per stilizzare parte di un testo",
       "Distinguere <span> da <div> (inline vs block)",
@@ -417,8 +423,13 @@
     },
     "risorse": [
       {
-        "titolo": "MDN: <span>",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/span",
+        "titolo": "MDN: elemento <span>",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/span",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: elemento <div> (per il confronto inline contro blocco)",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/div",
         "verificato": true
       }
     ],
@@ -428,10 +439,11 @@
       }
     ],
     "checklist_ripasso": [
-      "<span> = elemento inline generico",
-      "Usi: styling, raggruppamento, attributi semantici",
-      "Niente significato semantico di default",
-      "Inline: non introduce interruzione di riga"
+      "<span>: inline, resta in riga, contiene solo phrasing content",
+      "Usi: stile su un frammento, attributo lang, aggancio per JavaScript",
+      "Prima l'elemento semantico (strong, em, mark, code): lo span solo se manca",
+      "Contro <div>: il div è il contenitore generico a blocco e va a capo",
+      "width ed height sullo span non contano finché display resta inline"
     ],
     "worker": "W2"
   },
@@ -441,7 +453,7 @@
     "area": 3,
     "gruppo": "B",
     "tipo": "concetto",
-    "sapere": "I motori JavaScript moderni (V8, SpiderMonkey, JavaScriptCore) seguono queste fasi: 1) Parsing: conversione del codice sorgente in AST (Abstract Syntax Tree); 2) Interpretazione: esecuzione iniziale con interprete; 3) Profiling: raccolta dati su quali parti di codice sono calde (hot); 4) Compilazione JIT: compilazione di codice caldo in codice macchina ottimizzato; 5) Esecuzione ottimizzata. Il JIT (Just-In-Time) combina interpretazione e compilazione per performance ottimali.",
+    "sapere": "I motori JavaScript moderni (per esempio V8, usato in Chrome e Node.js) eseguono il codice con una pipeline adattiva: il parser analizza il sorgente e costruisce l'AST (Abstract Syntax Tree); un interprete (Ignition in V8) genera ed esegue bytecode per partire subito; un profiler raccoglie feedback sulle parti eseguite di frequente e sui tipi osservati; un compilatore JIT (TurboFan in V8) traduce le parti calde in codice macchina ottimizzato durante l'esecuzione, con deottimizzazione se le assunzioni sui tipi cadono.",
     "saper_fare": [
       "Spiegare le fasi di esecuzione del codice JS",
       "Descrivere il ruolo dell'AST",
@@ -451,8 +463,8 @@
     "esercizi": [
       {
         "tipo_esame": "scritto: fasi motore JS",
-        "testo": "Elenca le 5 fasi principali di un motore JavaScript moderno.",
-        "soluzione": "1) Parsing: analisi lessicale e sintattica, creazione AST; 2) Interpretazione: esecuzione iniziale con interprete; 3) Profiling: monitoraggio del codice per identificare parti calde; 4) Compilazione JIT: compilazione di codice caldo in codice macchina; 5) Esecuzione: esecuzione del codice ottimizzato. Esempio V8: Ignition (interprete) + TurboFan (JIT compiler)."
+        "testo": "Elenca in ordine le fasi della pipeline di esecuzione di un motore JavaScript moderno, con i nomi dei componenti di V8.",
+        "soluzione": "1) Parsing: il parser analizza il sorgente e costruisce l'AST (albero sintattico astratto). 2) Interpretazione: dall'AST si genera bytecode eseguito dall'interprete (Ignition in V8), per una partenza rapida. 3) Profilazione: durante l'esecuzione il motore raccoglie feedback (funzioni calde, tipi osservati). 4) Compilazione JIT: le parti calde vengono tradotte in codice macchina ottimizzato (TurboFan in V8). 5) Deottimizzazione eventuale: se le assunzioni sui tipi cadono, si scarta il codice macchina e si torna al bytecode."
       }
     ],
     "tempo_studio_min": 35,
@@ -462,31 +474,27 @@
     },
     "risorse": [
       {
-        "titolo": "MDN: JavaScript Engine",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Introduction#javascript_engine",
+        "titolo": "V8 (blog ufficiale): Launching Ignition and TurboFan",
+        "url": "https://v8.dev/blog/launching-ignition-and-turbofan",
         "verificato": true
       },
       {
-        "titolo": "V8: How V8 works",
+        "titolo": "V8 (documentazione ufficiale): About V8 e pipeline",
         "url": "https://v8.dev/docs",
-        "verificato": true
-      },
-      {
-        "titolo": "Wikipedia: Just-in-time compilation",
-        "url": "https://en.wikipedia.org/wiki/Just-in-time_compilation",
         "verificato": true
       }
     ],
     "riferimenti_testo": [
       {
-        "libro": "MDN"
+        "libro": "ECMA"
       }
     ],
     "checklist_ripasso": [
-      "5 fasi: Parsing → Interpretazione → Profiling → JIT Compilation → Esecuzione",
-      "AST: Abstract Syntax Tree (rappresentazione strutturata del codice)",
-      "JIT: Just-In-Time compilation (codice caldo → codice macchina)",
-      "V8: Ignition (interprete) + TurboFan (JIT)"
+      "Pipeline: parser e AST, bytecode interpretato, profiler/feedback, JIT, deottimizzazione",
+      "AST: albero della struttura del programma, distinto da bytecode e codice macchina",
+      "JIT Just-In-Time: compila durante l'esecuzione solo le parti calde",
+      "In V8: Ignition è l'interprete del bytecode, TurboFan il compilatore ottimizzante",
+      "Il motore implementa il linguaggio; il DOM lo fornisce il browser, non il motore"
     ],
     "worker": "W2"
   },
@@ -496,7 +504,7 @@
     "area": 3,
     "gruppo": "B",
     "tipo": "concetto",
-    "sapere": "Gli eventi locali sono generati e gestiti completamente nel browser: click, mouseover, keydown, submit, load, scroll. Gli eventi remoti originano da azioni sul server e vengono comunicati al client tramite tecnologie come: WebSocket (bidirezionale, persistente), Server-Sent Events (SSE, server→client), polling (client richiede periodicamente), long polling (client richiede, server trattiene la connessione).",
+    "sapere": "Classificando gli eventi per origine: quelli locali nascono nel client (click, input, keydown, submit, mouseover, load, resize) e si gestiscono con addEventListener sugli oggetti della pagina, seguendo le fasi di cattura, target e risalita (bubbling) nell'albero DOM. Quelli remoti nascono fuori dal client, tipicamente sul server, e raggiungono la pagina via rete: polling (richieste periodiche), long polling (risposta trattenuta dal server), Server-Sent Events (flusso solo server verso client con EventSource) o WebSocket (connessione persistente bidirezionale dopo handshake HTTP).",
     "saper_fare": [
       "Elencare eventi locali comuni",
       "Spiegare le differenze tra WebSocket e SSE",
@@ -517,18 +525,18 @@
     },
     "risorse": [
       {
+        "titolo": "MDN: EventTarget.addEventListener()",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener",
+        "verificato": true
+      },
+      {
         "titolo": "MDN: WebSocket API",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSocket",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API",
         "verificato": true
       },
       {
-        "titolo": "MDN: Server-sent events",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events",
-        "verificato": true
-      },
-      {
-        "titolo": "MDN: Event reference",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/Events",
+        "titolo": "MDN: Using server-sent events",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events",
         "verificato": true
       }
     ],
@@ -538,10 +546,11 @@
       }
     ],
     "checklist_ripasso": [
-      "Eventi locali: click, mouseover, keydown, submit, load, scroll",
-      "Eventi remoti: WebSocket, SSE, polling, long polling",
-      "WebSocket: bidirezionale, full-duplex",
-      "SSE: server→client, solo testuale, auto-reconnect"
+      "Criterio: dove nasce l'evento (client contro server o altri sistemi)",
+      "Locali: addEventListener; fasi cattura, target, bubbling; preventDefault contro stopPropagation",
+      "Polling e long polling: richieste del client, con o senza risposta trattenuta",
+      "SSE: EventSource, solo server verso client, riconnessione automatica",
+      "WebSocket: handshake HTTP, poi canale persistente bidirezionale"
     ],
     "worker": "W2"
   },
@@ -551,7 +560,7 @@
     "area": 3,
     "gruppo": "B",
     "tipo": "concetto",
-    "sapere": "Web 1.0 (anni '90): pagine statiche, solo lettura, HTML di base. Web 2.0 (2000s): pagine dinamiche, interazione utente (AJAX), social media, user-generated content. Web 3.0 (2010s): web semantico, dati collegati (Linked Data), intelligenza artificiale, personalizzazione. Web 4.0 (emergente): web ubiquo, IoT, integrazione profonda con il mondo fisico, AI generativa.",
+    "sapere": "Web 1.0, 2.0, 3.0 e 4.0 sono etichette descrittive (non versioni ufficiali) dell'evoluzione del Web: 1.0 documenti statici in sola lettura, uguali per tutti; 2.0 web partecipativo e dinamico, con applicazioni interattive e contenuti generati dagli utenti; 3.0, nel materiale di studio del corso, il Web semantico: dati condivisi e riusabili tra applicazioni in formati comuni come RDF, con significato elaborabile dalle macchine; 4.0 web ubiquo e intelligente, integrato con dispositivi connessi e servizi personalizzati che assistono l'utente.",
     "saper_fare": [
       "Distinguere le caratteristiche di ogni generazione",
       "Fornire esempi di applicazioni per ogni generazione",
@@ -572,31 +581,29 @@
     },
     "risorse": [
       {
-        "titolo": "Wikipedia: Web 2.0",
-        "url": "https://en.wikipedia.org/wiki/Web_2.0",
+        "titolo": "W3C: Semantic Web Activity (quadro comune per dati condivisi e riusabili)",
+        "url": "https://www.w3.org/2001/sw/",
         "verificato": true
       },
       {
-        "titolo": "Wikipedia: Web 3.0",
-        "url": "https://en.wikipedia.org/wiki/Web_3.0",
-        "verificato": true
-      },
-      {
-        "titolo": "W3C: Semantic Web (Web 3.0)",
-        "url": "https://www.w3.org/standards/semanticweb/",
+        "titolo": "MDN: Document Object Model (dinamicità lato client)",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model",
         "verificato": true
       }
     ],
     "riferimenti_testo": [
       {
         "libro": "W3C"
+      },
+      {
+        "libro": "MDN"
       }
     ],
     "checklist_ripasso": [
-      "Web 1.0: statico, lettura, HTML base",
-      "Web 2.0: dinamico, lettura/scrittura, AJAX, social",
-      "Web 3.0: semantico, Linked Data, AI, personalizzazione",
-      "Web 4.0: ubiquo, IoT, AI generativa"
+      "Etichette descrittive di tendenze, non versioni rilasciate: le fasi convivono",
+      "1.0 leggo: statico, sola lettura; 2.0 scrivo: partecipazione e contenuti degli utenti",
+      "3.0 significo: web semantico e dati riusabili (RDF); 4.0 seguo: ubiquo e intelligente",
+      "Negli abbinamenti scarta i distrattori fuori contesto (per esempio LAN)"
     ],
     "worker": "W2"
   }

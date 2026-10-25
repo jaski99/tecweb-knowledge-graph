@@ -1,0 +1,124 @@
+{
+  "perche_ti_serve": "Gruppo B (varianti isolate, ~20% dello scritto da MATERIALE_UTENTE): è il classico argomento da abbinamenti, con distrattori fuori contesto da riconoscere al volo.",
+  "scenario_fil_rouge": "Segui la stessa libreria attraverso le epoche. All'inizio è una paginetta con orari e indirizzo, uguale per tutti. Poi diventa un negozio dove i lettori si registrano, scrivono recensioni e comprano. Poi i suoi dati sui libri vengono descritti in formati che altre applicazioni possono riusare e collegare. Infine ci si immagina il servizio sempre presente, tra dispositivi e assistenti, che anticipa i bisogni. Quattro fasi, quattro etichette: Web 1.0, 2.0, 3.0 e 4.0.",
+  "definizione_esame": {
+    "definizione": "Le etichette Web 1.0, 2.0, 3.0 e 4.0 descrivono fasi dell'evoluzione del Web: 1.0 documenti statici in sola lettura; 2.0 web partecipativo e dinamico con contenuti generati dagli utenti; 3.0 web semantico, con dati condivisibili e riusabili tra applicazioni in formati comuni; 4.0 web ubiquo e intelligente, integrato con dispositivi e servizi che assistono l'utente.",
+    "scopo_vantaggio": "Danno una mappa rapida per collocare tecnologie e modelli d'uso (pagine statiche, applicazioni interattive, dati collegati, servizi onnipresenti) e per rispondere agli abbinamenti che mescolano le generazioni.",
+    "esempio": "La libreria: 1.0 la pagina con gli orari; 2.0 il negozio con account, recensioni e carrello; 3.0 il catalogo esposto come dati riusabili anche da altre applicazioni; 4.0 le notifiche e i suggerimenti che raggiungono il lettore sui suoi dispositivi, nel contesto in cui si trova."
+  },
+  "spiegazione": "## Prerequisiti in una riga\n\nNessun prerequisito nel grafo: questa è una lezione di inquadramento, che riordina in una linea storica cose trattate per esteso altrove (pagine statiche, DOM e richieste asincrone, web semantico).\n\n## Prima avvertenza: sono etichette, non versioni ufficiali\n\nNessun organismo «rilascia» il Web 2.0 come si rilascia una versione di un programma. Sono **etichette descrittive** usate a posteriori per raggruppare un modo prevalente di costruire e usare il Web in un certo periodo. Le date sono quindi **indicative** e le fasi **si sovrappongono**: ancora oggi esistono paginette perfettamente «1.0» accanto ad applicazioni «2.0». Alle domande si risponde con le **caratteristiche** di ciascuna fase, non con anni precisi.\n\n## Le quattro fasi, una per blocco\n\n**Web 1.0, il web dei documenti (sola lettura).** Pagine **statiche**, collegate da ipertesti: pochi autori pubblicano, la grande maggioranza legge. Il contenuto è lo stesso per tutti i visitatori e cambia solo quando l'autore ripubblica la pagina. È il web-bacheca: la paginetta con gli orari della libreria.\n\n**Web 2.0, il web partecipativo (lettura e scrittura).** Le pagine diventano **applicazioni dinamiche**: gli utenti si registrano, pubblicano e commentano (**contenuti generati dagli utenti**), le interfacce si aggiornano senza ricaricare grazie a JavaScript sul DOM e a richieste asincrone (il modello AJAX). Esempi tipici: social network, wiki, negozi con recensioni e carrello. La libreria diventa un negozio dove i lettori scrivono le recensioni.\n\n**Web 3.0, il web semantico (i dati collegati).** Nel materiale di studio di questo corso il 3.0 è il **Web semantico** del W3C: un quadro comune per **condividere e riusare i dati** tra applicazioni diverse, descrivendo le relazioni tra le cose in formati condivisi come **RDF**, in modo che anche le **macchine** possano elaborare il significato, non solo mostrare pagine. Il catalogo della libreria non è più solo pagine da leggere, ma dati che altre applicazioni possono interrogare e combinare (nodo `web-semantico-rdf-owl` in Area 5).\n\n**Web 4.0, il web ubiquo e intelligente.** È l'etichetta più recente e **meno definita**: descrive un web **sempre presente**, integrato con l'ambiente e i dispositivi dell'utente (telefono, casa, oggetti connessi dell'Internet of Things) e arricchito da servizi **intelligenti** e personalizzati che assistono e anticipano. Proprio perché è una prospettiva più che una fase storica chiusa, negli abbinamenti va riconosciuta dalle parole **ubiquità, dispositivi connessi, assistenza intelligente**.\n\n## La tabella di contrasto da memorizzare\n\n| Aspetto | Web 1.0 | Web 2.0 | Web 3.0 | Web 4.0 |\n|---|---|---|---|---|\n| Idea chiave | Documenti da leggere | Partecipazione | Dati con significato | Presenza ubiqua e intelligente |\n| Ruolo dell'utente | Lettore | Lettore e autore | Utente servito da applicazioni che riusano dati | Utente assistito nel contesto |\n| Contenuti | Statici, uguali per tutti | Dinamici, anche generati dagli utenti | Dati strutturati e collegati tra applicazioni | Servizi personalizzati e proattivi |\n| Tecnologie tipiche | HTML statico, ipertesti | DOM, AJAX, applicazioni web | RDF e dati collegati (web semantico) | Dispositivi connessi, servizi intelligenti |\n| La libreria | Pagina con orari | Negozio con recensioni e carrello | Catalogo riusabile da altre app | Notifiche e suggerimenti sui dispositivi |\n\n```mermaid\nflowchart TD\n    A[\"Web 1.0: documenti statici\"] --> B[\"Web 2.0: partecipazione e applicazioni\"]\n    B --> C[\"Web 3.0: dati semantici collegati\"]\n    C --> D[\"Web 4.0: ubiquo e intelligente\"]\n```\n\n## Trappole da abbinamento\n\nIl materiale di studio avverte che negli abbinamenti compaiono **distrattori fuori contesto**: per esempio «LAN» proposta tra i tipi di Web (è una rete locale, non una generazione del Web) o fasi che con il web non c'entrano, come «Installazione Sistema Operativo». Regola operativa: un'opzione che non parla di contenuti, interazione, dati o servizi sul Web va scartata subito.\n\nAttenzione anche all'**omonimia** sul 3.0: fuori da questo corso potresti incontrare «Web3» usato con altri significati. Nel materiale che stai studiando, **Web 3.0 significa Web semantico**: interoperabilità dei dati, RDF, significato elaborabile dalle macchine. Se una domanda chiede del 3.0, rispondi in quel quadro.",
+  "analogia": {
+    "testo": "Pensa alla libreria fisica che cresce nel tempo. 1.0: è una vetrina con un cartello scritto a mano, la guardi e basta. 2.0: apre le porte, entri, parli, lasci recensioni sul quaderno degli ospiti e compri. 3.0: il catalogo viene riscritto in schede standard che anche le altre librerie e le biblioteche possono leggere e incrociare. 4.0: il libraio ti conosce, ti avvisa sul telefono quando arriva il libro che cercavi e il negozio sembra seguirti ovunque tu sia.",
+    "limite": "Un negozio cambia una volta per volta in modo netto; sul Web le fasi convivono: la stessa realtà può avere oggi una paginetta statica, un negozio partecipativo e dati esposti in formato semantico. Le etichette descrivono tendenze, non interruttori che spengono la fase precedente."
+  },
+  "worked_example": {
+    "titolo": "Abbinamento completo: quattro scenari, quattro generazioni",
+    "problema": "Abbina ogni scenario alla generazione corretta e scarta il distrattore: A) il sito consiste in una pagina con indirizzo e orari, aggiornata a mano dal libraio una volta al mese; B) i lettori hanno un profilo, pubblicano recensioni e il carrello si aggiorna senza ricaricare la pagina; C) il catalogo è pubblicato anche come dati in formato comune, così un'applicazione esterna di confronto prezzi li interroga e li combina con quelli di altre librerie; D) il lettore riceve sul telefono e sull'assistente di casa l'avviso che il libro prenotato è arrivato in negozio vicino a dove si trova. Opzioni: Web 1.0, Web 2.0, Web 3.0, Web 4.0, LAN.",
+    "passi": [
+      "Scarta subito il distrattore fuori contesto: LAN è una rete locale, non una generazione del Web.",
+      "Scenario A: contenuto statico, sola lettura, stesso per tutti: segno distintivo del Web 1.0.",
+      "Scenario B: utenti che scrivono contenuti e interfaccia dinamica che si aggiorna senza ricaricare: partecipazione e applicazioni, cioè Web 2.0.",
+      "Scenario C: la parola chiave è dati in formato comune riusabili da altre applicazioni: è il web semantico, Web 3.0 nel quadro del corso.",
+      "Scenario D: servizio presente sui dispositivi dell'utente, consapevole del contesto e proattivo: ubiquità e assistenza intelligente, Web 4.0."
+    ],
+    "soluzione": "A = Web 1.0, B = Web 2.0, C = Web 3.0, D = Web 4.0; LAN è il distrattore da scartare perché non è una fase del Web. Il metodo è cercare in ogni scenario la parola chiave della fase: statico e sola lettura, partecipazione, dati riusabili, ubiquità intelligente.",
+    "perche_funziona": "Gli abbinamenti su questo argomento si costruiscono sulle caratteristiche distintive, una per generazione. Se per ogni fase hai agganciata un'idea chiave e un'immagine (la libreria nelle sue epoche), l'abbinamento diventa riconoscimento, non memoria di date."
+  },
+  "completion_problem": {
+    "titolo": "Completa la tabella di contrasto con le parole chiave",
+    "testo": "Completa le celle mancanti: 1) ruolo dell'utente nel Web 1.0; 2) origine tipica dei contenuti nel Web 2.0 oltre all'editore del sito; 3) formato comune citato per i dati del Web 3.0 semantico; 4) le due parole che identificano il Web 4.0 in un'opzione di abbinamento.",
+    "passi_mancanti": [
+      "Ruolo dell'utente nella prima fase dei documenti statici",
+      "Chi produce contenuti, oltre al gestore del sito, nella fase partecipativa",
+      "Il formato del W3C alla base della condivisione dei dati nel web semantico",
+      "La coppia di idee chiave della quarta fase"
+    ],
+    "soluzione": "1) Solo **lettore**: pochi autori pubblicano pagine statiche, gli altri le consultano. 2) Gli **utenti stessi**: profili, recensioni, commenti e pagine wiki sono contenuti generati dagli utenti. 3) **RDF** (Resource Description Framework), il quadro del W3C per descrivere dati e relazioni in modo condivisibile e riusabile. 4) **Ubiquo** e **intelligente**: web presente ovunque tramite dispositivi connessi e servizi che assistono e personalizzano."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Riconosci le due trappole in un abbinamento già compilato",
+    "testo": "Un compagno ha abbinato così: «Web 3.0: la versione ufficiale rilasciata dal W3C che ha sostituito il Web 2.0» e «Web 2.0: pagine statiche in sola lettura con contenuti uguali per tutti». Spiega i due errori e riscrivi le due definizioni corrette, ciascuna in una frase con la sua parola chiave.",
+    "suggerimento": "Il primo errore riguarda la natura stessa delle etichette (versioni ufficiali?). Il secondo scambia le caratteristiche di due fasi vicine: controlla chi scrive i contenuti in ciascuna.",
+    "soluzione_attesa": "Primo errore: 1.0, 2.0, 3.0 e 4.0 non sono versioni rilasciate da un organismo ma etichette descrittive di tendenze; inoltre le fasi convivono e una non spegne l'altra. Secondo errore: pagine statiche in sola lettura sono il Web 1.0, non il 2.0. Definizioni corrette: Web 2.0 = web partecipativo, con applicazioni dinamiche e contenuti generati anche dagli utenti; Web 3.0 = web semantico, con dati descritti in formati comuni (come RDF) per essere condivisi, riusati ed elaborati nel significato anche dalle macchine."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Trattare Web 1.0, 2.0, 3.0, 4.0 come versioni ufficiali rilasciate in date precise",
+      "perche_sbagliato": "Sono etichette descrittive di tendenze, con confini sfumati e fasi che convivono: nessun organismo le rilascia e le datazioni sono solo indicative. Le domande si risolvono con le caratteristiche, non con gli anni.",
+      "distrattore": "Il Web 3.0 è la versione rilasciata dopo la 2.0"
+    },
+    {
+      "errore": "Attribuire i contenuti generati dagli utenti al Web 1.0",
+      "perche_sbagliato": "Il Web 1.0 è di sola lettura: pochi autori, pagine statiche uguali per tutti. Partecipazione, profili e contenuti degli utenti sono la firma del Web 2.0.",
+      "distrattore": "Nel Web 1.0 gli utenti pubblicano recensioni e commenti"
+    },
+    {
+      "errore": "Rispondere sul Web 3.0 con significati diversi dal web semantico del materiale del corso",
+      "perche_sbagliato": "Nel materiale di studio del corso (SYLLABUS e MATERIALE_UTENTE) il 3.0 è il Web semantico: dati condivisi e riusabili tra applicazioni con formati comuni come RDF e significato elaborabile dalle macchine. È in quel quadro che vanno date le risposte.",
+      "distrattore": "Per il corso conta un'altra accezione di Web 3.0 diversa dal semantico"
+    },
+    {
+      "errore": "Far entrare negli abbinamenti opzioni fuori contesto come LAN o fasi di installazione",
+      "perche_sbagliato": "Sono i distrattori segnalati dal materiale di studio: termini di reti locali o di sistemi operativi non sono generazioni del Web. Un'opzione che non riguarda contenuti, interazione, dati o servizi web va scartata immediatamente.",
+      "distrattore": "LAN è una delle generazioni del Web"
+    },
+    {
+      "errore": "Credere che una nuova generazione elimini del tutto le precedenti",
+      "perche_sbagliato": "Le fasi si sovrappongono: oggi convivono pagine statiche, applicazioni partecipative e dati semantici. Descrivono modelli d'uso prevalenti in un periodo, non sostituzioni complete.",
+      "distrattore": "Con il Web 2.0 sono sparite le pagine statiche"
+    }
+  ],
+  "mnemonica": "«Leggo, Scrivo, Significo, Seguo»: 1.0 leggo documenti, 2.0 scrivo anche io, 3.0 i dati hanno significato per le macchine, 4.0 il web mi segue ovunque in modo intelligente.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Perché diciamo che 1.0, 2.0, 3.0 e 4.0 non sono «versioni» del Web?",
+        "risposta": "Perché sono etichette descrittive di tendenze e modelli d'uso, introdotte a posteriori: nessun organismo le rilascia, non hanno confini netti né date ufficiali e le fasi convivono tutte ancora oggi."
+      },
+      {
+        "domanda": "Qual è il salto decisivo tra Web 1.0 e Web 2.0?",
+        "risposta": "Da sola lettura a lettura e scrittura: le pagine statiche uguali per tutti diventano applicazioni dinamiche e partecipative, con profili e contenuti generati dagli utenti e aggiornamenti senza ricaricare la pagina."
+      },
+      {
+        "domanda": "Nel quadro del corso, che cosa significa Web 3.0 e quale formato lo rappresenta?",
+        "risposta": "È il Web semantico: un quadro comune (W3C) per condividere e riusare dati tra applicazioni descrivendone le relazioni, così che le macchine possano elaborare il significato. Il formato rappresentativo citato è RDF."
+      },
+      {
+        "domanda": "Con quali due idee chiave riconosci un'opzione «Web 4.0» in un abbinamento?",
+        "risposta": "Ubiquità e intelligenza: web presente ovunque attraverso dispositivi connessi e servizi personalizzati che assistono l'utente nel suo contesto, anticipando i bisogni."
+      }
+    ],
+    "spiega_con_parole_tue": "Racconta a parole tue la storia della libreria in quattro epoche, una frase per generazione con la sua idea chiave, e concludi spiegando perché la paginetta degli orari può esistere ancora oggi senza contraddire la storia.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "web-semantico-rdf-owl",
+        "collegamento": "Il Web 3.0 di questa lezione è esattamente l'oggetto di quel nodo in Area 5: collega l'idea chiave «dati riusabili con significato» a RDF, OWL e SPARQL, che sono i suoi strumenti concreti."
+      },
+      {
+        "nodo": "statico-vs-dinamico",
+        "collegamento": "La coppia statico e dinamico è il motore del passaggio da 1.0 a 2.0: colloca la pagina degli orari e la pagina del negozio con carrello sui due poli e spiega che cosa cambia nel modo in cui il contenuto nasce."
+      },
+      {
+        "nodo": "web-1-0-2-0-3-0-4-0-evoluzione",
+        "collegamento": "In Area 5 esiste un nodo gemello sull'evoluzione del Web: usa questa lezione per la mappa rapida da abbinamento e quell'approfondimento per il versante semantico ed evolutivo trattato in quell'area."
+      }
+    ]
+  },
+  "riepilogo": "Le quattro etichette raccontano: 1.0 documenti statici in sola lettura; 2.0 partecipazione, applicazioni dinamiche e contenuti degli utenti; 3.0 web semantico, dati riusabili e collegati in formati comuni come RDF; 4.0 web ubiquo e intelligente tra dispositivi e servizi che assistono. Sono tendenze che convivono, non versioni ufficiali: negli abbinamenti contano le parole chiave e si scartano i distrattori fuori contesto.",
+  "flashcard": {
+    "fronte": "Web 1.0, 2.0, 3.0, 4.0: l'idea chiave di ciascuna fase?",
+    "retro": "1.0 leggo: documenti statici, sola lettura. 2.0 scrivo: partecipazione e contenuti degli utenti. 3.0 significo: web semantico, dati riusabili (RDF). 4.0 seguo: ubiquo e intelligente, tra dispositivi connessi e assistenza personalizzata."
+  },
+  "checklist": {
+    "so_fare": [
+      "Abbinare uno scenario alla generazione giusta riconoscendone la parola chiave",
+      "Scartare al volo i distrattori fuori contesto negli abbinamenti",
+      "Completare la tabella di contrasto tra le quattro fasi a memoria"
+    ],
+    "so_dire": [
+      "Definire ciascuna fase con idea chiave, ruolo dell'utente ed esempio",
+      "Spiegare perché sono etichette descrittive e non versioni ufficiali",
+      "Chiarire che nel materiale del corso Web 3.0 significa Web semantico"
+    ]
+  }
+}

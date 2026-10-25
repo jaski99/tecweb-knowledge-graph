@@ -1,0 +1,124 @@
+{
+  "perche_ti_serve": "Gruppo B (varianti isolate, ~20% dello scritto da MATERIALE_UTENTE): la distinzione per origine dell'evento è materiale tipico da confronto e abbinamento.",
+  "scenario_fil_rouge": "Nella libreria online succedono due cose molto diverse. Da una parte il lettore clicca «Prenota» e la pagina reagisce all'istante. Dall'altra, tre minuti dopo, un altro cliente restituisce l'unica copia di Dune in negozio e la pagina aperta del primo lettore aggiorna da sola il cartellino da «Esaurito» a «Disponibile». Il primo evento nasce nel suo browser, il secondo nasce lontano e deve viaggiare: locali contro remoti.",
+  "definizione_esame": {
+    "definizione": "Gli eventi locali sono generati e gestiti interamente nel client (interazioni dell'utente o cambiamenti nel browser, come click, input, submit, resize) e intercettati con listener sugli oggetti della pagina; gli eventi remoti originano fuori dal client, tipicamente su un server, e raggiungono la pagina tramite meccanismi di rete come polling, long polling, Server-Sent Events o WebSocket.",
+    "scopo_vantaggio": "Distinguerli per origine permette di scegliere il meccanismo giusto: reazione immediata nel browser per l'interazione, canale di rete adeguato (da richieste periodiche a connessioni persistenti) per gli aggiornamenti che nascono altrove.",
+    "esempio": "Il click su «Prenota» è un evento locale gestito con addEventListener sul pulsante; l'avviso «copia di nuovo disponibile» è un evento remoto che il server spinge alla pagina aperta con WebSocket o Server-Sent Events."
+  },
+  "spiegazione": "## Prerequisiti in una riga\n\nNessun prerequisito nel grafo, ma il quadro si appoggia su due idee vicine: i gestori di evento sui nodi del DOM (`dom-virtual-dom`) e le richieste HTTP del client (`javascript-fetch-async-await`).\n\n## Il criterio: dove nasce l'evento\n\nQuesta è una **classificazione per origine**, utile a ragionare e a rispondere alle domande di confronto (non una tassonomia con nomi ufficiali nelle specifiche):\n\n| Aspetto | Eventi locali | Eventi remoti |\n|---|---|---|\n| Dove nascono | Nel client: utente, pagina, browser | Fuori dal client: server o altri sistemi |\n| Esempi | `click`, `input`, `keydown`, `submit`, `mouseover`, `load`, `resize`, `scroll` | «Nuovo messaggio», «prezzo cambiato», «copia disponibile» |\n| Come arrivano al codice | Il browser li consegna ai listener della pagina | Devono viaggiare sulla rete con un meccanismo dedicato |\n| Latenza tipica | Immediata | Dipende dal meccanismo (quasi istantanea con canali persistenti, a intervalli con il polling) |\n| Strumenti | `addEventListener` su elementi, `document`, `window` | Polling, long polling, Server-Sent Events, WebSocket |\n\n## Eventi locali: listener e viaggio nell'albero\n\nUn evento locale viene consegnato a un **destinatario** (*target*): l'elemento cliccato, il campo che riceve la digitazione, la finestra ridimensionata. Il codice si mette in ascolto con `addEventListener`, che consente **più gestori** sullo stesso evento e il controllo della fase di propagazione:\n\n```javascript\nconst pulsante = document.getElementById('prenota');\npulsante.addEventListener('click', (evento) => {\n  console.log('Click su:', evento.target.id);\n});\n```\n\nNel suo viaggio l'evento attraversa l'albero DOM in tre momenti: **cattura** (scende dalla radice verso ilTarget), **target** (arriva all'elemento) e **risalita o bubbling** (risale verso gli antenati). Per impostazione predefinita i listener scattano in risalita; con l'opzione `capture: true` scattano in cattura. Due metodi dell'oggetto evento da non confondere:\n\n- `preventDefault()`: impedisce il **comportamento predefinito** del browser (per esempio l'invio del form con ricaricamento della pagina);\n- `stopPropagation()`: ferma il **viaggio** dell'evento verso altri nodi, ma non annulla il comportamento predefinito.\n\n## Eventi remoti: quattro modi per farli arrivare\n\nIl protocollo HTTP classico è a **richiesta del client**: il server non può telefonare alla pagina quando vuole. Per ricevere eventi remoti esistono quattro strategie in ordine di «iniziativa del server» crescente:\n\n1. **Polling**: il client chiede a intervalli regolari «ci sono novità?» con normali richieste (per esempio `fetch`). Semplice, ma spreca richieste a vuoto e la freschezza è limitata dall'intervallo scelto.\n2. **Long polling**: il client chiede e il server **trattiene** la risposta finché non c'è un evento (o scade un'attesa massima); il client, appena riceve, chiede di nuovo. Riduce ritardi e richieste vuote restando su HTTP ordinario.\n3. **Server-Sent Events (SSE)**: il client apre con `EventSource` una connessione su cui il server **invia un flusso** di eventi testuali (`text/event-stream`). È **unidirezionale** server verso client, con **riconnessione automatica**.\n4. **WebSocket**: dopo un **handshake** iniziale via HTTP, la connessione diventa **persistente e bidirezionale** (*full duplex*): client e server si scambiano messaggi testuali o binari quando vogliono, con eventi come `open`, `message`, `error` e `close` sull'oggetto WebSocket.\n\n| Meccanismo | Direzione dei messaggi | Connessione | Chi «inizia» ogni novità |\n|---|---|---|---|\n| Polling | Il client chiede, il server risponde | Una richiesta per controllo | Il client, a intervalli |\n| Long polling | Il client chiede, il server risponde quando ha qualcosa | Una richiesta lunga per volta | Il server decide quando rispondere |\n| SSE (`EventSource`) | Solo server verso client | Persistente, con riconnessione automatica | Il server, in flusso continuo |\n| WebSocket | Bidirezionale | Persistente, full duplex | Entrambi, in qualsiasi momento |\n\n```javascript\n// SSE: la pagina resta in ascolto degli eventi spinti dal server\nconst sorgente = new EventSource('/api/disponibilita/stream');\nsorgente.addEventListener('message', (evento) => {\n  document.getElementById('stato-copia').textContent = evento.data;\n});\n```\n\n```javascript\n// WebSocket: canale bidirezionale persistente\nconst socket = new WebSocket('wss://libreria.esempio.it/notifiche');\nsocket.addEventListener('message', (evento) => {\n  document.getElementById('stato-copia').textContent = evento.data;\n});\nsocket.addEventListener('open', () => socket.send('osserva:libro-42'));\n```\n\nLa scelta pratica: aggiornamenti solo in arrivo e semplicità portano verso SSE; interazione continua in **entrambe le direzioni** (chat, collaborazione, giochi) porta verso WebSocket. Polling e long polling restano ripieghi quando bastano richieste HTTP ordinarie.\n\nNota il cerchio che si chiude: anche gli eventi remoti, una volta arrivati, vengono **consegnati al codice tramite listener** (`message` su EventSource o WebSocket) e producono modifiche al **DOM** con le solite API. Ciò che cambia è l'origine e il viaggio, non il gesto finale di aggiornare la pagina.",
+  "analogia": {
+    "testo": "Gli eventi locali sono le cose che accadono dentro il negozio sotto i tuoi occhi: un cliente preme il campanello sul bancone e tu commesso rispondi subito. Gli eventi remoti accadono nel magazzino dall'altra parte della città: per saperli puoi telefonare ogni dieci minuti (polling), restare in linea finché non hanno notizie (long polling), tenere una radio sempre accesa che trasmette solo dal magazzino verso di te (SSE) o una linea telefonica sempre aperta in cui parlate entrambi (WebSocket).",
+    "limite": "Nel negozio fisico il campanello lo senti senza strumenti; nel browser anche l'evento «locale» arriva al codice solo se hai registrato un listener sul nodo giusto. E la linea sempre aperta ha un costo in risorse che le telefonate periodiche non hanno: per questo il meccanismo si sceglie, non è unico."
+  },
+  "worked_example": {
+    "titolo": "Da «Esaurito» a «Disponibile» senza ricaricare: locale più remoto",
+    "problema": "Sulla scheda di Dune, esaurito, c'è un pulsante «Avvisami quando torna» e un cartellino di stato. Al click la pagina deve: 1) reagire subito mostrando «Ti avviseremo»; 2) restare in ascolto del server e, quando una copia torna disponibile, aggiornare il cartellino in «Disponibile» con il messaggio ricevuto. Indica per ogni parte se l'evento è locale o remoto e con che strumento lo gestisci.",
+    "passi": [
+      "Il click sul pulsante è un evento locale: registralo con addEventListener e aggiorna subito il cartellino con textContent, senza alcuna richiesta di rete per il feedback visivo.",
+      "L'avviso di disponibilità nasce sul server (qualcun altro restituisce la copia): è un evento remoto e serve un meccanismo server verso client.",
+      "Poiché i messaggi viaggiano in una sola direzione, dal server alla pagina, scegli Server-Sent Events con EventSource: semplice e con riconnessione automatica.",
+      "Nel listener 'message' della sorgente, scrivi evento.data nel cartellino: la consegna al codice avviene ancora tramite un listener, cambia solo l'origine dell'evento.",
+      "Riassumi la distinzione: locale uguale origine nel browser e gestione immediata; remoto uguale origine sul server e viaggio su un canale di rete."
+    ],
+    "soluzione": "```javascript\nconst cartellino = document.getElementById('stato-copia');\n\n// Evento LOCALE: nasce dal click nel browser\ndocument.getElementById('avvisami').addEventListener('click', () => {\n  cartellino.textContent = 'Ti avviseremo appena torna disponibile';\n});\n\n// Evento REMOTO: nasce sul server, arriva in flusso con SSE\nconst sorgente = new EventSource('/api/libri/42/disponibilita');\nsorgente.addEventListener('message', (evento) => {\n  cartellino.textContent = evento.data; // per esempio: Disponibile\n});\n```\n\nSe il servizio richiedesse anche messaggi continui dalla pagina al server (per esempio una chat di assistenza sulla stessa scheda), il meccanismo adatto diventerebbe WebSocket, perché SSE parla solo in direzione server verso client.",
+    "perche_funziona": "Ogni evento viene gestito all'origine giusta: il feedback al click è immediato perché non lascia mai il browser, mentre l'aggiornamento remoto viaggia su un canale persistente unidirezionale proporzionato al problema. In entrambi i casi il punto di arrivo è lo stesso: un listener aggiorna il DOM."
+  },
+  "completion_problem": {
+    "titolo": "Scegli il meccanismo per tre scenari della libreria",
+    "testo": "Per ciascuno scenario indica il meccanismo più adatto tra polling, long polling, SSE e WebSocket, motivando con direzione e frequenza dei messaggi: 1) un cruscotto interno controlla ogni minuto se ci sono nuovi ordini da evadere; 2) la pagina pubblica mostra in diretta le copie che tornano disponibili, senza mai inviare nulla; 3) una chat di assistenza in tempo reale tra lettore e libraio nella stessa pagina.",
+    "passi_mancanti": [
+      "Per ogni scenario stabilisci direzione necessaria: solo server verso client o entrambe",
+      "Valuta frequenza e tolleranza al ritardo degli aggiornamenti",
+      "Assegna il meccanismo e spiega perché gli altri sarebbero sproporzionati o insufficienti"
+    ],
+    "soluzione": "1) **Polling** (per esempio con fetch ogni minuto): controlli rari, ritardo tollerabile, semplicità massima; una connessione persistente sarebbe sproporzionata. 2) **SSE**: flusso solo server verso client in tempo reale, con riconnessione automatica; il polling sprecherebbe richieste e introdurrebbe ritardo. 3) **WebSocket**: servono messaggi frequenti in entrambe le direzioni sulla stessa connessione persistente full duplex; SSE non può inviare dal client e il polling simulerebbe la conversazione con ritardi e sprechi."
+  },
+  "esercizio_autonomo": {
+    "titolo": "PreventDefault e stopPropagation non sono la stessa cosa",
+    "testo": "Nel form di ricerca della libreria vuoi intercettare l'invio per mostrare i risultati senza ricaricare la pagina. Inoltre il pulsante di invio sta dentro una card che ha un suo listener di click per aprire la scheda: premendo «Cerca» non deve aprirsi anche la scheda. Scrivi i due listener e per ciascuno indica quale metodo dell'evento usi e che cosa blocca esattamente.",
+    "suggerimento": "Un metodo annulla ciò che il browser farebbe da solo all'invio del form; l'altro ferma la risalita dell'evento verso la card antenata. Non invertire i due ruoli.",
+    "soluzione_attesa": "```javascript\n// Blocca il comportamento predefinito: niente invio con ricaricamento\ndocument.getElementById('ricerca').addEventListener('submit', (evento) => {\n  evento.preventDefault();\n  // qui: chiamata fetch e aggiornamento dei risultati nel DOM\n});\n\n// Blocca la propagazione: il click non risale alla card\ndocument.getElementById('cerca').addEventListener('click', (evento) => {\n  evento.stopPropagation();\n});\n```\n\n`preventDefault()` agisce sull'**azione predefinita** del browser per quell'evento; `stopPropagation()` agisce sul **viaggio** dell'evento nell'albero. Usare il secondo al posto del primo lascerebbe partire l'invio del form con ricaricamento della pagina."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Classificare il click come evento remoto perché la pagina arriva da un server",
+      "perche_sbagliato": "Il criterio è l'origine dell'evento, non quella della pagina: il click nasce dall'interazione dell'utente nel browser ed è gestito localmente dai listener. Remoto è ciò che nasce fuori dal client e deve viaggiare sulla rete.",
+      "distrattore": "Il click è remoto perché la pagina è servita dal server"
+    },
+    {
+      "errore": "Descrivere i Server-Sent Events come canale bidirezionale",
+      "perche_sbagliato": "SSE è un flusso unidirezionale dal server al client (EventSource, formato text/event-stream): la pagina non può inviare messaggi su quel canale. Per la bidirezionalità continua serve WebSocket, oppure normali richieste separate dal client.",
+      "distrattore": "Con EventSource la pagina invia messaggi al server"
+    },
+    {
+      "errore": "Presentare il polling come aggiornamento in tempo reale senza costi",
+      "perche_sbagliato": "Il polling interroga a intervalli: tra un controllo e l'altro le novità aspettano, e molti controlli tornano a vuoto consumando richieste. È semplice, ma né istantaneo né gratuito.",
+      "distrattore": "Il polling è tempo reale e non spreca richieste"
+    },
+    {
+      "errore": "Confondere preventDefault e stopPropagation",
+      "perche_sbagliato": "preventDefault annulla l'azione predefinita del browser (per esempio l'invio del form); stopPropagation interrompe la propagazione dell'evento ad altri nodi. Scambiarli lascia partire invii indesiderati o non ferma i listener degli antenati.",
+      "distrattore": "stopPropagation impedisce l'invio del form"
+    },
+    {
+      "errore": "Pensare che con HTTP ordinario il server possa avvisare la pagina quando vuole",
+      "perche_sbagliato": "Nel modello richiesta-risposta di HTTP è il client a iniziare: il server non apre conversazioni. Per questo servono polling, long polling, oppure canali persistenti come SSE e WebSocket (questo dopo un handshake iniziale via HTTP).",
+      "distrattore": "Il server HTTP può inviare dati alla pagina in qualsiasi momento"
+    }
+  ],
+  "mnemonica": "«Chi chiama chi?»: locale, il browser si arrangia; remoto con polling chiama il client; con long polling il client chiama e il server temporeggia; con SSE parla solo il server; con WebSocket la linea resta aperta per entrambi.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Definisci eventi locali e remoti con il criterio dell'origine e fai due esempi di ciascuno nella libreria.",
+        "risposta": "Locali: nascono nel client (click sul pulsante Prenota, digitazione nella ricerca) e sono gestiti da listener nel browser. Remoti: nascono fuori dal client (copia tornata disponibile, nuovo ordine sul server) e arrivano tramite polling, long polling, SSE o WebSocket."
+      },
+      {
+        "domanda": "Confronta polling, long polling, SSE e WebSocket per direzione e connessione.",
+        "risposta": "Polling: richieste periodiche del client. Long polling: il client chiede, il server trattiene la risposta finché ha novità. SSE: connessione persistente con flusso solo server verso client e riconnessione automatica. WebSocket: connessione persistente bidirezionale full duplex dopo un handshake HTTP."
+      },
+      {
+        "domanda": "Descrivi le tre fasi del viaggio di un evento locale nell'albero DOM.",
+        "risposta": "Cattura: l'evento scende dalla radice verso il target. Target: raggiunge l'elemento destinatario. Bubbling (risalita): torna verso gli antenati. Per impostazione predefinita i listener scattano in risalita, con capture: true in cattura."
+      },
+      {
+        "domanda": "Che differenza c'è tra preventDefault() e stopPropagation()?",
+        "risposta": "preventDefault() annulla l'azione predefinita del browser per quell'evento (per esempio l'invio del form). stopPropagation() ferma la propagazione dell'evento ad altri nodi, ma lascia intatta l'azione predefinita."
+      }
+    ],
+    "spiega_con_parole_tue": "Racconta a parole tue il giorno in libreria con campanello sul bancone e magazzino lontano: assegna a telefonate periodiche, linea in attesa, radio a senso unico e telefono sempre aperto i quattro meccanismi, e concludi dicendo perché il click resta un affare interno al negozio.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "dom-virtual-dom",
+        "collegamento": "Sia gli eventi locali sia quelli remoti, alla fine, aggiornano il DOM tramite listener registrati con addEventListener: collega i nodi come destinatari degli eventi locali agli oggetti EventSource e WebSocket come destinatari dei messaggi remoti."
+      },
+      {
+        "nodo": "javascript-fetch-async-await",
+        "collegamento": "Il polling si implementa proprio con fetch ripetute: confronta questo uso «a orologio» di fetch con il canale persistente di SSE e WebSocket, ragionando su richieste a vuoto e freschezza dei dati."
+      },
+      {
+        "nodo": "dhtml-dynamic-html",
+        "collegamento": "Gli effetti DHTML rispondono soprattutto a eventi locali (mouseover, click) senza contattare il server: colloca questa osservazione nella tabella locale contro remoto e nel confine tra DHTML e AJAX."
+      }
+    ]
+  },
+  "riepilogo": "La distinzione è di origine: eventi locali nascono nel client (click, input, submit, resize) e si gestiscono con listener sugli elementi, seguendo cattura, target e risalita nell'albero; eventi remoti nascono altrove e arrivano via rete con polling, long polling, SSE (solo server verso client) o WebSocket (bidirezionale persistente). In entrambi i casi, l'ultimo passo è un listener che aggiorna il DOM.",
+  "flashcard": {
+    "fronte": "Eventi locali contro remoti: criterio e quattro meccanismi per i remoti?",
+    "retro": "Criterio: dove nasce l'evento. Locali nel browser (click, input, submit) con addEventListener. Remoti dal server: polling (richieste periodiche), long polling (risposta trattenuta), SSE (flusso solo server verso client), WebSocket (persistente bidirezionale)."
+  },
+  "checklist": {
+    "so_fare": [
+      "Registrare listener per eventi locali con addEventListener usando target e fasi di propagazione",
+      "Usare preventDefault e stopPropagation ciascun per lo scopo giusto",
+      "Ascoltare messaggi in arrivo con EventSource o WebSocket e aggiornare il DOM",
+      "Scegliere tra polling, long polling, SSE e WebSocket in base a direzione e frequenza"
+    ],
+    "so_dire": [
+      "Definire locale e remoto con il criterio dell'origine dell'evento",
+      "Confrontare i quattro meccanismi su direzione, connessione e chi ha l'iniziativa",
+      "Spiegare perché HTTP ordinario non permette al server di iniziare la conversazione"
+    ]
+  }
+}
