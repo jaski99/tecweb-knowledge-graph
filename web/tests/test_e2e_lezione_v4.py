@@ -67,7 +67,7 @@ def test_lezione_v4_tutti_i_campi(browser, base_url, viewport):
     assert page.locator("article.worked .passi li").count() == 0
     assert page.locator(".completion details").first.evaluate("el => !el.open")
     assert page.locator(".richiamo details").first.evaluate("el => !el.open")
-    card = page.locator(".flashcard")
+    card = page.locator(".flashcard").first
     assert card.inner_text() == LESSON["flashcard"]["fronte"]
     card.click()
     assert card.inner_text() == LESSON["flashcard"]["retro"]

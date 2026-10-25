@@ -60,13 +60,18 @@ def test_schermate(browser, base_url, vp):
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.goto(base_url)
     page.wait_for_selector("#resume:not([hidden])")
-    page.wait_for_selector("#cy canvas")
+    if vp == "desktop":
+        page.wait_for_selector("#cy canvas")
+    else:
+        page.wait_for_selector("#graph-mobile-list .graph-mobile-item")
     page.wait_for_timeout(400)
     assert overflow(page) <= 1
     shot(page, f"home-{vp}.png")
-    page.click("#zoom-fit")
-    page.wait_for_timeout(300)
-    page.locator(".graph-wrap").screenshot(path=str(SHOTS / f"grafo-{vp}.png"))
+    if vp == "desktop":
+        page.click("#zoom-fit")
+        page.wait_for_timeout(300)
+    graph_target = ".graph-wrap" if vp == "desktop" else "#graph-mobile-list"
+    page.locator(graph_target).screenshot(path=str(SHOTS / f"grafo-{vp}.png"))
     page.click("#tab-percorso")
     page.wait_for_selector("#view-percorso:not([hidden]) .path li")
     assert overflow(page) <= 1
@@ -86,7 +91,7 @@ def test_niente_scroll_orizzontale_a_360(browser, base_url):
     ctx = browser.new_context(viewport={"width": 360, "height": 740}, is_mobile=True, has_touch=True)
     page = ctx.new_page()
     page.goto(base_url)
-    page.wait_for_selector("#cy canvas")
+    page.wait_for_selector("#graph-mobile-list .graph-mobile-item")
     assert overflow(page) <= 1
     page.goto(f"{base_url}#/lezione/{LESSON}")
     page.wait_for_selector("#lesson-title")
