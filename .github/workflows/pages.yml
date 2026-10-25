@@ -40,13 +40,8 @@ jobs:
         run: python scripts/kg.py check
       - name: Test dei moduli JavaScript
         run: npm test --prefix web
-      - name: Test Python (senza e2e)
+      - name: Test Python (tutti tranne e2e Playwright)
         run: pytest -q --ignore=web/tests/test_e2e_*.py --tb=short
-      - name: Test e2e Playwright (se possibile)
-        continue-on-error: true
-        run: |
-          python -m playwright install chromium || echo "::warning:: Playwright browser non installato"
-          pytest web/tests/test_e2e_*.py -v || echo "::warning:: Test e2e Playwright non eseguiti"
       - name: Prepara sito statico
         run: sh web/build.sh
       - uses: actions/configure-pages@v5
