@@ -266,13 +266,6 @@
 **Retro**: AJAX è un insieme di tecniche per scambiare dati in modo asincrono con il server e aggiornare parti della pagina; oggi si usano spesso Fetch e JSON, anche se il nome conserva XML. Le richieste asincrone migliorano la continuità dell’interfaccia e riducono i ricaricamenti completi; non rendono la rete istantanea né eliminano gli errori HTTP. Un gestore invoca `fetch("/api/libri")`, controlla lo status, legge il JSON e aggiorna un elemento della pagina.
 
 
-### Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0
-
-**Fronte**: Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0: qual è la definizione, lo scopo e un esempio?
-
-**Retro**: Le espressioni Web 1.0, 2.0, 3.0 e 4.0 sono etichette didattiche per descrivere tendenze nell’evoluzione dei servizi Web, dalla consultazione a interazione, dati semantici o collegati e servizi più pervasivi. Il confronto chiarisce come cambiano partecipazione, struttura dei dati e integrazione dei servizi, ma non identifica standard tecnici o versioni formalmente numerate del Web. Una pagina informativa statica richiama Web 1.0; un catalogo sociale con recensioni Web 2.0; dati RDF collegati la prospettiva semantica chiamata Web 3.0 in questa classificazione.
-
-
 ### Quiz e form: domande a scelta multipla e raccolta risposte
 
 **Fronte**: Come strutturare e valutare un quiz accessibile?
@@ -560,12 +553,6 @@
 - [ ] Controllare response.ok: 4xx/5xx non rifiutano fetch automaticamente
 - [ ] Leggere il body e aggiornare il DOM in modo sicuro
 
-### Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0 (priorità MEDIA, gruppo B)
-
-- [ ] 1.0: consultazione; 2.0: partecipazione
-- [ ] 3.0: semantica/Linked Data nell’accezione dichiarata
-- [ ] 4.0: visione pervasiva; etichette non normative e definizioni variabili
-
 
 ## Area 6. Tesina
 
@@ -737,9 +724,6 @@
 - [ ] **AJAX: Asynchronous JavaScript and XML**: Dire che AJAX deve ricevere XML. → XML è nel nome storico; la tecnica può usare JSON o altri formati.
 - [ ] **AJAX: Asynchronous JavaScript and XML**: Credere che fetch rifiuti automaticamente la Promise con status 404. → Una risposta HTTP 404 normalmente risolve la Promise; si deve controllare `response.ok` o `status`.
 - [ ] **AJAX: Asynchronous JavaScript and XML**: Inserire titoli ricevuti con `innerHTML` senza sanificazione. → Testo remoto può contenere markup non attendibile; `textContent` lo tratta come testo.
-- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Presentare Web 1.0–4.0 come versioni ufficiali dello standard HTTP. → Sono etichette concettuali e non versioni normative del protocollo o del Web.
-- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Dire che AJAX definisce da solo Web 2.0. → AJAX è una tecnica; Web 2.0 descrive soprattutto un insieme di pratiche partecipative e servizi interattivi.
-- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Trattare Web 3.0 semantico e Web3 blockchain come sinonimi certi. → Gli usi del termine variano; bisogna specificare quale accezione si adotta.
 - [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Affidarsi al solo colore per il feedback → Il significato deve essere comunicato anche con testo, perché il colore da solo non è sufficiente.
 - [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Usare name diversi per ogni radio della stessa domanda → Si perderebbe il comportamento di selezione esclusiva nativo del gruppo.
 - [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Trattare il submit vuoto come risposta errata → La mancata scelta è un caso distinto e può richiedere un messaggio di completamento.

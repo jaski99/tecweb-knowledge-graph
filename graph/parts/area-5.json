@@ -167,49 +167,5 @@
       "Leggere il body e aggiornare il DOM in modo sicuro"
     ],
     "worker": "W3"
-  },
-  {
-    "id": "web-1-0-2-0-3-0-4-0-evoluzione",
-    "title": "Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0",
-    "area": 5,
-    "gruppo": "B",
-    "tipo": "concetto",
-    "sapere": "Web 1.0–4.0 sono etichette concettuali non standardizzate: consultazione, partecipazione, dati semantici/collegati (in una specifica accezione di Web 3.0) e visioni di servizi pervasivi. Definizioni e confini, soprattutto per Web 3.0 e Web 4.0, variano.",
-    "saper_fare": [
-      "Distinguere le tendenze associate alle quattro etichette",
-      "Fornire esempi chiarendo che la classificazione non è normativa",
-      "Spiegare la variabilità delle accezioni di Web 3.0 e Web 4.0"
-    ],
-    "prerequisiti": [],
-    "esercizi": [
-      {
-        "tipo_esame": "scritto: evoluzione",
-        "testo": "Elenca le principali differenze tra Web 1.0, 2.0, 3.0 e 4.0.",
-        "soluzione": "Web 1.0: statico, lettura, HTML base, contenuto professionale\nWeb 2.0: dinamico, lettura/scrittura, user-generated content, AJAX, API, social\nWeb 3.0: semantico, Linked Data, ontologie (RDF, OWL), AI, personalizzazione\nWeb 4.0: ubiquo, IoT, integrazione fisico-digitale, AI generativa, contest-aware"
-      }
-    ],
-    "tempo_studio_min": 35,
-    "priorita": {
-      "livello": "media",
-      "motivazione": "Gruppo B; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
-    },
-    "risorse": [
-      {
-        "titolo": "W3C RDF 1.1 Concepts",
-        "url": "https://www.w3.org/TR/rdf11-concepts/",
-        "verificato": true
-      }
-    ],
-    "riferimenti_testo": [
-      {
-        "libro": "W3C"
-      }
-    ],
-    "checklist_ripasso": [
-      "1.0: consultazione; 2.0: partecipazione",
-      "3.0: semantica/Linked Data nell’accezione dichiarata",
-      "4.0: visione pervasiva; etichette non normative e definizioni variabili"
-    ],
-    "worker": "W3"
   }
 ]

@@ -3,7 +3,7 @@
 **Fonte**: `graph/graph.json` (schema v3)
 **Generato da**: `graph/meta.json` + `graph/parts/area-*.json`
 **Ultimo aggiornamento**: 25/10/2026
-**Totale nodi**: 41
+**Totale nodi**: 40
 
 ## Legenda
 
@@ -103,9 +103,8 @@
 | web-semantico-rdf-owl | Web Semantico: RDF, OWL, SPARQL | A | concetto | - | W3 |
 | sparql-query-esempi | SPARQL: esempi di query | A | abilita | web-semantico-rdf-owl | W3 |
 | ajax-fetch-xhr | AJAX: Asynchronous JavaScript and XML | B | abilita | javascript-fetch-async-await | W3 |
-| web-1-0-2-0-3-0-4-0-evoluzione | Web 1.0-2.0-3.0-4.0: evoluzione e differenze | B | concetto | - | W3 |
 
-**Totale Area 5**: 4 nodi (2 gruppo A, 2 gruppo B)
+**Totale Area 5**: 3 nodi (2 gruppo A, 1 gruppo B)
 **Tempo stimato**: ~2.5 ore
 
 ---
@@ -165,9 +164,9 @@ I seguenti nodi hanno **lezioni complete** (v3) che servono come modello di qual
 
 | Metrica | Valore |
 |---|---|
-| **Totale nodi** | 41 |
-| **Gruppo A** | 21 nodi (~51%) |
-| **Gruppo B** | 9 nodi (~22%) |
+| **Totale nodi** | 40 |
+| **Gruppo A** | 21 nodi (~52.5%) |
+| **Gruppo B** | 8 nodi (~20%) |
 | **Gruppo C** | 11 nodi (~27%) |
 | **Concetti** | 24 nodi |
 | **Abilita** | 15 nodi |
@@ -206,7 +205,7 @@ I nodi coprono i seguenti argomenti richiesti dal materiale utente:
 - ✅ **AJAX**: `ajax-fetch-xhr` (Area 5)
 - ✅ **Statico vs dinamico**: `statico-vs-dinamico` (Area 1)
 - ✅ **Eventi locali vs remoti**: `eventi-locali-vs-remoti` (Area 3)
-- ✅ **Web 1.0-4.0**: `web-1-0-2-0-3-0-4-0` e `web-1-0-2-0-3-0-4-0-evoluzione` (Area 5)
+- ✅ **Web 1.0-4.0**: `web-1-0-2-0-3-0-4-0` (Area 3)
 - ✅ **DHTML**: `dhtml-dynamic-html` (Area 3)
 - ✅ **Canvas**: `canvas-api` (Area 3)
 - ✅ **Span**: `span-tag-uso` (Area 3)

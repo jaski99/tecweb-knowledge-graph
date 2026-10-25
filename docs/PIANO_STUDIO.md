@@ -22,9 +22,9 @@ Ordine topologico dei nodi (ogni prerequisito prima del nodo che lo usa); a pari
 | 2 | Architetture | 6 | 5 | 1 | 0 | 4 h 25 min |
 | 3 | Front-end | 11 | 4 | 6 | 1 | 7 h 10 min |
 | 4 | Back-end e strumenti | 5 | 0 | 0 | 5 | 4 h 00 min |
-| 5 | Web semantico ed evoluzione | 4 | 2 | 2 | 0 | 3 h 00 min |
+| 5 | Web semantico ed evoluzione | 3 | 2 | 1 | 0 | 2 h 25 min |
 | 6 | Tesina | 5 | 0 | 0 | 5 | 6 h 30 min |
-| **Totale** | | 41 | **21** | **9** | **11** | **32 h 05 min** |
+| **Totale** | | 40 | **21** | **8** | **11** | **31 h 30 min** |
 
 ## Sessione 1 (1 h 35 min)
 
@@ -107,13 +107,12 @@ Ordine topologico dei nodi (ogni prerequisito prima del nodo che lo usa); a pari
 35. [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0** (`web-1-0-2-0-3-0-4-0`) — area 3, gruppo B, concetto, priorità MEDIA, 30 min. Prerequisiti: —
 36. [ ] **JSON: formato dati per il Web** (`json-formato-dati`) — area 4, gruppo C, concetto, priorità MEDIA, 30 min. Prerequisiti: —
 
-## Sessione 16 (2 h 05 min)
+## Sessione 16 (1 h 30 min)
 
 37. [ ] **AJAX: Asynchronous JavaScript and XML** (`ajax-fetch-xhr`) — area 5, gruppo B, abilita, priorità MEDIA, 45 min. Prerequisiti: javascript-fetch-async-await
-38. [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0** (`web-1-0-2-0-3-0-4-0-evoluzione`) — area 5, gruppo B, concetto, priorità MEDIA, 35 min. Prerequisiti: —
-39. [ ] **Quiz e form: domande a scelta multipla e raccolta risposte** (`quiz-form`) — area 6, gruppo C, abilita, priorità MEDIA, 45 min. Prerequisiti: html-form-accessibilita, javascript-fetch-async-await
+38. [ ] **Quiz e form: domande a scelta multipla e raccolta risposte** (`quiz-form`) — area 6, gruppo C, abilita, priorità MEDIA, 45 min. Prerequisiti: html-form-accessibilita, javascript-fetch-async-await
 
 ## Sessione 17 (1 h 20 min)
 
-40. [ ] **Tesina: Esercitazione guidata e modello presentazione** (`tesina-esercitazione-guidata`) — area 6, gruppo C, tipo_esercizio, priorità MEDIA, 60 min. Prerequisiti: —
-41. [ ] **Tag <span>: uso e scopi** (`span-tag-uso`) — area 3, gruppo B, concetto, priorità BASSA, 20 min. Prerequisiti: —
+39. [ ] **Tesina: Esercitazione guidata e modello presentazione** (`tesina-esercitazione-guidata`) — area 6, gruppo C, tipo_esercizio, priorità MEDIA, 60 min. Prerequisiti: —
+40. [ ] **Tag <span>: uso e scopi** (`span-tag-uso`) — area 3, gruppo B, concetto, priorità BASSA, 20 min. Prerequisiti: —

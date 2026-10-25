@@ -24,13 +24,30 @@ jobs:
         with:
           node-version: '22'
       - name: Installa dipendenze Python
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt playwright
+      - name: Installa Chromium per Playwright
+        run: python -m playwright install --with-deps chromium
       - name: Controlla knowledge graph
         run: python scripts/kg.py check
       - name: Test dei moduli JavaScript
         run: npm test --prefix web
-      - name: Test Python (tutti tranne e2e Playwright)
-        run: pytest -q -k "not e2e" --tb=short
+      - name: Test Python ed e2e Playwright
+        shell: bash
+        run: |
+          set +e
+          pytest -q --tb=short > /tmp/pytest-output.txt 2>&1
+          result=$?
+          cat /tmp/pytest-output.txt
+          if grep -Eq '(^|, )[1-9][0-9]* skipped([ ,]|$)' /tmp/pytest-output.txt; then
+            echo "::error::pytest ha saltato test: in CI sono richiesti zero test saltati"
+            result=1
+          fi
+          if [ "$result" -ne 0 ]; then
+            while IFS= read -r failure; do
+              echo "::error title=Errore pytest::$failure"
+            done < <(grep -E '^(FAILED|ERROR) ' /tmp/pytest-output.txt)
+          fi
+          exit "$result"
       - name: Prepara sito statico
         run: sh web/build.sh
       - uses: actions/configure-pages@v5
