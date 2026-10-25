@@ -22,7 +22,7 @@ jobs:
           python-version: '3.12'
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       - name: Installa dipendenze Python
         run: pip install -r requirements.txt
       - name: Controlla knowledge graph
@@ -30,7 +30,7 @@ jobs:
       - name: Test dei moduli JavaScript
         run: npm test --prefix web
       - name: Test Python (tutti tranne e2e Playwright)
-        run: pytest -q --ignore=web/tests/test_e2e_*.py --tb=short
+        run: pytest -q -k "not e2e" --tb=short
       - name: Prepara sito statico
         run: sh web/build.sh
       - uses: actions/configure-pages@v5
