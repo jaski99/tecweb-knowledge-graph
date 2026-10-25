@@ -54,6 +54,7 @@ async function main() {
   ];
   createFiltersView($('#filters'), graph, { initial: emptyFilters(), onChange: (filters) => state.set({ filters }) });
   const [graphView] = views;
+  window.cyInstance = graphView.cytoscape;
   const mobileGraphList = createGraphMobileList($('#graph-mobile-list'), graph, { onSelect: select, onOpen: openLesson });
   const themeBtn = h('button', { type: 'button', class: 'btn', 'data-theme-toggle': '1' });
   $('#theme').append(themeBtn);
