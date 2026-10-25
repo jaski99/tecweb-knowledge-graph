@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti su REST. Non è indicato un punteggio specifico per questo nodo.",
+  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti su REST (Gruppo A): fondamentale per lo scritto.",
   "scenario_fil_rouge": "La biblioteca deve creare un libro, leggerne la scheda, correggere solo l'email di un utente, sostituire una rappresentazione e rimuovere una risorsa. La scelta del metodo definisce la semantica dell'operazione, non solo il nome della funzione sul server.",
   "definizione_esame": {
     "definizione": "I metodi HTTP esprimono la semantica dell'operazione richiesta sulla risorsa; GET legge, POST elabora, PUT sostituisce, PATCH applica modifiche e DELETE rimuove.",

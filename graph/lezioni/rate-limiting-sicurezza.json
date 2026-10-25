@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo B, come argomento di variante. Non è indicato un punteggio specifico per questo nodo.",
+  "perche_ti_serve": "Negli esami passati tra gli argomenti di variante (Gruppo B): utile per completare.",
   "scenario_fil_rouge": "Un client automatico interroga ripetutamente il catalogo e consuma risorse del servizio. La biblioteca applica limiti documentati, risponde in modo standard quando il limite è superato e separa questa misura da autenticazione, autorizzazione e CORS.",
   "definizione_esame": {
     "definizione": "Il rate limiting limita il numero di richieste accettate secondo una policy e un intervallo, per una chiave come utente, credenziale o indirizzo.",

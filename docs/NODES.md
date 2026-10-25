@@ -18,7 +18,7 @@
 |--------|------|-------|----------------|
 | W1 | feat/contenuti-1-2 | Area 1 + Area 2 | 16 nodi |
 | W2 | feat/contenuti-3 | Area 3 | 11 nodi |
-| W3 | feat/contenuti-4-5 | Area 4 + Area 5 | 9 nodi |
+| W3 | feat/contenuti-4-5 | Area 4 + Area 5 | 8 nodi |
 | W4 | feat/contenuti-6-quiz | Area 6 + quiz | 5 nodi |
 | W5 | feat/webapp | Web app | 0 nodi (web/) |
 

@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
   "scenario_fil_rouge": "Una studentessa consulta il catalogo sul telefono mentre passa dalla rete Wi-Fi alla rete mobile. La pagina usa HTTP/3: QUIC gestisce gli stream e può mantenere una connessione logica anche quando cambia il percorso di rete.",
   "definizione_esame": {
     "definizione": "QUIC è un protocollo di trasporto sicuro e multiplexato, veicolato in datagrammi UDP, usato da HTTP/3.",

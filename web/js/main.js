@@ -28,7 +28,7 @@ async function main() {
   catch (e) { $('#status').textContent = e.message; $('#status').classList.add('error'); return; }
   $('#status').textContent = '';
   $('#exam-note').textContent = graph.nota_esame || '';
-  $('#course').textContent = `${graph.corso.nome} — prof. ${graph.corso.docente}`;
+  $('#course').textContent = graph.corso.docente ? `${graph.corso.nome} — prof. ${graph.corso.docente}` : graph.corso.nome;
 
   if (matchMedia('(max-width: 720px)').matches) document.querySelectorAll('.side details').forEach((d) => { d.open = false; });
   const doneStore = createSetStore(localStorage, STORAGE_KEYS.done);

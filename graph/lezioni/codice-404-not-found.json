@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti su HTTP e REST. Non è indicato un punteggio specifico per questo nodo.",
+  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti su HTTP e REST (Gruppo A): fondamentale per lo scritto.",
   "scenario_fil_rouge": "Una lettrice apre la scheda di un libro tramite il suo identificatore. Se il libro non esiste, il servizio deve restituire un esito HTTP coerente e permettere al client di distinguere il problema dal successo o dal divieto di accesso.",
   "definizione_esame": {
     "definizione": "404 Not Found indica che il server di origine non trova una rappresentazione corrente per il target o non vuole rivelarne l'esistenza.",

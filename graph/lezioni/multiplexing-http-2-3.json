@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
   "scenario_fil_rouge": "Quando la pagina della biblioteca apre catalogo, stile e copertine, più richieste devono avanzare in parallelo. Il multiplexing le separa in stream logici, ma il trasporto sottostante determina come una perdita influenza gli altri dati.",
   "definizione_esame": {
     "definizione": "Il multiplexing HTTP consente di intercalare più scambi logici su una connessione: HTTP/2 usa stream sopra TCP, HTTP/3 stream QUIC sopra UDP.",

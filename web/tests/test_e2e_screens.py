@@ -108,3 +108,49 @@ def test_niente_scroll_orizzontale_a_360(browser, base_url):
     page.wait_for_selector(".code-copy, pre.code", timeout=20000)
     assert overflow(page) <= 1
     ctx.close()
+
+
+def test_etichette_grafo_desktop_non_sovrapposte(browser, base_url):
+    """Verifica che le etichette dei nodi del grafo a 1440x900 dopo 'Adatta' non si sovrappongano."""
+    ctx = browser.new_context(viewport={"width": 1440, "height": 900})
+    page = ctx.new_page()
+    page.goto(base_url)
+    page.wait_for_selector("#cy canvas")
+    page.click("#zoom-fit")
+    page.wait_for_timeout(500)
+    
+    # Verifica che non ci siano sovrapposizioni tra etichette dei nodi
+    overlaps = page.evaluate("""
+      () => {
+        const cy = window.cytoscape;
+        if (!cy) return [];
+        
+        const g = cy('div[class*="cytoscape"] canvas').cytoscape('get');
+        if (!g) return [];
+        
+        const nodes = g.nodes();
+        const overlaps = [];
+        
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const n1 = nodes[i];
+            const n2 = nodes[j];
+            
+            // Ottieni i bounding box
+            const bb1 = n1.boundingBox();
+            const bb2 = n2.boundingBox();
+            
+            // Verifica sovrapposizione
+            if (bb1 && bb2 && 
+                bb1.x1 < bb2.x2 && bb1.x2 > bb2.x1 &&
+                bb1.y1 < bb2.y2 && bb1.y2 > bb2.y1) {
+              overlaps.push({ id1: n1.id(), id2: n2.id() });
+            }
+          }
+        }
+        return overlaps;
+      }
+    """)
+    
+    assert len(overlaps) == 0, f"Etichette sovrapposte: {overlaps}"
+    ctx.close()

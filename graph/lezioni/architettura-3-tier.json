@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
   "scenario_fil_rouge": "Nel negozio della biblioteca, il browser mostra il carrello, un servizio applicativo calcola prezzi e disponibilità, e un database conserva libri e ordini. Separare queste responsabilità chiarisce dove collocare codice, dati e scalabilità.",
   "definizione_esame": {
     "definizione": "Un'architettura a tre tier separa logicamente presentazione, logica applicativa e dati in tre livelli di responsabilità.",

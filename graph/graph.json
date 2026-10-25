@@ -166,7 +166,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "La biblioteca riceve richieste per libri presenti, libri inesistenti e pagine spostate. Un codice di stato sintetico permette al browser e all'API di capire l'esito senza dedurlo dal solo testo della risposta.",
         "definizione_esame": {
           "definizione": "Un codice di stato HTTP è un codice a tre cifre che comunica la classe dell'esito di una richiesta nella risposta.",
@@ -325,7 +325,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "Una lettrice accede alla biblioteca digitale e salva un libro nei preferiti. Il browser invia un cookie nelle richieste successive; il server usa il suo identificatore per recuperare preferenze e sessione senza confondere il cookie con l'intero archivio.",
         "definizione_esame": {
           "definizione": "Un cookie è un dato gestito dal browser secondo gli header HTTP; una sessione applicativa associa richieste e dati di stato, spesso tramite un identificatore nel cookie.",
@@ -480,7 +480,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "La pagina di un negozio digitale richiede HTML, fogli di stile, immagini e dati del catalogo. Le diverse versioni HTTP trasportano la stessa semantica, ma organizzano messaggi, connessioni e flussi in modo diverso.",
         "definizione_esame": {
           "definizione": "Le versioni HTTP condividono la semantica di base ma differiscono nel framing e nell'uso del trasporto per scambiare più richieste.",
@@ -640,7 +640,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "La biblioteca digitale deve mostrare il catalogo dal browser: prima invia una richiesta al server, poi riceve una risposta con i dati del libro. Lo stesso scambio si ripete quando si cerca, si apre una scheda o si invia un ordine.",
         "definizione_esame": {
           "definizione": "HTTP è un protocollo applicativo stateless che definisce la semantica di richieste e risposte tra client e server.",
@@ -799,7 +799,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "Una studentessa aggiunge due libri al carrello della biblioteca digitale, passa alla pagina di riepilogo e poi apre una nuova pagina. Vuole ritrovare il carrello: il protocollo di trasporto dei messaggi, da solo, non ricorda le richieste precedenti.",
         "definizione_esame": {
           "definizione": "HTTP è stateless: la semantica del protocollo non lega una richiesta alla sequenza di richieste precedenti del client.",
@@ -955,7 +955,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "Quando la pagina della biblioteca apre catalogo, stile e copertine, più richieste devono avanzare in parallelo. Il multiplexing le separa in stream logici, ma il trasporto sottostante determina come una perdita influenza gli altri dati.",
         "definizione_esame": {
           "definizione": "Il multiplexing HTTP consente di intercalare più scambi logici su una connessione: HTTP/2 usa stream sopra TCP, HTTP/3 stream QUIC sopra UDP.",
@@ -1110,7 +1110,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "Una studentessa consulta il catalogo sul telefono mentre passa dalla rete Wi-Fi alla rete mobile. La pagina usa HTTP/3: QUIC gestisce gli stream e può mantenere una connessione logica anche quando cambia il percorso di rete.",
         "definizione_esame": {
           "definizione": "QUIC è un protocollo di trasporto sicuro e multiplexato, veicolato in datagrammi UDP, usato da HTTP/3.",
@@ -1265,7 +1265,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti del syllabus. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "La biblioteca pubblica copertine e fogli di stile uguali per tutti, ma genera l'elenco dei libri in base alla ricerca e ai permessi della lettrice. Entrambi i risultati viaggiano tramite HTTP, anche se sono prodotti in modi diversi.",
         "definizione_esame": {
           "definizione": "Il contenuto statico è servito da una rappresentazione già preparata; quello dinamico è costruito o selezionato durante la richiesta in base a logica o dati variabili.",
@@ -1417,7 +1417,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "Quando il browser della biblioteca carica una scheda, i dati attraversano più protocolli: HTTP descrive la richiesta, il trasporto la consegna tra processi e IP instrada i pacchetti fino alla rete locale del server.",
         "definizione_esame": {
           "definizione": "La suite TCP/IP organizza la comunicazione di Internet in livelli: accesso alla rete, Internet, trasporto e applicazione.",
@@ -1575,7 +1575,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "Nel catalogo digitale, il browser apre l'indirizzo di una pagina, identifica un libro attraverso un percorso e può anche usare un identificatore di nome come un ISBN. URI, URL e URN descrivono modi correlati di riferirsi alle risorse.",
         "definizione_esame": {
           "definizione": "Un URI è una sequenza di caratteri che identifica una risorsa; un URL ne indica la posizione o il metodo di accesso, mentre un URN la identifica tramite un nome.",
@@ -1749,7 +1749,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti di REST e API. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti di REST e API (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "La biblioteca espone catalogo, libri e recensioni a browser e app. Un contratto API coerente permette a client diversi di creare, cercare e aggiornare risorse senza conoscere il database o il codice interno.",
         "definizione_esame": {
           "definizione": "Il design di un'API definisce risorse, operazioni, rappresentazioni, codici e regole d'uso in modo coerente e documentato.",
@@ -1898,7 +1898,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "Nel negozio della biblioteca, il browser mostra il carrello, un servizio applicativo calcola prezzi e disponibilità, e un database conserva libri e ordini. Separare queste responsabilità chiarisce dove collocare codice, dati e scalabilità.",
         "definizione_esame": {
           "definizione": "Un'architettura a tre tier separa logicamente presentazione, logica applicativa e dati in tre livelli di responsabilità.",
@@ -2064,7 +2064,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti su HTTP e REST. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti su HTTP e REST (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "Una lettrice apre la scheda di un libro tramite il suo identificatore. Se il libro non esiste, il servizio deve restituire un esito HTTP coerente e permettere al client di distinguere il problema dal successo o dal divieto di accesso.",
         "definizione_esame": {
           "definizione": "404 Not Found indica che il server di origine non trova una rappresentazione corrente per il target o non vuole rivelarne l'esistenza.",
@@ -2223,7 +2223,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo B, come argomento di variante. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti di variante (Gruppo B): utile per completare.",
         "scenario_fil_rouge": "Un client automatico interroga ripetutamente il catalogo e consuma risorse del servizio. La biblioteca applica limiti documentati, risponde in modo standard quando il limite è superato e separa questa misura da autenticazione, autorizzazione e CORS.",
         "definizione_esame": {
           "definizione": "Il rate limiting limita il numero di richieste accettate secondo una policy e un intervallo, per una chiave come utente, credenziale o indirizzo.",
@@ -2392,7 +2392,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti su REST. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti su REST (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "La biblioteca deve creare un libro, leggerne la scheda, correggere solo l'email di un utente, sostituire una rappresentazione e rimuovere una risorsa. La scelta del metodo definisce la semantica dell'operazione, non solo il nome della funzione sul server.",
         "definizione_esame": {
           "definizione": "I metodi HTTP esprimono la semantica dell'operazione richiesta sulla risorsa; GET legge, POST elabora, PUT sostituisce, PATCH applica modifiche e DELETE rimuove.",
@@ -2563,7 +2563,7 @@
       ],
       "worker": "W1",
       "lezione": {
-        "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti sulle API. Non è indicato un punteggio specifico per questo nodo.",
+        "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti sulle API (Gruppo A): fondamentale per lo scritto.",
         "scenario_fil_rouge": "La biblioteca digitale vuole offrire lo stesso catalogo a browser e app. Un'interfaccia uniforme basata su risorse consente ai client di scambiare rappresentazioni senza conoscere i dettagli interni del servizio.",
         "definizione_esame": {
           "definizione": "REST è uno stile architetturale per sistemi distribuiti definito da vincoli, non un protocollo né un formato dati.",

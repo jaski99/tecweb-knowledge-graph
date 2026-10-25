@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
   "scenario_fil_rouge": "Una studentessa aggiunge due libri al carrello della biblioteca digitale, passa alla pagina di riepilogo e poi apre una nuova pagina. Vuole ritrovare il carrello: il protocollo di trasporto dei messaggi, da solo, non ricorda le richieste precedenti.",
   "definizione_esame": {
     "definizione": "HTTP è stateless: la semantica del protocollo non lega una richiesta alla sequenza di richieste precedenti del client.",

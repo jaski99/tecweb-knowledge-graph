@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti del syllabus. Non è indicato un punteggio specifico per questo nodo.",
+  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
   "scenario_fil_rouge": "La biblioteca pubblica copertine e fogli di stile uguali per tutti, ma genera l'elenco dei libri in base alla ricerca e ai permessi della lettrice. Entrambi i risultati viaggiano tramite HTTP, anche se sono prodotti in modi diversi.",
   "definizione_esame": {
     "definizione": "Il contenuto statico è servito da una rappresentazione già preparata; quello dinamico è costruito o selezionato durante la richiesta in base a logica o dati variabili.",

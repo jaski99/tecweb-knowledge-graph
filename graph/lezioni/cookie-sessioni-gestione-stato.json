@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
   "scenario_fil_rouge": "Una lettrice accede alla biblioteca digitale e salva un libro nei preferiti. Il browser invia un cookie nelle richieste successive; il server usa il suo identificatore per recuperare preferenze e sessione senza confondere il cookie con l'intero archivio.",
   "definizione_esame": {
     "definizione": "Un cookie è un dato gestito dal browser secondo gli header HTTP; una sessione applicativa associa richieste e dati di stato, spesso tramite un identificatore nel cookie.",
