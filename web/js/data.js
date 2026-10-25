@@ -1,18 +1,28 @@
-// Caricamento e validazione di graph.json.
+// Caricamento del grafo e della banca quiz opzionale, con tolleranza ai file assenti.
 import { validateGraph } from './core/validate.js';
 import { topoOrder } from './core/topo.js';
 
-export async function loadGraph(urls, fetchFn = fetch) {
+async function readJson(url, fetchFn) {
+  const response = await fetchFn(url, { cache: 'no-cache' });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+}
+
+export async function loadGraph(urls, fetchFn = fetch, quizUrls = null) {
   const tried = [];
   for (const url of urls) {
-    try {
-      const r = await fetchFn(url, { cache: 'no-cache' });
-      if (!r.ok) { tried.push(`${url}: HTTP ${r.status}`); continue; }
-      return prepare(await r.json());
-    } catch (e) {
-      if (e.validation) throw e;
-      tried.push(`${url}: ${e.message}`);
+    let graph;
+    try { graph = await readJson(url, fetchFn); }
+    catch (e) { tried.push(`${url}: ${e.message}`); continue; }
+
+    // La banca quiz è un artefatto indipendente prodotto da W4. 404, JSON non ancora
+    // pubblicato e indisponibilità di rete non devono impedire lo studio del grafo.
+    const candidates = quizUrls || [];
+    for (const quizUrl of candidates) {
+      try { graph.quiz = await readJson(quizUrl, fetchFn); break; }
+      catch { /* banca assente: percorso e lezioni rimangono utilizzabili */ }
     }
+    return prepare(graph);
   }
   throw new Error('Impossibile caricare graph.json (' + tried.join('; ') + ')');
 }

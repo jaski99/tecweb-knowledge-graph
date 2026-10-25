@@ -32,13 +32,20 @@ export function costruisciMazzo(nodi) {
     const id = testo(nodo?.id);
     if (!id) continue;
     const titolo = testo(nodo.title) || id;
-    const domande = Array.isArray(nodo.lezione?.domande_autoverifica) ? nodo.lezione.domande_autoverifica : [];
+    const lezione = nodo.lezione || {};
+    const domande = [
+      ...(Array.isArray(lezione.domande_autoverifica) ? lezione.domande_autoverifica : []),
+      ...(Array.isArray(lezione.richiamo_attivo?.domande) ? lezione.richiamo_attivo.domande : []),
+    ];
     domande.forEach((d, i) => {
       const domanda = testo(d?.domanda);
       const risposta = testo(d?.risposta);
       if (!domanda || !risposta) return;
       carte.push({ ...cartaBase(nodo, `${id}#domanda-${i}`, titolo), tipo: 'domanda', indice: i, domanda, risposta });
     });
+    const fronte = testo(lezione.flashcard?.fronte);
+    const retro = testo(lezione.flashcard?.retro);
+    if (fronte && retro) carte.push({ ...cartaBase(nodo, `${id}#flashcard`, titolo), tipo: 'flashcard', indice: 0, domanda: fronte, risposta: retro });
     const riferimento = testo(nodo.sapere);
     const checklist = Array.isArray(nodo.checklist_ripasso) ? nodo.checklist_ripasso : [];
     if (!riferimento) continue;

@@ -151,18 +151,24 @@ test('mazzo: coda con scadute più in ritardo prima, poi nuove per priorità; pr
 
 test('mazzo: sul grafo reale ogni carta viene dai campi dichiarati e gli id sono unici', () => {
   const mazzo = costruisciMazzo(graph.nodi);
-  const atteseDomande = graph.nodi.flatMap((n) => (n.lezione?.domande_autoverifica || [])
-    .filter((d) => d.domanda?.trim() && d.risposta?.trim())).length;
+  const atteseDomande = graph.nodi.flatMap((n) => [
+    ...(n.lezione?.domande_autoverifica || []),
+    ...(n.lezione?.richiamo_attivo?.domande || []),
+  ].filter((d) => d.domanda?.trim() && d.risposta?.trim())).length;
+  const atteseFlashcard = graph.nodi.filter((n) => n.lezione?.flashcard?.fronte?.trim() && n.lezione?.flashcard?.retro?.trim()).length;
   const atteseChecklist = graph.nodi.flatMap((n) => (n.checklist_ripasso || [])
     .filter((p) => typeof p === 'string' && p.trim() && n.sapere?.trim())).length;
-  assert.equal(mazzo.length, atteseDomande + atteseChecklist);
+  assert.equal(mazzo.length, atteseDomande + atteseFlashcard + atteseChecklist);
   assert.ok(mazzo.length > 0);
   assert.equal(new Set(mazzo.map((c) => c.id)).size, mazzo.length);
   const byId = new Map(graph.nodi.map((n) => [n.id, n]));
   for (const c of mazzo) {
     const n = byId.get(c.nodoId);
     assert.ok(n && c.domanda && c.risposta && c.area === n.area && c.priorita === n.priorita.livello, c.id);
-    if (c.tipo === 'domanda') assert.equal(c.risposta, n.lezione.domande_autoverifica[c.indice].risposta.trim(), c.id);
+    if (c.tipo === 'domanda') {
+      const domande = [...(n.lezione.domande_autoverifica || []), ...(n.lezione.richiamo_attivo?.domande || [])];
+      assert.equal(c.risposta, domande[c.indice].risposta.trim(), c.id);
+    } else if (c.tipo === 'flashcard') assert.equal(c.risposta, n.lezione.flashcard.retro.trim(), c.id);
     else assert.equal(c.risposta, n.sapere.trim(), c.id);
   }
   assert.ok(codaStudio(mazzo, {}, OGGI).every((c, i, arr) => i === 0 || arr[0].priorita === 'alta'));

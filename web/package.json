@@ -1,6 +1,10 @@
 {
-  "name": "ids-kg-web",
+  "name": "tecweb-knowledge-graph-web",
   "private": true,
   "type": "module",
-  "scripts": { "build": "sh build.sh", "test": "node --test tests/*.test.js", "serve": "sh build.sh && python3 -m http.server 8000" }
+  "scripts": {
+    "build": "sh build.sh",
+    "test": "node --test tests/*.test.js",
+    "serve": "sh build.sh && python3 -m http.server 8000"
+  }
 }

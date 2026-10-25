@@ -12,7 +12,7 @@ WEB = Path(__file__).resolve().parent.parent
 GRAPH = json.loads((WEB.parent / "graph" / "graph.json").read_text(encoding="utf-8"))
 PILOTS = [n["id"] for n in GRAPH["nodi"] if "lezione" in n][:4]
 SHOTS = Path(os.environ.get("KG_SHOTS", "/tmp/ids-kg-shots"))
-VIEWPORTS = {"mobile": {"width": 390, "height": 844}, "desktop": {"width": 1280, "height": 800}}
+VIEWPORTS = {"mobile": {"width": 390, "height": 844}, "desktop": {"width": 1440, "height": 900}}
 
 
 class Quiet(SimpleHTTPRequestHandler):
@@ -55,7 +55,7 @@ def test_lezione_render_completo(browser, base_url, vp, nid):
     assert page.inner_text("#lesson-title") == node["title"]
     assert page.locator("header h1").first.is_hidden() or not page.locator("body > header").is_visible()
     # markdown: sottotitoli e codice evidenziato
-    assert page.locator(".spiegazione .md h2").count() >= 2
+    assert page.locator(".spiegazione .md h2, .spiegazione .md h3").count() >= 2
     if "```java" in node["lezione"]["spiegazione"]:
         page.wait_for_selector(".md pre.code code.language-java .hljs-keyword")
     # mermaid: tutti i diagrammi diventano SVG, nessun errore di sintassi
@@ -67,7 +67,7 @@ def test_lezione_render_completo(browser, base_url, vp, nid):
         assert "Syntax error" not in txt and "Unsupported markdown" not in txt
     # esempio svolto: passi uno alla volta, poi soluzione
     ex = page.locator("article.worked").first
-    steps = len(node["lezione"]["esempi_svolti"][0]["passi"])
+    steps = len(node["lezione"]["worked_example"]["passi"])
     btn = ex.locator(".ex-actions .btn.primary")
     assert ex.locator(".passi li").count() == 0 and ex.locator(".ex-sol").is_hidden()
     btn.click()

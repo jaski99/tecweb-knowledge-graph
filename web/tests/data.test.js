@@ -27,6 +27,22 @@ test('loadGraph prova gli URL in ordine', async () => {
   assert.equal(g.nodi.length, 4);
   await assert.rejects(loadGraph(['no.json'], fake), /404/);
 });
+test('loadGraph legge quiz opzionale e continua quando quiz.json manca', async () => {
+  const fake = async (url) => url === 'graph.json'
+    ? { ok: true, json: async () => graph() }
+    : { ok: false, status: 404 };
+  const withoutQuiz = await loadGraph(['graph.json'], fake, ['quiz.json']);
+  assert.equal(withoutQuiz.nodi.length, 4);
+  const withQuiz = await loadGraph(['graph.json'], async (url) => url === 'graph.json'
+    ? { ok: true, json: async () => graph() }
+    : { ok: true, json: async () => ({ domande: [{ domanda: 'Q', risposta: 'A' }] }) }, ['quiz.json']);
+  assert.equal(withQuiz.quiz.domande[0].risposta, 'A');
+});
+test('prepare accetta lo schema v4', () => {
+  const g = graph(); g.versione = 4;
+  assert.deepEqual(validateGraph(g), []);
+  assert.equal(prepare(g).versione, 4);
+});
 test('store persistente su storage iniettato', () => {
   const st = memoryStorage();
   const s = createSetStore(st, 'k'); s.toggle('a'); s.toggle('b', true); s.toggle('a');

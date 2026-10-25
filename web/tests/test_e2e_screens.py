@@ -1,6 +1,7 @@
 """Screenshot di home, grafo, lettore e percorso, più un controllo di overflow a 360px.
 Saltato se Playwright non è installato. Le immagini finite stanno in docs/screens/."""
 import json
+import os
 import threading
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -12,7 +13,7 @@ WEB = Path(__file__).resolve().parent.parent
 ROOT = WEB.parent
 GRAPH = json.loads((ROOT / "graph" / "graph.json").read_text(encoding="utf-8"))
 LESSON = next(n["id"] for n in GRAPH["nodi"] if n.get("lezione", {}).get("spiegazione"))
-SHOTS = ROOT / "docs" / "screens"
+SHOTS = Path(os.environ.get("KG_SHOTS", "/tmp/tecweb-kg-shots"))
 VIEWPORTS = {
     "mobile": {"width": 390, "height": 844},
     "desktop": {"width": 1440, "height": 900},
@@ -51,6 +52,15 @@ def shot(page, name):
     page.screenshot(path=str(SHOTS / name), full_page=False)
 
 
+def wait_for_app(page, selector, errors, timeout=30000):
+    try:
+        page.wait_for_selector(selector, timeout=timeout)
+    except Exception as error:
+        status = page.locator('#status').inner_text() if page.locator('#status').count() else '(senza stato)'
+        graph = page.locator('#cy').inner_text() if page.locator('#cy').count() else '(senza grafo)'
+        raise AssertionError(f"Timeout su {selector}; stato={status!r}; pannello grafo={graph!r}; errori JS={errors!r}") from error
+
+
 @pytest.mark.parametrize("vp", list(VIEWPORTS))
 def test_schermate(browser, base_url, vp):
     ctx = browser.new_context(viewport=VIEWPORTS[vp], device_scale_factor=1, is_mobile=vp == "mobile", has_touch=vp == "mobile")
@@ -58,22 +68,27 @@ def test_schermate(browser, base_url, vp):
     errors = []
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.goto(base_url)
-    page.wait_for_selector("#resume:not([hidden])")
-    page.wait_for_selector("#cy canvas")
+    wait_for_app(page, "#resume:not([hidden])", errors)
+    if vp == "desktop":
+        wait_for_app(page, "#cy canvas", errors)
+    else:
+        wait_for_app(page, "#graph-mobile-list .graph-mobile-item", errors)
     page.wait_for_timeout(400)
     assert overflow(page) <= 1
     shot(page, f"home-{vp}.png")
-    page.click("#zoom-fit")
-    page.wait_for_timeout(300)
-    page.locator(".graph-wrap").screenshot(path=str(SHOTS / f"grafo-{vp}.png"))
+    if vp == "desktop":
+        page.click("#zoom-fit")
+        page.wait_for_timeout(300)
+    graph_target = ".graph-wrap" if vp == "desktop" else "#graph-mobile-list"
+    page.locator(graph_target).screenshot(path=str(SHOTS / f"grafo-{vp}.png"))
     page.click("#tab-percorso")
-    page.wait_for_selector("#view-percorso:not([hidden]) .path li")
+    wait_for_app(page, "#view-percorso:not([hidden]) .path li", errors)
     assert overflow(page) <= 1
     shot(page, f"percorso-{vp}.png")
     page.goto(f"{base_url}#/lezione/{LESSON}")
-    page.wait_for_selector("#lesson-title")
-    page.wait_for_selector(".toc, .section-progress")
-    page.wait_for_selector("pre.mermaid svg, pre.code", timeout=20000)
+    wait_for_app(page, "#lesson-title", errors)
+    wait_for_app(page, "#lesson article.lesson", errors)
+    wait_for_app(page, "pre.mermaid, pre.code", errors, timeout=20000)
     page.wait_for_timeout(300)
     assert overflow(page) <= 1
     shot(page, f"lezione-{vp}.png")
@@ -85,7 +100,7 @@ def test_niente_scroll_orizzontale_a_360(browser, base_url):
     ctx = browser.new_context(viewport={"width": 360, "height": 740}, is_mobile=True, has_touch=True)
     page = ctx.new_page()
     page.goto(base_url)
-    page.wait_for_selector("#cy canvas")
+    page.wait_for_selector("#graph-mobile-list .graph-mobile-item")
     assert overflow(page) <= 1
     page.goto(f"{base_url}#/lezione/{LESSON}")
     page.wait_for_selector("#lesson-title")
