@@ -12,7 +12,8 @@ sync_api = pytest.importorskip("playwright.sync_api")
 WEB = Path(__file__).resolve().parent.parent
 ROOT = WEB.parent
 GRAPH = json.loads((ROOT / "graph" / "graph.json").read_text(encoding="utf-8"))
-LESSON = next(n["id"] for n in GRAPH["nodi"] if n.get("lezione", {}).get("spiegazione"))
+# Usa un nodo con blocchi di codice per il test di overflow
+LESSON = "http-stateless-vs-stateful"
 SHOTS = Path(os.environ.get("KG_SHOTS", "/tmp/tecweb-kg-shots"))
 VIEWPORTS = {
     "mobile": {"width": 390, "height": 844},
