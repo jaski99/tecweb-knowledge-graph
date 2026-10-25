@@ -1,332 +1,241 @@
 [
   {
-    "id": "llm-agenti-ciclo-vita",
-    "title": "LLM e agenti nel ciclo di vita del software",
+    "id": "web-semantico-rdf-owl",
+    "title": "Web Semantico: RDF, OWL, SPARQL",
     "area": 5,
+    "gruppo": "A",
     "tipo": "concetto",
-    "sapere": "Un LLM genera testo e codice prevedendo il token successivo, senza garanzie di correttezza. Un agente di coding combina un LLM con strumenti (lettura e scrittura di file, terminale, test, Git) in un ciclo pianifica → agisci → osserva. Nel ciclo di vita: requisiti (bozze di user story), progettazione (alternative architetturali), implementazione (completamento, generazione), testing (generazione di test), manutenzione (comprensione di codice legacy, refactoring, migrazioni), documentazione.",
+    "sapere": "Il Web Semantico (Tim Berners-Lee) mira a rendere i dati comprensibili dalle macchine. RDF (Resource Description Framework) descrive risorse con triple: soggetto-predicato-oggetto. OWL (Web Ontology Language) definisce ontologie (gerarchie di concetti e relazioni). SPARQL è il linguaggio di query per RDF. Linked Data collega dati da fonti diverse.",
     "saper_fare": [
-      "Spiegare come funziona un LLM a livello concettuale e la differenza tra assistente e agente",
-      "Mappare gli usi dell'AI sulle fasi del ciclo di vita"
+      "Spiegare il concetto di tripla RDF",
+      "Distinguere RDF da OWL",
+      "Scrivere una query SPARQL semplice"
+    ],
+    "prerequisiti": [],
+    "esercizi": [
+      {
+        "tipo_esame": "scritto: tripla RDF",
+        "testo": "Rappresenta in RDF/Turtle che 'Alice' ha 'email' 'alice@example.com'.",
+        "soluzione": "@prefix ex: <http://example.org/> .\n\nex:Alice ex:email \"alice@example.com\" .\n\n# Oppure in RDF/XML:\n<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n         xmlns:ex=\"http://example.org/\">\n  <rdf:Description rdf:about=\"http://example.org/Alice\">\n    <ex:email>alice@example.com</ex:email>\n  </rdf:Description>\n</rdf:RDF>"
+      }
+    ],
+    "tempo_studio_min": 60,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo A. Argomento ricorrente nelle prove."
+    },
+    "risorse": [
+      {
+        "titolo": "W3C: Semantic Web",
+        "url": "https://www.w3.org/standards/semanticweb/",
+        "verificato": true
+      },
+      {
+        "titolo": "W3C: RDF",
+        "url": "https://www.w3.org/RDF/",
+        "verificato": true
+      },
+      {
+        "titolo": "W3C: OWL",
+        "url": "https://www.w3.org/OWL/",
+        "verificato": true
+      },
+      {
+        "titolo": "W3C: SPARQL",
+        "url": "https://www.w3.org/TR/sparql11-query/",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "W3C"
+      }
+    ],
+    "checklist_ripasso": [
+      "Web Semantico: dati comprensibili dalle macchine",
+      "RDF: Resource Description Framework (triple: soggetto-predicato-oggetto)",
+      "OWL: Web Ontology Language (ontologie, gerarchie)",
+      "SPARQL: query language per RDF",
+      "Linked Data: collegamento dati da fonti diverse"
+    ],
+    "worker": "W3"
+  },
+  {
+    "id": "sparql-query-esempi",
+    "title": "SPARQL: esempi di query",
+    "area": 5,
+    "gruppo": "A",
+    "tipo": "abilita",
+    "sapere": "SPARQL è il linguaggio di query per dati RDF. Sintassi base: SELECT ?variabili WHERE { pattern } con triple pattern (soggetto predicato oggetto). Filtri con FILTER, opzionali con OPTIONAL, unioni con UNION. Formati di output: JSON, XML, CSV, TSV.",
+    "saper_fare": [
+      "Scrivere query SPARQL SELECT",
+      "Usare FILTER per condizionare i risultati",
+      "Eseguire query su endpoint SPARQL pubblici"
     ],
     "prerequisiti": [
       {
-        "id": "testing-livelli-tipi",
-        "forza": "soft",
-        "motivo": "Gli agenti usano i test come feedback per verificare le modifiche."
-      },
-      {
-        "id": "requisiti-processo-specifica",
-        "forza": "soft",
-        "motivo": "Gli LLM si usano lungo tutto il ciclo di vita, a partire dai requisiti"
-      },
-      {
-        "id": "gestione-configurazioni",
-        "forza": "soft",
-        "motivo": "Gli agenti lavorano su repository, branch e pull request"
+        "id": "web-semantico-rdf-owl",
+        "forza": "hard",
+        "motivo": "SPARQL è il linguaggio di query per RDF."
       }
     ],
     "esercizi": [
       {
-        "tipo_esame": "domanda teorica: AI nel ciclo di vita",
-        "testo": "Come si possono usare LLM e agenti nelle fasi del ciclo di vita del software?",
-        "soluzione": "Requisiti: bozze di user story e casi d'uso da interviste, da validare con gli stakeholder. Progettazione: proporre alternative e pattern, che decide il progettista. Implementazione: completamento e generazione di funzioni. Testing: generazione di casi (anche EC e BVA) e di test JUnit. Manutenzione: spiegare codice legacy, refactoring, migrazioni. Un agente fa da solo il ciclo pianifica → modifica → esegue i test → corregge. In ogni fase serve la verifica umana, perché l'output è probabilistico."
+        "tipo_esame": "scritto: query SPARQL",
+        "testo": "Scrivi una query SPARQL per trovare tutte le persone con email che contiene 'example.com'.",
+        "soluzione": "PREFIX ex: <http://example.org/>\nSELECT ?persona ?email\nWHERE {\n  ?persona ex:email ?email .\n  FILTER(contains(?email, \"example.com\"))\n}"
       }
     ],
-    "tempo_studio_min": 30,
+    "tempo_studio_min": 40,
     "priorita": {
       "livello": "media",
-      "motivazione": "Area 5 nel programma attuale ma assente da tutte le prove note (2016/17, 2022, 2023, 2025): priorità media come possibile domanda teorica."
+      "motivazione": "Gruppo A. Importante per applicazioni pratiche."
     },
     "risorse": [
       {
-        "titolo": "Large language model (Wikipedia)",
-        "url": "https://en.wikipedia.org/wiki/Large_language_model",
+        "titolo": "W3C: SPARQL 1.1 Query Language",
+        "url": "https://www.w3.org/TR/sparql11-query/",
         "verificato": true
       },
       {
-        "titolo": "Building effective agents (Anthropic)",
-        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "titolo": "DBpedia SPARQL Endpoint",
+        "url": "https://dbpedia.org/sparql",
         "verificato": true
       },
       {
-        "titolo": "Exploring Generative AI (martinfowler.com)",
-        "url": "https://martinfowler.com/articles/exploring-gen-ai.html",
+        "titolo": "Wikidata Query Service",
+        "url": "https://query.wikidata.org/",
         "verificato": true
       }
     ],
-    "riferimenti_testo": [],
+    "riferimenti_testo": [
+      {
+        "libro": "W3C"
+      }
+    ],
     "checklist_ripasso": [
-      "LLM = previsione probabilistica di token",
-      "Agente = LLM + strumenti + ciclo",
-      "Un uso per ogni fase, sempre con verifica umana"
-    ]
+      "SELECT ?var WHERE { pattern }",
+      "Triple pattern: ?s ?p ?o",
+      "FILTER: condizionare risultati",
+      "OPTIONAL: risultati opzionali",
+      "UNION: combinare pattern"
+    ],
+    "worker": "W3"
   },
   {
-    "id": "rischi-codice-generato",
-    "title": "Opportunità, limiti e rischi del codice generato",
+    "id": "ajax-fetch-xhr",
+    "title": "AJAX: Asynchronous JavaScript and XML",
     "area": 5,
+    "gruppo": "B",
+    "tipo": "abilita",
+    "sapere": "AJAX permette di fare richieste HTTP asincrone senza ricaricare la pagina. Tecnologie: XMLHttpRequest (XHR, legacy), fetch() API (moderna), e librerie come Axios. JSON è il formato dati più comune (non XML come suggerisce il nome). Passaggi: 1) Crea richiesta, 2) Invia, 3) Aspetta risposta, 4) Elabora dati, 5) Aggiorna DOM.",
+    "saper_fare": [
+      "Fare richieste AJAX con fetch",
+      "Gestire la risposta JSON",
+      "Aggiornare il DOM con i dati ricevuti"
+    ],
+    "prerequisiti": [
+      {
+        "id": "javascript-fetch-async-await",
+        "forza": "hard",
+        "motivo": "fetch() è l'API moderna per AJAX."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "scritto: AJAX con fetch",
+        "testo": "Scrivi codice per caricare dati da /api/posts e visualizzarli in una lista HTML.",
+        "soluzione": "async function loadPosts() {\n  try {\n    const response = await fetch('/api/posts');\n    if (!response.ok) throw new Error('Errore');\n    const posts = await response.json();\n    \n    const list = document.getElementById('posts');\n    list.innerHTML = '';\n    \n    posts.forEach(post => {\n      const li = document.createElement('li');\n      li.textContent = post.title;\n      list.appendChild(li);\n    });\n  } catch (error) {\n    console.error('Errore:', error);\n  }\n}\n\n// Chiamata\ndocument.addEventListener('DOMContentLoaded', loadPosts);"
+      }
+    ],
+    "tempo_studio_min": 45,
+    "priorita": {
+      "livello": "media",
+      "motivazione": "Gruppo B. Importante per applicazioni dinamiche."
+    },
+    "risorse": [
+      {
+        "titolo": "MDN: AJAX",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: XMLHttpRequest",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: Using Fetch",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "MDN"
+      }
+    ],
+    "checklist_ripasso": [
+      "AJAX: Asynchronous JavaScript And XML (ma usa JSON)",
+      "API: XMLHttpRequest (legacy), fetch() (moderna)",
+      "Passaggi: crea → invia → aspetta → elabora → aggiorna DOM",
+      "Asincrono: non blocca l'interfaccia utente"
+    ],
+    "worker": "W3"
+  },
+  {
+    "id": "web-1-0-2-0-3-0-4-0-evoluzione",
+    "title": "Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0",
+    "area": 5,
+    "gruppo": "B",
     "tipo": "concetto",
-    "sapere": "Opportunità: produttività sul codice ripetitivo, prototipazione rapida, aiuto con API poco note. Limiti e rischi: allucinazioni (API o pacchetti inesistenti), bug sottili e casi limite ignorati, vulnerabilità di sicurezza (injection, segreti nel codice, dipendenze inventate), prompt injection negli agenti, problemi di licenza e copyright sul codice suggerito, debito tecnico e codice duplicato, eccesso di fiducia dello sviluppatore, dati riservati inviati a servizi esterni.",
+    "sapere": "Web 1.0 (anni '90): pagine statiche, solo lettura, HTML di base, contenuto creato da esperti. Web 2.0 (2000s): pagine dinamiche, interazione utente, user-generated content, AJAX, social media, API. Web 3.0 (2010s): web semantico, dati collegati, intelligenza artificiale, personalizzazione, ontologie. Web 4.0 (emergente): web ubiquo, IoT, integrazione profonda con il mondo fisico, AI generativa, intelligenza ambientale.",
     "saper_fare": [
-      "Elencare almeno 5 rischi concreti del codice generato con una mitigazione ciascuno",
-      "Bilanciare opportunità e rischi in una risposta argomentata"
+      "Distinguere le caratteristiche di ogni generazione",
+      "Fornire esempi di tecnologie per ogni generazione",
+      "Spiegare l'evoluzione tecnologica e sociale"
     ],
-    "prerequisiti": [
-      {
-        "id": "llm-agenti-ciclo-vita",
-        "forza": "hard",
-        "motivo": "Bisogna sapere come lavorano LLM e agenti."
-      },
-      {
-        "id": "licenze-software",
-        "forza": "soft",
-        "motivo": "Il rischio di licenza sul codice generato richiede la conoscenza delle licenze."
-      },
-      {
-        "id": "programmazione-difensiva",
-        "forza": "soft",
-        "motivo": "Il codice generato spesso omette validazione degli input e gestione degli errori"
-      }
-    ],
+    "prerequisiti": [],
     "esercizi": [
       {
-        "tipo_esame": "domanda teorica: rischi",
-        "testo": "Quali rischi comporta il codice generato da un LLM e come si mitigano?",
-        "soluzione": "1) Allucinazioni (metodi o librerie inesistenti) → compilazione, test, verifica delle dipendenze. 2) Casi limite errati → EC e BVA, test di regressione. 3) Vulnerabilità (SQL injection, segreti) → code review, analisi statica, OWASP. 4) Prompt injection negli agenti → privilegi minimi e conferma umana per le azioni critiche. 5) Licenze e copyright → controllo delle somiglianze e delle dipendenze. 6) Debito tecnico ed eccesso di fiducia → refactoring e revisione umana obbligatoria. 7) Dati riservati → policy aziendali e modelli on-premise."
+        "tipo_esame": "scritto: evoluzione",
+        "testo": "Elenca le principali differenze tra Web 1.0, 2.0, 3.0 e 4.0.",
+        "soluzione": "Web 1.0: statico, lettura, HTML base, contenuto professionale\nWeb 2.0: dinamico, lettura/scrittura, user-generated content, AJAX, API, social\nWeb 3.0: semantico, Linked Data, ontologie (RDF, OWL), AI, personalizzazione\nWeb 4.0: ubiquo, IoT, integrazione fisico-digitale, AI generativa, contest-aware"
       }
     ],
-    "tempo_studio_min": 30,
+    "tempo_studio_min": 35,
     "priorita": {
       "livello": "media",
-      "motivazione": "Area 5 nel programma attuale ma assente da tutte le prove note (2016/17, 2022, 2023, 2025): priorità media come possibile domanda teorica."
+      "motivazione": "Gruppo B. Argomento culturale/tecnologico."
     },
     "risorse": [
       {
-        "titolo": "OWASP Top 10 for LLM Applications",
-        "url": "https://genai.owasp.org/llm-top-10/",
+        "titolo": "Wikipedia: Web 2.0",
+        "url": "https://en.wikipedia.org/wiki/Web_2.0",
         "verificato": true
       },
       {
-        "titolo": "Hallucination (AI) (Wikipedia)",
-        "url": "https://en.wikipedia.org/wiki/Hallucination_(artificial_intelligence)",
+        "titolo": "Wikipedia: Web 3.0",
+        "url": "https://en.wikipedia.org/wiki/Web_3.0",
         "verificato": true
       },
       {
-        "titolo": "Asleep at the Keyboard? Sicurezza del codice di Copilot (arXiv)",
-        "url": "https://arxiv.org/abs/2108.09293",
-        "verificato": true
-      },
-      {
-        "titolo": "NIST AI Risk Management Framework",
-        "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+        "titolo": "W3C: Semantic Web",
+        "url": "https://www.w3.org/standards/semanticweb/",
         "verificato": true
       }
     ],
-    "riferimenti_testo": [],
+    "riferimenti_testo": [
+      {
+        "libro": "W3C"
+      }
+    ],
     "checklist_ripasso": [
-      "Allucinazioni, casi limite, sicurezza, prompt injection, licenze, debito tecnico, eccesso di fiducia",
-      "Per ogni rischio: una mitigazione"
-    ]
-  },
-  {
-    "id": "verifica-umana-codice-ai",
-    "title": "Verifica umana del codice generato",
-    "area": 5,
-    "tipo": "abilita",
-    "sapere": "Il codice generato si tratta come quello di un collaboratore junior: lo sviluppatore resta responsabile. La verifica combina: comprensione riga per riga, test scritti o validati dall'umano (EC, BVA, copertura), code review e ispezione, analisi statica e di sicurezza, controllo di dipendenze e licenze, piccole modifiche per volta in commit separati. I benchmark (HumanEval, SWE-bench) misurano capacità sui casi del benchmark, non la correttezza del singolo output.",
-    "saper_fare": [
-      "Applicare una checklist di revisione a un frammento generato",
-      "Progettare test indipendenti dall'AI per validarne l'output",
-      "Spiegare perché anche i test generati dall'AI vanno verificati (oracolo)"
+      "Web 1.0: statico, lettura, HTML base",
+      "Web 2.0: dinamico, user-generated, AJAX, social",
+      "Web 3.0: semantico, Linked Data, AI",
+      "Web 4.0: ubiquo, IoT, AI generativa"
     ],
-    "prerequisiti": [
-      {
-        "id": "rischi-codice-generato",
-        "forza": "hard",
-        "motivo": "La verifica risponde ai rischi."
-      },
-      {
-        "id": "ispezione-codice",
-        "forza": "soft",
-        "motivo": "Si riusano tecniche di ispezione e code review."
-      },
-      {
-        "id": "boundary-value-analysis",
-        "forza": "soft",
-        "motivo": "I casi limite sono il punto debole tipico del codice generato."
-      },
-      {
-        "id": "criteri-copertura",
-        "forza": "soft",
-        "motivo": "La verifica umana misura la copertura dei test sul codice generato"
-      }
-    ],
-    "esercizi": [
-      {
-        "tipo_esame": "esercizio: verifica",
-        "testo": "Un assistente genera: double costoPiazzola(double mq){ if(mq<15||mq>100) return -1; return mq<=40 ? mq*10 : mq*8; }. La specifica dice 15≤mq<40 → 10 €/m²; 40≤mq≤100 → 8 €/m². Verificalo. (tariffe di esempio, testo originale non disponibile)",
-        "soluzione": "Si applica la BVA: TB(40.0) dovrebbe valere 320 (8 €/m²), mentre il codice restituisce 400 perché usa mq<=40. Il bug sta su un limite. Correzione: mq<40. Lezione: i test derivati dalla specifica scritti dall'umano (EC + BVA) trovano l'errore; un test generato dallo stesso modello avrebbe potuto confermare il comportamento sbagliato (problema dell'oracolo)."
-      }
-    ],
-    "tempo_studio_min": 30,
-    "priorita": {
-      "livello": "media",
-      "motivazione": "Area 5 nel programma attuale ma assente da tutte le prove note (2016/17, 2022, 2023, 2025): priorità media come possibile domanda teorica. L'esercizio riusa la tecnica EC/BVA della Parte 2."
-    },
-    "risorse": [
-      {
-        "titolo": "Evaluating LLMs Trained on Code, HumanEval (arXiv)",
-        "url": "https://arxiv.org/abs/2107.03374",
-        "verificato": true
-      },
-      {
-        "titolo": "SWE-bench (arXiv)",
-        "url": "https://arxiv.org/abs/2310.06770",
-        "verificato": true
-      },
-      {
-        "titolo": "Google Engineering Practices: code review",
-        "url": "https://google.github.io/eng-practices/review/",
-        "verificato": true
-      }
-    ],
-    "riferimenti_testo": [],
-    "checklist_ripasso": [
-      "Lo sviluppatore resta responsabile",
-      "Test dalla specifica, non dal codice generato",
-      "Bug ai limiti: usa la BVA",
-      "Benchmark ≠ garanzia"
-    ]
-  },
-  {
-    "id": "assistenti-ai-sviluppo",
-    "title": "Assistenti AI per generazione, comprensione, modifica, refactoring e testing",
-    "area": 5,
-    "tipo": "abilita",
-    "sapere": "Usi pratici degli assistenti (es. GitHub Copilot, chat negli IDE, agenti): generazione da commenti o firme, spiegazione di codice sconosciuto, modifiche mirate, refactoring guidato (es. 'Extract Method mantenendo il comportamento'), generazione di test JUnit. Buone pratiche: prompt con contesto e vincoli precisi (firma, specifica, casi limite), compiti piccoli, test prima della modifica, revisione del diff.",
-    "saper_fare": [
-      "Scrivere un prompt efficace per generare test o un refactoring",
-      "Usare un assistente per spiegare codice legacy e verificarne la spiegazione",
-      "Integrare l'assistente in un flusso con test e review"
-    ],
-    "prerequisiti": [
-      {
-        "id": "llm-agenti-ciclo-vita",
-        "forza": "hard",
-        "motivo": "Bisogna conoscere le capacità di LLM e agenti."
-      },
-      {
-        "id": "refactoring",
-        "forza": "soft",
-        "motivo": "Il refactoring assistito richiede di sapere cos'è un refactoring corretto."
-      },
-      {
-        "id": "junit-5",
-        "forza": "soft",
-        "motivo": "I test generati sono in JUnit e vanno letti e corretti."
-      },
-      {
-        "id": "design-pattern-introduzione",
-        "forza": "soft",
-        "motivo": "Per valutare un refactoring proposto dall'AI serve conoscere i pattern"
-      },
-      {
-        "id": "git-versionamento",
-        "forza": "soft",
-        "motivo": "Le modifiche dell'assistente vanno revisionate e versionate su branch"
-      }
-    ],
-    "esercizi": [
-      {
-        "tipo_esame": "esercizio: prompt per i test",
-        "testo": "Scrivi un prompt per far generare i test di costoPiazzola e indica cosa controllare nell'output. (tariffe di esempio, testo originale non disponibile)",
-        "soluzione": "Prompt: 'Scrivi un @ParameterizedTest JUnit 5 per double costoPiazzola(double mq) con specifica: mq<15 → -1; 15≤mq<40 → 10 €/m²; 40≤mq≤100 → 8 €/m²; mq>100 → -1. Includi un caso per classe di equivalenza e i limiti 14.9, 15, 15.1, 39.9, 40, 40.1, 99.9, 100, 100.1, con il valore atteso calcolato dalla specifica e un delta per i double.' Da controllare: valori attesi ricalcolati a mano (es. 40 → 320), presenza di tutti i limiti, uso di assertEquals con delta, nessun test che si limita a ripetere l'implementazione."
-      }
-    ],
-    "tempo_studio_min": 30,
-    "priorita": {
-      "livello": "media",
-      "motivazione": "Area 5 nel programma attuale ma assente da tutte le prove note (2016/17, 2022, 2023, 2025): priorità media come possibile domanda teorica."
-    },
-    "risorse": [
-      {
-        "titolo": "GitHub Copilot: best practices",
-        "url": "https://docs.github.com/en/copilot/using-github-copilot/best-practices-for-using-github-copilot",
-        "verificato": true
-      },
-      {
-        "titolo": "GitHub Copilot documentation",
-        "url": "https://docs.github.com/en/copilot",
-        "verificato": true
-      }
-    ],
-    "riferimenti_testo": [],
-    "checklist_ripasso": [
-      "Prompt = contesto + specifica + vincoli + casi limite",
-      "Compiti piccoli, diff revisionati",
-      "Valori attesi ricalcolati a mano"
-    ]
-  },
-  {
-    "id": "domanda-ids-ai-native",
-    "title": "Domanda d'esame: ingegneria del software AI-native",
-    "area": 5,
-    "tipo": "tipo_esercizio",
-    "sapere": "Possibile domanda teorica della Parte 3 sull'area nuova del programma. Struttura della risposta: cosa sono LLM e agenti; usi nel ciclo di vita; opportunità; limiti e rischi; ruolo della verifica umana con tecniche concrete del corso (test EC/BVA, copertura, review, refactoring).",
-    "saper_fare": [
-      "Scrivere in circa 10 minuti una risposta strutturata che colleghi l'AI alle tecniche classiche del corso"
-    ],
-    "prerequisiti": [
-      {
-        "id": "rischi-codice-generato",
-        "forza": "hard",
-        "motivo": "È il nucleo della risposta."
-      },
-      {
-        "id": "verifica-umana-codice-ai",
-        "forza": "hard",
-        "motivo": "Serve per la parte sulla verifica umana."
-      },
-      {
-        "id": "assistenti-ai-sviluppo",
-        "forza": "soft",
-        "motivo": "Fornisce gli esempi d'uso."
-      },
-      {
-        "id": "debugging",
-        "forza": "soft",
-        "motivo": "Il debugging del codice generato è uno dei limiti/rischi da discutere"
-      }
-    ],
-    "esercizi": [
-      {
-        "tipo_esame": "scritto parte 3 (ipotetica): AI-native",
-        "testo": "Discuti opportunità e rischi dell'uso di LLM e agenti nello sviluppo software e il ruolo della verifica umana.",
-        "soluzione": "1) Definizione: LLM probabilistici; un agente aggiunge strumenti e un ciclo autonomo. 2) Usi: requisiti, generazione di codice, test, comprensione e refactoring di codice legacy. 3) Opportunità: produttività, prototipi, documentazione. 4) Rischi: allucinazioni, bug sui casi limite, sicurezza (OWASP LLM Top 10, prompt injection), licenze, debito tecnico, eccesso di fiducia. 5) Verifica umana: test derivati dalla specifica (EC + BVA), coperture, code review, analisi statica, piccoli commit; la responsabilità resta dello sviluppatore. 6) Conclusione: l'AI accelera, ma le tecniche di IdS restano necessarie, anzi più importanti."
-      }
-    ],
-    "tempo_studio_min": 20,
-    "priorita": {
-      "livello": "media",
-      "motivazione": "Area 5 nel programma attuale ma assente da tutte le prove note (2016/17, 2022, 2023, 2025): priorità media come possibile domanda teorica."
-    },
-    "risorse": [
-      {
-        "titolo": "Exploring Generative AI (martinfowler.com)",
-        "url": "https://martinfowler.com/articles/exploring-gen-ai.html",
-        "verificato": true
-      },
-      {
-        "titolo": "OWASP Top 10 for LLM Applications",
-        "url": "https://genai.owasp.org/llm-top-10/",
-        "verificato": true
-      }
-    ],
-    "riferimenti_testo": [],
-    "checklist_ripasso": [
-      "Definizione → usi → opportunità → rischi → verifica umana → conclusione",
-      "Collega sempre alle tecniche del corso"
-    ]
+    "worker": "W3"
   }
 ]

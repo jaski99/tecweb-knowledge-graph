@@ -1,0 +1,225 @@
+[
+  {
+    "id": "tesina-progetto-flask-crud",
+    "title": "Tesina: Progetto Flask + CRUD",
+    "area": 6,
+    "gruppo": "C",
+    "tipo": "abilita",
+    "sapere": "La tesina consiste in un progetto pratico: applicazione web Flask con operazioni CRUD (Create, Read, Update, Delete) su una risorsa. Deve includere: backend Flask con rotte RESTful, front-end HTML/CSS/JS per l'interfaccia utente, database (SQLite o JSON), e gestione dello stato.",
+    "saper_fare": [
+      "Progettare un'applicazione CRUD completa",
+      "Implementare backend Flask con API REST",
+      "Creare front-end per interagire con l'API"
+    ],
+    "prerequisiti": [
+      {
+        "id": "flask-rotte-jsonify",
+        "forza": "hard",
+        "motivo": "Flask è la base del backend."
+      },
+      {
+        "id": "sqlite-crud",
+        "forza": "hard",
+        "motivo": "CRUD su database è fondamentale."
+      },
+      {
+        "id": "javascript-fetch-async-await",
+        "forza": "hard",
+        "motivo": "fetch è necessario per comunicazione front-end ↔ back-end."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "progetto: CRUD completo",
+        "testo": "Implementa un'applicazione Flask per gestire una collezione di libri con: lista, dettaglio, creazione, modifica, eliminazione.",
+        "soluzione": "# Backend (app.py)\nfrom flask import Flask, jsonify, request, abort\nimport sqlite3\n\napp = Flask(__name__)\n\n# Inizializza DB\ndef init_db():\n    conn = sqlite3.connect('libri.db')\n    cursor = conn.cursor()\n    cursor.execute('''\n        CREATE TABLE IF NOT EXISTS libri (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            titolo TEXT NOT NULL,\n            autore TEXT NOT NULL,\n            anno INTEGER\n        )\n    ''')\n    conn.commit()\n    conn.close()\n\ninit_db()\n\n@app.route('/api/libri', methods=['GET'])\ndef get_libri():\n    conn = sqlite3.connect('libri.db')\n    cursor = conn.cursor()\n    cursor.execute('SELECT * FROM libri')\n    libri = [{'id': row[0], 'titolo': row[1], 'autore': row[2], 'anno': row[3]} for row in cursor.fetchall()]\n    conn.close()\n    return jsonify(libri)\n\n@app.route('/api/libri/<int:id>', methods=['GET'])\ndef get_libro(id):\n    conn = sqlite3.connect('libri.db')\n    cursor = conn.cursor()\n    cursor.execute('SELECT * FROM libri WHERE id = ?', (id,))\n    row = cursor.fetchone()\n    conn.close()\n    if row:\n        return jsonify({'id': row[0], 'titolo': row[1], 'autore': row[2], 'anno': row[3]})\n    return jsonify({'error': 'Libro non trovato'}), 404\n\n@app.route('/api/libri', methods=['POST'])\ndef create_libro():\n    data = request.get_json()\n    if not data or 'titolo' not in data or 'autore' not in data:\n        return jsonify({'error': 'Titolo e autore obbligatori'}), 400\n    conn = sqlite3.connect('libri.db')\n    cursor = conn.cursor()\n    cursor.execute('INSERT INTO libri (titolo, autore, anno) VALUES (?, ?, ?)',\n                   (data['titolo'], data['autore'], data.get('anno', None)))\n    conn.commit()\n    libro_id = cursor.lastrowid\n    conn.close()\n    return jsonify({'id': libro_id, 'message': 'Libro creato'}), 201\n\n@app.route('/api/libri/<int:id>', methods=['PUT'])\ndef update_libro(id):\n    data = request.get_json()\n    conn = sqlite3.connect('libri.db')\n    cursor = conn.cursor()\n    cursor.execute('UPDATE libri SET titolo = ?, autore = ?, anno = ? WHERE id = ?',\n                   (data.get('titolo'), data.get('autore'), data.get('anno'), id))\n    conn.commit()\n    conn.close()\n    return jsonify({'message': 'Libro aggiornato'})\n\n@app.route('/api/libri/<int:id>', methods=['DELETE'])\ndef delete_libro(id):\n    conn = sqlite3.connect('libri.db')\n    cursor = conn.cursor()\n    cursor.execute('DELETE FROM libri WHERE id = ?', (id,))\n    conn.commit()\n    conn.close()\n    return jsonify({'message': 'Libro eliminato'}), 204\n\nif __name__ == '__main__':\n    app.run(debug=True)"
+      }
+    ],
+    "tempo_studio_min": 180,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo C. Progetto pratico fondamentale per la tesina (10 punti)."
+    },
+    "risorse": [
+      {
+        "titolo": "Flask: Tutorial",
+        "url": "https://flask.palletsprojects.com/en/3.0.x/tutorial/",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: CRUD",
+        "url": "https://developer.mozilla.org/en-US/docs/Glossary/CRUD",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "FLASK"
+      },
+      {
+        "libro": "MDN"
+      }
+    ],
+    "checklist_ripasso": [
+      "Backend: Flask + rotte RESTful",
+      "Front-end: HTML/CSS/JS + fetch",
+      "Database: SQLite o JSON",
+      "CRUD: Create, Read, Update, Delete"
+    ],
+    "worker": "W4"
+  },
+  {
+    "id": "tesina-presentazione-8-minuti",
+    "title": "Tesina: Presentazione di 8 minuti con 4 slide",
+    "area": 6,
+    "gruppo": "C",
+    "tipo": "abilita",
+    "sapere": "La presentazione della tesina deve essere di esattamente 8 minuti e strutturata in 4 slide: 1) Obiettivi e problema (1 minuto): cosa fa l'applicazione e perché è utile; 2) Architettura a 3-tier (2 minuti): Client (HTML/CSS/JS) → Server Flask → Database; 3) Punti chiave del codice (3 minuti): rotte REST, gestione stato, chiamate asincrone; 4) Demo dal vivo o screen (2 minuti): mostrare l'applicazione funzionante.",
+    "saper_fare": [
+      "Strutturare una presentazione tecnica in 8 minuti",
+      "Creare slide chiare e professionali",
+      "Eseguire una demo dal vivo"
+    ],
+    "prerequisiti": [
+      {
+        "id": "tesina-progetto-flask-crud",
+        "forza": "hard",
+        "motivo": "La presentazione descrive il progetto."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "orale: presentazione",
+        "testo": "Prepara le 4 slide per presentare il tuo progetto Flask CRUD.",
+        "soluzione": "Slide 1 - Obiettivi e problema:\n- Titolo: Gestione Libri\n- Problema: Necessità di catalogare e gestire una collezione di libri\n- Soluzione: Applicazione web con Flask\n- Tempo: 1 minuto\n\nSlide 2 - Architettura a 3-tier:\n- Livello Presentazione: HTML/CSS/JavaScript (fetch API)\n- Livello Logica: Flask (route, request/response, jsonify)\n- Livello Dati: SQLite (tabella libri)\n- Diagramma: Client ↔ Server Flask ↔ Database\n- Tempo: 2 minuti\n\nSlide 3 - Punti chiave del codice:\n- Backend: @app.route, request.get_json(), jsonify, sqlite3\n- Front-end: fetch, async/await, DOM manipulation\n- Esempio codice: route POST /api/libri\n- Tempo: 3 minuti\n\nSlide 4 - Demo:\n- Mostrare: lista libri, aggiunta, modifica, eliminazione\n- Evidenziare: interazione fluida, error handling\n- Tempo: 2 minuti"
+      }
+    ],
+    "tempo_studio_min": 60,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo C. Parte fondamentale della tesina (punti per presentazione)."
+    },
+    "risorse": [
+      {
+        "titolo": "Google Slides",
+        "url": "https://slides.google.com",
+        "verificato": true
+      },
+      {
+        "titolo": "Canva: Presentations",
+        "url": "https://www.canva.com/",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [],
+    "checklist_ripasso": [
+      "8 minuti totali",
+      "4 slide: obiettivi, architettura, codice, demo",
+      "Tempi: 1 + 2 + 3 + 2 minuti",
+      "Demo dal vivo o screen"
+    ],
+    "worker": "W4"
+  },
+  {
+    "id": "tesina-domande-revisione-codice",
+    "title": "Tesina: Domande di revisione codice",
+    "area": 6,
+    "gruppo": "C",
+    "tipo": "tipo_esercizio",
+    "sapere": "Durante la revisione codice della tesina, il docente può chiedere di spiegare: 1) Dove e come si usano i metodi HTTP (GET, POST, PATCH, PUT, DELETE) nel progetto; 2) Come è gestito lo stato lato client (cookie, session, localStorage) e lato server; 3) Come funzionano le chiamate asincrone (fetch, async/await); 4) Error handling e validazione.",
+    "saper_fare": [
+      "Spiegare le scelte architetturali",
+      "Descrivere il flusso dei dati",
+      "Gestire domande tecniche sul codice"
+    ],
+    "prerequisiti": [
+      {
+        "id": "tesina-progetto-flask-crud",
+        "forza": "hard",
+        "motivo": "Le domande riguardano il progetto implementato."
+      },
+      {
+        "id": "rest-metodi-http",
+        "forza": "soft",
+        "motivo": "I metodi HTTP sono centrali nelle domande."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "orale: revisione codice",
+        "testo": "Spiega come sono implementate le operazioni CRUD nel tuo progetto Flask.",
+        "soluzione": "GET /api/libri: recupera tutti i libri (Read - lista)\nGET /api/libri/<id>: recupera un libro specifico (Read - dettaglio)\nPOST /api/libri: crea un nuovo libro (Create) - request.get_json() per dati\nPUT /api/libri/<id>: sostituisce completamente un libro (Update) - tutti i campi devono essere forniti\nPATCH /api/libri/<id>: aggiorna parzialmente un libro (Update) - solo i campi forniti vengono aggiornati\nDELETE /api/libri/<id>: elimina un libro (Delete)\n\nStato lato server: non mantenuto (HTTP stateless), ogni richiesta è indipendente.\nStato lato client: gestito dal front-end che mantiene lo stato dell'interfaccia.\nChiamate asincrone: fetch() con async/await per comunicazione front-end ↔ back-end."
+      }
+    ],
+    "tempo_studio_min": 45,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo C. Parte fondamentale della valutazione della tesina."
+    },
+    "risorse": [
+      {
+        "titolo": "Flask: HTTP Methods",
+        "url": "https://flask.palletsprojects.com/en/3.0.x/quickstart/#http-methods",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "FLASK"
+      }
+    ],
+    "checklist_ripasso": [
+      "Metodi HTTP: GET, POST, PUT, PATCH, DELETE",
+      "Stato: client-side vs server-side",
+      "Chiamate asincrone: fetch, async/await",
+      "Error handling: try/catch, status code"
+    ],
+    "worker": "W4"
+  },
+  {
+    "id": "tesina-esercitazione-guidata",
+    "title": "Tesina: Esercitazione guidata e modello presentazione",
+    "area": 6,
+    "gruppo": "C",
+    "tipo": "tipo_esercizio",
+    "sapere": "L'esercitazione guidata aiuta a preparare la tesina: 1) Scegliere un tema adatto (es. gestione libri, task manager, blog); 2) Progettare il database (tabelle, relazioni); 3) Implementare le rotte Flask; 4) Creare il front-end; 5) Preparare la presentazione. Il modello di presentazione fornisce una struttura predefinita per le slide.",
+    "saper_fare": [
+      "Seguire una guida passo-passo per lo sviluppo",
+      "Usare un modello di presentazione",
+      "Organizzare il lavoro in fasi"
+    ],
+    "prerequisiti": [],
+    "esercizi": [
+      {
+        "tipo_esame": "pratico: esercitazione",
+        "testo": "Segui questi passi per creare la tua tesina: 1) Scegli un tema, 2) Definisci il modello dati, 3) Implementa 1 endpoint, 4) Testa con Postman/curl.",
+        "soluzione": "Passo 1: Scegli tema (es. gestione ricette)\nPasso 2: Modello dati:\n  Tabella: ricette (id, titolo, ingredienti, tempo_preparazione)\nPasso 3: Implementa endpoint GET /api/ricette:\n  @app.route('/api/ricette', methods=['GET'])\n  def get_ricette():\n      # codice per recuperare ricette\n      return jsonify(ricette)\nPasso 4: Testa con:\n  curl http://localhost:5000/api/ricette\n  Oppure Postman: GET http://localhost:5000/api/ricette"
+      }
+    ],
+    "tempo_studio_min": 60,
+    "priorita": {
+      "livello": "media",
+      "motivazione": "Gruppo C. Utile per preparazione, ma non valutato direttamente."
+    },
+    "risorse": [
+      {
+        "titolo": "Postman: API Testing",
+        "url": "https://www.postman.com/",
+        "verificato": true
+      },
+      {
+        "titolo": "curl: Command Line Tool",
+        "url": "https://curl.se/",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [],
+    "checklist_ripasso": [
+      "Scegli tema adatto",
+      "Progetta database",
+      "Implementa endpoint",
+      "Testa con Postman/curl"
+    ],
+    "worker": "W4"
+  }
+]

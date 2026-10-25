@@ -1,91 +1,108 @@
 {
   "versione": 3,
   "corso": {
-    "nome": "Ingegneria del Software (INF-36)",
+    "nome": "Tecnologie Web",
     "ateneo": "UNIMORE - Dipartimento di Ingegneria \"Enzo Ferrari\"",
-    "docente": "Francesco Guerra",
-    "fonte_programma": "https://fguerra73.github.io/teaching/"
+    "docente": "Non specificato (da confermare)",
+    "fonte_programma": "https://www.ingmo.unimore.it/sites/dip02/files/2026-06/Laurea%20Ingegneria%20Informatica%20a.a.%202026_2027.pdf",
+    "nota": "Programma ricostruito in base a: ARENA_PLAN.md (6 aree), MATERIALE_UTENTE.md (gruppi A/B/C), fonti autorevoli (RFC, W3C, MDN, Flask, Git). Vedi docs/SYLLABUS.md per dettagli."
   },
   "aree": [
     {
       "id": 1,
-      "titolo": "Specifica dei requisiti"
+      "titolo": "Fondamenti rete e HTTP"
     },
     {
       "id": 2,
-      "titolo": "Progettazione"
+      "titolo": "Architetture"
     },
     {
       "id": 3,
-      "titolo": "Implementazione e testing"
+      "titolo": "Front-end"
     },
     {
       "id": 4,
-      "titolo": "Distribuzione e manutenzione"
+      "titolo": "Back-end e strumenti"
     },
     {
       "id": 5,
-      "titolo": "Ingegneria del software AI-native"
+      "titolo": "Web semantico ed evoluzione"
+    },
+    {
+      "id": 6,
+      "titolo": "Tesina"
     }
   ],
   "testi": {
-    "TSUI": "F. Tsui, O. Karam, B. Bernal - Essentials of Software Engineering, 5th ed., Jones & Bartlett Learning, 2022",
-    "HFDP": "E. Freeman, E. Robson, B. Bates, K. Sierra - Head First Design Patterns, 2nd ed., O'Reilly, 2020",
-    "GOF": "E. Gamma, R. Helm, R. Johnson, J. Vlissides - Design Patterns: Elements of Reusable Object-Oriented Software, Addison-Wesley, 1994",
-    "FOWLER": "M. Fowler - UML Distilled, Addison-Wesley",
-    "MILES": "R. Miles, K. Hamilton - Learning UML 2.0, O'Reilly, 2006",
-    "UMLCLASS": "M. Seidl, M. Scholz, C. Huemer, G. Kappel - UML @ Classroom, Springer, 2015",
-    "MARTIN": "R. C. Martin - Clean Architecture: A Craftsman's Guide to Software Structure and Design, Prentice Hall, 2017 (riferimento extra, non tra i testi indicati dal prof)"
+    "MDN": "MDN Web Docs - Mozilla Developer Network, documentazione gratuita online",
+    "RFC": "RFC IETF - Request for Comments, standard ufficiali di Internet",
+    "W3C": "W3C - World Wide Web Consortium, specifiche ufficiali del Web",
+    "FLASK": "Flask Documentation - Pallets Projects, framework Python per web",
+    "GIT": "Git Documentation - Git Contributors, sistema di versionamento",
+    "ECMA": "ECMA-262 - ECMAScript Language Specification",
+    "SQLITE": "SQLite Documentation - D. Richard Hipp, database SQL embedded"
   },
-  "nota_esame": "Priorità motivate dalle prove reali: fac-simile 2016/17 e prova del 5/11/2025 (testo completo), prove 9/6/2022 e 27/1/2023 (solo sintesi dell'utente, testo originale non disponibile). Formato: scritto 2h, Parte 1 Design (UML + pattern in Java), Parte 2 black box EC+BVA, Parte 3 domande.",
+  "nota_esame": "Priorità motivate dal materiale utente: Gruppo A (iper-riciclati, ~65% scritto): stateless/stateful, DOM/Virtual DOM, HTTP 1/1.1/2/3, cookie/sessioni, Web Semantico, architettura 3-tier, CSS, REST. Gruppo B (varianti, ~20%): canvas, DHTML, motore JS, eventi, rate limiting, Web 1.0-4.0, span. Gruppo C (punti ciechi, ~15%): Flask, Git, JS moderno. Formato esame: IPOTESI basata su prove passate - scritto 2h (23 pt) + tesina (10 pt). Da confermare con programma ufficiale.",
   "trappole": [
     {
-      "tema": "Es. 1.4 - pattern",
-      "fonte": "tutte le prove (2016/17, 2022, 2023, 2025)",
-      "trappola": "Il testo non nomina mai il pattern: descrive uno scenario.",
-      "risposta": "Riconosci lo scenario: gerarchia parte-tutto → Composite; accessori opzionali con costo → Decorator; algoritmo a passi fissi con varianti → Template Method; evento che notifica un insieme variabile di interessati → Observer. Motiva la scelta e indica i limiti."
+      "tema": "HTTP/2 e HTTP/3",
+      "fonte": "Gruppo A (materiale utente)",
+      "trappola": "Dire che HTTP/1.1 supporta multiplexing.",
+      "risposta": "HTTP/1.1 NON supporta multiplexing; il multiplexing è introdotto in HTTP/2. HTTP/3 usa QUIC su UDP (non TCP)."
     },
     {
-      "tema": "Ottimizzazione del codice",
-      "fonte": "prova 9/6/2022 (sintesi)",
-      "trappola": "Dire che la velocità va ottimizzata fin dall'inizio.",
-      "risposta": "Knuth: 'premature optimization is the root of all evil'. Make it work, make it right, make it fast: si ottimizza dopo il profiling, solo sui veri colli di bottiglia, senza sacrificare leggibilità."
+      "tema": "PATCH vs PUT",
+      "fonte": "Gruppo A (REST)",
+      "trappola": "Usare PUT per aggiornamenti parziali.",
+      "risposta": "PATCH è per aggiornamenti parziali; PUT sostituisce l'intera risorsa. Esempio: PATCH /users/1 per aggiornare solo l'email, PUT /users/1 per sostituire tutto l'utente."
     },
     {
-      "tema": "Errori nei requisiti",
-      "fonte": "prova 9/6/2022 (sintesi)",
-      "trappola": "Dire che gli errori di analisi si correggono facilmente in programmazione.",
-      "risposta": "Curva di Boehm: il costo di correzione cresce lungo il ciclo di vita (fino a ~100 volte in produzione). Prevenzione: review delle specifiche, prototipi, coinvolgimento degli stakeholder."
+      "tema": "URI vs URL vs URN",
+      "fonte": "Gruppo A",
+      "trappola": "Dire che URL e URI sono la stessa cosa.",
+      "risposta": "URI (Uniform Resource Identifier) è la categoria generale; URL (Uniform Resource Locator) è un URI che specifica anche il meccanismo di accesso (es. https://); URN (Uniform Resource Name) identifica una risorsa in modo univoco e persistente senza posizione (es. urn:isbn:0451450523)."
     },
     {
-      "tema": "Coesione dei componenti",
-      "fonte": "prove 9/6/2022 e 27/1/2023 (sintesi)",
-      "trappola": "Rispondere con la coesione delle classi invece che dei componenti.",
-      "risposta": "Enuncia REP (granulo di riuso = granulo di rilascio), CCP (classi che cambiano insieme stanno insieme, SRP sui componenti), CRP (non dipendere da ciò che non usi, ISP sui componenti) e la loro tensione."
+      "tema": "Box model CSS",
+      "fonte": "Gruppo A",
+      "trappola": "Includere color o script nel box model.",
+      "risposta": "Box model CSS: content, padding, border, margin. Non include proprietà come color, background, o script."
     },
     {
-      "tema": "Black box a scaglioni",
-      "fonte": "Parte 2 di tutte le prove",
-      "trappola": "Dimenticare le classi non valide o fare la BVA su tutti i parametri quando ne è chiesto uno solo.",
-      "risposta": "Classi valide e non valide per ogni parametro; test minimi: una classe non valida per test, le valide combinate; BVA solo sui casi validi e solo sul parametro richiesto (es. 'numero' nel 5/11/2025)."
+      "tema": "Ereditarietà CSS",
+      "fonte": "Gruppo A",
+      "trappola": "Dire che tutte le proprietà CSS sono ereditabili.",
+      "risposta": "Non tutte le proprietà sono ereditabili: margin, padding, border del box model NON si ereditano; font-family, color SÌ."
     },
     {
-      "tema": "Coerenza tra diagrammi",
-      "fonte": "2016/17 e 5/11/2025",
-      "trappola": "Sequence/activity/state con oggetti o metodi che non esistono nel class diagram.",
-      "risposta": "Ogni lifeline è un'istanza di una classe progettata; ogni messaggio è un'operazione di quella classe."
+      "tema": "Multiplexing HTTP",
+      "fonte": "Gruppo A",
+      "trappola": "Dire che HTTP/1.0 o 1.1 supportano multiplexing.",
+      "risposta": "Multiplexing è supportato SOLO da HTTP/2 e HTTP/3 (QUIC). HTTP/1.0 e 1.1 usano connessioni seriali."
     },
     {
-      "tema": "Simple Factory e static",
-      "fonte": "prova 5/11/2025",
-      "trappola": "Chiamarla Factory Method o non discutere lo static.",
-      "risposta": "È una Simple Factory (non un pattern GoF). Static: comodo, senza istanza, ma non si può sottoclassare né sostituire nei test."
+      "tema": "HTTP/3 e QUIC",
+      "fonte": "Gruppo A",
+      "trappola": "Dire che HTTP/3 usa TCP.",
+      "risposta": "HTTP/3 usa QUIC (Quick UDP Internet Connections) su UDP, NON TCP. QUIC integra TLS 1.3."
     },
     {
-      "tema": "White box",
-      "fonte": "2022, 2023, 5/11/2025",
-      "trappola": "Confondere statement coverage con decision coverage (un while va percorso sia vero sia falso).",
-      "risposta": "Disegna il CFG; statement = ogni nodo; decision = ogni ramo vero/falso di ogni if/while; MC/DC = ogni condizione influenza da sola l'esito."
+      "tema": "Stateful vs Stateless",
+      "fonte": "Gruppo A",
+      "trappola": "Dire che HTTP è stateful.",
+      "risposta": "HTTP è stateless per design; lo stato (sessioni) viene gestito tramite cookie, token, o altri meccanismi esterni al protocollo."
+    },
+    {
+      "tema": "Virtual DOM",
+      "fonte": "Gruppo A",
+      "trappola": "Confondere DOM con Virtual DOM.",
+      "risposta": "DOM è l'albero degli elementi del browser; Virtual DOM è una rappresentazione in memoria usata da framework (React, Vue) per ottimizzare gli aggiornamenti."
+    },
+    {
+      "tema": "Eventi locali vs remoti",
+      "fonte": "Gruppo B",
+      "trappola": "Non sapere la differenza.",
+      "risposta": "Eventi locali: generati e gestiti nel browser (es. click, scroll); Eventi remoti: originati da azioni sul server (es. WebSocket, Server-Sent Events)."
     }
   ]
 }
