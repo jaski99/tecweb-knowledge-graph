@@ -1,0 +1,100 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "La biblioteca digitale deve mostrare il catalogo dal browser: prima invia una richiesta al server, poi riceve una risposta con i dati del libro. Lo stesso scambio si ripete quando si cerca, si apre una scheda o si invia un ordine.",
+  "definizione_esame": {
+    "definizione": "HTTP è un protocollo applicativo stateless che definisce la semantica di richieste e risposte tra client e server.",
+    "scopo_vantaggio": "Offre un'interfaccia comune per accedere a risorse e servizi senza dipendere dall'implementazione interna del server.",
+    "esempio": "Il browser invia GET /api/libri/42 e il server risponde con 200 OK e una rappresentazione JSON del libro."
+  },
+  "spiegazione": "## L'idea: una domanda e una risposta\n\nPrerequisito: nessun nodo hard; è utile sapere che browser e server sono programmi distinti.\n\nQuando la studentessa apre la scheda di un libro, il browser (client) invia una **richiesta HTTP** al server. Il server interpreta il messaggio e invia una **risposta HTTP**. HTTP definisce il significato di metodi, campi e codici; non stabilisce come il server interroghi il database né come costruisca la pagina.\n\n### Le parti del messaggio\n\nUna richiesta comprende un metodo, un identificatore della risorsa, campi (header) e, quando previsto, un contenuto. La risposta contiene un codice di stato, campi e, spesso, una rappresentazione. Il tipo del contenuto si dichiara, per esempio, con Content-Type.\n\n```http\nGET /api/libri/42 HTTP/1.1\nHost: biblioteca.example\nAccept: application/json\n\n\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n{\"id\": 42, \"titolo\": \"Il sentiero dei nidi di ragno\"}\n```\n\nLa riga vuota separa gli header dal contenuto; in questa GET non c'è un corpo di richiesta. La risposta descrive l'esito con 200 e invia una rappresentazione JSON. Non tutti gli scambi hanno un corpo: dipende dal metodo e dalla risposta.\n\n### Semantica e trasporto sono livelli diversi\n\nHTTP è un protocollo del livello applicativo. La versione determina come i messaggi sono trasferiti: HTTP/1.1 e HTTP/2 usano normalmente TCP; HTTP/3 mappa la semantica HTTP su QUIC, che viaggia su UDP. HTTPS protegge il trasporto con TLS; non è un metodo HTTP diverso.\n\n```mermaid\nflowchart LR\n  C[Client: browser] -->|Richiesta HTTP| S[Server]\n  S -->|Risposta HTTP| C\n```\n\n### Il messaggio non è sempre testo sul filo\n\nIn HTTP/1.1 la sintassi di richiesta e risposta è testuale. HTTP/2 e HTTP/3 mantengono la semantica HTTP, ma usano framing binario. Dire che «HTTP è sempre testo» confonde il modello concettuale dei messaggi con la codifica di ogni versione.\n\n| Elemento | Che cosa indica | Esempio |\n|---|---|---|\n| Metodo | Intento della richiesta | GET |\n| Target | Risorsa richiesta | /api/libri/42 |\n| Header | Metadati e preferenze | Accept: application/json |\n| Stato | Esito della risposta | 200 OK |\n| Rappresentazione | Dati restituiti | JSON, HTML o immagine |\n\nIl server può essere un singolo processo o un insieme di proxy, cache e servizi. Per il client, l'interfaccia HTTP resta lo scambio di richieste e risposte.",
+  "analogia": {
+    "testo": "È come chiedere al banco della biblioteca un libro indicando il titolo e ricevere una risposta con esito e scheda: il client formula la richiesta, il server fornisce una rappresentazione.",
+    "limite": "HTTP è una specifica precisa di messaggi e semantica; un bibliotecario umano non applica codici di stato né regole di trasporto."
+  },
+  "worked_example": {
+    "titolo": "Leggere la scheda di un libro",
+    "problema": "Il browser deve recuperare la scheda del libro 42 come JSON, senza modificare i dati del catalogo.",
+    "passi": [
+      "Scegli GET perché si vuole recuperare una rappresentazione.",
+      "Indica il target /api/libri/42 e l'host biblioteca.example.",
+      "Chiedi una rappresentazione JSON con Accept.",
+      "Interpreta il codice di risposta prima di usare il corpo."
+    ],
+    "soluzione": "Richiesta: GET /api/libri/42 HTTP/1.1 con Host: biblioteca.example e Accept: application/json. Se il libro esiste, il server può rispondere HTTP/1.1 200 OK, Content-Type: application/json e il corpo JSON della scheda.",
+    "perche_funziona": "Il metodo esprime l'intento di lettura, il target identifica la risorsa e il codice di stato comunica l'esito. Il formato della rappresentazione viene dichiarato separatamente."
+  },
+  "completion_problem": {
+    "titolo": "Completa una richiesta HTTP",
+    "testo": "La biblioteca restituisce il dettaglio JSON di un libro esistente. Completa la riga di stato e l'header che descrive il formato della risposta.",
+    "passi_mancanti": [
+      "Inserire lo stato di successo e il tipo della rappresentazione JSON."
+    ],
+    "soluzione": "HTTP/1.1 200 OK\nContent-Type: application/json\n\n{\"id\": 42, \"titolo\": \"Il sentiero dei nidi di ragno\"}"
+  },
+  "esercizio_autonomo": {
+    "titolo": "Traccia una richiesta e la risposta",
+    "testo": "Descrivi i messaggi essenziali per cercare il libro 7 e ricevere una pagina HTML. Indica metodo, target, stato e tipo di contenuto.",
+    "suggerimento": "Parti da GET /ricerca/7; nella risposta distingui il codice di stato dall'header Content-Type.",
+    "soluzione_attesa": "Il client invia GET /ricerca/7 con l'header Host. Se la pagina esiste, una risposta possibile è 200 OK con Content-Type: text/html e il contenuto HTML."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Confondere HTTP con il formato HTML",
+      "perche_sbagliato": "HTTP definisce lo scambio; HTML è uno dei possibili formati della rappresentazione trasferita.",
+      "distrattore": "Colore del logo"
+    },
+    {
+      "errore": "Dire che ogni versione di HTTP usa messaggi testuali sul filo",
+      "perche_sbagliato": "HTTP/2 e HTTP/3 usano framing binario pur conservando la semantica HTTP.",
+      "distrattore": "Modello OSI completo"
+    },
+    {
+      "errore": "Confondere il protocollo applicativo con il trasporto",
+      "perche_sbagliato": "HTTP definisce lo scambio applicativo; TCP o QUIC/UDP trasferiscono i dati secondo la versione.",
+      "distrattore": "Layout CSS della pagina"
+    }
+  ],
+  "mnemonica": "Richiesta → Risposta: il client chiede, il server dichiara l'esito e rappresenta la risorsa.",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quali elementi minimi riconosci in una richiesta HTTP?",
+        "risposta": "Metodo, target della risorsa e campi; il corpo è presente solo quando previsto."
+      },
+      {
+        "domanda": "Che cosa comunica il codice di stato nella risposta?",
+        "risposta": "Indica la classe dell'esito della richiesta, per esempio successo, reindirizzamento o errore."
+      },
+      {
+        "domanda": "HTTP è sempre codificato come testo sul trasporto?",
+        "risposta": "No. HTTP/1.1 è testuale; HTTP/2 e HTTP/3 usano framing binario con semantica HTTP condivisa."
+      },
+      {
+        "domanda": "Qual è la differenza tra HTTP e TCP?",
+        "risposta": "HTTP è applicativo e definisce richieste/risposte; TCP è un trasporto usato da HTTP/1.1 e HTTP/2."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega con parole tue come il browser ottiene una scheda della biblioteca dal server e in che modo distingue i dati dall'esito.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "tcp-ip-modello-livelli",
+        "collegamento": "Il modello TCP/IP aiuta a collocare HTTP al livello applicativo e a distinguere il protocollo dal trasporto."
+      }
+    ]
+  },
+  "riepilogo": "HTTP definisce uno scambio applicativo client-server di richieste e risposte. Metodo, target, header e stato hanno semantiche precise; il corpo può contenere HTML, JSON o altri formati. La codifica sul filo dipende dalla versione. HTTP/1.1 e HTTP/2 usano TCP; HTTP/3 usa QUIC su UDP.",
+  "flashcard": {
+    "fronte": "Che cosa definisce HTTP?",
+    "retro": "Un protocollo applicativo stateless con semantica di richieste e risposte tra client e server."
+  },
+  "checklist": {
+    "so_fare": [
+      "Leggere metodo, target, header e codice di stato in un esempio HTTP.",
+      "Distinguere semantica HTTP, rappresentazione e trasporto."
+    ],
+    "so_dire": [
+      "Definire HTTP come protocollo applicativo request-response.",
+      "Spiegare perché HTTP non è sempre testuale sul filo."
+    ]
+  }
+}

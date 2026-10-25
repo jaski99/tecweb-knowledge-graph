@@ -1,0 +1,99 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "Nel catalogo digitale, il browser apre l'indirizzo di una pagina, identifica un libro attraverso un percorso e può anche usare un identificatore di nome come un ISBN. URI, URL e URN descrivono modi correlati di riferirsi alle risorse.",
+  "definizione_esame": {
+    "definizione": "Un URI è una sequenza di caratteri che identifica una risorsa; un URL ne indica la posizione o il metodo di accesso, mentre un URN la identifica tramite un nome.",
+    "scopo_vantaggio": "La distinzione separa l'identità della risorsa dal modo in cui la si individua o la si raggiunge.",
+    "esempio": "https://biblioteca.example/libri/42 è un URL e URI; urn:isbn:0451450523 è un URI di tipo URN."
+  },
+  "spiegazione": "## Prima l'identificatore, poi il modo di trovarlo\n\nPrerequisito: conosci l'uso di URI come target delle richieste HTTP. Un **URI** (Uniform Resource Identifier) è una stringa che identifica una risorsa astratta o fisica. **URL** (Uniform Resource Locator) enfatizza dove si trova o come si accede alla risorsa; **URN** (Uniform Resource Name) enfatizza il nome in uno spazio di nomi, indipendente dalla posizione. Nel linguaggio didattico, URL e URN sono esempi di URI.\n\n### Leggere la sintassi comune\n\nPer un URI gerarchico come `https://biblioteca.example/catalogo/libri/42?formato=ebook#recensioni`, si distinguono schema (`https`), autorità (`biblioteca.example`), percorso (`/catalogo/libri/42`), query (`formato=ebook`) e frammento (`recensioni`). La forma generale dipende dallo schema: non tutti gli URI hanno un'autorità o un percorso nello stesso formato.\n\n```mermaid\nflowchart LR\n  U[URI] --> L[URL: localizzazione o accesso]\n  U --> N[URN: nome in uno spazio di nomi]\n```\n\n### Il frammento ha un ruolo speciale\n\nIl frammento, introdotto da `#`, individua una parte della rappresentazione o una destinazione interna. Per una normale richiesta HTTP, il frammento non viene inviato al server nel target della richiesta: è interpretato dal client in relazione alla rappresentazione. Query e frammento non sono intercambiabili.\n\n### Esempi da classificare\n\n| Identificatore | Classificazione utile | Perché |\n|---|---|---|\n| `https://biblioteca.example/libri/42` | URL e URI | Schema e host individuano un modo di accedere alla risorsa |\n| `urn:isbn:0451450523` | URN e URI | Il nome usa lo spazio di nomi ISBN, non una posizione web |\n| `/catalogo/libri/42` | Riferimento URI relativo | Va risolto rispetto a un URI di base |\n\nIl nome URN non garantisce che la risorsa sia disponibile o che esista un servizio di risoluzione. Analogamente, un URL identifica una risorsa tramite una posizione, ma non garantisce che la pagina sia ancora raggiungibile. La persistenza è un obiettivo di progettazione, non una promessa automatica del tipo di URI.\n\n### Una cautela terminologica\n\nPer l'esame è utile ricordare «URI è la categoria generale; URL localizza; URN nomina». Tuttavia, la terminologia URL/URN nasce da una distinzione concettuale e non va trattata come se ogni stringa avesse sempre una classificazione binaria, disgiunta e riconoscibile soltanto guardando la sintassi. RFC 3986 descrive la sintassi URI generica; gli schemi specifici ne definiscono ulteriori regole.\n\n| Domanda | Risposta corretta |\n|---|---|\n| Ogni URL è un URI? | Sì, nell'uso didattico URL è un tipo di URI |\n| Ogni URI è un URL? | No: può essere, per esempio, un URN o un riferimento relativo |\n| Un URN è una URL senza dominio? | No: identifica mediante un nome, non mediante una posizione web |",
+  "analogia": {
+    "testo": "È come distinguere un libro dal suo scaffale: il nome catalografico identifica il libro, mentre l'indicazione di reparto e ripiano aiuta a raggiungerlo.",
+    "limite": "URI è una sintassi tecnica governata da schemi; nome di catalogo e scaffale non descrivono le regole di risoluzione di un identificatore."
+  },
+  "worked_example": {
+    "titolo": "Analizzare tre identificatori",
+    "problema": "Classifica https://biblioteca.example/libri/42?formato=ebook#recensioni, urn:isbn:0451450523 e /libri/42.",
+    "passi": [
+      "Nel primo identifica schema, autorità, percorso, query e frammento.",
+      "Nel secondo riconosci lo schema urn e il namespace isbn.",
+      "Nel terzo nota che il riferimento è relativo e non contiene schema o autorità."
+    ],
+    "soluzione": "Il primo è un URL e quindi un URI: https è lo schema, biblioteca.example l'autorità, /libri/42 il percorso, formato=ebook la query e recensioni il frammento. Il secondo è un URN e URI. Il terzo è un riferimento URI relativo.",
+    "perche_funziona": "La classificazione separa la funzione di identificazione, la localizzazione e i componenti della sintassi senza confondere query e frammento."
+  },
+  "completion_problem": {
+    "titolo": "Completa l'analisi del riferimento",
+    "testo": "Nel riferimento /libri/42?lingua=it#descrizione, individua quale parte è il percorso, quale la query e quale il frammento.",
+    "passi_mancanti": [
+      "Separare i componenti usando i delimitatori /, ? e #."
+    ],
+    "soluzione": "Percorso: /libri/42. Query: lingua=it, introdotta da ?. Frammento: descrizione, introdotto da # e interpretato dal client."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Progetta un identificatore leggibile",
+    "testo": "Proponi un URL per la scheda del libro 17 e un URN di esempio basato su un namespace di nome. Spiega che cosa identifica ciascuno.",
+    "suggerimento": "L'URL deve avere schema e host; l'esempio URN deve iniziare con urn: e non va presentato come indirizzo web.",
+    "soluzione_attesa": "Esempio URL: https://biblioteca.example/libri/17, che localizza la scheda tramite HTTPS e host. Esempio URN: urn:isbn:0451450523, che nomina un libro nello spazio di nomi ISBN; non indica un host né garantisce risoluzione."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Usare URI e URL come sinonimi perfetti",
+      "perche_sbagliato": "URI è il termine generale; esistono URI che non localizzano una risorsa web, come un URN.",
+      "distrattore": "Codice HTTP 404"
+    },
+    {
+      "errore": "Dire che il frammento viene sempre spedito al server",
+      "perche_sbagliato": "Nelle richieste HTTP ordinarie il frammento è gestito dal client e non fa parte del target inviato al server.",
+      "distrattore": "Congestione TCP"
+    },
+    {
+      "errore": "Garantire che un URN sia sempre risolvibile",
+      "perche_sbagliato": "Il namespace assegna un nome; la raggiungibilità o la risoluzione richiede un meccanismo ulteriore.",
+      "distrattore": "Pseudoclassi CSS"
+    }
+  ],
+  "mnemonica": "I = Identifica; L = Localizza (URL); N = Nomina (URN).",
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa significa URI?",
+        "risposta": "Uniform Resource Identifier: una stringa che identifica una risorsa."
+      },
+      {
+        "domanda": "Qual è la differenza didattica tra URL e URN?",
+        "risposta": "L'URL indica posizione o accesso; l'URN nomina la risorsa in uno spazio di nomi senza localizzarla."
+      },
+      {
+        "domanda": "Quali componenti riconosci in un URL HTTP gerarchico?",
+        "risposta": "Schema, autorità, percorso e, se presenti, query e frammento."
+      },
+      {
+        "domanda": "Il frammento fa parte del target HTTP inviato al server?",
+        "risposta": "No: nelle richieste HTTP ordinarie viene interpretato dal client e non è inviato nel target al server."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega con un esempio perché un identificatore può nominare una risorsa senza indicare dove si trova.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "http-protocollo-base",
+        "collegamento": "Il target di una richiesta HTTP è un URI o un riferimento derivato; il protocollo lo usa per individuare la risorsa."
+      }
+    ]
+  },
+  "riepilogo": "URI è il termine generale per un identificatore. URL enfatizza posizione o accesso; URN enfatizza il nome in uno spazio di nomi. Nei riferimenti gerarchici si distinguono schema, autorità, percorso, query e frammento. Il frammento è interpretato dal client e non viene inviato in una richiesta HTTP ordinaria.",
+  "flashcard": {
+    "fronte": "URI, URL e URN: qual è la relazione?",
+    "retro": "URI identifica in generale. URL localizza o indica l'accesso; URN nomina in un namespace. URL e URN sono esempi di URI nell'uso didattico."
+  },
+  "checklist": {
+    "so_fare": [
+      "Scomporre un URI gerarchico nei suoi componenti.",
+      "Classificare URL, URN e riferimenti relativi senza promettere che siano risolvibili."
+    ],
+    "so_dire": [
+      "Definire URI, URL e URN.",
+      "Spiegare perché il frammento non è inviato al server in una normale richiesta HTTP."
+    ]
+  }
+}

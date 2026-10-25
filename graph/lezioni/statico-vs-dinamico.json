@@ -1,0 +1,98 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti del syllabus. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "La biblioteca pubblica copertine e fogli di stile uguali per tutti, ma genera l'elenco dei libri in base alla ricerca e ai permessi della lettrice. Entrambi i risultati viaggiano tramite HTTP, anche se sono prodotti in modi diversi.",
+  "definizione_esame": {
+    "definizione": "Il contenuto statico è servito da una rappresentazione già preparata; quello dinamico è costruito o selezionato durante la richiesta in base a logica o dati variabili.",
+    "scopo_vantaggio": "La distinzione aiuta a scegliere dove generare i dati, come aggiornarli e quali strategie di caching siano coerenti.",
+    "esempio": "Una copertina JPEG può essere un file statico; i risultati di ricerca filtrati per l'utente sono spesso generati dinamicamente."
+  },
+  "spiegazione": "## La differenza riguarda la generazione\n\nPrerequisito: conosci la richiesta e la risposta HTTP. **Statico** e **dinamico** descrivono come viene preparata la rappresentazione, non due protocolli diversi. Un server può leggere un file già prodotto e inviarlo; oppure può eseguire logica e combinare dati per costruire una risposta su richiesta.\n\n### Esempio nella biblioteca\n\nUn logo, un foglio CSS o una copertina salvata come file possono essere serviti senza ricalcolare il loro contenuto per ogni utente. Una pagina che mostra i risultati della ricerca, il prestito attuale o i libri consigliati può dipendere da query, database, identità e permessi. La generazione dinamica può avvenire sul server; JavaScript può anche aggiornare dinamicamente il DOM nel browser dopo aver ricevuto dati.\n\n```mermaid\nflowchart TD\n  R[Richiesta HTTP] --> S{Come si prepara la risposta?}\n  S -->|File o rappresentazione già pronta| F[Servizio statico]\n  S -->|Logica e dati variabili| D[Generazione dinamica]\n  F --> O[Risposta HTTP]\n  D --> O\n```\n\n### Il protocollo HTTP non porta un'etichetta «statico»\n\nDal punto di vista del client, entrambi i casi sono risposte HTTP con stato, header e rappresentazione. Un file statico può cambiare quando viene pubblicata una nuova versione; una risposta dinamica può essere identica per molti utenti. Content negotiation, autenticazione o compressione possono modificare la rappresentazione servita anche quando la sorgente è un file.\n\n### Caching: correlazione, non equivalenza\n\nLe risorse statiche sono spesso buone candidate per il caching, ma non sono cacheabili automaticamente: contano gli header e la politica del servizio. Anche una risposta dinamica può essere cacheabile se è corretta per tutti i client cui la cache la riutilizza e se la freschezza è dichiarata. Al contrario, una risposta personalizzata non dovrebbe essere condivisa in modo da esporre dati di un altro utente.\n\n| Aspetto | Statico | Dinamico |\n|---|---|---|\n| Sorgente tipica | File o build già preparata | Logica che consulta dati o input |\n| Momento di composizione | Prima della richiesta o durante il deploy | Durante l'elaborazione della richiesta |\n| Esempio | Logo o file CSS | Risultati di ricerca personalizzati |\n| Caching | Possibile, secondo header e contenuto | Possibile solo con politica coerente |\n\nNon classificare un contenuto soltanto dall'estensione: un file `.html` può essere generato da un template, e una pagina con JavaScript può modificarsi nel browser dopo il caricamento. Chiedi invece dove e quando la rappresentazione viene costruita.",
+  "analogia": {
+    "testo": "È come una fotocopia di un avviso già stampato rispetto a una scheda preparata apposta dopo aver consultato il registro della biblioteca.",
+    "limite": "Una risorsa servita da file può cambiare nel tempo e una risposta generata può essere memorizzata in cache: l'analogia non decide da sola la cacheabilità."
+  },
+  "worked_example": {
+    "titolo": "Classificare risorse della biblioteca",
+    "problema": "Valuta il logo, un file CSS e la pagina dei libri cercati dall'utente.",
+    "passi": [
+      "Individua se esiste una rappresentazione preparata e servita come file.",
+      "Verifica se il risultato dipende da query, identità o dati del database.",
+      "Separa la modalità di generazione dalla possibilità di caching."
+    ],
+    "soluzione": "Logo e CSS sono normalmente risorse statiche se serviti come file preparati. La pagina di ricerca personalizzata è dinamica se il server compone i risultati dai dati e dalla richiesta. La cacheabilità va decisa con header e politiche adeguati, non dalla categoria da sola.",
+    "perche_funziona": "La classificazione segue il processo che produce la rappresentazione e non confonde statico/dinamico con HTTP, HTML o cache."
+  },
+  "completion_problem": {
+    "titolo": "Completa il criterio di classificazione",
+    "testo": "Una pagina HTML già pronta è servita dal server; un'altra interroga il catalogo usando la query dell'utente. Completa il confronto.",
+    "passi_mancanti": [
+      "Indicare quale risposta è tipicamente statica e quale dinamica, senza dedurre la cacheabilità dalla sola etichetta."
+    ],
+    "soluzione": "La pagina HTML già pronta è tipicamente statica; quella che interroga il catalogo e compone risultati dalla query è dinamica. Entrambe possono o meno essere cacheabili secondo header, personalizzazione e politica del servizio."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Progetta la risposta a una ricerca",
+    "testo": "Per una ricerca di libri per autore, indica quali parti potrebbero essere file statici e quali vengono generate in base alla richiesta.",
+    "suggerimento": "Separa la struttura dell'interfaccia dai risultati che dipendono da autore, disponibilità e autorizzazioni.",
+    "soluzione_attesa": "Logo, CSS e script possono essere file statici; i risultati della ricerca possono essere generati o selezionati dinamicamente in base alla query e ai dati. Entrambi sono trasferiti via HTTP; la cache va configurata secondo la variabilità e la privacy."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dire che statico significa identico per sempre",
+      "perche_sbagliato": "Un file può essere sostituito o variato nel tempo; statico descrive la strategia di generazione, non l'immutabilità assoluta.",
+      "distrattore": "Codice di stato 401"
+    },
+    {
+      "errore": "Dire che le risposte dinamiche non possono essere memorizzate",
+      "perche_sbagliato": "Possono essere cacheabili se freschezza e ambito di riuso sono corretti per quella risposta.",
+      "distrattore": "Indirizzo MAC"
+    },
+    {
+      "errore": "Classificare una pagina solo dall'estensione HTML",
+      "perche_sbagliato": "HTML può essere un file statico o il risultato di un template generato dal server.",
+      "distrattore": "Semantica dei metodi PUT/PATCH"
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa distingue principalmente contenuto statico e dinamico?",
+        "risposta": "Il processo con cui la rappresentazione viene preparata o composta, non il protocollo HTTP che la consegna."
+      },
+      {
+        "domanda": "Una pagina dinamica è sempre non cacheabile?",
+        "risposta": "No. La cacheabilità dipende dalla risposta e dalla politica dichiarata, inclusi freschezza e ambito di riuso."
+      },
+      {
+        "domanda": "JavaScript può rendere dinamica una pagina nel browser?",
+        "risposta": "Sì. Il client può aggiornare il DOM dopo il caricamento, indipendentemente da come il server ha fornito la risorsa iniziale."
+      },
+      {
+        "domanda": "Un file HTML è sempre statico?",
+        "risposta": "No. Può essere un file pronto o essere generato da un template; l'estensione non basta per classificarlo."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega perché statico/dinamico riguarda la generazione del contenuto e non la modalità HTTP con cui viene trasferito.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "http-protocollo-base",
+        "collegamento": "Lo stesso protocollo HTTP può trasportare rappresentazioni statiche o dinamiche, con lo stesso modello di richiesta e risposta."
+      }
+    ]
+  },
+  "riepilogo": "Statico e dinamico descrivono come si prepara una rappresentazione. File già pronti sono spesso statici; logica e dati della richiesta possono produrre contenuti dinamici. HTTP trasporta entrambi. Una risposta dinamica può essere cacheabile e una risorsa statica può cambiare: decide la politica dichiarata, non l'etichetta.",
+  "flashcard": {
+    "fronte": "Statico vs dinamico: qual è il criterio corretto?",
+    "retro": "Il momento/processo di generazione della rappresentazione. HTTP può consegnare entrambi; caching e personalizzazione vanno valutati separatamente."
+  },
+  "checklist": {
+    "so_fare": [
+      "Classificare contenuti in base a come vengono prodotti.",
+      "Valutare separatamente generazione, personalizzazione e cacheabilità."
+    ],
+    "so_dire": [
+      "Spiegare perché un file HTML non è necessariamente statico.",
+      "Descrivere un caso di contenuto dinamico lato server e uno lato client."
+    ]
+  }
+}

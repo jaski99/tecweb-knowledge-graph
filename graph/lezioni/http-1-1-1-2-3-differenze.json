@@ -1,0 +1,99 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "La pagina di un negozio digitale richiede HTML, fogli di stile, immagini e dati del catalogo. Le diverse versioni HTTP trasportano la stessa semantica, ma organizzano messaggi, connessioni e flussi in modo diverso.",
+  "definizione_esame": {
+    "definizione": "Le versioni HTTP condividono la semantica di base ma differiscono nel framing e nell'uso del trasporto per scambiare più richieste.",
+    "scopo_vantaggio": "Le evoluzioni riducono latenza e uso inefficiente delle connessioni, mantenendo metodi, codici e campi HTTP riconoscibili.",
+    "esempio": "HTTP/2 interlaccia stream su TCP; HTTP/3 trasporta stream HTTP tramite QUIC su UDP."
+  },
+  "spiegazione": "## Che cosa cambia tra le versioni\n\nPrerequisito: conosci il modello request-response HTTP. Le versioni non cambiano l'idea di risorsa, metodo e codice di stato, ma il modo in cui i messaggi sono incorniciati e trasferiti.\n\n| Versione | Connessione e concorrenza | Framing/compressione | Punto da ricordare |\n|---|---|---|---|\n| HTTP/1.0 | In genere una connessione non persistente per scambio; esistevano estensioni | Messaggi testuali | Una connessione chiusa dopo la risposta è il comportamento tipico |\n| HTTP/1.1 | Persistente per default; pipelining possibile, ma risposte ordinate | Messaggi testuali | Il pipelining non è multiplexing indipendente |\n| HTTP/2 | Più stream concorrenti su una connessione TCP | Framing binario, HPACK per i campi | La perdita TCP può bloccare tutti gli stream attivi |\n| HTTP/3 | Stream su QUIC, trasportato da UDP | Framing binario; QPACK per i campi | Una perdita su uno stream non impone la consegna in ordine agli altri stream |\n\n### HTTP/1.0 e HTTP/1.1\n\nHTTP/1.1 rende persistenti le connessioni per default, salvo chiusura esplicita o condizioni di protocollo. Il pipelining consente di inviare più richieste senza attendere ciascuna risposta, ma le risposte sullo stesso flusso devono rispettare l'ordine. Se una risposta lenta è in testa, quelle successive attendono: è un caso di head-of-line blocking a livello HTTP.\n\n### HTTP/2\n\nHTTP/2 introduce frame binari e stream logici. I frame di richieste diverse possono essere intercalati sulla stessa connessione TCP. La compressione HPACK riduce la ripetizione dei campi. Questo rimuove il vincolo di ordine tra risposte HTTP/1.1 sul singolo flusso, ma **non** elimina il blocco causato dalla perdita di un segmento TCP: TCP consegna un flusso ordinato e non rende visibile a HTTP quale stream contenesse il dato perduto.\n\n### HTTP/3 e QUIC\n\nHTTP/3 mantiene le semantiche HTTP e usa QUIC. QUIC offre stream con consegna ordinata indipendente e gestisce la perdita a livello di stream: i dati mancanti di uno stream non impediscono di consegnare dati già disponibili su un altro. Il controllo della congestione resta condiviso a livello di connessione. Non è corretto dire che HTTP/3 non subisce mai ritardi o perdite.\n\n```mermaid\nflowchart LR\n  H1[HTTP/1.1: richieste e risposte ordinate] --> T1[TCP: un flusso]\n  H2[HTTP/2: stream intercalati] --> T2[TCP: un flusso ordinato]\n  H3[HTTP/3: stream QUIC] --> T3[UDP: datagrammi QUIC]\n```\n\n### Semantica uguale, trasporto diverso\n\nUn GET continua a chiedere una rappresentazione e 404 continua a indicare un target non trovato; non sono caratteristiche esclusive di HTTP/1.1. HTTP/2 e HTTP/3 codificano le informazioni con frame, ma preservano semantica HTTP. La disponibilità di funzionalità opzionali, come il server push definito per HTTP/2, dipende dall'implementazione e non è un requisito per usare HTTP/2.\n\n| Affermazione | Corretta? | Correzione |\n|---|---|---|\n| HTTP/1.1 ha connessioni persistenti | Sì, per default | La connessione può comunque chiudersi |\n| HTTP/1.1 fa multiplexing | No | Il pipelining conserva l'ordine delle risposte |\n| HTTP/2 elimina il blocco TCP | No | Elimina il blocco d'ordine HTTP, non quello da perdita TCP |\n| HTTP/3 usa QUIC su UDP | Sì | Non usa TCP come trasporto HTTP |",
+  "analogia": {
+    "testo": "Immagina di spedire più pacchi: HTTP/1.1 è una fila in cui il pacco successivo aspetta il precedente; HTTP/2 usa più corsie logiche sullo stesso nastro; HTTP/3 separa la consegna ordinata dei flussi.",
+    "limite": "La rete reale ha regole di framing, affidabilità e congestione; corsie e pacchi non rappresentano esattamente i livelli TCP o QUIC."
+  },
+  "worked_example": {
+    "titolo": "Caricare una pagina con tre risorse",
+    "problema": "Il browser richiede HTML, CSS e una copertina. Confronta il comportamento su una connessione HTTP/1.1 pipelined e su HTTP/2.",
+    "passi": [
+      "Elenca tre richieste distinte per le risorse.",
+      "In HTTP/1.1, nota che le risposte sul flusso devono arrivare in ordine.",
+      "In HTTP/2, assegna uno stream a ciascuno scambio.",
+      "Aggiungi il limite comune: HTTP/2 usa TCP, quindi la perdita di dati TCP può fermare la consegna di tutti gli stream."
+    ],
+    "soluzione": "HTTP/1.1 può riusare la connessione e fare pipelining, ma mantiene l'ordine delle risposte; HTTP/2 può intercalare frame degli stream HTML, CSS e copertina. Se manca un segmento TCP, TCP attende il recupero prima di consegnare i byte successivi a tutti gli stream.",
+    "perche_funziona": "Il confronto separa il multiplexing applicativo introdotto da HTTP/2 dal trasporto TCP ordinato che rimane sotto gli stream."
+  },
+  "completion_problem": {
+    "titolo": "Completa il confronto HTTP/2 e HTTP/3",
+    "testo": "HTTP/2 usa stream multipli sopra ____; HTTP/3 usa stream QUIC sopra ____.",
+    "passi_mancanti": [
+      "Inserire i due protocolli di trasporto corretti e indicare quale conserva il blocco di testa della linea in caso di perdita."
+    ],
+    "soluzione": "HTTP/2 usa stream multipli sopra TCP; HTTP/3 usa stream QUIC sopra UDP. La perdita TCP può fermare la consegna di tutti gli stream HTTP/2; QUIC evita il blocco di consegna incrociato fra stream, pur condividendo il controllo di congestione della connessione."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Spiega il pipelining senza chiamarlo multiplexing",
+    "testo": "Descrivi perché il pipelining HTTP/1.1 non equivale al multiplexing HTTP/2 e quale limite di TCP resta in HTTP/2.",
+    "suggerimento": "Confronta l'ordine delle risposte in HTTP/1.1 con l'intercalazione di frame e il trasporto TCP ordinato.",
+    "soluzione_attesa": "Il pipelining invia richieste in anticipo, ma le risposte sul flusso HTTP/1.1 restano ordinate; HTTP/2 interlaccia stream distinti. Tuttavia TCP consegna un unico flusso ordinato, quindi una perdita può bloccare la consegna dei dati di tutti gli stream."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Attribuire multiplexing a HTTP/1.1",
+      "perche_sbagliato": "Il pipelining non rimuove l'ordine delle risposte; HTTP/2 aggiunge stream multiplexati.",
+      "distrattore": "Ereditarietà CSS"
+    },
+    {
+      "errore": "Dire che HTTP/2 risolve il blocco da perdita TCP",
+      "perche_sbagliato": "Tutti gli stream condividono la consegna ordinata del flusso TCP sottostante.",
+      "distrattore": "Modello relazionale"
+    },
+    {
+      "errore": "Dire che HTTP/3 elimina ogni forma di latenza",
+      "perche_sbagliato": "QUIC riduce il blocco tra stream, ma perdita, congestione e latenza di rete restano possibili.",
+      "distrattore": "Validazione HTML"
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quale differenza c'è tra pipelining e multiplexing?",
+        "risposta": "Il pipelining HTTP/1.1 invia richieste prima delle risposte ma le risposte restano ordinate; HTTP/2 interlaccia frame di stream distinti."
+      },
+      {
+        "domanda": "HTTP/2 usa un trasporto diverso da TCP?",
+        "risposta": "No. HTTP/2 usa TCP e aggiunge framing binario e multiplexing a livello HTTP."
+      },
+      {
+        "domanda": "Qual è il limite di HTTP/2 in caso di perdita TCP?",
+        "risposta": "La consegna ordinata di TCP può bloccare tutti gli stream finché non arriva il dato mancante."
+      },
+      {
+        "domanda": "Su quale trasporto si basa HTTP/3?",
+        "risposta": "HTTP/3 mappa la semantica HTTP su QUIC, trasportato su UDP."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega perché il multiplexing di HTTP/2 migliora la concorrenza ma non rimuove il blocco di testa della linea del trasporto TCP.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "quic-protocollo",
+        "collegamento": "QUIC è il trasporto di HTTP/3 e spiega la consegna indipendente dei suoi stream."
+      }
+    ]
+  },
+  "riepilogo": "HTTP/1.1 riusa connessioni e può fare pipelining, ma le risposte restano ordinate. HTTP/2 interlaccia stream su TCP e comprime i campi, ma non elimina il blocco da perdita TCP. HTTP/3 usa QUIC su UDP e isola la consegna degli stream. Le semantiche HTTP restano condivise.",
+  "flashcard": {
+    "fronte": "HTTP/2 vs HTTP/3: quale HOL rimane?",
+    "retro": "HTTP/2 multiplexa su TCP ma una perdita TCP può bloccare tutti gli stream; HTTP/3 usa stream QUIC, la cui perdita non blocca la consegna sugli altri stream."
+  },
+  "checklist": {
+    "so_fare": [
+      "Confrontare persistenza, pipelining e multiplexing.",
+      "Disegnare HTTP/2 su TCP e HTTP/3 su QUIC/UDP."
+    ],
+    "so_dire": [
+      "Spiegare la differenza tra HOL HTTP/1.1, TCP e stream QUIC.",
+      "Distinguere semantica HTTP e framing delle versioni."
+    ]
+  }
+}

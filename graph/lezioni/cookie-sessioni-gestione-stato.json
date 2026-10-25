@@ -1,0 +1,99 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "Una lettrice accede alla biblioteca digitale e salva un libro nei preferiti. Il browser invia un cookie nelle richieste successive; il server usa il suo identificatore per recuperare preferenze e sessione senza confondere il cookie con l'intero archivio.",
+  "definizione_esame": {
+    "definizione": "Un cookie è un dato gestito dal browser secondo gli header HTTP; una sessione applicativa associa richieste e dati di stato, spesso tramite un identificatore nel cookie.",
+    "scopo_vantaggio": "Cookie e sessioni permettono a un'applicazione di ricostruire un contesto tra richieste HTTP indipendenti.",
+    "esempio": "Il server invia Set-Cookie: sid=abc; HttpOnly; Secure e il browser reinvia Cookie: sid=abc nelle richieste compatibili."
+  },
+  "spiegazione": "## Cookie e sessione sono concetti distinti\n\nPrerequisito: HTTP è stateless per design. Un cookie è un piccolo dato che il server può inviare con l'header **Set-Cookie**; il browser può conservarlo e inviarlo in richieste successive secondo dominio, percorso, scadenza e altre regole. Una **sessione** è invece un costrutto applicativo: dati e contesto associati a una sequenza di interazioni. Spesso il cookie contiene solo un identificatore di sessione.\n\n### Il flusso di una sessione\n\n```mermaid\nsequenceDiagram\n  participant B as Browser\n  participant S as Server\n  B->>S: POST /login\n  S-->>B: Set-Cookie: sid=valore-casuale\n  B->>S: GET /preferiti con Cookie: sid=valore-casuale\n  S-->>B: Rappresentazione dei preferiti\n```\n\nUna risposta può includere `Set-Cookie: sid=valore-casuale; Path=/; Secure; HttpOnly; SameSite=Lax`. Nelle richieste successive il browser invia `Cookie: sid=valore-casuale`. La sessione può essere conservata in un database o in un archivio condiviso; non è obbligatorio mantenerla nella memoria del singolo processo.\n\n### Attributi di sicurezza\n\n- **Secure**: il browser invia il cookie solo su connessioni sicure secondo le regole del cookie. Non cifra il cookie; la protezione in transito viene da HTTPS/TLS.\n- **HttpOnly**: impedisce agli script della pagina di leggere il cookie tramite l'API `Document.cookie`. Non impedisce a uno script malevolo di compiere azioni per conto dell'utente se una vulnerabilità XSS esiste.\n- **SameSite**: limita l'invio del cookie in alcune richieste cross-site e aiuta a ridurre il rischio CSRF; non sostituisce ogni altra difesa.\n- **Path** e **Domain**: restringono l'ambito in cui il browser invia il cookie; **Max-Age** ed **Expires** ne definiscono la durata.\n\n### Cookie di sessione non significa sessione server-side\n\n«Cookie di sessione» può indicare un cookie senza scadenza persistente, che il browser gestisce come cookie di sessione; non dice dove si trova lo stato applicativo. Una sessione server-side può usare un cookie persistente, e un cookie può contenere dati senza riferirsi a una sessione server-side.\n\n| Meccanismo | Dato che viaggia | Dove può stare lo stato applicativo |\n|---|---|---|\n| Cookie con preferenza | Preferenza client | Browser, se non sensibile |\n| Cookie con ID sessione | Identificatore opaco | Archivio server-side |\n| Token nel header Authorization | Token di accesso | Nel token o in un archivio, secondo il progetto |\n\nGli identificatori di sessione sono credenziali: vanno generati in modo imprevedibile, protetti da HTTPS, ruotati dopo l'autenticazione e invalidati al logout. Non inserire segreti nel cookie senza protezione adeguata. HttpOnly riduce l'esposizione a lettura via JavaScript, ma non è una cura completa per XSS; SameSite non sostituisce la verifica dei permessi.",
+  "analogia": {
+    "testo": "Il cookie è come un biglietto numerato che il browser presenta al banco; il personale usa il numero per ritrovare la scheda conservata nell'archivio della biblioteca.",
+    "limite": "Il browser applica regole automatiche di ambito e invio, mentre il biglietto cartaceo non ha attributi come SameSite, Secure o HttpOnly."
+  },
+  "worked_example": {
+    "titolo": "Recuperare i preferiti con una sessione",
+    "problema": "Dopo il login, il server deve riconoscere la sessione quando la lettrice richiede /preferiti.",
+    "passi": [
+      "Dopo aver verificato le credenziali, il server crea un ID casuale e lo associa alla sessione.",
+      "Il server invia l'ID con Set-Cookie e gli attributi appropriati.",
+      "Il browser conserva il cookie e lo invia a una richiesta successiva compatibile.",
+      "Il server valida l'ID, carica i dati e applica l'autorizzazione prima di rispondere."
+    ],
+    "soluzione": "Login: il server risponde con Set-Cookie: sid=valore-casuale; Path=/; Secure; HttpOnly; SameSite=Lax. In seguito il browser invia Cookie: sid=valore-casuale a GET /preferiti. Il server cerca la sessione, verifica l'utente e restituisce i preferiti.",
+    "perche_funziona": "Il browser reinvia un riferimento esplicito; il server resta responsabile di validare la sessione e decidere quali dati quell'utente può leggere."
+  },
+  "completion_problem": {
+    "titolo": "Completa gli header del flusso",
+    "testo": "Il server ha creato una sessione e il browser deve presentarla in una richiesta successiva. Completa l'header in uscita e quello in entrata.",
+    "passi_mancanti": [
+      "Usare Set-Cookie nella risposta e Cookie nella richiesta successiva, con lo stesso nome e valore."
+    ],
+    "soluzione": "Risposta del server: Set-Cookie: sid=valore-casuale; Path=/; Secure; HttpOnly; SameSite=Lax. Richiesta del browser: Cookie: sid=valore-casuale."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Scegli gli attributi per l'ID di sessione",
+    "testo": "Per il cookie che contiene l'ID di accesso, scegli gli attributi che riducono invio in chiaro e lettura da script. Indica anche una protezione CSRF utile.",
+    "suggerimento": "Distingui il ruolo di Secure, HttpOnly e SameSite e non attribuire loro proprietà che non hanno.",
+    "soluzione_attesa": "Usa Secure per limitarne l'invio a connessioni sicure, HttpOnly per impedirne la lettura via Document.cookie e una policy SameSite adeguata per ridurre l'invio cross-site. HTTPS, autorizzazione, protezione XSS e controlli CSRF restano necessari."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Confondere cookie e sessione",
+      "perche_sbagliato": "Il cookie è memorizzato/inviato dal browser; la sessione è un contesto applicativo che può essere conservato sul server.",
+      "distrattore": "Classi di indirizzi IP"
+    },
+    {
+      "errore": "Dire che HttpOnly impedisce qualsiasi XSS",
+      "perche_sbagliato": "Impedisce la lettura tramite Document.cookie ma non blocca uno script malevolo dal compiere azioni nella pagina.",
+      "distrattore": "Schema relazionale"
+    },
+    {
+      "errore": "Dire che Secure cifra il cookie",
+      "perche_sbagliato": "Secure limita l'invio a connessioni sicure; la cifratura in transito è fornita da TLS in HTTPS.",
+      "distrattore": "Composizione di un URI"
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quale header crea o aggiorna un cookie dal server?",
+        "risposta": "Set-Cookie nella risposta HTTP; il browser può poi inviare il valore nell'header Cookie."
+      },
+      {
+        "domanda": "Che cosa contiene spesso il cookie usato per una sessione?",
+        "risposta": "Un identificatore opaco che consente al server di recuperare la sessione, non necessariamente tutti i dati."
+      },
+      {
+        "domanda": "Che cosa fanno Secure e HttpOnly?",
+        "risposta": "Secure limita l'invio a connessioni sicure; HttpOnly impedisce l'accesso tramite Document.cookie."
+      },
+      {
+        "domanda": "SameSite elimina ogni rischio CSRF?",
+        "risposta": "No. Aiuta a limitare alcune richieste cross-site ma non sostituisce tutte le difese CSRF e i controlli di autorizzazione."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega il percorso del cookie dal server al browser e di nuovo al server, distinguendo il cookie dai dati della sessione.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "http-stateless-vs-stateful",
+        "collegamento": "Cookie e sessioni consentono all'applicazione di mantenere contesto pur usando richieste HTTP indipendenti."
+      }
+    ]
+  },
+  "riepilogo": "Il server invia cookie con Set-Cookie; il browser può reinviarli con Cookie. Il cookie può contenere un ID, mentre i dati di sessione risiedono altrove. Secure limita l'invio a connessioni sicure, HttpOnly limita la lettura via JavaScript, SameSite riduce alcuni invii cross-site. Nessun attributo sostituisce HTTPS e autorizzazione.",
+  "flashcard": {
+    "fronte": "Cookie e sessione: chi conserva che cosa?",
+    "retro": "Il browser conserva/invia il cookie. La sessione è stato applicativo, spesso sul server, raggiunto tramite un identificatore nel cookie."
+  },
+  "checklist": {
+    "so_fare": [
+      "Ricostruire Set-Cookie → Cookie → recupero sessione.",
+      "Associare gli attributi Secure, HttpOnly e SameSite al loro scopo."
+    ],
+    "so_dire": [
+      "Distinguere cookie, cookie di sessione e sessione server-side.",
+      "Spiegare i limiti di HttpOnly, Secure e SameSite."
+    ]
+  }
+}

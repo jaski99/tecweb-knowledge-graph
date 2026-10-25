@@ -1,0 +1,99 @@
+{
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti di REST e API. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "La biblioteca espone catalogo, libri e recensioni a browser e app. Un contratto API coerente permette a client diversi di creare, cercare e aggiornare risorse senza conoscere il database o il codice interno.",
+  "definizione_esame": {
+    "definizione": "Il design di un'API definisce risorse, operazioni, rappresentazioni, codici e regole d'uso in modo coerente e documentato.",
+    "scopo_vantaggio": "Un contratto chiaro riduce ambiguità tra client e server e facilita evoluzione, test e gestione degli errori.",
+    "esempio": "GET /api/v1/libri/42 recupera un libro; POST /api/v1/libri invia i dati per crearne uno."
+  },
+  "spiegazione": "## Progetta il contratto prima delle route\n\nPrerequisito: conosci i vincoli REST e la semantica dei metodi HTTP. Un'API è un contratto tra client e server. Prima di scrivere handler, stabilisci quali risorse espone, come si identificano, quali rappresentazioni accetta e restituisce, quali errori sono possibili e quali client possono accedervi.\n\n### URI che identificano risorse\n\nPer un'API orientata alle risorse, usa percorsi comprensibili e stabili. I nomi al plurale per collezioni e le gerarchie come `/libri/42/recensioni` sono convenzioni comuni, non requisiti universali di REST. Evita di codificare nel percorso dettagli interni del database. Usa i metodi per esprimere l'azione, invece di inventare un verbo per ogni route.\n\n```http\nGET /api/v1/libri?autore=Calvino&limit=20 HTTP/1.1\nAccept: application/json\n\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n{\"items\": [{\"id\": 42, \"titolo\": \"Il sentiero dei nidi di ragno\"}], \"next\": null}\n```\n\nLa versione `/v1` è una scelta di contratto, non una prescrizione HTTP. Si può versionare anche con altre strategie; qualunque scelta deve essere documentata e applicata in modo coerente. I parametri di query sono adatti a filtri e paginazione; definisci limiti, ordinamento e comportamento quando non ci sono risultati.\n\n### Metodi e codici coerenti\n\nUsa GET per recuperare, POST per sottoporre dati a elaborazione, PUT per sostituire la rappresentazione del target, PATCH per applicare una patch e DELETE per rimuovere. Un POST che crea una risorsa spesso risponde 201 Created e può indicare l'URI con Location; 200, 202 o 204 sono appropriati in altri esiti secondo il contratto. Non trasformare la relazione tipica in una regola assoluta. Per una risorsa assente usa un codice coerente come 404; per input non valido definisci una risposta client appropriata e stabile.\n\n### Rappresentazioni, errori e sicurezza\n\nDichiara i media type con Content-Type e accetta formati tramite Accept quando la negoziazione è supportata. Valida i dati, applica autorizzazione a ogni operazione e non esporre stack trace, credenziali o dettagli interni nei messaggi d'errore. Un formato standard per i dettagli di errore, come `application/problem+json`, può dare ai client campi leggibili da macchina senza cambiare il codice HTTP. Documenta autenticazione, rate limit, paginazione, versionamento e compatibilità.\n\n```mermaid\nflowchart LR\n  C[Client] -->|Richiesta con metodo e URI| A[Contratto API]\n  A --> V[Validazione e autorizzazione]\n  V -->|Risorsa / errore con status| C\n```\n\n### Tabella di contrasto\n\n| Scelta | Regola affidabile | Trappola da evitare |\n|---|---|---|\n| Percorso | Identifica una risorsa | Mettere sempre un verbo d'azione nell'URI |\n| Versionamento | Dichiarare una strategia coerente | Dire che /v1 è imposto da REST |\n| Paginazione | Definire limite, ordine e continuazione | Restituire collezioni senza limiti |\n| Errore | Status HTTP più dettagli coerenti | Rispondere 200 per ogni risultato |\n\nBuon design non significa applicare una lista meccanica. Le convenzioni devono rendere il contratto prevedibile, mantenere compatibilità e rispettare i permessi e le caratteristiche delle risorse.\n",
+  "analogia": {
+    "testo": "È come progettare un modulo di prestito: campi, istruzioni e stati devono significare la stessa cosa per il lettore e per il bibliotecario.",
+    "limite": "Un'API è usata da programmi e intermediari; il suo contratto deve specificare anche semantica HTTP, formati, sicurezza e compatibilità."
+  },
+  "worked_example": {
+    "titolo": "Progettare l'API delle recensioni",
+    "problema": "Un'app deve elencare libri, leggere il libro 42 e inviare una nuova recensione associata a quel libro.",
+    "passi": [
+      "Identifica le risorse libri e recensioni.",
+      "Scegli GET /api/v1/libri e GET /api/v1/libri/42 per la lettura.",
+      "Scegli POST /api/v1/libri/42/recensioni per sottoporre una nuova recensione.",
+      "Definisci forma JSON, autenticazione, validazione e status di successo/errore."
+    ],
+    "soluzione": "GET /api/v1/libri restituisce una collezione paginata; GET /api/v1/libri/42 restituisce il libro oppure 404; POST /api/v1/libri/42/recensioni accetta la rappresentazione della recensione, verifica l'autorizzazione e può rispondere 201 Created con Location se crea una nuova risorsa.",
+    "perche_funziona": "Percorsi e metodi esprimono risorse e semantiche diverse; il contratto chiarisce rappresentazioni, autorizzazioni ed esiti."
+  },
+  "completion_problem": {
+    "titolo": "Completa una route coerente",
+    "testo": "Il client invia una nuova recensione al libro 42; il server crea una risorsa. Completa metodo, URI e codice di risposta tipico.",
+    "passi_mancanti": [
+      "Usare POST sulla collezione di recensioni del libro e indicare 201 Created per una creazione riuscita."
+    ],
+    "soluzione": "POST /api/v1/libri/42/recensioni; in caso di nuova recensione creata, una risposta tipica è 201 Created e può includere Location con il nuovo URI."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Progetta le route per i libri",
+    "testo": "Definisci le route essenziali per elencare, leggere, creare, aggiornare parzialmente e rimuovere un libro, includendo la paginazione della collezione.",
+    "suggerimento": "Usa URI per identificare collezione/risorsa, metodi coerenti e parametri di query per filtri e paginazione.",
+    "soluzione_attesa": "GET /api/v1/libri?page=1&limit=20; GET /api/v1/libri/42; POST /api/v1/libri; PATCH /api/v1/libri/42 con formato di patch documentato; DELETE /api/v1/libri/42. Specifica limiti di paginazione, status, errori, autenticazione e compatibilità."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Considerare /v1 obbligatorio in REST",
+      "perche_sbagliato": "La versione nell'URI è una strategia possibile di compatibilità, non un vincolo del protocollo HTTP o di REST.",
+      "distrattore": "Parser del motore JavaScript"
+    },
+    {
+      "errore": "Usare un verbo nell'URI per ogni azione",
+      "perche_sbagliato": "Nelle API orientate alle risorse, il percorso identifica la risorsa e il metodo HTTP esprime l'intento; le convenzioni vanno documentate.",
+      "distrattore": "Indirizzo MAC"
+    },
+    {
+      "errore": "Restituire sempre 200 e mettere l'errore nel testo",
+      "perche_sbagliato": "Lo status HTTP è una parte del contratto usata da client e intermediari e deve riflettere l'esito.",
+      "distrattore": "Sequenza di handshake TCP"
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa identifica il percorso di una API orientata alle risorse?",
+        "risposta": "Una risorsa o collezione; il metodo HTTP comunica l'intento dell'operazione."
+      },
+      {
+        "domanda": "Versionare con /v1 è obbligatorio?",
+        "risposta": "No. È una strategia possibile; la API deve scegliere e documentare una politica coerente."
+      },
+      {
+        "domanda": "Quali elementi deve includere il contratto degli errori?",
+        "risposta": "Status HTTP coerenti e un formato documentato per eventuali dettagli; non deve rivelare informazioni interne o segreti."
+      },
+      {
+        "domanda": "Che cosa deve specificare la paginazione?",
+        "risposta": "Parametri o cursori, limiti, ordinamento e comportamento di continuazione o fine dei risultati."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega perché un'API prevedibile richiede di documentare metodi, rappresentazioni, status, paginazione e autorizzazione.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "rest-metodi-http",
+        "collegamento": "Il design delle route deve rispettare le semantiche dei metodi, soprattutto la distinzione tra PUT e PATCH."
+      }
+    ]
+  },
+  "riepilogo": "Un'API è un contratto su risorse, URI, metodi, rappresentazioni, status, errori, sicurezza e compatibilità. Nomi plurali, paginazione e /v1 sono convenzioni da documentare, non vincoli REST universali. I codici devono riflettere l'esito; input e permessi vanno verificati e gli errori non devono rivelare dettagli interni.",
+  "flashcard": {
+    "fronte": "Quali decisioni rendono prevedibile il design di una API?",
+    "retro": "Risorse/URI, metodi HTTP, rappresentazioni, status ed errori, autenticazione/autorizzazione, paginazione e politica di compatibilità/versionamento documentate."
+  },
+  "checklist": {
+    "so_fare": [
+      "Progettare route di collezione e risorsa con metodi coerenti.",
+      "Definire paginazione, codici, errori e compatibilità."
+    ],
+    "so_dire": [
+      "Distinguere vincoli REST da convenzioni di design.",
+      "Spiegare il ruolo di validazione, status e autorizzazione."
+    ]
+  }
+}

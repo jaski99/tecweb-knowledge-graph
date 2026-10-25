@@ -1,129 +1,100 @@
 {
-  "perche_ti_serve": "Argomento FONDAMENTALE che esce in TUTTE le prove scritte (Gruppo A, ~65%). Vale 3-4 punti: se non lo sai, non passi l'esame. Esce anche nelle domande orali di tesina.",
-  "scenario_fil_rouge": "Immagina un e-commerce come Amazon. Quando aggiungi un prodotto al carrello, poi passi alla cassa, poi torni indietro e aggiungi un altro prodotto, il carrello si ricorda di tutti i prodotti. Ma HTTP di base non ha memoria: e come se ogni volta che parli con il commesso, lui non si ricordasse di te. Come fa Amazon a ricordarsi del tuo carrello? Questa e la domanda che porta a capire stateless vs stateful.",
+  "perche_ti_serve": "Nel materiale dell'utente è nel Gruppo A, tra gli argomenti ricorrenti. Non è indicato un punteggio specifico per questo nodo.",
+  "scenario_fil_rouge": "Una studentessa aggiunge due libri al carrello della biblioteca digitale, passa alla pagina di riepilogo e poi apre una nuova pagina. Vuole ritrovare il carrello: il protocollo di trasporto dei messaggi, da solo, non ricorda le richieste precedenti.",
   "definizione_esame": {
-    "definizione": "HTTP e un protocollo stateless: il server non mantiene alcuna informazione sullo stato del client tra richieste consecutive.",
-    "scopo_vantaggio": "Permette scalabilita massima: i server possono gestire milioni di client senza mantenere connessioni aperte, riducendo complessita e costo infrastrutturale.",
-    "esempio": "Quando fai login su un sito, il server ti riconosce non perche si ricorda di te (stateless), ma perche tu gli mandi un biglietto (cookie o token) con ogni richiesta che certificano la tua identita."
+    "definizione": "HTTP è stateless: la semantica del protocollo non lega una richiesta alla sequenza di richieste precedenti del client.",
+    "scopo_vantaggio": "Richieste autosufficienti semplificano l'elaborazione e consentono di distribuire il lavoro tra server, se lo stato applicativo è gestito a parte.",
+    "esempio": "Il browser invia un cookie con un identificatore di sessione e il server usa quell'identificatore per recuperare il carrello salvato."
   },
-  "spiegazione": "## HTTP Stateless: il principio che ha rivoluzionato il Web\n\nHTTP (Hypertext Transfer Protocol) e progettato per essere stateless (senza stato). Questo significa che:\n\n### I 3 pilastri dello stateless\n\n1. Ogni richiesta e indipendente: la richiesta per pagina1 non sa nulla della richiesta precedente per login\n2. Nessuna memoria server-side: il server non alloca risorse per ricordarsi dei client\n3. Tutte le informazioni viaggiano con la richiesta: lo stato deve essere incluso in ogni richiesta\n\n### Perché stateless? Vantaggi concreti\n\n- Scalabilita: i server possono gestire un numero molto maggiore di client senza dover mantenere stato in memoria\n- Semplificazione: protocollo piu semplice da implementare sia lato client che lato server\n- Affidabilita: in caso di crash o riavvio del server, non si perde lo stato delle sessioni\n- Flessibilita: i client possono cambiare server tra richieste senza problemi\n\n### Il paradosso: stateless != sessionless\n\nAttenzione: HTTP e stateless, ma le applicazioni web NON sono sessionless! Il protocollo non gestisce lo stato, ma le applicazioni possono averlo tramite meccanismi esterni.\n\n### 4 meccanismi per gestire lo stato\n\n#### 1. Cookie (RFC 6265)\nI cookie sono piccoli frammenti di dati che il server invia al client tramite header Set-Cookie. Il browser salva i cookie e li reinvia automaticamente in ogni richiesta successiva allo stesso dominio tramite header Cookie.\n\nEsempio:\n```http\nServer to Client: Set-Cookie: session_id=abc123; Path=/; HttpOnly; Secure\nClient to Server: Cookie: session_id=abc123\n```\n\n#### 2. Token JWT (RFC 7519)\nI token sono stringhe crittografate che contengono claims (dichiarazioni) e sono firmate digitalmente. Vengono inviate dal client nell header Authorization con schema Bearer.\n\nEsempio:\n```http\nClient to Server: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\n```\n\n#### 3. Parametri URL\nLo stato viene passato esplicitamente nell URL tramite query string.\n\nEsempio:\n```http\nGET /prodotto?id=123&session_token=xyz789\n```\n\n#### 4. Sessioni server-side\nIl client invia un session ID (tipicamente via cookie), e il server mantiene lo stato in memoria o in un database.\n\nEsempio Flask:\n```python\nfrom flask import Flask, session\napp = Flask(__name__)\napp.secret_key = 'segreto'\n\n@app.route('/login', methods=['POST'])\ndef login():\n    session['user_id'] = 123\n    return 'Login successful'\n```\n\n### Confronto tra i meccanismi\n\n| Meccanismo | Dove memorizzato | Sicurezza | Scalabilita | Persistenza |\n|------------|-------------------|-----------|-------------|-------------|\n| Cookie | Client | Media (HttpOnly/Secure) | Alta | Limitata (Max-Age) |\n| Token JWT | Client | Alta (firma) | Molto alta | Illimitata |\n| Parametri URL | Client (URL) | Bassa | Alta | Limitata |\n| Sessioni | Server | Alta | Media | Dipende da storage |\n\n```mermaid\ngraph TD\n    subgraph Client\n        A1[Browser Tab 1]\n        A2[Browser Tab 2]\n    end\n    subgraph Server Farm\n        B1[Server 1]\n        B2[Server 2]\n    end\n    A1 -->|Request 1| B1\n    A1 -->|Request 2| B2\n    B1 -->|Response 1| A1\n    B2 -->|Response 2| A1\n    B1 -->|Set-Cookie| A1\n    A1 -->|Cookie| B2\n```",
+  "spiegazione": "## La distinzione fondamentale\n\nPrerequisito: conosci lo scambio request-response di HTTP. Nel carrello, ogni richiesta HTTP è interpretabile senza che il protocollo imponga al server di ricordare la richiesta precedente. Questo è il senso di **stateless**. Non significa che il server non possa avere memoria, database, cache o sessioni: significa che la relazione tra richieste non è incorporata automaticamente nella semantica HTTP.\n\n### Protocollo stateless, applicazione con stato\n\nUn'applicazione può mantenere un carrello, una preferenza o un'autenticazione. Deve associare tali dati alle richieste successive, per esempio mediante un cookie, un token o un identificatore di sessione. Un pattern frequente è conservare i dati sul server e inviare al browser solo un identificatore casuale. Il cookie è il meccanismo di trasporto dell'identificatore; la sessione è il contesto applicativo associato.\n\n```mermaid\nsequenceDiagram\n  participant B as Browser\n  participant S as Server\n  B->>S: POST /login\n  S-->>B: Set-Cookie: sid=abc\n  B->>S: GET /carrello con Cookie: sid=abc\n  S-->>B: Risposta con il carrello della sessione\n```\n\n### Che cosa viaggia con ogni richiesta\n\nPer poter elaborare una richiesta in modo coerente, l'applicazione riceve i dati necessari: target, metodo, header, credenziali e, se opportuno, un identificatore che consente di caricare lo stato. Il server può essere stateless rispetto alla sessione oppure può consultare una session store esterna. Se più istanze gestiscono le richieste, un archivio condiviso o un token verificabile evita di dipendere dalla memoria locale di una sola istanza.\n\n| Termine | Significato | Esempio |\n|---|---|---|\n| Stateless HTTP | Il protocollo non collega semanticamente richieste successive | GET /catalogo è interpretabile da solo |\n| Sessione applicativa | Dati associati a un utente tra richieste | Carrello salvato in un archivio |\n| Cookie | Coppia nome-valore inviata dal browser secondo il proprio ambito | sid=abc |\n| Identificatore di sessione | Riferimento che permette al server di trovare la sessione | valore casuale non prevedibile |\n\n### Il cookie non rende HTTP stateful\n\nIl browser può inviare l'header Cookie automaticamente alle richieste compatibili con dominio e percorso. Il server usa il valore per ritrovare l'utente o la sessione. Il protocollo HTTP resta stateless: sono l'applicazione e il meccanismo dei cookie a ricostruire la continuità. Anche un token nell'header Authorization è un dato della richiesta, non una memoria implicita del protocollo. Un JWT firmato, in particolare, non è necessariamente cifrato: non inserire segreti nel payload.\n\n### Conseguenze pratiche\n\nLo stateless facilita bilanciamento e sostituzione delle istanze perché una richiesta non dipende dalla connessione precedente. Non garantisce da solo scalabilità illimitata, sicurezza o affidabilità: servono progettazione, archivi coerenti, gestione delle sessioni e controlli di accesso. Inoltre, HTTP/1.1 può mantenere connessioni persistenti: persistenza della connessione e stato applicativo sono concetti distinti.",
   "analogia": {
-    "testo": "HTTP stateless e come un ristorante self-service: ogni volta che vuoi qualcosa, devi prendere un nuovo vassoio e riempirlo. Il cuoco non si ricorda di te dalla volta precedente, non sa cosa hai gia ordinato, e non sa neanche se sei lo stesso cliente di 5 minuti fa. Se vuoi che il ristorante si ricordi del tuo ordine, devi portarti dietro lo scontrino con il numero (cookie) o avere un braccialetto con il tuo nome (token).",
-    "limite": "Nel web, i token JWT possono contenere informazioni crittografate che il server puo verificare senza dover mantenere una lista di client (stateless anche lato server). Nel ristorante, il cuoco deve sempre avere una lista dei braccialetti validi per verificare chi sei."
+    "testo": "È come presentare ogni volta il numero di prenotazione al banco: il personale non deve ricordare la conversazione precedente, ma il numero permette di ritrovare la pratica salvata.",
+    "limite": "Il cookie non è una tessera magica: può contenere dati o solo un identificatore, e il server deve validarlo e proteggere i dati associati."
   },
   "worked_example": {
-    "titolo": "Autenticazione completa con cookie in Flask",
-    "problema": "Implementare un sistema di autenticazione dove l utente fa login e il server ricorda l utente tramite cookie in tutte le pagine successive.",
+    "titolo": "Ritrovare il carrello con una sessione",
+    "problema": "Dopo il login, la biblioteca deve mostrare lo stesso carrello anche quando il browser invia una richiesta HTTP separata alla pagina di riepilogo.",
     "passi": [
-      "Creare endpoint /login che accetta POST con username e password",
-      "Validare le credenziali (es. username=alice, password=segreto)",
-      "Generare un session ID univoco e sicuro usando secrets.token_hex(16)",
-      "Salvare i dati della sessione lato server (in produzione: usa Redis o database)",
-      "Impostare cookie con Set-Cookie header (HttpOnly, Secure, SameSite)",
-      "Creare endpoint /profile che richiede autenticazione",
-      "Leggere il cookie session_id dalla richiesta",
-      "Verificare la sessione e restituire i dati dell utente"
+      "Il server autentica le credenziali e crea una sessione con identificatore casuale.",
+      "Il server salva il carrello associato alla sessione in un archivio.",
+      "La risposta invia il cookie sid con attributi appropriati.",
+      "Il browser invia il cookie alla richiesta successiva; il server verifica l'identificatore e carica il carrello."
     ],
-    "soluzione": "from flask import Flask, request, make_response, jsonify\nimport secrets\n\nsessions = {}\n\napp = Flask(__name__)\n\n@app.route('/login', methods=['POST'])\ndef login():\n    data = request.get_json()\n    username = data.get('username')\n    password = data.get('password')\n    if username == 'alice' and password == 'segreto':\n        session_id = secrets.token_hex(16)\n        sessions[session_id] = {'username': username, 'logged_in': True}\n        response = make_response(jsonify({'message': 'Login successful'}))\n        response.set_cookie('session_id', session_id, httponly=True, secure=True, samesite='Lax')\n        return response\n    return jsonify({'error': 'Invalid credentials'}), 401\n\n@app.route('/profile')\ndef profile():\n    session_id = request.cookies.get('session_id')\n    if session_id and sessions.get(session_id, {}).get('logged_in'):\n        return jsonify({'username': sessions[session_id]['username']})\n    return jsonify({'error': 'Not authenticated'}), 401",
-    "perche_funziona": "Il browser salva automaticamente il cookie session_id e lo invia in ogni richiesta successiva allo stesso dominio. Il server puo cosi identificare l utente senza dover mantenere connessioni persistenti. L attributo HttpOnly impedisce a JavaScript di accedere al cookie (protezione XSS), Secure garantisce che sia inviato solo su HTTPS, e SameSite protegge da CSRF."
+    "soluzione": "La risposta di login include, per esempio, Set-Cookie: sid=valore-casuale; Path=/; Secure; HttpOnly; SameSite=Lax. In seguito il browser invia Cookie: sid=valore-casuale a GET /carrello. Il server usa il valore per cercare la sessione e restituisce i dati del carrello.",
+    "perche_funziona": "La richiesta successiva contiene un riferimento esplicito allo stato applicativo, quindi l'applicazione ricostruisce il contesto senza cambiare la natura stateless del protocollo HTTP."
   },
   "completion_problem": {
-    "titolo": "Completare l autenticazione con JWT",
-    "testo": "Il codice seguente implementa l autenticazione con JWT, ma mancano 3 passi fondamentali. Completa i passi mancanti.",
+    "titolo": "Completa il flusso della sessione",
+    "testo": "Il server ha salvato il carrello nella sessione. Manca il riferimento che il browser deve reinviare per permettere al server di ritrovarla.",
     "passi_mancanti": [
-      "Verificare che il token JWT sia valido e non scaduto",
-      "Estrare il payload dal token",
-      "Gestire il caso in cui il token e scaduto o non valido"
+      "Aggiungere alla risposta un Set-Cookie con l'identificatore e reinviare quel valore nell'header Cookie della richiesta successiva."
     ],
-    "soluzione": "import jwt\nfrom functools import wraps\nfrom flask import request, jsonify\n\nSECRET_KEY = 'segreto_super_segreto'\n\ndef token_required(f):\n    @wraps(f)\n    def decorated(*args, **kwargs):\n        token = request.headers.get('Authorization')\n        if not token:\n            return jsonify({'error': 'Token missing'}), 401\n        try:\n            data = jwt.decode(token.split()[1], SECRET_KEY, algorithms=['HS256'])\n            current_user = data['username']\n        except jwt.ExpiredSignatureError:\n            return jsonify({'error': 'Token expired'}), 401\n        except jwt.InvalidTokenError:\n            return jsonify({'error': 'Invalid token'}), 401\n        return f(current_user, *args, **kwargs)\n    return decorated\n\n@app.route('/login', methods=['POST'])\ndef login():\n    data = request.get_json()\n    if data.get('username') == 'alice' and data.get('password') == 'segreto':\n        token = jwt.encode({'username': 'alice', 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)}, SECRET_KEY, algorithm='HS256')\n        return jsonify({'token': token})\n    return jsonify({'error': 'Invalid credentials'}), 401"
+    "soluzione": "Risposta: Set-Cookie: sid=valore-casuale; Path=/; Secure; HttpOnly; SameSite=Lax. Richiesta successiva: Cookie: sid=valore-casuale. Il server valida l'identificatore e recupera la sessione."
   },
   "esercizio_autonomo": {
-    "titolo": "Implementare gestione sessioni con Redis",
-    "testo": "Modifica il sistema di autenticazione con cookie per usare Redis invece di un dizionario Python. Assumere che Redis sia disponibile su localhost:6379.",
-    "suggerimento": "Usa la libreria redis-py. I comandi utili sono: redis.setex(key, 3600, value) per salvare con scadenza, redis.get(key) per recuperare, redis.delete(key) per eliminare.",
-    "soluzione_attesa": "import redis\nfrom flask import Flask, request, make_response, jsonify\nimport secrets\n\napp = Flask(__name__)\nr = redis.Redis(host='localhost', port=6379, db=0)\n\n@app.route('/login', methods=['POST'])\ndef login():\n    data = request.get_json()\n    if data.get('username') == 'alice' and data.get('password') == 'segreto':\n        session_id = secrets.token_hex(16)\n        r.setex(f'session:{session_id}', 3600, data.get('username'))\n        response = make_response(jsonify({'message': 'Login successful'}))\n        response.set_cookie('session_id', session_id, httponly=True, secure=True)\n        return response\n    return jsonify({'error': 'Invalid credentials'}), 401\n\n@app.route('/profile')\ndef profile():\n    session_id = request.cookies.get('session_id')\n    if session_id:\n        username = r.get(f'session:{session_id}')\n        if username:\n            return jsonify({'username': username.decode('utf-8')})\n    return jsonify({'error': 'Not authenticated'}), 401\n\n@app.route('/logout', methods=['POST'])\ndef logout():\n    session_id = request.cookies.get('session_id')\n    if session_id:\n        r.delete(f'session:{session_id}')\n    response = make_response(jsonify({'message': 'Logged out'}))\n    response.delete_cookie('session_id')\n    return response"
+    "titolo": "Confronta due modi di conservare il carrello",
+    "testo": "Descrivi cosa cambia se il browser conserva direttamente un piccolo carrello in un cookie oppure conserva un identificatore e il server salva il carrello in una sessione.",
+    "suggerimento": "Confronta dove risiedono i dati, che cosa viene inviato a ogni richiesta e quali controlli di sicurezza servono.",
+    "soluzione_attesa": "Nel primo caso i dati sono nel cookie del client e viaggiano con le richieste compatibili; nel secondo il cookie contiene un identificatore e il server conserva i dati della sessione. In entrambi i casi servono HTTPS e controlli: HttpOnly limita l'accesso via JavaScript, ma non elimina ogni rischio XSS o CSRF."
   },
   "errori_trappole": [
     {
       "errore": "Confondere stateless con sessionless",
-      "perche_sbagliato": "HTTP e stateless (il protocollo non mantiene stato), ma le applicazioni web NON sono sessionless. Lo stateless si riferisce al protocollo, non all applicazione. HTTP e stateless ma non sessionless.",
-      "distrattore": "HTTP e sessionless perche non ha sessioni"
+      "perche_sbagliato": "HTTP non gestisce la sessione come parte della semantica, ma l'applicazione può aggiungere cookie e session store.",
+      "distrattore": "Installazione del sistema operativo"
     },
     {
-      "errore": "Pensare che i cookie siano sicuri di default",
-      "perche_sbagliato": "I cookie senza HttpOnly possono essere rubati tramite XSS (JavaScript malizioso). Senza Secure, possono essere intercettati su connessioni non HTTPS. Senza SameSite, sono vulnerabili a CSRF.",
-      "distrattore": "I cookie sono sempre sicuri"
+      "errore": "Dire che ogni cookie contiene l'intera sessione",
+      "perche_sbagliato": "Spesso contiene un identificatore; i dati possono rimanere sul server. Un cookie non è automaticamente una sessione.",
+      "distrattore": "Topologia di una LAN"
     },
     {
-      "errore": "Usare JWT senza scadenza",
-      "perche_sbagliato": "I token senza scadenza (exp claim) sono un rischio di sicurezza: se compromessi, possono essere usati all infinito. Inoltre, non c e modo di invalidarli prima della scadenza.",
-      "distrattore": "I JWT durano per sempre"
-    },
-    {
-      "errore": "Memorizzare dati sensibili nei JWT",
-      "perche_sbagliato": "I JWT sono base64 encoded, NON crittografati (a meno che non si usi JWE). Chiunque puo decodificarli e leggere il payload. Non memorizzare mai password, PII, o dati sensibili.",
-      "distrattore": "I JWT sono crittografati"
+      "errore": "Dire che un JWT è sempre cifrato",
+      "perche_sbagliato": "La firma protegge l'integrità, non la riservatezza; un JWT firmato può essere leggibile da chi lo possiede.",
+      "distrattore": "Proprietà del box model CSS"
     }
   ],
-  "mnemonica": "State Less Every Second: HTTP e Stateless, Libero, Efficiente, Scalabile. Per lo stato: Cookie, Token, URL params, Sessioni.",
+  "mnemonica": "HTTP non ricorda il dialogo: l'applicazione porta un riferimento, come un numero di pratica.",
   "richiamo_attivo": {
     "domande": [
       {
-        "domanda": "Cosa significa che HTTP e stateless?",
-        "risposta": "Significa che il protocollo HTTP non mantiene alcuna informazione sullo stato del client tra richieste consecutive. Ogni richiesta e trattata come completamente indipendente."
+        "domanda": "Che cosa significa stateless nel contesto di HTTP?",
+        "risposta": "Il protocollo non lega una richiesta alla sequenza di richieste precedenti del client."
       },
       {
-        "domanda": "Quali sono i 4 meccanismi principali per gestire lo stato in HTTP?",
-        "risposta": "1) Cookie: dati salvati lato client e inviati automaticamente dal browser; 2) Token JWT: stringhe crittografate inviate dal client in header Authorization; 3) Parametri URL: dati passati esplicitamente nell URL; 4) Sessioni server-side: il server mantiene lo stato in memoria o DB."
+        "domanda": "Un'applicazione web può conservare il carrello?",
+        "risposta": "Sì. Può usare sessioni, cookie, token o un archivio applicativo senza rendere stateful la semantica HTTP."
       },
       {
-        "domanda": "Qual e il vantaggio principale di un protocollo stateless?",
-        "risposta": "La scalabilita: i server non devono mantenere informazioni sullo stato dei client, quindi possono gestire un numero molto maggiore di connessioni contemporanee."
+        "domanda": "Cookie e sessione sono sinonimi?",
+        "risposta": "No. Il cookie è dato conservato/inviato dal browser; la sessione è il contesto applicativo, spesso memorizzato sul server."
       },
       {
-        "domanda": "Cosa significa HttpOnly in un cookie?",
-        "risposta": "HttpOnly e un flag che impedisce a JavaScript di accedere al cookie, proteggendo da attacchi XSS (Cross-Site Scripting)."
-      },
-      {
-        "domanda": "Qual e la differenza tra JWT e JWS?",
-        "risposta": "JWT (JSON Web Token) e lo standard che definisce la struttura (header.payload.signature). JWS (JSON Web Signature) e una specifica che definisce come firmare i JWT. JWE (JSON Web Encryption) definisce come crittografare i JWT."
+        "domanda": "HTTP stateless implica connessioni non persistenti?",
+        "risposta": "No. La connessione può essere persistente; lo stateless riguarda il legame semantico fra richieste."
       }
     ],
-    "spiega_con_parole_tue": "Prova a spiegare a un amico che non sa nulla di informatica: perche quando chiudi il browser e riapri Amazon, il tuo carrello c e ancora? Usa l analogia del ristorante o inventane una tua.",
+    "spiega_con_parole_tue": "Spiega come il browser ritrova il carrello senza che HTTP mantenga automaticamente una memoria della richiesta precedente.",
     "collegamenti_interleaving": [
       {
         "nodo": "http-protocollo-base",
-        "collegamento": "HTTP stateless e una proprieta fondamentale del protocollo HTTP che devi aver capito bene prima di studiare come gestire lo stato."
-      },
-      {
-        "nodo": "architettura-client-server",
-        "collegamento": "In un architettura client-server, lo stateless permette ai server di gestire molti client senza mantenere connessioni aperte, che e fondamentale per la scalabilita."
-      },
-      {
-        "nodo": "rest-principi",
-        "collegamento": "I principi REST si basano su HTTP e la sua natura stateless. Un API RESTful deve essere stateless: ogni richiesta deve contenere tutte le informazioni necessarie."
+        "collegamento": "La natura stateless è una proprietà della semantica HTTP, quindi va distinta dalla struttura di una singola richiesta e risposta."
       }
     ]
   },
-  "riepilogo": "HTTP e stateless per design: il server non si ricorda di te tra richieste. Lo stato si gestisce tramite: cookie (browser), token JWT (API), parametri URL (link), sessioni server-side (memoria/DB). Cookie e JWT sono i piu usati. Lo stateless abilitata scalabilita e affidabilita del web moderno.",
+  "riepilogo": "HTTP è stateless: una richiesta non dipende da una precedente per la semantica del protocollo. Le applicazioni possono comunque mantenere stato con cookie, token e sessioni. Il cookie può trasportare un identificatore, mentre i dati restano sul server. Connessione persistente e stato applicativo non sono la stessa cosa.",
   "flashcard": {
-    "fronte": "HTTP: stateless vs stateful - Qual e la differenza?",
-    "retro": "HTTP e STATLESS: il protocollo non mantiene stato. Le applicazioni possono essere STATEFUL usando cookie, token, URL params, o sessioni per mantenere lo stato tra richieste. Stateless = protocollo senza memoria; Stateful = applicazione con memoria."
+    "fronte": "HTTP stateless significa che non esistono sessioni?",
+    "retro": "No. HTTP non lega le richieste tra loro; un'applicazione può mantenere sessioni e ricostruire il contesto usando dati espliciti, spesso un cookie."
   },
   "checklist": {
     "so_fare": [
-      "Implementare autenticazione con cookie in Flask",
-      "Creare e validare token JWT",
-      "Configurare attributi di sicurezza dei cookie (HttpOnly, Secure, SameSite)",
-      "Scegliere il meccanismo di stato appropriato per ogni scenario",
-      "Usare Redis per sessioni distribuite"
+      "Disegnare il flusso Set-Cookie e Cookie.",
+      "Distinguere cookie, identificatore di sessione e dati della sessione."
     ],
     "so_dire": [
-      "Spiegare perche HTTP e stateless e quali vantaggi porta",
-      "Elencare e confrontare i 4 meccanismi per gestire lo stato",
-      "Spiegare la differenza tra stateless e sessionless",
-      "Descrivere come funzionano cookie e JWT",
-      "Spiegare i rischi di sicurezza di ogni meccanismo"
+      "Spiegare perché un'applicazione con sessioni usa comunque HTTP stateless.",
+      "Distinguere stato applicativo da persistenza della connessione."
     ]
   }
 }
