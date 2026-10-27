@@ -1,5 +1,5 @@
 // Checklist di ripasso dai campi checklist_ripasso, in ordine di studio.
-import { h, clear } from './dom.js';
+import { h, clear, append } from './dom.js';
 import { areaBadge } from './badges.js';
 
 export const reviewKey = (nodeId, i) => `${nodeId}#${i}`;
@@ -21,9 +21,9 @@ export function createReviewView(root, graph, reviewStore, { onSelect }) {
     render({ visible }) {
       clear(root);
       const ids = graph.order.filter((id) => visible.has(id) && (graph.byId.get(id).checklist_ripasso || []).length);
-      if (!ids.length) { root.append(h('p', { class: 'muted' }, 'Nessun punto di ripasso per i filtri attuali.')); return; }
+      if (!ids.length) { append(root, h('p', { class: 'muted' }, 'Nessun punto di ripasso per i filtri attuali.')); return; }
       const traps = graph.trappole || [];
-      root.append(
+      append(root,
         traps.length ? h('section', { class: 'review traps' }, h('h3', {}, '⚠ Trappole di ripasso'),
           h('ul', {}, traps.map((t, i) => h('li', {}, h('label', { class: 'check' },
             h('input', { type: 'checkbox', checked: reviewStore.has(trappolaKey(t, i)), onchange: (e) => reviewStore.toggle(trappolaKey(t, i), e.target.checked) }), ' ',

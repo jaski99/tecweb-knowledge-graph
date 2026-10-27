@@ -1,4 +1,4 @@
-import { h, clear } from './dom.js';
+import { h, clear, append } from './dom.js';
 import { LIVELLI } from '../core/mastery.js';
 
 export function graphMobileEntries(nodes, visible, done) {
@@ -13,7 +13,7 @@ export function createGraphMobileList(container, graph, { onSelect, onOpen }) {
       const active = container.ownerDocument.activeElement?.dataset?.nodeId;
       clear(container);
       const entries = graphMobileEntries(graph.nodi, visible, done);
-      container.append(
+      append(container,
         h('h3', {}, `Elenco dei concetti (${entries.length})`),
         h('p', { class: 'muted' }, 'Alternativa testuale al grafo: seleziona un elemento per i dettagli o apri direttamente la lezione.'),
         h('ul', { class: 'graph-mobile-items' }, entries.map((entry) =>

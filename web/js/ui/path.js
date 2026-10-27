@@ -1,5 +1,5 @@
 // Percorso in ordine topologico; la modalità guidata suggerisce, non blocca.
-import { h, clear } from './dom.js';
+import { h, clear, append } from './dom.js';
 import { areaBadge, tipoBadge, prioBadge, masteryBadge } from './badges.js';
 import { prerequisitiSoddisfatti } from '../core/study-state.js';
 import { studyStatusSelect } from './study-status.js';
@@ -12,8 +12,8 @@ export function createPathView(root, graph, { onSelect, onToggleDone, onOpenLess
       const ids = graph.order.filter((id) => visible.has(id));
       const active = root.ownerDocument.activeElement?.id;
       clear(root);
-      if (!ids.length) { root.append(h('p', { class: 'muted' }, 'Nessun nodo corrisponde ai filtri.')); return; }
-      root.append(h('ol', { class: 'path' }, ids.map((id) => {
+      if (!ids.length) { append(root, h('p', { class: 'muted' }, 'Nessun nodo corrisponde ai filtri.')); return; }
+      append(root, h('ol', { class: 'path' }, ids.map((id) => {
         const n = graph.byId.get(id);
         const blocked = !prerequisitiSoddisfatti(n, statiStudio);
         return h('li', { class: ['step', done.has(id) && 'done', id === selected && 'sel', guidata && !blocked && !done.has(id) && statiStudio[id] !== 'so-gia' && 'recommended'].filter(Boolean).join(' ') },
