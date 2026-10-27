@@ -41,7 +41,8 @@ def _blocks(md):
 
 
 def test_area3_ha_11_nodi():
-    assert len(AREA3) == 11
+    # Round 2: X2 aggiunge nodi in area 3 (vedi docs/IMPROVEMENT_PLAN.md), quindi almeno gli 11 originali.
+    assert len(AREA3) >= 11
 
 
 @pytest.mark.parametrize("node_id", AREA3)

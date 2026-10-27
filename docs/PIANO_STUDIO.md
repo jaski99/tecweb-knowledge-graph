@@ -24,6 +24,7 @@ Ordine topologico dei nodi (ogni prerequisito prima del nodo che lo usa); a pari
 | 4 | Back-end e strumenti | 5 | 0 | 0 | 5 | 4 h 00 min |
 | 5 | Web semantico ed evoluzione | 3 | 2 | 1 | 0 | 2 h 25 min |
 | 6 | Tesina | 5 | 0 | 0 | 5 | 6 h 30 min |
+| 7 | Modulo IA (apprendimento automatico, per la lode) | 0 | 0 | 0 | 0 | 0 min |
 | **Totale** | | 40 | **21** | **8** | **11** | **31 h 30 min** |
 
 ## Sessione 1 (1 h 35 min)

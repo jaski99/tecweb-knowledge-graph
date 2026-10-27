@@ -31,6 +31,10 @@
     {
       "id": 6,
       "titolo": "Tesina"
+    },
+    {
+      "id": 7,
+      "titolo": "Modulo IA (apprendimento automatico, per la lode)"
     }
   ],
   "testi": {
@@ -40,7 +44,11 @@
     "FLASK": "Flask Documentation - Pallets Projects, framework Python per web",
     "GIT": "Git Documentation - Git Contributors, sistema di versionamento",
     "ECMA": "ECMA-262 - ECMAScript Language Specification",
-    "SQLITE": "SQLite Documentation - D. Richard Hipp, database SQL embedded"
+    "SQLITE": "SQLite Documentation - D. Richard Hipp, database SQL embedded",
+    "PYTHON": "Python Documentation - Python Software Foundation, tutorial ufficiale gratuito",
+    "NUMPY": "NumPy Documentation - NumPy Developers, documentazione ufficiale gratuita",
+    "SKLEARN": "scikit-learn User Guide - scikit-learn developers, guida gratuita ai metodi di apprendimento automatico",
+    "REACT": "React Documentation (react.dev) - Meta Open Source, documentazione ufficiale gratuita"
   },
   "nota_esame": "Priorità motivate dal materiale utente: Gruppo A (iper-riciclati, ~65% scritto): stateless/stateful, DOM/Virtual DOM, HTTP 1/1.1/2/3, cookie/sessioni, Web Semantico, architettura 3-tier, CSS, REST. Gruppo B (varianti, ~20%): canvas, DHTML, motore JS, eventi, rate limiting, Web 1.0-4.0, span. Gruppo C (punti ciechi, ~15%): Flask, Git, JS moderno. Formato esame: IPOTESI basata su prove passate - scritto 2h (23 pt) + tesina (10 pt). Da confermare con programma ufficiale.",
   "trappole": [

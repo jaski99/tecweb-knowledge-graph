@@ -35,8 +35,8 @@
     "area": {
       "type": "integer",
       "minimum": 1,
-      "maximum": 6,
-      "description": "Area tematica (1=Fondamenti rete e HTTP, 2=Architetture, 3=Front-end, 4=Back-end e strumenti, 5=Web semantico, 6=Tesina)"
+      "maximum": 7,
+      "description": "Area tematica (1=Fondamenti rete e HTTP, 2=Architetture, 3=Front-end, 4=Back-end e strumenti, 5=Web semantico, 6=Tesina, 7=Modulo IA - apprendimento automatico, serve per la lode)"
     },
     "gruppo": {
       "type": "string",
@@ -45,8 +45,8 @@
     },
     "worker": {
       "type": "string",
-      "enum": ["W1", "W2", "W3", "W4", "W5"],
-      "description": "Worker assegnato per la FASE 2: W1=area1-2, W2=area3, W3=area4-5, W4=area6-quiz, W5=webapp"
+      "enum": ["W1", "W2", "W3", "W4", "W5", "X1", "X2", "X3", "X4", "X5", "X6"],
+      "description": "Worker che ha creato o rivisto il nodo: W1-W5 = round 1 (docs/ARENA_PLAN.md), X1-X6 = round 2 (docs/IMPROVEMENT_PLAN.md)"
     },
     "tipo": {
       "enum": [
@@ -207,7 +207,11 @@
               "FLASK",
               "GIT",
               "ECMA",
-              "SQLITE"
+              "SQLITE",
+              "PYTHON",
+              "NUMPY",
+              "SKLEARN",
+              "REACT"
             ],
             "description": "Chiave in testi (meta.json)"
           },
