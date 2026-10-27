@@ -42,7 +42,7 @@ Le risorse MDN, RFC, W3C, Flask, Git, Python, NumPy, scikit-learn e React presen
 
 ## Priorità e stato delle evidenze
 
-I gruppi A/B/C sono **una scelta di studio del progetto**, non percentuali di domande: **A** = tema elencato in [F1] o base indispensabile per scritto/tesina; **B** = contesto o approfondimento utile; **C** = opzionale o non elencato nel programma 2026/27. Le percentuali e le ricorrenze negli appunti dell'utente sono **[IPOTESI]**, non dati verificati. Le priorità e i nodi pianificati sono in [NODES.md](NODES.md).
+I gruppi A/B/C sono **una scelta di studio del progetto**, non percentuali di domande: **A** = tema elencato in [F1] o base indispensabile per scritto/tesina; **B** = contesto o approfondimento utile; **C** = opzionale o non elencato nel programma 2026/27. Le percentuali e le ricorrenze negli appunti dell'utente sono **[IPOTESI]**, non dati verificati. Le priorità e il catalogo dei nodi presenti sono in [NODES.md](NODES.md).
 
 | Stato | Cosa sappiamo e limiti | Fonti |
 |---|---|---|

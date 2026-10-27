@@ -2,16 +2,18 @@
 
 # Piano di studio — Tecnologie Web UNIMORE
 
-Ordine topologico dei nodi (ogni prerequisito prima del nodo che lo usa); a parità di vincoli prima la priorità **ALTA**, poi area e id. Sessioni da circa 2 ore (un nodo non viene mai spezzato).
+Ordine topologico dei nodi (ogni prerequisito prima del nodo che lo usa); a parità di vincoli prima la priorità **ALTA**, poi area e id. Sessioni di studio da circa 2 ore (un nodo non viene mai spezzato).
 
 
 ## Legenda
 
-- **Gruppo A**: iper-riciclati (~65% dello scritto) - argomenti fondamentali
+- **Gruppo A**: temi esplicitamente elencati nel [programma ufficiale (F1)](SYLLABUS.md) o indispensabili per lo scritto o per la tesina.
 
-- **Gruppo B**: varianti (~20%) - argomenti occasionali
+- **Gruppo B**: approfondimenti o contesto utile.
 
-- **Gruppo C**: punti ciechi (~15%) - argomenti pratici da studiare attivamente
+- **Gruppo C**: argomenti non elencati nel programma 2026/27 o opzionali.
+
+I gruppi indicano priorità di studio, non frequenze o percentuali accertate delle domande d'esame.
 
 
 ## Tempo totale per area
@@ -70,22 +72,22 @@ Ordine topologico dei nodi (ogni prerequisito prima del nodo che lo usa); a pari
 18. [ ] **HTML5: struttura semantica della pagina** (`html5-struttura-semantica`) — area 3, gruppo A, abilita, priorità ALTA, 35 min. Prerequisiti: html-form-accessibilita
 19. [ ] **JavaScript moderno: fetch, async/await** (`javascript-fetch-async-await`) — area 3, gruppo A, abilita, priorità ALTA, 50 min. Prerequisiti: —
 
-## Sessione 9 (1 h 50 min)
+## Sessione 9 (2 h 00 min)
 
-20. [ ] **Flask: rotte e jsonify** (`flask-rotte-jsonify`) — area 4, gruppo A, abilita, priorità ALTA, 60 min. Prerequisiti: —
-21. [ ] **Flask: request e response** (`flask-request-response`) — area 4, gruppo A, abilita, priorità ALTA, 50 min. Prerequisiti: flask-rotte-jsonify
+20. [ ] **Git: comandi base** (`git-comandi-base`) — area 4, gruppo A, abilita, priorità ALTA, 50 min. Prerequisiti: —
+21. [ ] **Git: workflow collaborativo con branch, merge e pull request** (`git-workflow-collaborativo`) — area 4, gruppo A, abilita, priorità ALTA, 40 min. Prerequisiti: git-comandi-base
+22. [ ] **JSON: formato dati per il Web** (`json-formato-dati`) — area 4, gruppo A, concetto, priorità ALTA, 30 min. Prerequisiti: —
 
-## Sessione 10 (2 h 00 min)
+## Sessione 10 (2 h 15 min)
 
-22. [ ] **Git: comandi base** (`git-comandi-base`) — area 4, gruppo A, abilita, priorità ALTA, 50 min. Prerequisiti: —
-23. [ ] **Git: workflow collaborativo con branch, merge e pull request** (`git-workflow-collaborativo`) — area 4, gruppo A, abilita, priorità ALTA, 40 min. Prerequisiti: git-comandi-base
-24. [ ] **JSON: formato dati per il Web** (`json-formato-dati`) — area 4, gruppo A, concetto, priorità ALTA, 30 min. Prerequisiti: —
+23. [ ] **Architetture mashup: comporre servizi e dati** (`architetture-mashup`) — area 2, gruppo A, concetto, priorità ALTA, 40 min. Prerequisiti: rest-principi, json-formato-dati, architettura-3-tier
+24. [ ] **React: componenti, JSX, props e stato** (`react-componenti-jsx`) — area 3, gruppo A, abilita, priorità ALTA, 50 min. Prerequisiti: dom-virtual-dom, javascript-fetch-async-await, json-formato-dati
+25. [ ] **Python di base per applicazioni Web** (`python-base-web`) — area 4, gruppo A, abilita, priorità ALTA, 45 min. Prerequisiti: json-formato-dati
 
-## Sessione 11 (2 h 15 min)
+## Sessione 11 (1 h 50 min)
 
-25. [ ] **Architetture mashup: comporre servizi e dati** (`architetture-mashup`) — area 2, gruppo A, concetto, priorità ALTA, 40 min. Prerequisiti: rest-principi, json-formato-dati, architettura-3-tier
-26. [ ] **React: componenti, JSX, props e stato** (`react-componenti-jsx`) — area 3, gruppo A, abilita, priorità ALTA, 50 min. Prerequisiti: dom-virtual-dom, javascript-fetch-async-await, json-formato-dati
-27. [ ] **Python di base per applicazioni Web** (`python-base-web`) — area 4, gruppo A, abilita, priorità ALTA, 45 min. Prerequisiti: json-formato-dati
+26. [ ] **Flask: rotte e jsonify** (`flask-rotte-jsonify`) — area 4, gruppo A, abilita, priorità ALTA, 60 min. Prerequisiti: python-base-web
+27. [ ] **Flask: request e response** (`flask-request-response`) — area 4, gruppo A, abilita, priorità ALTA, 50 min. Prerequisiti: flask-rotte-jsonify
 
 ## Sessione 12 (1 h 45 min)
 
@@ -132,7 +134,7 @@ Ordine topologico dei nodi (ogni prerequisito prima del nodo che lo usa); a pari
 
 ## Sessione 20 (3 h 00 min)
 
-47. [ ] **Tesina: Progetto Flask + CRUD** (`tesina-progetto-flask-crud`) — area 6, gruppo A, abilita, priorità ALTA, 180 min. Prerequisiti: flask-rotte-jsonify, sqlite-crud, javascript-fetch-async-await
+47. [ ] **Tesina: Progetto Flask + CRUD** (`tesina-progetto-flask-crud`) — area 6, gruppo A, abilita, priorità ALTA, 180 min. Prerequisiti: flask-rotte-jsonify, sqlite-crud, javascript-fetch-async-await, servizi-restful-flask, git-workflow-collaborativo
 
 ## Sessione 21 (1 h 45 min)
 
