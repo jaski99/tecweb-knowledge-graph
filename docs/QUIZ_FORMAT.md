@@ -105,6 +105,34 @@ non vuote. L’insieme delle chiavi deve coincidere con quello dei segnaposto.
 Si ignorano solo spazi iniziali/finali; mai valutazione permissiva o `eval`.
 Risposte come `{ "1": "jsonify" }`; il codice non viene eseguito.
 
+## Perimetro predefinito: solo Tecnologie Web
+
+La banca IA già scritta resta conservata, ma **non viene selezionata per default**.
+Il contratto condiviso con X5 è `localStorage["tecweb.moduloIA"]`: solo il valore
+esatto `"1"` abilita il modulo; chiave assente, qualsiasi altro valore o storage
+non accessibile lo lasciano spento. `simulatore/modulo-ia.js` legge questa chiave
+senza importare `web/js/core/modulo-ia.js`.
+
+`catalogoEsercizi` e `generaProva` escludono per default area 7 e riferimenti a
+nodi `ia-*`, anche negli abbinamenti trasversali. L’opzione esplicita
+`{includiIA: true}` riabilita il catalogo completo: la vista la deriva dalla chiave
+condivisa, non da una propria preferenza. Anche riepiloghi e report adottano
+il default TW. I conteggi della banca e il blueprint usano il catalogo attivo.
+
+Le sessioni salvate sono proiettate sul perimetro attivo prima di mostrare domande,
+soluzioni o report; le risposte nascoste non contribuiscono ai conteggi e non
+producono nuovi esiti. Una sessione con soli quesiti disabilitati mostra la pagina
+iniziale. La proiezione non modifica il salvataggio originario finché non si salva
+un ulteriore progresso: riattivando il modulo si può riaprire la sessione integrale
+ancora conservata. I cambiamenti della chiave tramite controlli della stessa
+pagina o eventi storage/focus aggiornano anche una vista già aperta.
+
+Nessun quesito IA viene eliminato o aggiunto con questa modifica. Due distrattori
+TW che citavano il modulo IA o la classificazione bayesiana sono sostituiti con
+alternative fuori contesto non legate all’IA. L’API `leggiEsiti` mantiene invece
+il contratto di archivio completo per X5: il filtro delle statistiche web spetta
+al consumatore, senza cancellare i risultati storici dei moduli disabilitati.
+
 ## Modalità, blueprint e report
 
 - **Allenamento**: senza limite di tempo. Feedback testuale immediato alla

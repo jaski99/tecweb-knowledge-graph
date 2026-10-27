@@ -217,7 +217,7 @@
         },
         {
           "id": "c",
-          "testo": "Tre livelli di classificazione bayesiana",
+          "testo": "Tre passaggi di installazione del sistema operativo",
           "tipo": "fuori_contesto",
           "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
         }
@@ -801,7 +801,7 @@
         },
         {
           "id": "b",
-          "testo": "Eseguendo il voto del modulo IA",
+          "testo": "Installando un nuovo sistema operativo",
           "tipo": "fuori_contesto",
           "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
         },

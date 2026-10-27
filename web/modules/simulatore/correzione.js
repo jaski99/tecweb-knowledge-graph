@@ -1,3 +1,4 @@
+import { filtraPerModulo } from './modulo-ia.js';
 // Correzione per identificatori stabili. Nessuna esecuzione di codice dell'utente.
 export function rispostaCompleta(item, risposta) {
   if (item.tipo === 'abbinamento') return item.abbinamenti.every((_, i) => Boolean(risposta?.[i]));
@@ -19,9 +20,9 @@ export function esitiItem(item, risposta, modalita, ts) {
   const corretto = correggi(item, risposta);
   return corretto === null ? [] : [{ item_id: item.id, nodo_id: item.nodoId, corretto, modalita, ts }];
 }
-export function reportAree(items, risposte) {
+export function reportAree(items, risposte, { includiIA = false } = {}) {
   const areas = new Map();
-  for (const item of items) {
+  for (const item of filtraPerModulo(items, includiIA)) {
     if (!areas.has(item.area)) areas.set(item.area, { area: item.area, totale: 0, corretti: 0, aperte: 0, nodi: new Set() });
     const row = areas.get(item.area);
     row.totale += 1;

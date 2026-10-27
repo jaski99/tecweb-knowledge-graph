@@ -1,3 +1,4 @@
+import { filtraPerModulo } from './modulo-ia.js';
 // Sessione del simulatore salvata localmente. Nessun punteggio o formato d'esame viene presunto.
 import { leggiTimer, timerNuovo, timerInPausa, timerInCorso } from './timer.js';
 
@@ -59,4 +60,15 @@ export function consegna(sessione, now) {
 }
 export function scaduta(sessione) {
   return { ...sessione, fase: 'consegnata', timer: { ...sessione.timer, running: false, startedAt: null, elapsedMs: sessione.timer.durataMs } };
+}
+
+// Proiezione non distruttiva: lo storico e il salvataggio originale non vengono cancellati.
+export function sessionePerModulo(sessione, includiIA = false) {
+  if (!sessione) return null;
+  const esercizi = filtraPerModulo(sessione.prova.esercizi, includiIA);
+  if (!esercizi.length) return null;
+  const ids = new Set(esercizi.map((e) => e.id));
+  const seleziona = (record) => Object.fromEntries(Object.entries(record || {}).filter(([id]) => ids.has(id)));
+  return { ...sessione, prova: { ...sessione.prova, esercizi },
+    risposte: seleziona(sessione.risposte), confermate: seleziona(sessione.confermate), registrati: seleziona(sessione.registrati) };
 }

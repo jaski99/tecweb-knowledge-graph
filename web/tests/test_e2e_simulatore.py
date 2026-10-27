@@ -102,9 +102,10 @@ def prova_tipologie(page):
         scelti.setdefault(item["tipo"], item)
     sample = list(scelti.values()) + [next(item for item in BANK if item["id"].startswith("q6-"))]
     page.evaluate("""async (elementi) => {
+      localStorage.setItem('tecweb.moduloIA', '1');
       const { generaProva } = await import('./modules/simulatore/genera.js');
       const { creaSessione, mettiInPausa } = await import('./modules/simulatore/sessione.js');
-      const prova = generaProva([], { quiz: {elementi}, quanti: elementi.length, seed: 3, modalita: 'allenamento' });
+      const prova = generaProva([], { quiz: {elementi}, quanti: elementi.length, seed: 3, modalita: 'allenamento', includiIA: true });
       const sessione = mettiInPausa(creaSessione(prova, Date.now()), Date.now());
       localStorage.setItem('tecweb:simulatore:v1', JSON.stringify(sessione));
     }""", sample)
@@ -243,7 +244,7 @@ def test_catalogo_senza_banca_gestisce_aperte_in_tutte_le_aree(browser, base_url
     page.click("#sim-inizia")
     page.wait_for_selector(".sim-q")
     sessione = page.evaluate("JSON.parse(localStorage.getItem('tecweb:simulatore:v1'))")
-    aree_catalogo = {node["area"] for node in GRAPH["nodi"] if node.get("esercizi")}
+    aree_catalogo = {node["area"] for node in GRAPH["nodi"] if node.get("esercizi") and node["area"] != 7 and not node["id"].startswith("ia-")}
     if len(sessione["prova"]["esercizi"]) >= len(aree_catalogo):
         assert {item["area"] for item in sessione["prova"]["esercizi"]} == aree_catalogo
     for article in page.locator(".sim-q").all():
@@ -253,4 +254,110 @@ def test_catalogo_senza_banca_gestisce_aperte_in_tutte_le_aree(browser, base_url
     assert page.locator(".sim-soluzione-testo").count() == len(sessione["prova"]["esercizi"])
     assert page.evaluate("localStorage.getItem('ids-kg:esiti-quiz:v1')") is None
     assert "da autovalutare" in page.locator("#sim-report").inner_text()
+    context.close()
+
+
+def assert_solo_tw(page):
+    sessione = page.evaluate("JSON.parse(localStorage.getItem('tecweb:simulatore:v1'))")
+    for item in sessione["prova"]["esercizi"]:
+        assert item["area"] != 7
+        assert not item["nodoId"].startswith("ia-")
+    text = page.locator(".sim").inner_text()
+    assert "Area 7" not in text
+    assert "modulo IA" not in text
+    assert "Q6" not in text
+    assert page.locator('.sim a[href*="ia-"]').count() == 0
+    return sessione
+
+
+@pytest.mark.parametrize("viewport", VIEWPORTS)
+def test_stato_vuoto_tre_simulazioni_solo_tw(browser, base_url, viewport):
+    context = browser.new_context(viewport=VIEWPORTS[viewport])
+    page = context.new_page()
+    page.on("dialog", lambda dialog: dialog.accept())
+    page.goto(base_url + "#/simulatore")
+    page.wait_for_selector("#sim-inizia")
+    assert page.evaluate("localStorage.getItem('tecweb.moduloIA')") is None
+    tw = [i for i in BANK if i["area"] != 7 and not i["nodo_id"].startswith("ia-")]
+    for seed in [1, 2, 3]:
+        assert f"{len(tw)} quesiti della banca disponibili" in page.locator(".sim").inner_text()
+        page.fill("#sim-seed", str(seed))
+        page.click("#sim-inizia")
+        page.wait_for_selector(".sim-q")
+        sessione = assert_solo_tw(page)
+        page.click("#sim-consegna")
+        page.wait_for_selector("#sim-report")
+        assert_solo_tw(page)
+        assert page.locator(".sim-q").count() == len(sessione["prova"]["esercizi"])
+        history = page.evaluate("JSON.parse(localStorage.getItem('ids-kg:esiti-quiz:v1'))")
+        assert all(not e["nodo_id"].startswith("ia-") for e in history)
+        page.click("#sim-nuova")
+        page.wait_for_selector("#sim-inizia")
+    context.close()
+
+
+@pytest.mark.parametrize("consegnata", [False, True])
+def test_ia_opt_in_e_sessione_salvata_riaperta_senza_ia(browser, base_url, consegnata):
+    context = browser.new_context(viewport=VIEWPORTS["desktop"])
+    page = context.new_page()
+    page.goto(base_url + "#/simulatore")
+    page.wait_for_selector("#sim-inizia")
+    page.evaluate("localStorage.setItem('tecweb.moduloIA', '1')")
+    page.reload()
+    page.wait_for_selector("#sim-inizia")
+    assert f"{len(BANK)} quesiti della banca disponibili" in page.locator(".sim").inner_text()
+    page.click("#sim-inizia")
+    page.wait_for_selector(".sim-q")
+    original = page.evaluate("JSON.parse(localStorage.getItem('tecweb:simulatore:v1'))")
+    assert any(i["area"] == 7 for i in original["prova"]["esercizi"])
+    if consegnata:
+        page.click("#sim-consegna")
+        page.wait_for_selector("#sim-report")
+        assert "Area 7" in page.locator("#sim-report").inner_text()
+        original = page.evaluate("JSON.parse(localStorage.getItem('tecweb:simulatore:v1'))")
+    history = page.evaluate("localStorage.getItem('ids-kg:esiti-quiz:v1')")
+    page.evaluate("localStorage.removeItem('tecweb.moduloIA')")
+    page.reload()
+    page.wait_for_selector(".sim-q")
+    attesi = [i for i in original["prova"]["esercizi"] if i["area"] != 7]
+    assert page.locator(".sim-q").count() == len(attesi)
+    assert "Area 7" not in page.locator(".sim").inner_text()
+    assert page.locator('.sim a[href*="ia-"]').count() == 0
+    assert page.evaluate("localStorage.getItem('ids-kg:esiti-quiz:v1')") == history
+    page.evaluate("localStorage.setItem('tecweb.moduloIA', '1')")
+    page.reload()
+    page.wait_for_selector(".sim-q")
+    assert page.locator(".sim-q").count() == len(original["prova"]["esercizi"])
+    context.close()
+
+
+
+def test_cambio_chiave_nella_stessa_pagina_aggiorna_il_perimetro(browser, base_url):
+    context, page, errors = apri(browser, base_url, "desktop")
+    page.evaluate("""() => {
+      const button = document.createElement('button');
+      button.id = 'controllo-modulo-test';
+      button.textContent = 'Controllo modulo';
+      button.addEventListener('click', () => {
+        if (localStorage.getItem('tecweb.moduloIA') === '1') localStorage.removeItem('tecweb.moduloIA');
+        else localStorage.setItem('tecweb.moduloIA', '1');
+      });
+      document.body.prepend(button);
+    }""")
+    page.click("#controllo-modulo-test")
+    # Genera con il nuovo perimetro, senza ricaricare pagina o importare codice X5.
+    page.on("dialog", lambda dialog: dialog.accept())
+    page.click("#sim-nuova")
+    page.wait_for_selector("#sim-inizia")
+    page.click("#sim-inizia")
+    page.wait_for_selector(".sim-q")
+    original = page.evaluate("JSON.parse(localStorage.getItem('tecweb:simulatore:v1'))")
+    assert any(i["area"] == 7 for i in original["prova"]["esercizi"])
+    page.click("#controllo-modulo-test")
+    assert page.locator(".sim-q").count() == sum(i["area"] != 7 for i in original["prova"]["esercizi"])
+    page.click("#sim-consegna")
+    page.wait_for_selector("#sim-report")
+    assert "Area 7" not in page.locator(".sim").inner_text()
+    assert all(not e["nodo_id"].startswith("ia-") for e in page.evaluate("JSON.parse(localStorage.getItem('ids-kg:esiti-quiz:v1'))"))
+    assert not errors, errors
     context.close()

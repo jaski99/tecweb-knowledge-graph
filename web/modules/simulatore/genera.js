@@ -1,4 +1,5 @@
 // Adattatore della banca v1/v2 e selezione stratificata, senza punteggi d'esame.
+import { filtraPerModulo } from './modulo-ia.js';
 import { DURATA_ESAME_MS } from './timer.js';
 export { DURATA_ESAME_MS };
 
@@ -15,7 +16,7 @@ function mescola(items, random) {
   return result;
 }
 
-export function catalogoEsercizi(nodi, quiz = null) {
+export function catalogoEsercizi(nodi, quiz = null, { includiIA = false } = {}) {
   const nodes = Array.isArray(nodi) ? nodi : [];
   const banca = Array.isArray(quiz) ? quiz : quiz?.elementi || [];
   const items = banca.map((item) => ({
@@ -32,13 +33,13 @@ export function catalogoEsercizi(nodi, quiz = null) {
         testo: exercise.testo, soluzione: exercise.soluzione });
     }
   }
-  return items;
+  return filtraPerModulo(items, includiIA);
 }
 
 export function generaProva(nodi, { seed = Date.now(), quiz = null, quanti = 12,
-  now = Date.now(), durataMs = DURATA_ESAME_MS, modalita = 'simulazione' } = {}) {
+  now = Date.now(), durataMs = DURATA_ESAME_MS, modalita = 'simulazione', includiIA = false } = {}) {
   const random = seedRandom(seed);
-  const pool = catalogoEsercizi(nodi, quiz);
+  const pool = catalogoEsercizi(nodi, quiz, { includiIA });
   const buckets = new Map();
   // La banca precede le aperte: ogni area usa quesiti reali prima degli esempi del grafo.
   for (const area of [...new Set(pool.map((e) => e.area))].sort((a, b) => a - b)) {
