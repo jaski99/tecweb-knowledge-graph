@@ -2,7 +2,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { interleaving, codaStudio, costruisciMazzo } from '../modules/ripasso/mazzo.js';
 import { previsioneSettimana, carteSanguisuga } from '../modules/ripasso/statistiche.js';
-import { statoVuoto, conRevisione, nuoveDisponibili, normalizzaDati } from '../modules/ripasso/store.js';
+import { azzeraNodiAttivi, giorniContabili, statoVuoto, conRevisione, nuoveDisponibili, normalizzaDati } from '../modules/ripasso/store.js';
+import { createSetStore, memoryStorage } from '../js/core/store.js';
+import { azzeraChecklistAttive } from '../js/ui/review.js';
 import { applicaVoto } from '../modules/ripasso/sm2.js';
 const oggi = '2026-10-27';
 const card = (id, area, nodoId = id, priorita = 'alta') => ({ id, area, nodoId, priorita, tipo: 'domanda', indice: 0 });
@@ -31,6 +33,32 @@ test('tetto giornaliero resiste a ripetizioni, migrazione e giorni successivi', 
   assert.equal(s.nuovePerGiorno[oggi].length, 1);
   assert.equal(nuoveDisponibili(s, '2026-10-28'), 1);
   assert.equal(normalizzaDati({ versione: 1, carte: {}, giorni: [], filtri: {} }).limiteNuove, 20);
+});
+
+test('quote e reset riguardano solo i nodi attivi, conservando la cronologia nascosta', () => {
+  let dati = { ...statoVuoto(), limiteNuove: 2 };
+  dati = conRevisione(dati, 'web#domanda-0', applicaVoto(null, 'bene', oggi), oggi);
+  dati = conRevisione(dati, 'ia-base#domanda-0', applicaVoto(null, 'bene', oggi), oggi);
+  const originali = structuredClone(dati);
+  const mazzoTW = [card('web#domanda-0', 1, 'web'), card('web#domanda-1', 1, 'web')];
+  assert.equal(nuoveDisponibili(dati, oggi, mazzoTW), 1);
+  assert.equal(nuoveDisponibili(dati, oggi), 0);
+  assert.equal(giorniContabili(dati, new Set(['ia-base'])), null);
+  assert.equal(giorniContabili(dati, new Set()), 1);
+  const reset = azzeraNodiAttivi(dati, [{ id: 'web' }]);
+  assert.deepEqual(Object.keys(reset.carte), ['ia-base#domanda-0']);
+  assert.deepEqual(reset.nuovePerGiorno[oggi], ['ia-base#domanda-0']);
+  assert.deepEqual(reset.giorni, [oggi]);
+  assert.deepEqual(dati, originali);
+});
+
+test('reset checklist conserva nodi e trappole inattivi usando gli indici originali', () => {
+  const storage = memoryStorage();
+  const store = createSetStore(storage, 'review');
+  for (const key of ['web#0', 'ia-base#0', 'trappola#0', 'trappola#1', 'trappola#2']) store.toggle(key, true);
+  azzeraChecklistAttive(store, { nodi: [{ id: 'web' }], trappole: [{ indiceRipassoOriginale: 0 }, { indiceRipassoOriginale: 2 }] });
+  assert.deepEqual([...store.values()].sort(), ['ia-base#0', 'trappola#1']);
+  assert.deepEqual([...createSetStore(storage, 'review').values()].sort(), ['ia-base#0', 'trappola#1']);
 });
 
 test('previsione include arretrati, esclude nuove e mostra le sanguisughe', () => {

@@ -3,6 +3,7 @@
 import { isIsoDay } from '../../modules/ripasso/giorni.js';
 import { normalizzaStato } from '../../modules/ripasso/sm2.js';
 import { STATI_STUDIO } from './study-state.js';
+import { CHIAVE_MODULO_IA } from './modulo-ia.js';
 import { STORAGE_KEYS } from '../config.js';
 
 export const CHIAVE_ESITI = 'ids-kg:esiti-quiz:v1';
@@ -12,7 +13,7 @@ const MAX_KEYS = 10000;
 const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const oggetto = (v) => v && typeof v === 'object' && !Array.isArray(v);
 const keyValida = (k) => typeof k === 'string' && k.length <= 200
-  && (k.startsWith('ids-kg:') || k === 'ids.ripasso.v1' || k === 'tecweb:simulatore:v1');
+  && (k.startsWith('ids-kg:') || k === 'ids.ripasso.v1' || k === 'tecweb:simulatore:v1' || k === CHIAVE_MODULO_IA);
 const listaStringhe = (v) => Array.isArray(v) && v.every((s) => typeof s === 'string' && s.length <= 500);
 const parse = (s) => { try { return JSON.parse(s); } catch { throw new Error('JSON non valido in una chiave del backup.'); } };
 
@@ -40,6 +41,7 @@ function valoreValido(key, raw) {
   if (key === STORAGE_KEYS.last) return ID.test(raw);
   if (key === STORAGE_KEYS.examDate) return isIsoDay(raw);
   if (key === STORAGE_KEYS.dailyBudget) return ['25', '50', '90'].includes(raw);
+  if (key === CHIAVE_MODULO_IA) return ['0', '1'].includes(raw);
   if (key === 'ids-kg:tema:v1') return ['light', 'dark'].includes(raw);
   if (key === STORAGE_KEYS.done || key === STORAGE_KEYS.review) return listaStringhe(parse(raw));
   if (key === STORAGE_KEYS.studyStates) {

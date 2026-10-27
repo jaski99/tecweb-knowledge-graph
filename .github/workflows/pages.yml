@@ -27,10 +27,10 @@ jobs:
         run: pip install -r requirements.txt playwright
       - name: Installa Chromium per Playwright
         run: python -m playwright install --with-deps chromium
-      - name: Rigenera dati, documenti e precache
-        run: python scripts/kg.py build && python scripts/gen_docs.py build && sh web/build.sh
       - name: Controlla knowledge graph
         run: python scripts/kg.py check
+      - name: Prepara sito statico
+        run: sh web/build.sh
       - name: Test dei moduli JavaScript
         shell: bash
         run: |
@@ -57,8 +57,6 @@ jobs:
             done < <(grep -E '^(FAILED|ERROR) ' /tmp/pytest-output.txt)
           fi
           exit "$result"
-      - name: Prepara sito statico
-        run: sh web/build.sh
       - uses: actions/configure-pages@v5
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
       - uses: actions/upload-pages-artifact@v3

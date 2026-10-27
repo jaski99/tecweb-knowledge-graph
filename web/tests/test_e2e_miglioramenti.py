@@ -63,7 +63,7 @@ def test_area7_elenco_stati_piano_e_lezioni_sempre_accessibili(browser, base_url
     graph = graph_con_area_ia()
     old_id = graph["nodi"][0]["id"]
     context = browser.new_context(viewport=VIEWPORTS[viewport], is_mobile=viewport == "mobile", has_touch=viewport == "mobile", service_workers="block")
-    context.add_init_script(f"localStorage.setItem('ids-kg:completati:v1', {json.dumps(json.dumps([old_id]))});")
+    context.add_init_script(f"localStorage.setItem('tecweb.moduloIA', '1'); localStorage.setItem('ids-kg:completati:v1', {json.dumps(json.dumps([old_id]))});")
     page = context.new_page()
     errors = controlli(page)
     page.route("**/graph.json", lambda route: route.fulfill(status=200, content_type="application/json", body=json.dumps(graph, ensure_ascii=False)))
@@ -181,21 +181,44 @@ def test_tetto_nuove_backup_anki_e_previsione(browser, base_url, viewport, tmp_p
     context.close()
 
 
-def test_esiti_x6_con_doppio_e_regressione(browser, base_url):
+# Il doppio resta verificato anche dopo il merge; quando X6 è presente si
+# esegue lo stesso scenario anche con il suo lettore reale, senza test saltati.
+LETTORI_ESITI = ["doppio"] + (["reale"] if (WEB / "modules/simulatore/esiti.js").is_file() else [])
+
+
+@pytest.mark.parametrize("lettore", LETTORI_ESITI)
+def test_esiti_x6_con_doppio_e_regressione(browser, base_url, lettore):
     node_id = GRAPH["nodi"][0]["id"]
     quiz = [{"item_id": "item-a", "nodo_id": node_id, "corretto": True, "modalita": "allenamento", "ts": "2026-01-01T10:00:00Z"}]
     context = browser.new_context(viewport=VIEWPORTS["desktop"], service_workers="block")
     page = context.new_page()
     errors = controlli(page)
-    page.route("**/precache.js", lambda r: r.fulfill(status=200, content_type="application/javascript", body="globalThis.__KG_BUILD__={esitiDisponibili:true};"))
-    page.route("**/modules/simulatore/esiti.js", lambda r: r.fulfill(status=200, content_type="application/javascript", body="export const leggiEsiti = s => JSON.parse(s.getItem('ids-kg:esiti-quiz:v1') || '[]');"))
+    if lettore == "doppio":
+        page.route("**/precache.js", lambda r: r.fulfill(status=200, content_type="application/javascript", body="globalThis.__KG_BUILD__={esitiDisponibili:true};"))
+        # Il simulatore X6 importa anche registraEsito dallo stesso modulo:
+        # il doppio deve esporre entrambi i nomi del contratto pubblico.
+        doppio = """
+          export const CHIAVE_ESITI = 'ids-kg:esiti-quiz:v1';
+          export function leggiEsiti(s) { return JSON.parse(s.getItem(CHIAVE_ESITI) || '[]'); }
+          export function registraEsito(s, e) {
+            try { s.setItem(CHIAVE_ESITI, JSON.stringify([...leggiEsiti(s), e].slice(-2000))); return true; }
+            catch { return false; }
+          }
+        """
+        page.route("**/modules/simulatore/esiti.js", lambda r: r.fulfill(status=200, content_type="application/javascript", body=doppio))
     page.add_init_script(f"if (!localStorage.getItem('ids-kg:esiti-quiz:v1')) localStorage.setItem('ids-kg:esiti-quiz:v1', {json.dumps(json.dumps(quiz))});")
     page.goto(base_url)
     page.wait_for_function("id => window.cyInstance?.getElementById(id).data('label').includes('Familiare')", arg=node_id)
-    quiz.append({"item_id": "item-b", "nodo_id": node_id, "corretto": False, "modalita": "simulazione", "ts": "2026-01-02T10:00:00Z"})
-    page.evaluate("q => localStorage.setItem('ids-kg:esiti-quiz:v1', JSON.stringify(q))", quiz)
-    page.goto(base_url + "#/ripasso")
-    page.goto(base_url + "#/")
+    errore = {"item_id": "item-b", "nodo_id": node_id, "corretto": False, "modalita": "simulazione", "ts": "2026-01-02T10:00:00Z"}
+    result = page.evaluate("""async esito => {
+      const { registraEsito, leggiEsiti } = await import('./modules/simulatore/esiti.js');
+      return { salvato: registraEsito(localStorage, esito), esiti: leggiEsiti(localStorage) };
+    }""", errore)
+    assert result["salvato"] and result["esiti"][-1] == errore
+    page.locator('#module-nav a[href="#/ripasso"]').click()
+    page.wait_for_selector("#ripasso-titolo")
+    page.locator("#module-root .module-home").click()
+    page.wait_for_function("!document.body.classList.contains('module-mode')")
     page.wait_for_function("id => window.cyInstance?.getElementById(id).data('label').includes('Visto')", arg=node_id)
     assert not errors, errors
     context.close()
@@ -261,6 +284,7 @@ def test_grafo_cresce_senza_assunzioni_sul_numero_di_nodi(browser, base_url):
         node.update(id=f"ia-prova-{i}", title=f"Nodo IA aggiuntivo {i}", prerequisiti=[])
         graph["nodi"].append(node)
     context = browser.new_context(viewport=VIEWPORTS["desktop"], service_workers="block")
+    context.add_init_script("localStorage.setItem('tecweb.moduloIA', '1');")
     page = context.new_page()
     errors = controlli(page)
     page.route("**/graph.json", lambda r: r.fulfill(status=200, content_type="application/json", body=json.dumps(graph, ensure_ascii=False)))

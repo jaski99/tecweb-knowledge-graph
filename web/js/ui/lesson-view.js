@@ -9,7 +9,7 @@ import { frameDiagrams, fitDiagrams } from './diagram.js';
 import { bindSectionNav } from './toc.js';
 import { syncThemeButtons } from '../core/theme.js';
 
-export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, onToggleTheme, onDataChange, storage = globalThis.localStorage, closeLabel = '← Percorso' }) {
+export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, onToggleTheme, onDataChange, onActivateIA, storage = globalThis.localStorage, closeLabel = '← Percorso' }) {
   const title = (id) => (graph.byId.get(id) || { title: id }).title;
   const lessonLink = (id, text) => h('button', { type: 'button', class: 'link', onclick: () => onOpen(id) }, text || title(id));
   const block = (cls, heading, ...body) => h('section', { class: `ls ${cls}`, id: `sec-${cls}` }, h('h2', {}, heading), ...body);
@@ -79,6 +79,7 @@ export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, o
     const cp = L.completion_problem || {};
     const solo = L.esercizio_autonomo || {};
     const active = L.richiamo_attivo || {};
+    const collegamenti = (active.collegamenti_interleaving || []).filter((c) => !graph.nodiInattivi?.has(c.nodo));
     const flash = L.flashcard || {};
     const an = L.analogia || {};
     const contrast = h('table', { class: 'contrast-table' },
@@ -111,7 +112,7 @@ export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, o
           h('details', {}, h('summary', {}, 'Mostra risposta'), h('div', { class: 'quiz-answer' }, mdElement(q.risposta)),
             h('button', { type: 'button', class: 'btn', onclick: (e) => { e.target.closest('details').open = false; } }, 'Nascondi risposta'))))),
         active.spiega_con_parole_tue ? h('p', {}, h('strong', {}, 'Spiega con parole tue: '), active.spiega_con_parole_tue) : null,
-        (active.collegamenti_interleaving || []).length ? h('ul', {}, active.collegamenti_interleaving.map((c) => h('li', {},
+        collegamenti.length ? h('ul', {}, collegamenti.map((c) => h('li', {},
           graph.byId.has(c.nodo) ? lessonLink(c.nodo) : c.nodo, ' — ', c.collegamento))) : null),
       block('riepilogo', '📌 Riepilogo', h('p', {}, L.riepilogo)),
       block('flashcard', '🃏 Flashcard per il ripasso', (() => {
@@ -137,7 +138,7 @@ export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, o
     return [
       block('intuizione', '💡 Perché esiste', h('p', {}, L.intuizione)),
       block('analogia', '🔁 Analogia', h('p', {}, L.analogia)),
-      block('prior', '🧩 Cosa sai già e come si collega', h('ul', {}, L.collegamenti_prior.map((c) => h('li', {},
+      block('prior', '🧩 Cosa sai già e come si collega', h('ul', {}, L.collegamenti_prior.filter((c) => !graph.nodiInattivi?.has(c.nodo)).map((c) => h('li', {},
         h('strong', {}, c.conoscenza), ' — ', c.collegamento, c.nodo ? h('span', {}, ' ', lessonLink(c.nodo, '→ ' + title(c.nodo))) : null)))),
       block('spiegazione', '📘 Spiegazione', mdElement(L.spiegazione)),
       block('esempi', '✍️ Esempi svolti', h('p', { class: 'muted' }, 'Prova a fare ogni passo da solo prima di rivelarlo.'), L.esempi_svolti.map(workedExample)),
@@ -194,7 +195,16 @@ export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, o
       clear(root);
       const n = graph.byId.get(id);
       if (!n) {
-        root.append(h('p', { class: 'error' }, `Nodo "${id}" non trovato.`), h('button', { type: 'button', class: 'btn', onclick: onClose }, '← Torna al grafo'));
+        if (graph.nodiInattivi?.has(id) && onActivateIA) {
+          const status = h('p', { role: 'status', class: 'error' });
+          root.append(
+            h('div', { class: 'ls-top' }, h('button', { type: 'button', class: 'btn', onclick: onClose }, closeLabel)),
+            h('article', { class: 'lesson' },
+              h('h1', { id: 'lesson-title', tabindex: '-1' }, 'Modulo IA (secondo semestre) disattivato'),
+              h('button', { type: 'button', class: 'btn primary', id: 'attiva-modulo-ia', onclick: () => {
+                if (!onActivateIA()) status.textContent = 'Il browser non permette di salvare la preferenza.';
+              } }, 'Attiva il modulo IA'), status));
+        } else root.append(h('p', { class: 'error' }, `Nodo "${id}" non trovato.`), h('button', { type: 'button', class: 'btn', onclick: onClose }, '← Torna al grafo'));
         return;
       }
       const nav = lessonNav(graph.order, id);
