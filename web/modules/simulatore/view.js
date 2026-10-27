@@ -48,9 +48,9 @@ export function createSimulatoreView() {
       h('p', {}, 'Quesiti originali di ripasso: non tratti da prove reali e non predittivi dell’esame. Programma: [F1], registro in docs/research/R3-programma-esame.md.'),
       h('p', {}, `${catalogoEsercizi([], graph.quiz).length} quesiti della banca disponibili. Blueprint didattico: selezione bilanciata tra le aree disponibili, non distribuzione ufficiale.`),
       h('label', {}, 'Modalità ', h('select', { id: 'sim-modalita', onchange: (e) => { modalita = e.target.value; } },
-        h('option', { value: 'simulazione' }, 'Simulazione'), h('option', { value: 'allenamento' }, 'Allenamento'))),
+        h('option', { value: 'simulazione', selected: modalita === 'simulazione' }, 'Simulazione'), h('option', { value: 'allenamento', selected: modalita === 'allenamento' }, 'Allenamento'))),
       h('p', {}, 'Allenamento: feedback immediato alla risposta completa. Simulazione: senza appunti [F1], soluzioni solo a consegna.'),
-      h('label', {}, 'Durata in minuti (ipotesi didattica) ', h('input', { id: 'sim-durata', type: 'number', min: 1, max: 480, value: 120, onchange: (e) => {
+      h('label', {}, 'Durata in minuti (ipotesi didattica) ', h('input', { id: 'sim-durata', type: 'number', min: 1, max: 480, value: minuti, onchange: (e) => {
         minuti = Math.max(1, Math.min(480, Number(e.target.value) || 120)); e.target.value = minuti;
       } })),
       h('p', {}, '120 minuti / 2 ore è un’ipotesi configurabile: la durata ufficiale non è stata trovata. Nessun voto ufficiale viene calcolato.'),

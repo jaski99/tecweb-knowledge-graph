@@ -183,3 +183,19 @@ def test_allenamento_errore_spiegato_e_storage_corrotto(browser, base_url):
     page.wait_for_selector("#sim-inizia")
     assert not errors, errors
     context.close()
+
+
+def test_nuova_sessione_impostazioni_visibili_coerenti(browser, base_url):
+    context, page, errors = apri(browser, base_url, "desktop", "allenamento")
+    page.on("dialog", lambda dialog: dialog.accept())
+    page.click("#sim-nuova")
+    page.wait_for_selector("#sim-inizia")
+    assert page.locator("#sim-modalita").input_value() == "allenamento"
+    assert page.locator("#sim-durata").input_value() == "10"
+    page.select_option("#sim-modalita", "simulazione")
+    page.click("#sim-inizia")
+    page.wait_for_selector("#sim-timer")
+    assert page.locator("#sim-timer").inner_text().startswith("00:10:")
+    assert page.locator(".sim-soluzione-testo").count() == 0
+    assert not errors, errors
+    context.close()
