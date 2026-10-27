@@ -10,10 +10,11 @@ Il progetto segue **INF-37 2026/27, coorte 2024/25**, Ingegneria Informatica (MO
 - Priorità A/B/C riallineate al programma [F1] anche nella legenda del piano generato. Le quattro slide e la loro ripartizione sono **[IPOTESI]** del materiale utente; [F1] conferma solo il limite di **massimo 8 minuti** per il PowerPoint.
 - Gli archi I-2 collegano le basi Python a Flask e al laboratorio IA e aggiungono alla tesina i prerequisiti soft su servizi RESTful e Git. Flask/CRUD sono un esempio didattico, non un vincolo della tesina.
 - La web app include i miglioramenti X5, librerie locali e PWA; contratti, fonti, build del grafo, banca quiz e test sono presenti.
+- La banca quiz e il simulatore (X6) leggono il formato `elementi`, aree 1–7; il timer della simulazione è un'**ipotesi**, non una durata ufficiale. Vedi [QUIZ_FORMAT.md](QUIZ_FORMAT.md).
+- Il modulo IA (area 7) è **nascosto di default** in percorso, progresso, piano, simulatore e ripasso; si attiva con l'interruttore del sito (preferenza locale `tecweb.moduloIA`).
 
 ## Lavoro ancora aperto
 
-- **X6** deve estendere la banca e il simulatore: l'adattatore corrente non legge il formato `elementi` della banca, che copre solo le aree 1–6. Il timer della simulazione è un'**ipotesi**, non una durata ufficiale.
 - **[NON TROVATO]** prove passate pubbliche, durata ufficiale dello scritto, numero ufficiale di slide e griglia dettagliata [F1], [F12]. Le percentuali degli appunti utente non sono dati ufficiali; le slide interne richiedono accesso Moodle [F12].
 - **Verifica URL nella sandbox corrente:** `python scripts/check_urls.py` ha restituito 93 errori di connessione su 93 risorse uniche e nessuna risposta OK. Nessun HTTP 200 è stato verificato da quel comando: ripetere il controllo da una rete abilitata. Gli errori non dimostrano che i link siano invalidi.
 

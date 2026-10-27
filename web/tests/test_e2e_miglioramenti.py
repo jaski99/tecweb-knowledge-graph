@@ -121,7 +121,13 @@ def test_integrazione_prerequisiti_e_ipotesi_visibili(browser, base_url, viewpor
         ("ia-python-numpy-lab", (("python-base-web", "utile"),)),
     )
     for node_id, prerequisites in checks:
-        page.goto(f"{base_url}#/lezione/{node_id}")
+        if node_id.startswith("ia-"):
+            # Il modulo IA è nascosto di default: lo si attiva solo per la lezione IA.
+            page.evaluate("localStorage.setItem('tecweb.moduloIA', '1')")
+            page.goto(f"{base_url}#/lezione/{node_id}")
+            page.reload()
+        else:
+            page.goto(f"{base_url}#/lezione/{node_id}")
         page.wait_for_function("title => document.querySelector('#lesson-title')?.innerText === title", arg=titles[node_id])
         for prerequisite, badge in prerequisites:
             row = page.locator("#sec-prereq li").filter(has_text=titles[prerequisite])
