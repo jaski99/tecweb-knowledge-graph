@@ -1,4 +1,4 @@
-// Timer d'esame: 2 ore, il tempo in pausa non conta. Funzioni pure.
+// Durata predefinita didattica: 2 ore è un’ipotesi, non un dato ufficiale.
 
 export const DURATA_ESAME_MS = 2 * 60 * 60 * 1000;
 

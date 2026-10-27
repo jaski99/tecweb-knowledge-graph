@@ -1,24 +1,1991 @@
 {
-  "versione": 1,
-  "descrizione": "Banca di ripasso per le sei aree: scelta multipla e abbinamenti. Ogni quesito è collegato a un nodo, include una spiegazione e distingue distrattori pertinenti da opzioni estranee.",
+  "versione": 2,
+  "descrizione": "Banca originale di ripasso TW e IA 2026/27 [F1], aree 1–7. Q1–Q6 sono proposte didattiche R3 §3.5.2, non tratte da prove reali né predittive dell’esame; i quiz IA non derivano dalle slide del docente. Distribuzione didattica, non ufficiale.",
   "elementi": [
-    {"id":"a1-multiplexing","tipo":"scelta_multipla","area":1,"titolo":"Multiplexing nelle versioni HTTP","domanda":"Quale affermazione descrive correttamente il multiplexing di HTTP/2 e HTTP/3?","opzioni":[{"id":"a","testo":"HTTP/2 multiplexa flussi sulla connessione TCP; HTTP/3 usa flussi QUIC su UDP."},{"id":"b","testo":"HTTP/1.1 multiplexa richieste HTTP in modo nativo sulla stessa connessione."},{"id":"c","testo":"HTTP/3 usa TCP e rimuove la cifratura TLS."},{"id":"d","testo":"Il multiplexing è una proprietà del DNS, non di HTTP."}],"risposta_corretta":"a","spiegazione":"HTTP/2 consente più stream concorrenti su una connessione TCP. HTTP/3 trasporta gli stream HTTP su QUIC, che usa UDP; non è corretto attribuire a HTTP/3 il trasporto TCP. HTTP/1.1 non offre il multiplexing HTTP/2.","nodo_id":"multiplexing-http-2-3"},
-    {"id":"a1-uri","tipo":"scelta_multipla","area":1,"titolo":"URI, URL e URN","domanda":"Quale rapporto tra URI, URL e URN è corretto?","opzioni":[{"id":"a","testo":"URI è la categoria generale; URL individua una risorsa tramite un localizzatore e URN la nomina in uno spazio dei nomi."},{"id":"b","testo":"URL e URI sono categorie disgiunte e un URL non può essere un URI."},{"id":"c","testo":"URN indica sempre il protocollo di trasporto TCP."},{"id":"d","testo":"Sono tre metodi HTTP per aggiornare risorse."}],"risposta_corretta":"a","spiegazione":"URL e URN sono forme di URI: il primo descrive un identificatore con informazioni di localizzazione/accesso, il secondo un nome persistente in uno spazio dei nomi. Nessuno dei tre è un metodo HTTP.","nodo_id":"uri-url-urn-differenze"},
-    {"id":"a2-put-patch","tipo":"scelta_multipla","area":2,"titolo":"Sostituzione e modifica parziale","domanda":"Un client deve modificare solo il campo email di una risorsa. Quale scelta esprime meglio questa intenzione?","opzioni":[{"id":"a","testo":"PATCH, se il contratto dell’API definisce l’aggiornamento parziale."},{"id":"b","testo":"PUT, perché è sempre una modifica parziale."},{"id":"c","testo":"GET, perché recupera e salva automaticamente il nuovo valore."},{"id":"d","testo":"Un record DNS di tipo MX, indipendentemente dall’API."}],"risposta_corretta":"a","spiegazione":"PATCH è destinato a modifiche parziali secondo il formato e il contratto dell’API. PUT ha semantica di sostituzione della rappresentazione bersaglio ed è idempotente; non equivale a un PATCH.","nodo_id":"rest-metodi-http"},
-    {"id":"a2-404","tipo":"scelta_multipla","area":2,"titolo":"Risorsa non trovata","domanda":"Che cosa indica normalmente una risposta HTTP 404?","opzioni":[{"id":"a","testo":"La risorsa richiesta non è stata trovata sul server."},{"id":"b","testo":"Il client è autenticato ma non autorizzato: è sempre sinonimo di 403."},{"id":"c","testo":"La richiesta è riuscita e la risorsa è stata creata."},{"id":"d","testo":"La query SPARQL ha restituito un grafo vuoto, qualunque sia il protocollo."}],"risposta_corretta":"a","spiegazione":"404 Not Found comunica che il server non trova una rappresentazione della risorsa bersaglio, o non vuole rivelarne l’esistenza. Non è sinonimo di successo 201 né coincide sempre con 403 Forbidden.","nodo_id":"codice-404-not-found"},
-    {"id":"a3-box","tipo":"scelta_multipla","area":3,"titolo":"Componenti del box model","domanda":"Quali strati compongono il box model CSS standard?","opzioni":[{"id":"a","testo":"Content, padding, border e margin."},{"id":"b","testo":"DOM, AST, parser e profiler."},{"id":"c","testo":"Hue, saturazione, luminosità e gamma.»"},{"id":"d","testo":"Header, body, cookie e sessione."}],"risposta_corretta":"a","spiegazione":"Nel box model CSS lo spazio è descritto da content, padding, border e margin. Colore e script non sono strati del box. Il calcolo della dimensione dipende anche da box-sizing.","nodo_id":"css-box-model"},
-    {"id":"a3-dom","tipo":"scelta_multipla","area":3,"titolo":"DOM e Virtual DOM","domanda":"Quale descrizione distingue correttamente DOM e Virtual DOM?","opzioni":[{"id":"a","testo":"Il DOM è l’interfaccia/albero della pagina esposto dal browser; Virtual DOM è una rappresentazione in memoria usata da alcune librerie o framework."},{"id":"b","testo":"Il Virtual DOM è uno standard obbligatorio del W3C implementato da ogni browser."},{"id":"c","testo":"Il DOM è un protocollo di trasporto su UDP."},{"id":"d","testo":"Sono due nomi per il database SQLite del browser."}],"risposta_corretta":"a","spiegazione":"Il DOM modella il documento e permette agli script di accedere e modificarlo. Virtual DOM è un termine usato da alcune librerie per una rappresentazione in memoria, non un requisito universale o uno standard browser obbligatorio.","nodo_id":"dom-virtual-dom"},
-    {"id":"a4-flask","tipo":"scelta_multipla","area":4,"titolo":"Rotta Flask e JSON","domanda":"In una rotta Flask che riceve JSON, quale approccio è appropriato?","opzioni":[{"id":"a","testo":"Leggere i dati dalla richiesta, validarli, applicare la logica e restituire una risposta JSON con status coerente."},{"id":"b","testo":"Usare jsonify per eseguire automaticamente un INSERT senza connessione al database."},{"id":"c","testo":"Inserire direttamente input non validato in una stringa SQL."},{"id":"d","testo":"Usare un tag CSS come endpoint del database."}],"risposta_corretta":"a","spiegazione":"Flask fornisce strumenti per leggere la richiesta e costruire risposte, ma la validazione e la persistenza sono responsabilità dell’applicazione. Query parametrizzate evitano di concatenare input SQL.","nodo_id":"flask-rotte-jsonify"},
-    {"id":"a4-sqlite","tipo":"scelta_multipla","area":4,"titolo":"Query parametrizzate","domanda":"Perché usare parametri nelle query SQLite che includono dati inviati dall’utente?","opzioni":[{"id":"a","testo":"Per separare i valori dai comandi SQL e ridurre il rischio di injection."},{"id":"b","testo":"Per rendere automaticamente ogni richiesta idempotente."},{"id":"c","testo":"Per trasformare SQLite in un server QUIC."},{"id":"d","testo":"Per fare il rendering dei pixel di un canvas."}],"risposta_corretta":"a","spiegazione":"Le query parametrizzate trattano i valori come dati e non come parte del testo SQL. Non sostituiscono ogni altro controllo, ma sono la scelta corretta per interpolare input nelle query.","nodo_id":"sqlite-crud"},
-    {"id":"a5-rdf","tipo":"scelta_multipla","area":5,"titolo":"Triple RDF","domanda":"Qual è la forma di base di un’affermazione RDF?","opzioni":[{"id":"a","testo":"Soggetto, predicato e oggetto."},{"id":"b","testo":"Client, server e porta TCP."},{"id":"c","testo":"Regola CSS, selettore e colore obbligatorio."},{"id":"d","testo":"Un Use Case, una classe Java e una decision coverage."}],"risposta_corretta":"a","spiegazione":"Un’affermazione RDF è una tripla soggetto-predicato-oggetto: il predicato descrive la relazione tra soggetto e oggetto. Non è una struttura HTTP o CSS.","nodo_id":"web-semantico-rdf-owl"},
-    {"id":"a5-sparql","tipo":"scelta_multipla","area":5,"titolo":"Interrogare grafi RDF","domanda":"A che cosa serve principalmente SPARQL nell’ambito RDF?","opzioni":[{"id":"a","testo":"A interrogare e manipolare dati RDF secondo il linguaggio e le operazioni previste."},{"id":"b","testo":"A definire le regole di impaginazione di un form HTML."},{"id":"c","testo":"A sostituire TCP con UDP in una connessione web."},{"id":"d","testo":"A creare indici SQLite senza SQL."}],"risposta_corretta":"a","spiegazione":"SPARQL è il linguaggio di interrogazione e aggiornamento per grafi RDF, con forme di query come SELECT, ASK, CONSTRUCT e DESCRIBE. Non è un protocollo di trasporto né un foglio di stile.","nodo_id":"sparql-query-esempi"},
-    {"id":"a6-crud","tipo":"scelta_multipla","area":6,"titolo":"Flusso di un progetto CRUD","domanda":"Quale responsabilità spetta a una rotta Flask che crea una risorsa?","opzioni":[{"id":"a","testo":"Validare la richiesta, applicare le regole, persistere i dati e restituire un esito coerente."},{"id":"b","testo":"Fidarsi sempre della validazione del browser e concatenare i valori nella query SQL."},{"id":"c","testo":"Disegnare il Virtual DOM senza ricevere richieste."},{"id":"d","testo":"Negoziare automaticamente il tempo della presentazione.»"}],"risposta_corretta":"a","spiegazione":"Il server deve trattare il client come non fidato, validare la richiesta e gestire la persistenza. La risposta deve essere coerente con il contratto, per esempio 201 per una creazione riuscita.","nodo_id":"tesina-progetto-flask-crud"},
-    {"id":"a6-quiz","tipo":"scelta_multipla","area":6,"titolo":"Feedback accessibile nel quiz","domanda":"Come dovrebbe comunicare un quiz un esito corretto o errato?","opzioni":[{"id":"a","testo":"Con un messaggio testuale comprensibile, non affidandosi soltanto al colore."},{"id":"b","testo":"Solo colorando di verde o rosso il bordo, senza testo."},{"id":"c","testo":"Con un header HTTP Date nascosto.»"},{"id":"d","testo":"Con una query SQL che non raggiunge l’interfaccia."}],"risposta_corretta":"a","spiegazione":"Il significato non deve dipendere dal solo colore. Un messaggio testuale, eventualmente aggiornato in un’area live, rende il feedback più comprensibile e accessibile.","nodo_id":"quiz-form"},
-    {"id":"match-a1","tipo":"abbinamento","area":1,"titolo":"Abbinamento: rete e identificatori","istruzioni":"Abbina ogni concetto alla descrizione corretta; alcune opzioni sono distrattori e non vanno usate.","opzioni":[{"id":"a","testo":"HTTP è stateless; un cookie può trasportare un identificatore di sessione."},{"id":"b","testo":"TCP offre trasporto affidabile e ordinato; IP instrada datagrammi tra reti."},{"id":"c","testo":"Un URL è un URI che include informazioni di localizzazione o accesso."}],"distrattori":[{"testo":"Il box model ha content, padding, border e margin.","tipo":"plausibile"},{"testo":"Un Observer notifica i sottoscrittori quando cambia il soggetto.","tipo":"plausibile"},{"testo":"La fotosintesi converte energia luminosa in energia chimica.","tipo":"fuori_contesto"}],"abbinamenti":[{"elemento":"HTTP stateless e stato di sessione","risposta_id":"a","spiegazione":"La semantica HTTP è stateless; l’applicazione può gestire una sessione usando un identificatore inviato dal client, spesso via cookie.","nodo_id":"http-stateless-vs-stateful"},{"elemento":"Ruoli di TCP e IP","risposta_id":"b","spiegazione":"TCP è un protocollo di trasporto affidabile e ordinato; IP svolge instradamento a livello Internet.","nodo_id":"tcp-ip-modello-livelli"},{"elemento":"URL rispetto a URI","risposta_id":"c","spiegazione":"Un URL è una forma di URI che specifica un localizzatore con informazioni utili per reperire la risorsa.","nodo_id":"uri-url-urn-differenze"}]},
-    {"id":"match-a2","tipo":"abbinamento","area":2,"titolo":"Abbinamento: API e architetture","istruzioni":"Abbina ciascun termine alla definizione coerente con il contratto HTTP o architetturale.","opzioni":[{"id":"a","testo":"Separazione di presentazione, logica applicativa e dati come livelli logici."},{"id":"b","testo":"Richiesta di sostituzione della rappresentazione bersaglio; metodo idempotente."},{"id":"c","testo":"Risposta che indica che la risorsa bersaglio non è stata trovata."}],"distrattori":[{"testo":"PATCH applica necessariamente la stessa trasformazione a ogni ripetizione.","tipo":"plausibile"},{"testo":"SPARQL descrive un sistema di rate limiting HTTP.","tipo":"plausibile"},{"testo":"La tettonica delle placche descrive il movimento della litosfera.","tipo":"fuori_contesto"}],"abbinamenti":[{"elemento":"Architettura a tre livelli","risposta_id":"a","spiegazione":"I tre livelli separano responsabilità di presentazione, logica applicativa e dati; non impongono che siano tre macchine fisiche.","nodo_id":"architettura-3-tier"},{"elemento":"PUT","risposta_id":"b","spiegazione":"PUT ha semantica di sostituzione della rappresentazione bersaglio ed è idempotente secondo HTTP.","nodo_id":"rest-metodi-http"},{"elemento":"404 Not Found","risposta_id":"c","spiegazione":"404 segnala che il server non trova una rappresentazione della risorsa bersaglio o non ne rivela l’esistenza.","nodo_id":"codice-404-not-found"}]},
-    {"id":"match-a3","tipo":"abbinamento","area":3,"titolo":"Abbinamento: pagina e interazione","istruzioni":"Associa ogni elemento front-end al suo ruolo principale; scarta i distrattori.","opzioni":[{"id":"a","testo":"Struttura ad albero del documento esposta dal browser agli script."},{"id":"b","testo":"Richiesta asincrona e gestione di Promise tramite await dentro una funzione async."},{"id":"c","testo":"Raggruppamento di opzioni radio e descrizione associata con fieldset e legend."}],"distrattori":[{"testo":"Canvas sostituisce sempre il DOM e rende il documento accessibile automaticamente.","tipo":"plausibile"},{"testo":"Un listener locale è una richiesta DNS al server.","tipo":"plausibile"},{"testo":"La fusione del bronzo è una tecnica metallurgica.","tipo":"fuori_contesto"}],"abbinamenti":[{"elemento":"DOM","risposta_id":"a","spiegazione":"Il DOM è il modello a oggetti del documento che gli script del browser possono attraversare e modificare.","nodo_id":"dom-virtual-dom"},{"elemento":"fetch e async/await","risposta_id":"b","spiegazione":"fetch restituisce una Promise; await ne attende l’esito all’interno di una funzione async, senza bloccare sincronicamente il thread.","nodo_id":"javascript-fetch-async-await"},{"elemento":"Form accessibile","risposta_id":"c","spiegazione":"fieldset e legend raggruppano controlli correlati e ne comunicano la domanda; label deve essere associata al controllo.","nodo_id":"html-form-accessibilita"}]},
-    {"id":"match-a4","tipo":"abbinamento","area":4,"titolo":"Abbinamento: backend e strumenti","istruzioni":"Abbina ogni strumento o formato alla sua funzione, ignorando le opzioni non pertinenti.","opzioni":[{"id":"a","testo":"Route Flask associa percorso e metodi a una funzione che crea una risposta."},{"id":"b","testo":"Git branch permette di lavorare su una linea di sviluppo separata."},{"id":"c","testo":"JSON rappresenta dati strutturati con oggetti, array e valori primitivi."}],"distrattori":[{"testo":"SQLite è un framework CSS per il layout responsive.","tipo":"plausibile"},{"testo":"git merge crea una sessione cookie nel browser.","tipo":"plausibile"},{"testo":"Il punto di rugiada è la temperatura alla quale l’aria diventa satura.","tipo":"fuori_contesto"}],"abbinamenti":[{"elemento":"Rotta Flask","risposta_id":"a","spiegazione":"Una route associa un URL e i metodi HTTP configurati a una funzione view che elabora la richiesta e restituisce una risposta.","nodo_id":"flask-rotte-jsonify"},{"elemento":"Branch Git","risposta_id":"b","spiegazione":"Un branch è un riferimento mobile a una linea di sviluppo; consente di isolare il lavoro prima di integrarlo.","nodo_id":"git-comandi-base"},{"elemento":"JSON","risposta_id":"c","spiegazione":"JSON è un formato testuale per scambiare dati strutturati, con oggetti, array, stringhe, numeri, booleani e null.","nodo_id":"json-formato-dati"}]},
-    {"id":"match-a5","tipo":"abbinamento","area":5,"titolo":"Abbinamento: dati semantici","istruzioni":"Abbina ciascun concetto agli elementi o al ruolo che lo caratterizza.","opzioni":[{"id":"a","testo":"Tripla soggetto-predicato-oggetto che esprime un’affermazione."},{"id":"b","testo":"Linguaggio per interrogare e manipolare dati RDF."},{"id":"c","testo":"Tecnica per scambiare dati con richieste asincrone dal browser."}],"distrattori":[{"testo":"OWL è un algoritmo che comprime i fogli CSS.","tipo":"plausibile"},{"testo":"XML è un metodo HTTP idempotente per sostituire una risorsa.","tipo":"plausibile"},{"testo":"La sedimentazione deposita particelle trasportate da un fluido.","tipo":"fuori_contesto"}],"abbinamenti":[{"elemento":"Affermazione RDF","risposta_id":"a","spiegazione":"RDF rappresenta affermazioni come triple con soggetto, predicato e oggetto; le risorse possono essere identificate tramite URI.","nodo_id":"web-semantico-rdf-owl"},{"elemento":"SPARQL","risposta_id":"b","spiegazione":"SPARQL permette di interrogare e, con le forme appropriate, aggiornare grafi RDF.","nodo_id":"sparql-query-esempi"},{"elemento":"AJAX","risposta_id":"c","spiegazione":"AJAX descrive un approccio a richieste asincrone che aggiornano parti della pagina; oggi può usare fetch oltre a XMLHttpRequest.","nodo_id":"ajax-fetch-xhr"}]},
-    {"id":"match-a6","tipo":"abbinamento","area":6,"titolo":"Abbinamento: progetto e comunicazione","istruzioni":"Abbina ciascuna attività della tesina al comportamento o alla traccia corretti.","opzioni":[{"id":"a","testo":"L’API valida input, applica la logica e persiste le risorse attraverso operazioni CRUD."},{"id":"b","testo":"Problema, architettura, codice significativo e demo o schermate."},{"id":"c","testo":"Fieldset, legend, label e messaggio testuale per una domanda interattiva."}],"distrattori":[{"testo":"La demo da sola dimostra anche ogni caso limite e ogni requisito di sicurezza.","tipo":"plausibile"},{"testo":"HTTP diventa stateful automaticamente quando la pagina usa fetch.","tipo":"plausibile"},{"testo":"La pressione osmotica regola il passaggio di solvente attraverso una membrana.","tipo":"fuori_contesto"}],"abbinamenti":[{"elemento":"Progetto Flask CRUD","risposta_id":"a","spiegazione":"Il backend deve validare richieste, applicare regole e persistere dati; il client aggiorna la vista in base all’esito.","nodo_id":"tesina-progetto-flask-crud"},{"elemento":"Traccia di quattro slide","risposta_id":"b","spiegazione":"Il materiale utente propone problema/obiettivi, architettura, punti chiave del codice e demo; è una traccia e non un formato ufficiale accertato.","nodo_id":"tesina-presentazione-8-minuti"},{"elemento":"Quiz HTML accessibile","risposta_id":"c","spiegazione":"Controlli semantici e feedback testuale rendono comprensibile la domanda e l’esito senza dipendere dal solo colore.","nodo_id":"quiz-form"}]}
+    {
+      "id": "q1-programma",
+      "tipo": "scelta_multipla",
+      "area": 1,
+      "nodo_id": "http-protocollo-base",
+      "titolo": "Q1 · Programma 2026/27",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Quale insieme è esplicitamente citato nel modulo TW 2026/27 [F1]?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "URI, HTTP/2, mashup, Flask, Git, React",
+          "spiegazione": "[F1] elenca URI, HTTP/2, mashup, Flask, Git e React. Q1 originale da R3 §3.5.2, non tratto da prove reali."
+        },
+        {
+          "id": "b",
+          "testo": "Servlet/JSP, Django, jQuery, Bootstrap",
+          "tipo": "plausibile",
+          "spiegazione": "L’insieme confonde programmi di altri anni o corsi [F4][F5], non il modulo 2026/27."
+        },
+        {
+          "id": "c",
+          "testo": "UML, Composite, JUnit, Maven",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "d",
+          "testo": "RDF, OWL, SPARQL, QUIC",
+          "tipo": "plausibile",
+          "spiegazione": "Sono temi presenti nel vecchio grafo, ma non nell’elenco ufficiale TW 2026/27 [F1]; non vanno confusi con il programma."
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "[F1] elenca URI, HTTP/2, mashup, Flask, Git e React. Q1 originale da R3 §3.5.2, non tratto da prove reali."
+    },
+    {
+      "id": "a1-uri-relativo",
+      "tipo": "scelta_multipla",
+      "area": 1,
+      "nodo_id": "uri-url-urn-differenze",
+      "titolo": "Riferimenti relativi",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Che cosa serve per risolvere il riferimento relativo ../catalogo?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "La sostituzione automatica di tutti i punti con slash",
+          "tipo": "plausibile",
+          "spiegazione": "I segmenti .. hanno una funzione nella risoluzione dei percorsi; non si sostituiscono arbitrariamente."
+        },
+        {
+          "id": "b",
+          "testo": "La compilazione di un diagramma UML",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "c",
+          "testo": "Un URI di base rispetto al quale risolverlo",
+          "spiegazione": "Un riferimento relativo si risolve rispetto a una base: non è necessariamente un errore di sintassi."
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "Un riferimento relativo si risolve rispetto a una base: non è necessariamente un errore di sintassi."
+    },
+    {
+      "id": "a1-http-get",
+      "tipo": "scelta_multipla",
+      "area": 1,
+      "nodo_id": "http-protocollo-base",
+      "titolo": "Recuperare una risorsa",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Qual è il significato del metodo GET in HTTP?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Eseguire il merge di un ramo Git",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "b",
+          "testo": "Richiedere una rappresentazione della risorsa",
+          "spiegazione": "GET è il metodo di recupero di una rappresentazione; non esprime una richiesta di cancellazione."
+        },
+        {
+          "id": "c",
+          "testo": "Richiedere sempre la cancellazione della risorsa",
+          "tipo": "plausibile",
+          "spiegazione": "La cancellazione è associata al metodo DELETE, non GET."
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "GET è il metodo di recupero di una rappresentazione; non esprime una richiesta di cancellazione."
+    },
+    {
+      "id": "a1-http2-stream",
+      "tipo": "scelta_multipla",
+      "area": 1,
+      "nodo_id": "http-1-1-1-2-3-differenze",
+      "titolo": "HTTP/2",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Quale proprietà caratterizza HTTP/2 rispetto al formato testuale HTTP/1.1?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Framing binario e stream multiplexati",
+          "spiegazione": "HTTP/2 usa frame binari e multiplexing degli stream su una connessione."
+        },
+        {
+          "id": "b",
+          "testo": "Ogni richiesta richiede un nuovo processo applicativo",
+          "tipo": "plausibile",
+          "spiegazione": "Il protocollo non impone di creare un processo applicativo per ogni richiesta."
+        },
+        {
+          "id": "c",
+          "testo": "Il voto dipende da un diagramma Composite",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "HTTP/2 usa frame binari e multiplexing degli stream su una connessione."
+    },
+    {
+      "id": "a1-stateless",
+      "tipo": "scelta_multipla",
+      "area": 1,
+      "nodo_id": "http-stateless-vs-stateful",
+      "titolo": "Stato e protocollo",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "HTTP stateless impedisce di realizzare un carrello persistente?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Sì: nessun server HTTP può conservare dati applicativi",
+          "tipo": "plausibile",
+          "spiegazione": "Confondere protocollo e applicazione porta a escludere erroneamente sessioni e carrelli."
+        },
+        {
+          "id": "b",
+          "testo": "Solo se si usa PowerPoint",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "c",
+          "testo": "No: l’applicazione può gestire stato tramite sessioni e cookie",
+          "spiegazione": "Stateless descrive la semantica del protocollo, non vieta lo stato dell’applicazione."
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "Stateless descrive la semantica del protocollo, non vieta lo stato dell’applicazione."
+    },
+    {
+      "id": "a1-status",
+      "tipo": "scelta_multipla",
+      "area": 1,
+      "nodo_id": "codici-stato-http",
+      "titolo": "Risorsa assente",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Quale codice HTTP esprime che una risorsa non è stata trovata?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "git branch",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "b",
+          "testo": "404",
+          "spiegazione": "404 indica Not Found; 200 segnala invece una richiesta riuscita."
+        },
+        {
+          "id": "c",
+          "testo": "200",
+          "tipo": "plausibile",
+          "spiegazione": "200 appartiene ai codici di successo, non descrive una risorsa assente."
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "404 indica Not Found; 200 segnala invece una richiesta riuscita."
+    },
+    {
+      "id": "a2-tier",
+      "tipo": "scelta_multipla",
+      "area": 2,
+      "nodo_id": "architettura-3-tier",
+      "titolo": "Architettura multi-livello",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Che cosa separa tipicamente un’architettura a tre livelli?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Presentazione, logica applicativa e accesso ai dati",
+          "spiegazione": "La separazione delle responsabilità consente di distinguere interfaccia, logica e dati."
+        },
+        {
+          "id": "b",
+          "testo": "Tre copie identiche del foglio CSS",
+          "tipo": "plausibile",
+          "spiegazione": "Tre copie del CSS non definiscono responsabilità architetturali distinte."
+        },
+        {
+          "id": "c",
+          "testo": "Tre passaggi di installazione del sistema operativo",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "La separazione delle responsabilità consente di distinguere interfaccia, logica e dati."
+    },
+    {
+      "id": "a2-rest",
+      "tipo": "scelta_multipla",
+      "area": 2,
+      "nodo_id": "rest-principi",
+      "titolo": "REST",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "In una richiesta REST stateless dove va il contesto necessario a comprenderla?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Solo nella memoria della richiesta precedente",
+          "tipo": "plausibile",
+          "spiegazione": "Affidarsi soltanto al contesto della richiesta precedente contraddice il vincolo stateless."
+        },
+        {
+          "id": "b",
+          "testo": "Nel manuale di installazione del sistema operativo",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "c",
+          "testo": "Nella richiesta stessa",
+          "spiegazione": "Il server deve poter interpretare la richiesta senza dipendere da una conversazione precedente conservata come contesto."
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "Il server deve poter interpretare la richiesta senza dipendere da una conversazione precedente conservata come contesto."
+    },
+    {
+      "id": "a2-put",
+      "tipo": "scelta_multipla",
+      "area": 2,
+      "nodo_id": "rest-metodi-http",
+      "titolo": "PUT e PATCH",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Quale metodo esprime la creazione o sostituzione dello stato della risorsa alla destinazione?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "SMTP",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "b",
+          "testo": "PUT",
+          "spiegazione": "PUT esprime creazione o sostituzione della risorsa target; PATCH applica modifiche descritte dal documento inviato."
+        },
+        {
+          "id": "c",
+          "testo": "PATCH significa sempre sostituzione completa",
+          "tipo": "plausibile",
+          "spiegazione": "PATCH non equivale per definizione a sostituzione completa."
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "PUT esprime creazione o sostituzione della risorsa target; PATCH applica modifiche descritte dal documento inviato."
+    },
+    {
+      "id": "a2-delete",
+      "tipo": "scelta_multipla",
+      "area": 2,
+      "nodo_id": "rest-metodi-http",
+      "titolo": "Idempotenza",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Quale proprietà descrive l’idempotenza di DELETE?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Ripeterlo ha lo stesso effetto intenzionale sullo stato di una singola esecuzione",
+          "spiegazione": "L’idempotenza riguarda l’effetto intenzionale sul server, non l’identità delle risposte successive."
+        },
+        {
+          "id": "b",
+          "testo": "Ogni risposta deve avere identici corpo e codice",
+          "tipo": "plausibile",
+          "spiegazione": "Una successiva risposta può differire, per esempio se la risorsa è già assente."
+        },
+        {
+          "id": "c",
+          "testo": "Trasforma una LAN in una versione del Web",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "L’idempotenza riguarda l’effetto intenzionale sul server, non l’identità delle risposte successive."
+    },
+    {
+      "id": "a2-api",
+      "tipo": "scelta_multipla",
+      "area": 2,
+      "nodo_id": "api-design-best-practice",
+      "titolo": "Interfacce a risorse",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Quale scelta rende più chiara un’API orientata a risorse?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Usare GET anche per tutte le cancellazioni",
+          "tipo": "plausibile",
+          "spiegazione": "GET non deve essere usato per richiedere cancellazioni: la sua semantica è safe."
+        },
+        {
+          "id": "b",
+          "testo": "Usare JUnit come protocollo di trasporto",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "c",
+          "testo": "URI per risorse e metodi HTTP coerenti con le operazioni",
+          "spiegazione": "Separare risorse e semantica dei metodi rende il contratto dell’interfaccia comprensibile."
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "Separare risorse e semantica dei metodi rende il contratto dell’interfaccia comprensibile."
+    },
+    {
+      "id": "q5-mashup-eventi",
+      "tipo": "scelta_multipla",
+      "area": 2,
+      "nodo_id": "sviluppo-event-driven",
+      "titolo": "Q5 · Mashup, eventi e sensori",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "[IPOTESI didattica] Quale descrizione distingue mashup ed event-driven con un esempio mobile?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Un sensore mobile è un pattern UML Composite",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "b",
+          "testo": "Mashup combina sorgenti; event-driven reagisce a eventi, anche generati da sensori",
+          "spiegazione": "[IPOTESI didattica] Mashup combina servizi/dati; event-driven organizza il flusso intorno agli eventi; un sensore può generarli. Q5 originale da R3 §3.5.2 adattato a chiusa, definizioni da validare con le slide."
+        },
+        {
+          "id": "c",
+          "testo": "Mashup ed event-driven sono entrambi sinonimi di foglio CSS statico",
+          "tipo": "plausibile",
+          "spiegazione": "CSS descrive la presentazione, non definisce né la composizione di servizi né il flusso a eventi."
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "[IPOTESI didattica] Mashup combina servizi/dati; event-driven organizza il flusso intorno agli eventi; un sensore può generarli. Q5 originale da R3 §3.5.2 adattato a chiusa, definizioni da validare con le slide."
+    },
+    {
+      "id": "a3-form",
+      "tipo": "scelta_multipla",
+      "area": 3,
+      "nodo_id": "html-form-accessibilita",
+      "titolo": "HTML5 e form",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Quale associazione rende esplicita l’etichetta di un controllo HTML?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "label con for uguale all’id del controllo",
+          "spiegazione": "L’associazione label/controllo offre un nome accessibile e un bersaglio di interazione."
+        },
+        {
+          "id": "b",
+          "testo": "Solo un placeholder che scompare durante la digitazione",
+          "tipo": "plausibile",
+          "spiegazione": "Il placeholder non sostituisce un’etichetta persistente."
+        },
+        {
+          "id": "c",
+          "testo": "Un commit Git senza messaggio",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "L’associazione label/controllo offre un nome accessibile e un bersaglio di interazione."
+    },
+    {
+      "id": "a3-fieldset",
+      "tipo": "scelta_multipla",
+      "area": 3,
+      "nodo_id": "html-form-accessibilita",
+      "titolo": "Gruppi di opzioni",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Come raggruppare semanticamente radio button correlati?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Un div con testo solo nel colore di sfondo",
+          "tipo": "plausibile",
+          "spiegazione": "Un contenitore puramente visivo non fornisce la stessa semantica di gruppo."
+        },
+        {
+          "id": "b",
+          "testo": "Un sistema operativo per ogni radio button",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "c",
+          "testo": "fieldset e legend, con lo stesso name per le alternative",
+          "spiegazione": "fieldset e legend descrivono il gruppo; il name condiviso rende le scelte alternative."
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "fieldset e legend descrivono il gruppo; il name condiviso rende le scelte alternative."
+    },
+    {
+      "id": "a3-css-box",
+      "tipo": "scelta_multipla",
+      "area": 3,
+      "nodo_id": "css-box-model",
+      "titolo": "Box model",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Nel box model CSS content-box che cosa si aggiunge a width per la dimensione esterna del bordo?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "La lunghezza di una chiave RSA",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "b",
+          "testo": "Padding e bordi orizzontali",
+          "spiegazione": "Con content-box width riguarda il contenuto; padding e bordi contribuiscono alla larghezza del border box."
+        },
+        {
+          "id": "c",
+          "testo": "Solo il colore del testo",
+          "tipo": "plausibile",
+          "spiegazione": "Il colore non modifica la geometria del box."
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "Con content-box width riguarda il contenuto; padding e bordi contribuiscono alla larghezza del border box."
+    },
+    {
+      "id": "a3-css-inherit",
+      "tipo": "scelta_multipla",
+      "area": 3,
+      "nodo_id": "css-origini-ereditarieta",
+      "titolo": "Ereditarietà CSS",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Quale affermazione sull’ereditarietà CSS è corretta?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Alcune proprietà come color sono ereditate per impostazione predefinita",
+          "spiegazione": "L’ereditarietà è specifica della proprietà; color è normalmente ereditata, margin no."
+        },
+        {
+          "id": "b",
+          "testo": "Tutte le proprietà, inclusi i margini, sono sempre ereditate",
+          "tipo": "plausibile",
+          "spiegazione": "Non tutte le proprietà ereditano automaticamente il valore del genitore."
+        },
+        {
+          "id": "c",
+          "testo": "CSS determina il branching Git",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "L’ereditarietà è specifica della proprietà; color è normalmente ereditata, margin no."
+    },
+    {
+      "id": "a3-fetch",
+      "tipo": "scelta_multipla",
+      "area": 3,
+      "nodo_id": "javascript-fetch-async-await",
+      "titolo": "JavaScript asincrono",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Che cosa restituisce normalmente fetch() prima che la risposta sia disponibile?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Sempre direttamente l’oggetto JSON già decodificato",
+          "tipo": "plausibile",
+          "spiegazione": "Per ottenere il JSON bisogna attendere la risposta e leggere il corpo, non confondere Promise e dati."
+        },
+        {
+          "id": "b",
+          "testo": "Una presentazione PowerPoint",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "c",
+          "testo": "Una Promise",
+          "spiegazione": "fetch restituisce una Promise; anche la lettura JSON del corpo è asincrona."
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "fetch restituisce una Promise; anche la lettura JSON del corpo è asincrona."
+    },
+    {
+      "id": "a3-fetch-error",
+      "tipo": "scelta_multipla",
+      "area": 3,
+      "nodo_id": "javascript-fetch-async-await",
+      "titolo": "Errori HTTP con fetch",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Una risposta HTTP 404 causa sempre il rigetto della Promise fetch?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Dipende dal tipo di carta A3",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "b",
+          "testo": "No: occorre controllare response.ok o response.status",
+          "spiegazione": "fetch distingue gli errori di rete dalle risposte HTTP: 404 è comunque una risposta da controllare."
+        },
+        {
+          "id": "c",
+          "testo": "Sì: tutti gli errori HTTP rigettano automaticamente fetch",
+          "tipo": "plausibile",
+          "spiegazione": "Il rigetto non è automatico per uno status HTTP non di successo."
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "fetch distingue gli errori di rete dalle risposte HTTP: 404 è comunque una risposta da controllare."
+    },
+    {
+      "id": "a4-json",
+      "tipo": "scelta_multipla",
+      "area": 4,
+      "nodo_id": "json-formato-dati",
+      "titolo": "Sintassi JSON",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Quale frammento è un oggetto JSON valido?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "{\"nome\": \"Ada\", \"attivo\": true}",
+          "spiegazione": "JSON usa doppi apici per le stringhe e true minuscolo per il booleano."
+        },
+        {
+          "id": "b",
+          "testo": "{'nome': 'Ada', 'attivo': True}",
+          "tipo": "plausibile",
+          "spiegazione": "Apici singoli e True appartengono a una sintassi diversa, non al formato JSON."
+        },
+        {
+          "id": "c",
+          "testo": "SELECT * FROM sistema_operativo",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "JSON usa doppi apici per le stringhe e true minuscolo per il booleano."
+    },
+    {
+      "id": "a4-flask-json",
+      "tipo": "scelta_multipla",
+      "area": 4,
+      "nodo_id": "flask-rotte-jsonify",
+      "titolo": "Risposta Flask",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Quale funzione Flask aiuta a produrre una risposta JSON?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "render_template produce sempre JSON",
+          "tipo": "plausibile",
+          "spiegazione": "render_template elabora un template e non garantisce un formato JSON."
+        },
+        {
+          "id": "b",
+          "testo": "git merge",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "c",
+          "testo": "jsonify",
+          "spiegazione": "jsonify serializza dati in una risposta JSON con tipo di contenuto appropriato."
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "jsonify serializza dati in una risposta JSON con tipo di contenuto appropriato."
+    },
+    {
+      "id": "a4-flask-request",
+      "tipo": "scelta_multipla",
+      "area": 4,
+      "nodo_id": "flask-request-response",
+      "titolo": "Richiesta Flask",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Dove legge Flask i parametri della query string?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Nel file del manifesto PWA del sistema operativo",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "b",
+          "testo": "request.args",
+          "spiegazione": "request.args espone i parametri della query string, distinti dal corpo della richiesta."
+        },
+        {
+          "id": "c",
+          "testo": "request.args contiene soltanto file caricati",
+          "tipo": "plausibile",
+          "spiegazione": "I file caricati sono esposti da request.files, non da request.args."
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "request.args espone i parametri della query string, distinti dal corpo della richiesta."
+    },
+    {
+      "id": "a4-git-stage",
+      "tipo": "scelta_multipla",
+      "area": 4,
+      "nodo_id": "git-comandi-base",
+      "titolo": "Git staging",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Che cosa fa git add prima di un commit?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Aggiorna l’indice con i contenuti da includere",
+          "spiegazione": "git add prepara l’indice; il commit registra quello snapshot e il push pubblica commit."
+        },
+        {
+          "id": "b",
+          "testo": "Pubblica automaticamente tutto su main remoto",
+          "tipo": "plausibile",
+          "spiegazione": "Staging e pubblicazione remota sono operazioni distinte."
+        },
+        {
+          "id": "c",
+          "testo": "Compila il diagramma UML",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "git add prepara l’indice; il commit registra quello snapshot e il push pubblica commit."
+    },
+    {
+      "id": "a4-git-merge",
+      "tipo": "scelta_multipla",
+      "area": 4,
+      "nodo_id": "git-comandi-base",
+      "titolo": "Git collaborativo",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "A che cosa serve una pull request nel lavoro collaborativo?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Sostituire sempre e automaticamente ogni revisione del codice",
+          "tipo": "plausibile",
+          "spiegazione": "Una proposta di integrazione non elimina la necessità di revisione."
+        },
+        {
+          "id": "b",
+          "testo": "Convertire SMTP in CSS",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "c",
+          "testo": "Proporre e discutere l’integrazione di modifiche tra rami",
+          "spiegazione": "La pull request propone un’integrazione, rendendo possibili confronto e revisione del codice."
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "La pull request propone un’integrazione, rendendo possibili confronto e revisione del codice."
+    },
+    {
+      "id": "a5-ajax",
+      "tipo": "scelta_multipla",
+      "area": 5,
+      "nodo_id": "ajax-fetch-xhr",
+      "titolo": "AJAX",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Quale obiettivo caratterizza AJAX in un’interfaccia Web?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Configurare il kernel del sistema operativo",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "b",
+          "testo": "Scambiare dati in modo asincrono e aggiornare parti della pagina",
+          "spiegazione": "AJAX consente scambi asincroni e aggiornamenti dell’interfaccia senza una navigazione completa."
+        },
+        {
+          "id": "c",
+          "testo": "Richiedere obbligatoriamente una navigazione completa per ogni dato",
+          "tipo": "plausibile",
+          "spiegazione": "La ricarica completa non è un requisito di AJAX, anzi è ciò che spesso evita."
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "AJAX consente scambi asincroni e aggiornamenti dell’interfaccia senza una navigazione completa."
+    },
+    {
+      "id": "a5-ajax-json",
+      "tipo": "scelta_multipla",
+      "area": 5,
+      "nodo_id": "ajax-fetch-xhr",
+      "titolo": "AJAX e JSON",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "AJAX impone che il corpo di ogni risposta sia XML?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "No: può trasportare JSON e altri formati",
+          "spiegazione": "Il nome storico non impone XML: AJAX può scambiare diversi formati, incluso JSON."
+        },
+        {
+          "id": "b",
+          "testo": "Sì: JSON è incompatibile con le richieste asincrone",
+          "tipo": "plausibile",
+          "spiegazione": "JSON è comunemente scambiato con fetch o XMLHttpRequest."
+        },
+        {
+          "id": "c",
+          "testo": "Solo quando viene eseguito un pattern Composite",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "Il nome storico non impone XML: AJAX può scambiare diversi formati, incluso JSON."
+    },
+    {
+      "id": "a5-ajax-dom",
+      "tipo": "scelta_multipla",
+      "area": 5,
+      "nodo_id": "ajax-fetch-xhr",
+      "titolo": "Aggiornamenti asincroni",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Dopo aver ricevuto JSON, come si aggiorna in sicurezza una scritta nel DOM?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Inserendo sempre dati esterni come HTML non controllato",
+          "tipo": "plausibile",
+          "spiegazione": "Interpretare dati non fidati come HTML può introdurre iniezioni: non è necessario per mostrare testo."
+        },
+        {
+          "id": "b",
+          "testo": "Installando un nuovo sistema operativo",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "c",
+          "testo": "Assegnando il testo a textContent",
+          "spiegazione": "textContent tratta il dato come testo senza interpretarlo come markup."
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "textContent tratta il dato come testo senza interpretarlo come markup."
+    },
+    {
+      "id": "a5-ajax-order",
+      "tipo": "scelta_multipla",
+      "area": 5,
+      "nodo_id": "ajax-fetch-xhr",
+      "titolo": "Ordine delle risposte",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Due ricerche asincrone tornano fuori ordine: come evitare che la vecchia sovrascriva la nuova?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Cambiare il diagramma di deployment UML",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "b",
+          "testo": "Controllare un identificatore di richiesta prima di aggiornare la vista",
+          "spiegazione": "Un identificatore consente di ignorare risposte obsolete e preservare l’ultima ricerca richiesta."
+        },
+        {
+          "id": "c",
+          "testo": "Assumere che le risposte arrivino sempre nell’ordine di invio",
+          "tipo": "plausibile",
+          "spiegazione": "La rete e il server possono completare le richieste in ordine diverso dall’invio."
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "Un identificatore consente di ignorare risposte obsolete e preservare l’ultima ricerca richiesta."
+    },
+    {
+      "id": "a6-tesina-libera",
+      "tipo": "scelta_multipla",
+      "area": 6,
+      "nodo_id": "tesina-progetto-flask-crud",
+      "titolo": "Scelte della tesina",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "La tesina TW 2026/27 impone obbligatoriamente Flask e SQLite [F1]?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "No: il syllabus indica tecnologie a libera scelta",
+          "spiegazione": "[F1] indica tecnologie a libera scelta; il progetto Flask CRUD del grafo è un esempio didattico."
+        },
+        {
+          "id": "b",
+          "testo": "Sì: è obbligatorio usare proprio SQLite",
+          "tipo": "plausibile",
+          "spiegazione": "SQLite è una possibile scelta, non un obbligo documentato per la tesina."
+        },
+        {
+          "id": "c",
+          "testo": "È obbligatorio usare UML Composite al posto del codice",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "[F1] indica tecnologie a libera scelta; il progetto Flask CRUD del grafo è un esempio didattico."
+    },
+    {
+      "id": "a6-presentazione",
+      "tipo": "scelta_multipla",
+      "area": 6,
+      "nodo_id": "tesina-presentazione-8-minuti",
+      "titolo": "Presentazione tesina",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Quale limite di presentazione è documentato per la tesina [F1]?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Esattamente 4 slide obbligatorie",
+          "tipo": "plausibile",
+          "spiegazione": "Le 4 slide non risultano un vincolo ufficiale e non vanno presentate come tale."
+        },
+        {
+          "id": "b",
+          "testo": "Carta A3 obbligatoria per diagrammi UML",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "c",
+          "testo": "PowerPoint di massimo 8 minuti",
+          "spiegazione": "[F1] specifica massimo 8 minuti; un numero obbligatorio di slide non è stato trovato."
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "[F1] specifica massimo 8 minuti; un numero obbligatorio di slide non è stato trovato."
+    },
+    {
+      "id": "a6-difesa-codice",
+      "tipo": "scelta_multipla",
+      "area": 6,
+      "nodo_id": "tesina-domande-revisione-codice",
+      "titolo": "Discussione del progetto",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "domanda": "Che cosa va preparato oltre alla presentazione della tesina [F1]?",
+      "opzioni": [
+        {
+          "id": "a",
+          "testo": "Un esame di installazione del sistema operativo",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+        },
+        {
+          "id": "b",
+          "testo": "La discussione di scelte progettuali e codice",
+          "spiegazione": "[F1] richiede di discutere scelte progettuali e codice: occorre saper motivare l’implementazione."
+        },
+        {
+          "id": "c",
+          "testo": "Solo la lettura del titolo, senza conoscere il codice",
+          "tipo": "plausibile",
+          "spiegazione": "Conoscere il solo titolo non prepara alla discussione prevista."
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "[F1] richiede di discutere scelte progettuali e codice: occorre saper motivare l’implementazione."
+    },
+    {
+      "id": "a1-match-http",
+      "tipo": "abbinamento",
+      "area": 1,
+      "nodo_id": "http-protocollo-base",
+      "titolo": "HTTP e identificatori",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "istruzioni": "Abbina ogni termine al suo ruolo; scarta le descrizioni distrattrici.",
+      "opzioni": [
+        {
+          "id": "ruolo-1",
+          "testo": "Identifica una risorsa"
+        },
+        {
+          "id": "ruolo-2",
+          "testo": "Framing binario e stream"
+        },
+        {
+          "id": "ruolo-3",
+          "testo": "Risorsa non trovata"
+        }
+      ],
+      "abbinamenti": [
+        {
+          "elemento": "URI",
+          "risposta_id": "ruolo-1",
+          "nodo_id": "uri-url-urn-differenze",
+          "spiegazione": "Un URI fornisce un identificatore per la risorsa."
+        },
+        {
+          "elemento": "HTTP/2",
+          "risposta_id": "ruolo-2",
+          "nodo_id": "http-1-1-1-2-3-differenze",
+          "spiegazione": "HTTP/2 organizza gli scambi in frame e stream."
+        },
+        {
+          "elemento": "404",
+          "risposta_id": "ruolo-3",
+          "nodo_id": "codici-stato-http",
+          "spiegazione": "404 segnala Not Found, non un successo."
+        }
+      ],
+      "distrattori": [
+        {
+          "testo": "Identifica necessariamente un file locale",
+          "tipo": "plausibile",
+          "spiegazione": "Un URI può identificare anche risorse non locali e non coincide necessariamente con un file."
+        },
+        {
+          "testo": "Installazione del sistema operativo come protocollo Web",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Installare un sistema operativo non è il ruolo dei meccanismi Web da abbinare."
+        }
+      ]
+    },
+    {
+      "id": "a2-match-rest",
+      "tipo": "abbinamento",
+      "area": 2,
+      "nodo_id": "rest-metodi-http",
+      "titolo": "Metodi e livelli",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "istruzioni": "Abbina ogni termine al suo ruolo; scarta le descrizioni distrattrici.",
+      "opzioni": [
+        {
+          "id": "ruolo-1",
+          "testo": "Recuperare una rappresentazione"
+        },
+        {
+          "id": "ruolo-2",
+          "testo": "Creare o sostituire alla destinazione"
+        },
+        {
+          "id": "ruolo-3",
+          "testo": "Responsabilità dell’interfaccia utente"
+        }
+      ],
+      "abbinamenti": [
+        {
+          "elemento": "GET",
+          "risposta_id": "ruolo-1",
+          "nodo_id": "rest-metodi-http",
+          "spiegazione": "GET è il metodo di recupero."
+        },
+        {
+          "elemento": "PUT",
+          "risposta_id": "ruolo-2",
+          "nodo_id": "rest-metodi-http",
+          "spiegazione": "PUT esprime creazione o sostituzione dello stato alla destinazione."
+        },
+        {
+          "elemento": "Presentazione",
+          "risposta_id": "ruolo-3",
+          "nodo_id": "architettura-3-tier",
+          "spiegazione": "Il livello di presentazione gestisce l’interfaccia, non la persistenza."
+        }
+      ],
+      "distrattori": [
+        {
+          "testo": "Sostituzione completa obbligatoria tramite PATCH",
+          "tipo": "plausibile",
+          "spiegazione": "PATCH applica un documento di modifiche; non equivale per definizione a sostituzione completa."
+        },
+        {
+          "testo": "Installazione del sistema operativo come protocollo Web",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Installare un sistema operativo non è il ruolo dei meccanismi Web da abbinare."
+        }
+      ]
+    },
+    {
+      "id": "a3-match-front",
+      "tipo": "abbinamento",
+      "area": 3,
+      "nodo_id": "html-form-accessibilita",
+      "titolo": "Frontend HTML5, CSS e JS",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "istruzioni": "Abbina ogni termine al suo ruolo; scarta le descrizioni distrattrici.",
+      "opzioni": [
+        {
+          "id": "ruolo-1",
+          "testo": "Struttura e semantica del documento"
+        },
+        {
+          "id": "ruolo-2",
+          "testo": "Presentazione e layout"
+        },
+        {
+          "id": "ruolo-3",
+          "testo": "Comportamento e interazioni"
+        }
+      ],
+      "abbinamenti": [
+        {
+          "elemento": "HTML5",
+          "risposta_id": "ruolo-1",
+          "nodo_id": "html-form-accessibilita",
+          "spiegazione": "HTML definisce struttura e semantica, comprese le form."
+        },
+        {
+          "elemento": "CSS",
+          "risposta_id": "ruolo-2",
+          "nodo_id": "css-box-model",
+          "spiegazione": "CSS descrive la presentazione, inclusa la geometria dei box."
+        },
+        {
+          "elemento": "JavaScript",
+          "risposta_id": "ruolo-3",
+          "nodo_id": "javascript-fetch-async-await",
+          "spiegazione": "JavaScript gestisce comportamento ed eventi, anche asincroni."
+        }
+      ],
+      "distrattori": [
+        {
+          "testo": "HTML è il linguaggio che determina la cascata degli stili",
+          "tipo": "plausibile",
+          "spiegazione": "HTML descrive struttura e semantica; la cascata è un meccanismo di CSS."
+        },
+        {
+          "testo": "Installazione del sistema operativo come protocollo Web",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Installare un sistema operativo non è il ruolo dei meccanismi Web da abbinare."
+        }
+      ]
+    },
+    {
+      "id": "q2-tecnologia-ruolo",
+      "tipo": "abbinamento",
+      "area": 4,
+      "nodo_id": "flask-rotte-jsonify",
+      "titolo": "Q2 · Tecnologia e ruolo",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "istruzioni": "Abbina ogni termine al suo ruolo; scarta le descrizioni distrattrici.",
+      "opzioni": [
+        {
+          "id": "ruolo-1",
+          "testo": "Frontend a componenti"
+        },
+        {
+          "id": "ruolo-2",
+          "testo": "Backend e servizi RESTful"
+        },
+        {
+          "id": "ruolo-3",
+          "testo": "Branching, merge e pull request"
+        },
+        {
+          "id": "ruolo-4",
+          "testo": "Interazione asincrona client-side"
+        }
+      ],
+      "abbinamenti": [
+        {
+          "elemento": "React",
+          "risposta_id": "ruolo-1",
+          "nodo_id": "react-componenti-jsx",
+          "spiegazione": "React è citato in [F1]; il ruolo frontend è elaborazione didattica di Q2 originale R3 §3.5.2."
+        },
+        {
+          "elemento": "Flask",
+          "risposta_id": "ruolo-2",
+          "nodo_id": "servizi-restful-flask",
+          "spiegazione": "[F1] associa Flask al backend e ai servizi RESTful."
+        },
+        {
+          "elemento": "Git",
+          "risposta_id": "ruolo-3",
+          "nodo_id": "git-workflow-collaborativo",
+          "spiegazione": "[F1] elenca questi strumenti per il lavoro collaborativo."
+        },
+        {
+          "elemento": "AJAX",
+          "risposta_id": "ruolo-4",
+          "nodo_id": "ajax-fetch-xhr",
+          "spiegazione": "AJAX gestisce gli scambi asincroni; Q2 originale, non prova reale."
+        }
+      ],
+      "distrattori": [
+        {
+          "testo": "Django è il framework Python del modulo TW 2026/27",
+          "tipo": "plausibile",
+          "spiegazione": "[F1] nomina Flask, non Django; Django compare nei programmi di altri anni o corsi [F4][F5]."
+        },
+        {
+          "testo": "Installazione del sistema operativo come protocollo Web",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Installare un sistema operativo non è il ruolo dei meccanismi Web da abbinare."
+        }
+      ]
+    },
+    {
+      "id": "a5-match-ajax",
+      "tipo": "abbinamento",
+      "area": 5,
+      "nodo_id": "ajax-fetch-xhr",
+      "titolo": "Strumenti AJAX",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "istruzioni": "Abbina ogni termine al suo ruolo; scarta le descrizioni distrattrici.",
+      "opzioni": [
+        {
+          "id": "ruolo-1",
+          "testo": "API a Promise per richieste"
+        },
+        {
+          "id": "ruolo-2",
+          "testo": "API per richieste con eventi"
+        },
+        {
+          "id": "ruolo-3",
+          "testo": "Formato testuale scambiato"
+        }
+      ],
+      "abbinamenti": [
+        {
+          "elemento": "fetch",
+          "risposta_id": "ruolo-1",
+          "nodo_id": "ajax-fetch-xhr",
+          "spiegazione": "fetch offre un’interfaccia basata su Promise."
+        },
+        {
+          "elemento": "XMLHttpRequest",
+          "risposta_id": "ruolo-2",
+          "nodo_id": "ajax-fetch-xhr",
+          "spiegazione": "XHR espone eventi che permettono di reagire al completamento."
+        },
+        {
+          "elemento": "JSON",
+          "risposta_id": "ruolo-3",
+          "nodo_id": "ajax-fetch-xhr",
+          "spiegazione": "JSON è un formato dati, non un’API di trasporto."
+        }
+      ],
+      "distrattori": [
+        {
+          "testo": "AJAX richiede sempre risposte XML",
+          "tipo": "plausibile",
+          "spiegazione": "Il nome storico non impone XML: si può scambiare anche JSON."
+        },
+        {
+          "testo": "Installazione del sistema operativo come protocollo Web",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Installare un sistema operativo non è il ruolo dei meccanismi Web da abbinare."
+        }
+      ]
+    },
+    {
+      "id": "a6-match-tesina",
+      "tipo": "abbinamento",
+      "area": 6,
+      "nodo_id": "tesina-progetto-flask-crud",
+      "titolo": "Verifica TW [F1]",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "istruzioni": "Abbina ogni termine al suo ruolo; scarta le descrizioni distrattrici.",
+      "opzioni": [
+        {
+          "id": "ruolo-1",
+          "testo": "Domande aperte, chiuse ed esercizi Web senza appunti"
+        },
+        {
+          "id": "ruolo-2",
+          "testo": "Applicazione individuale con tecnologie a libera scelta"
+        },
+        {
+          "id": "ruolo-3",
+          "testo": "PowerPoint di massimo 8 minuti e discussione"
+        }
+      ],
+      "abbinamenti": [
+        {
+          "elemento": "Scritto",
+          "risposta_id": "ruolo-1",
+          "nodo_id": "tesina-esercitazione-guidata",
+          "spiegazione": "[F1] documenta domande ed esercizi senza appunti."
+        },
+        {
+          "elemento": "Tesina",
+          "risposta_id": "ruolo-2",
+          "nodo_id": "tesina-progetto-flask-crud",
+          "spiegazione": "[F1] descrive una tesina individuale con tecnologie a libera scelta."
+        },
+        {
+          "elemento": "Presentazione",
+          "risposta_id": "ruolo-3",
+          "nodo_id": "tesina-presentazione-8-minuti",
+          "spiegazione": "[F1] limita la presentazione a massimo 8 minuti e prevede discussione del codice."
+        }
+      ],
+      "distrattori": [
+        {
+          "testo": "Presentazione di esattamente quattro slide obbligatorie",
+          "tipo": "plausibile",
+          "spiegazione": "[F1] indica massimo 8 minuti, non un numero obbligatorio di slide."
+        },
+        {
+          "testo": "Installazione del sistema operativo come protocollo Web",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Installare un sistema operativo non è il ruolo dei meccanismi Web da abbinare."
+        }
+      ]
+    },
+    {
+      "id": "q4-tesina",
+      "tipo": "vero_falso",
+      "area": 6,
+      "nodo_id": "tesina-progetto-flask-crud",
+      "titolo": "Vero o falso · verifica TW",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "affermazione": "La tesina TW 2026/27 è facoltativa e può aggiungere fino a 5 punti.",
+      "risposta_corretta": false,
+      "spiegazione": "[F1] la tesina fa parte della verifica e vale 0–10; la formulazione descrive il 2025/26 [F4], non il 2026/27. Q4: elaborazione originale, non tratta da prove reali."
+    },
+    {
+      "id": "q4-appunti",
+      "tipo": "vero_falso",
+      "area": 6,
+      "nodo_id": "tesina-esercitazione-guidata",
+      "titolo": "Vero o falso · verifica TW",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "affermazione": "Allo scritto TW 2026/27 si possono consultare slide e appunti.",
+      "risposta_corretta": false,
+      "spiegazione": "[F1] allo scritto non è consentito usare appunti o altro materiale. Q4: elaborazione originale, non tratta da prove reali."
+    },
+    {
+      "id": "q4-intermedie",
+      "tipo": "vero_falso",
+      "area": 6,
+      "nodo_id": "tesina-esercitazione-guidata",
+      "titolo": "Vero o falso · verifica TW",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "affermazione": "Sono previste prove intermedie TW nel 2026/27.",
+      "risposta_corretta": false,
+      "spiegazione": "[F1] non sono previste prove intermedie. Q4: elaborazione originale, non tratta da prove reali."
+    },
+    {
+      "id": "a6-tesina-individuale",
+      "tipo": "vero_falso",
+      "area": 6,
+      "nodo_id": "tesina-domande-revisione-codice",
+      "titolo": "Vero o falso · verifica TW",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "affermazione": "La tesina TW 2026/27 è un lavoro individuale.",
+      "risposta_corretta": true,
+      "spiegazione": "[F1] descrive il lavoro come individuale e richiede la discussione di scelte e codice. Q4: elaborazione originale, non tratta da prove reali."
+    },
+    {
+      "id": "q3-rotta-json",
+      "tipo": "completamento_codice",
+      "area": 4,
+      "nodo_id": "flask-rotte-jsonify",
+      "titolo": "Completa il codice",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "linguaggio": "python",
+      "codice_con_buchi": "@app.route('/api/items/<int:id>', methods=['___1___'])\ndef leggi(id):\n    item = {'id': id}\n    return ___2___(item), 200",
+      "soluzioni": {
+        "1": [
+          "GET"
+        ],
+        "2": [
+          "jsonify"
+        ]
+      },
+      "spiegazione": "GET recupera la risorsa; jsonify produce JSON. Q3 originale da R3 §3.5.2: non tratto da prove reali. SMTP è posta, SQL non è routing e PATCH non esprime sostituzione completa."
+    },
+    {
+      "id": "a3-completa-fetch",
+      "tipo": "completamento_codice",
+      "area": 3,
+      "nodo_id": "javascript-fetch-async-await",
+      "titolo": "Completa il codice",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
+      "linguaggio": "javascript",
+      "codice_con_buchi": "async function carica() {\n  const r = ___1___ fetch('/api/items');\n  if (!r.ok) throw new Error('HTTP');\n  return r.___2___();\n}",
+      "soluzioni": {
+        "1": [
+          "await"
+        ],
+        "2": [
+          "json"
+        ]
+      },
+      "spiegazione": "await attende la risposta; json() legge e decodifica il corpo. Non si esegue il codice inserito: si confrontano solo varianti esplicite."
+    },
+    {
+      "id": "b-mashup-guasto-parziale",
+      "tipo": "scelta_multipla",
+      "area": 2,
+      "nodo_id": "architetture-mashup",
+      "titolo": "Mashup e guasti parziali",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione architetture-mashup; non tratta da prove reali",
+      "domanda": "Il catalogo locale risponde, ma il servizio esterno di disponibilità va in timeout. Come gestire il mashup?",
+      "opzioni": [
+        {
+          "testo": "Mostrare i dati locali e segnalare separatamente l’indisponibilità del servizio esterno",
+          "spiegazione": "Le sorgenti di un mashup mantengono contratti e guasti distinti: un timeout esterno non prova che il libro locale non esista.",
+          "id": "a"
+        },
+        {
+          "testo": "Mostrare sempre «libro inesistente» anche se il catalogo locale lo contiene",
+          "spiegazione": "Un errore del servizio di disponibilità non equivale a un 404 del catalogo: confonde cause e responsabilità.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "Risolvere il timeout cambiando la priorità della cascata CSS",
+          "spiegazione": "La cascata CSS regola lo stile: non risolve un guasto di un servizio remoto.",
+          "tipo": "fuori_contesto",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "Le sorgenti di un mashup mantengono contratti e guasti distinti: un timeout esterno non prova che il libro locale non esista."
+    },
+    {
+      "id": "b-event-driven-conferma",
+      "tipo": "scelta_multipla",
+      "area": 2,
+      "nodo_id": "sviluppo-event-driven",
+      "titolo": "Eventi e conferma remota",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione sviluppo-event-driven; non tratta da prove reali",
+      "domanda": "Un click avvia la prenotazione via HTTP. Quando si può mostrare la conferma di riuscita?",
+      "opzioni": [
+        {
+          "testo": "Appena parte fetch, perché una Promise creata equivale a un successo",
+          "spiegazione": "La creazione della Promise non garantisce né completamento né successo; vanno controllati risposta ed errori.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Quando git add prepara il foglio di stile",
+          "spiegazione": "Lo staging Git non informa sull’esito della prenotazione HTTP.",
+          "tipo": "fuori_contesto",
+          "id": "b"
+        },
+        {
+          "testo": "Dopo aver ricevuto e controllato una risposta di successo dal servizio",
+          "spiegazione": "Il click esprime un’intenzione; la conferma dipende dall’esito remoto. L’handler può intanto mostrare uno stato di attesa.",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "Il click esprime un’intenzione; la conferma dipende dall’esito remoto. L’handler può intanto mostrare uno stato di attesa."
+    },
+    {
+      "id": "b-html5-struttura",
+      "tipo": "scelta_multipla",
+      "area": 3,
+      "nodo_id": "html5-struttura-semantica",
+      "titolo": "HTML5 semantico",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione html5-struttura-semantica; non tratta da prove reali",
+      "domanda": "Quale struttura esprime meglio un catalogo con schede di libri autonome?",
+      "opzioni": [
+        {
+          "testo": "Una rotta HTTP PATCH usata come elemento di intestazione",
+          "spiegazione": "Un metodo HTTP non è un elemento semantico HTML.",
+          "tipo": "fuori_contesto",
+          "id": "a"
+        },
+        {
+          "testo": "Un main per il contenuto dominante, con article per ciascuna scheda autonoma",
+          "spiegazione": "I tag esprimono il ruolo: main identifica il contenuto dominante, article una parte autonoma; lo stile resta separato.",
+          "id": "b"
+        },
+        {
+          "testo": "Un main per ogni colonna visiva, scelto solo per il suo stile predefinito",
+          "spiegazione": "main non è un generico contenitore di colonne e la semantica non si sceglie in base allo stile predefinito.",
+          "tipo": "plausibile",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "I tag esprimono il ruolo: main identifica il contenuto dominante, article una parte autonoma; lo stile resta separato."
+    },
+    {
+      "id": "b-react-state",
+      "tipo": "scelta_multipla",
+      "area": 3,
+      "nodo_id": "react-componenti-jsx",
+      "titolo": "React: props e stato",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione react-componenti-jsx; non tratta da prove reali",
+      "domanda": "Un componente React riceve il titolo come prop e conserva un contatore con useState. Come aggiornare il contatore?",
+      "opzioni": [
+        {
+          "testo": "Chiamare il setter dello stato, senza modificare direttamente la prop del padre",
+          "spiegazione": "Il setter comunica l’aggiornamento a React; le props restano input del componente. JSX descrive l’interfaccia da renderizzare.",
+          "id": "a"
+        },
+        {
+          "testo": "Assegnare direttamente il nuovo valore alla variabile di stato e alla prop",
+          "spiegazione": "L’assegnazione diretta non comunica l’aggiornamento a React; una prop ricevuta non va mutata dal figlio.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "Inviare un codice HTTP 204 al compilatore Git",
+          "spiegazione": "Codici HTTP e Git non sono il meccanismo con cui React aggiorna lo stato del componente.",
+          "tipo": "fuori_contesto",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "Il setter comunica l’aggiornamento a React; le props restano input del componente. JSX descrive l’interfaccia da renderizzare."
+    },
+    {
+      "id": "b-sensori-consenso",
+      "tipo": "scelta_multipla",
+      "area": 3,
+      "nodo_id": "sensori-mobile-web",
+      "titolo": "Sensori: permessi e alternativa",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione sensori-mobile-web; non tratta da prove reali",
+      "domanda": "La biblioteca propone la sede vicina tramite Geolocation. Come gestire il permesso negato?",
+      "opzioni": [
+        {
+          "testo": "Bloccare la scelta della sede perché ogni browser deve fornire coordinate precise",
+          "spiegazione": "Le coordinate non sono garantite né necessariamente esatte; il rifiuto del permesso è un caso normale da gestire.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Cambiare il box model CSS per calcolare la latitudine",
+          "spiegazione": "Il box model descrive dimensioni e spazi dei box, non misure geografiche del dispositivo.",
+          "tipo": "fuori_contesto",
+          "id": "b"
+        },
+        {
+          "testo": "Offrire la scelta manuale della sede e spiegare che la posizione non è disponibile",
+          "spiegazione": "Supporto, consenso e precisione non sono garantiti. Un percorso manuale preserva la funzione senza costringere a concedere il permesso.",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "Supporto, consenso e precisione non sono garantiti. Un percorso manuale preserva la funzione senza costringere a concedere il permesso."
+    },
+    {
+      "id": "b-python-dizionari",
+      "tipo": "scelta_multipla",
+      "area": 4,
+      "nodo_id": "python-base-web",
+      "titolo": "Python: dati in ingresso",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione python-base-web; non tratta da prove reali",
+      "domanda": "Una funzione Python riceve dati Web come dizionario. Che cosa va verificato prima di usare dati[\"titolo\"]?",
+      "opzioni": [
+        {
+          "testo": "Che una media query delimiti il blocco Python",
+          "spiegazione": "Le media query appartengono al CSS; in Python i blocchi sono delimitati dall’indentazione.",
+          "tipo": "fuori_contesto",
+          "id": "a"
+        },
+        {
+          "testo": "Che la chiave esista e che il valore abbia tipo e contenuto attesi",
+          "spiegazione": "Un dizionario può essere privo della chiave o contenere valori inattesi: validare l’input evita di scambiare struttura e correttezza dei dati.",
+          "id": "b"
+        },
+        {
+          "testo": "Solo che l’oggetto sia un dizionario, perché questo garantisce tutti i campi",
+          "spiegazione": "Il tipo dizionario non garantisce né chiavi né tipi dei valori; un accesso a una chiave assente può sollevare KeyError.",
+          "tipo": "plausibile",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "Un dizionario può essere privo della chiave o contenere valori inattesi: validare l’input evita di scambiare struttura e correttezza dei dati."
+    },
+    {
+      "id": "b-flask-creazione-rest",
+      "tipo": "scelta_multipla",
+      "area": 4,
+      "nodo_id": "servizi-restful-flask",
+      "titolo": "Flask: creazione REST",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione servizi-restful-flask; non tratta da prove reali",
+      "domanda": "POST /api/libri riceve un body JSON valido e crea un libro. Quale risposta rende esplicita la creazione?",
+      "opzioni": [
+        {
+          "testo": "Una risposta JSON con codice 201, dopo la validazione dell’input",
+          "spiegazione": "201 segnala creazione. Validare il body e distinguere errori e successo rende chiaro il contratto del servizio.",
+          "id": "a"
+        },
+        {
+          "testo": "Sempre 200 con un messaggio «errore» nel corpo, anche quando la validazione fallisce",
+          "spiegazione": "Usare sempre successo nasconde la distinzione tra input invalido e creazione; lo status va scelto in modo coerente.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "SMTP come metodo di routing Flask per restituire il JSON",
+          "spiegazione": "SMTP è un protocollo di posta, non un metodo HTTP per una risorsa REST.",
+          "tipo": "fuori_contesto",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "201 segnala creazione. Validare il body e distinguere errori e successo rende chiaro il contratto del servizio."
+    },
+    {
+      "id": "b-git-conflitto",
+      "tipo": "scelta_multipla",
+      "area": 4,
+      "nodo_id": "git-workflow-collaborativo",
+      "titolo": "Git: integrazione consapevole",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione git-workflow-collaborativo; non tratta da prove reali",
+      "domanda": "Durante un merge Git compare un conflitto. Quale procedura è corretta?",
+      "opzioni": [
+        {
+          "testo": "Scegliere sempre la versione del proprio ramo senza leggere l’altra",
+          "spiegazione": "Una scelta indiscriminata può perdere modifiche necessarie; branch e merge non sostituiscono la comprensione del contenuto.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Aspettare che un sensore mobile elimini i marcatori di conflitto",
+          "spiegazione": "Le API dei sensori non risolvono i conflitti della storia Git.",
+          "tipo": "fuori_contesto",
+          "id": "b"
+        },
+        {
+          "testo": "Capire entrambe le modifiche, risolvere il contenuto, eseguire test e registrare la risoluzione",
+          "spiegazione": "Git segnala il conflitto ma non conosce l’intenzione corretta. La risoluzione richiede una decisione verificata, non una scelta automatica arbitraria.",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "Git segnala il conflitto ma non conosce l’intenzione corretta. La risoluzione richiede una decisione verificata, non una scelta automatica arbitraria."
+    },
+    {
+      "id": "b-ia-generalizzazione",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-introduzione-apprendimento",
+      "titolo": "IA: apprendimento e generalizzazione",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-introduzione-apprendimento; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Un modello memorizza tutti gli esempi di addestramento ma sbaglia su nuovi esempi simili. Quale problema suggerisce?",
+      "opzioni": [
+        {
+          "testo": "Underfitting dimostrato soltanto dall’errore di training nullo",
+          "spiegazione": "L’underfitting indica difficoltà a rappresentare anche la struttura dei dati di training; il caso descritto suggerisce invece overfitting.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Un miglioramento garantito aggiungendo le etichette del test al training e valutando sullo stesso test",
+          "spiegazione": "Riutilizzare il test nell’apprendimento contamina la valutazione: non dimostra capacità di generalizzazione.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "Overfitting: basso errore sui dati di addestramento non garantisce generalizzazione",
+          "spiegazione": "L’obiettivo è generalizzare a dati non usati per apprendere; memorizzare il training può dare prestazioni scarse su dati nuovi.",
+          "id": "c"
+        },
+        {
+          "testo": "Generalizzazione perfetta, perché l’errore di training è nullo",
+          "spiegazione": "Il training non fornisce da solo una stima delle prestazioni su dati non visti.",
+          "tipo": "plausibile",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "L’obiettivo è generalizzare a dati non usati per apprendere; memorizzare il training può dare prestazioni scarse su dati nuovi."
+    },
+    {
+      "id": "b-ia-numpy-axis",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-python-numpy-lab",
+      "titolo": "NumPy: righe e feature",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-python-numpy-lab; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "X contiene tre campioni e due feature per campione. Qual è la forma di X e quale operazione calcola la media di ogni feature?",
+      "opzioni": [
+        {
+          "testo": "shape (3, 2) e X.mean() senza indicare alcun asse",
+          "spiegazione": "Senza axis si aggregano tutti gli elementi in un solo valore, non una media distinta per feature.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "shape (3, 2) e X.mean(axis=0)",
+          "spiegazione": "Le righe sono campioni e le colonne feature; ridurre axis=0 calcola una media per colonna, producendo due valori.",
+          "id": "b"
+        },
+        {
+          "testo": "shape (3, 2) e X.mean(axis=1)",
+          "spiegazione": "axis=1 aggrega le feature dentro ciascun campione, producendo tre medie di riga, non due medie per feature.",
+          "tipo": "plausibile",
+          "id": "c"
+        },
+        {
+          "testo": "shape (2, 3) perché il numero di campioni è sempre il secondo asse",
+          "spiegazione": "Con la convenzione dichiarata i tre campioni occupano le righe, quindi il primo asse ha lunghezza tre.",
+          "tipo": "plausibile",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "Le righe sono campioni e le colonne feature; ridurre axis=0 calcola una media per colonna, producendo due valori."
+    },
+    {
+      "id": "b-ia-classificazione-lineare",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-supervisionato-classificazione-lineare",
+      "titolo": "Classificazione lineare",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-supervisionato-classificazione-lineare; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Un classificatore binario decide dal segno di w·x + b. Che cosa descrive w·x + b = 0?",
+      "opzioni": [
+        {
+          "testo": "La frontiera decisionale lineare nello spazio delle feature considerate",
+          "spiegazione": "La funzione affine cambia segno ai lati della frontiera: un iperpiano nello spazio delle feature, una retta in due dimensioni.",
+          "id": "a"
+        },
+        {
+          "testo": "Un centroide di clustering calcolato senza etichette",
+          "spiegazione": "La frontiera separa le decisioni di un classificatore; non è un centroide di un algoritmo di clustering.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "La prova che l’accuratezza sui dati futuri sarà perfetta",
+          "spiegazione": "La forma della frontiera non garantisce generalizzazione o accuratezza: occorre valutare il modello.",
+          "tipo": "plausibile",
+          "id": "c"
+        },
+        {
+          "testo": "Una stima del numero di componenti principali da conservare",
+          "spiegazione": "Il numero di componenti di una riduzione dimensionale non si determina imponendo il punteggio del classificatore a zero.",
+          "tipo": "plausibile",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "La funzione affine cambia segno ai lati della frontiera: un iperpiano nello spazio delle feature, una retta in due dimensioni."
+    },
+    {
+      "id": "b-ia-bayes-posteriori",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-bayes-apprendimento-statistico",
+      "titolo": "Bayes: priori e posteriori",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-bayes-apprendimento-statistico; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Nel confronto tra classi con Bayes, che cosa determina P(classe | dati) a meno di una costante comune?",
+      "opzioni": [
+        {
+          "testo": "Solo P(dati | classe), anche quando le probabilità a priori delle classi differiscono",
+          "spiegazione": "Ignorare il priori può cambiare la decisione quando le classi hanno probabilità iniziali diverse.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "P(classe) divisa per P(dati | classe)",
+          "spiegazione": "La regola di Bayes moltiplica priori e verosimiglianza, non divide il priori per la verosimiglianza.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "P(classe | dati) coincide sempre con P(dati | classe)",
+          "spiegazione": "Invertire il condizionamento senza considerare priori ed evidenza confonde posteriore e verosimiglianza.",
+          "tipo": "plausibile",
+          "id": "c"
+        },
+        {
+          "testo": "P(dati | classe) moltiplicata per P(classe)",
+          "spiegazione": "Il posteriore è proporzionale a verosimiglianza per probabilità a priori; il termine P(dati) normalizza tra le classi.",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "d",
+      "spiegazione": "Il posteriore è proporzionale a verosimiglianza per probabilità a priori; il termine P(dati) normalizza tra le classi."
+    },
+    {
+      "id": "b-ia-clustering-etichette",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-clustering-non-supervisionato",
+      "titolo": "Clustering non supervisionato",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-clustering-non-supervisionato; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Per raggruppare campioni senza etichette usando le feature, quale impostazione è coerente con il clustering?",
+      "opzioni": [
+        {
+          "testo": "Garantire che ogni gruppo trovato corrisponda a una classe reale",
+          "spiegazione": "I gruppi dipendono dal metodo e dalle feature: non c’è garanzia di corrispondenza con categorie esterne.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Valutare sempre l’accuratezza confrontando predizioni con etichette che non sono disponibili",
+          "spiegazione": "Senza etichette non si può calcolare direttamente quell’accuratezza supervisionata; occorrono criteri adatti ai dati disponibili.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "Cercare gruppi in base a un criterio di somiglianza, senza assumere che siano classi note",
+          "spiegazione": "Il clustering cerca struttura nei dati non etichettati; i gruppi dipendono da rappresentazione e criterio, non garantiscono categorie semantiche vere.",
+          "id": "c"
+        },
+        {
+          "testo": "Addestrare sempre con le etichette vere delle classi come target obbligatorio",
+          "spiegazione": "Questo descrive un’impostazione supervisionata; il clustering non richiede etichette di classe per l’addestramento.",
+          "tipo": "plausibile",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "Il clustering cerca struttura nei dati non etichettati; i gruppi dipendono da rappresentazione e criterio, non garantiscono categorie semantiche vere."
+    },
+    {
+      "id": "b-ia-regressione-target",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-regressione",
+      "titolo": "Regressione e classificazione",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-regressione; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Quale compito è un esempio di regressione supervisionata?",
+      "opzioni": [
+        {
+          "testo": "Ridurre il numero di feature senza prevedere alcun target",
+          "spiegazione": "La riduzione dimensionale ha un obiettivo diverso dalla previsione del target numerico.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Prevedere un valore numerico continuo a partire da campioni con target numerici noti",
+          "spiegazione": "La regressione supervisionata apprende una relazione tra feature e un target numerico, per esempio un consumo previsto.",
+          "id": "b"
+        },
+        {
+          "testo": "Assegnare esclusivamente l’etichetta «positivo» oppure «negativo»",
+          "spiegazione": "Prevedere una classe discreta è un compito di classificazione, anche se le etichette sono codificate con numeri.",
+          "tipo": "plausibile",
+          "id": "c"
+        },
+        {
+          "testo": "Formare gruppi da campioni privi di target",
+          "spiegazione": "Questo descrive il clustering, non una regressione supervisionata con target numerico.",
+          "tipo": "plausibile",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "La regressione supervisionata apprende una relazione tra feature e un target numerico, per esempio un consumo previsto."
+    },
+    {
+      "id": "b-ia-pca-varianza",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-riduzione-dimensionalita",
+      "titolo": "Riduzione dimensionale",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-riduzione-dimensionalita; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Nella PCA non supervisionata, quale criterio orienta la scelta delle prime componenti?",
+      "opzioni": [
+        {
+          "testo": "Catturare quanta più varianza possibile tramite direzioni ortogonali",
+          "spiegazione": "La PCA cerca direzioni ortogonali di varianza elevata; non usa le etichette e può perdere informazione scartando componenti.",
+          "id": "a"
+        },
+        {
+          "testo": "Massimizzare necessariamente l’accuratezza di classificazione usando le etichette",
+          "spiegazione": "La PCA non supervisionata non ottimizza direttamente l’accuratezza sulle classi: alta varianza e discriminazione non coincidono sempre.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "Garantire che scartare dimensioni conservi sempre tutta l’informazione",
+          "spiegazione": "Ridurre il numero di componenti può perdere informazione; conservare varianza non è una garanzia assoluta di conservazione di tutto il contenuto utile.",
+          "tipo": "plausibile",
+          "id": "c"
+        },
+        {
+          "testo": "Restituire automaticamente i gruppi di un algoritmo di clustering",
+          "spiegazione": "Una proiezione in meno dimensioni non equivale di per sé a un raggruppamento dei campioni.",
+          "tipo": "plausibile",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "La PCA cerca direzioni ortogonali di varianza elevata; non usa le etichette e può perdere informazione scartando componenti."
+    },
+    {
+      "id": "b-ia-verifica-lab",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-esame-quiz-lab-lode",
+      "titolo": "Verifica IA e laboratorio [F1]",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-esame-quiz-lab-lode; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Quale descrizione della verifica del modulo IA è documentata in [F1]?",
+      "opzioni": [
+        {
+          "testo": "Un voto determinato soltanto dalla qualità del clustering eseguito in laboratorio",
+          "spiegazione": "[F1] attribuisce il voto ai quiz e descrive il laboratorio come idoneità, non come unico voto numerico.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Una somma di punteggi ufficiali separati per regressione, Bayes e PCA",
+          "spiegazione": "[F1] non fornisce questa distribuzione di punteggi per argomento; non si può inventarla.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "Il solo laboratorio NumPy elimina la necessità dei quiz chiusi",
+          "spiegazione": "[F1] prevede quiz chiusi e prova di laboratorio; il laboratorio non sostituisce i quiz.",
+          "tipo": "plausibile",
+          "id": "c"
+        },
+        {
+          "testo": "Quiz chiusi che determinano il voto in trentesimi e laboratorio come idoneità ON/OFF",
+          "spiegazione": "[F1] distingue il voto determinato dai quiz dalla prova di laboratorio come idoneità ON/OFF; non viene inventato alcun peso aggiuntivo.",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "d",
+      "spiegazione": "[F1] distingue il voto determinato dai quiz dalla prova di laboratorio come idoneità ON/OFF; non viene inventato alcun peso aggiuntivo."
+    },
+    {
+      "id": "q6-ia-tecniche-verifica",
+      "tipo": "abbinamento",
+      "area": 7,
+      "nodo_id": "ia-esame-quiz-lab-lode",
+      "titolo": "Q6 · Apprendimento e verifica IA",
+      "origine": "originale",
+      "fonte": "[F1] per programma e verifica; Q6 originale R3 §3.5.2, non tratto da prove reali o slide del prof. Calderara",
+      "istruzioni": "Abbina ogni termine al ruolo pertinente; scarta i distrattori senza attribuire pesi non documentati.",
+      "opzioni": [
+        {
+          "id": "ruolo-1",
+          "testo": "Apprendimento supervisionato"
+        },
+        {
+          "id": "ruolo-2",
+          "testo": "Apprendimento non supervisionato"
+        },
+        {
+          "id": "ruolo-3",
+          "testo": "Laboratorio Python"
+        },
+        {
+          "id": "ruolo-4",
+          "testo": "Determinano il voto del modulo IA in trentesimi"
+        }
+      ],
+      "abbinamenti": [
+        {
+          "elemento": "Classificazione lineare",
+          "risposta_id": "ruolo-1",
+          "nodo_id": "ia-supervisionato-classificazione-lineare",
+          "spiegazione": "Si apprende da esempi con target di classe: non si cercano soltanto gruppi senza etichette."
+        },
+        {
+          "elemento": "Clustering",
+          "risposta_id": "ruolo-2",
+          "nodo_id": "ia-clustering-non-supervisionato",
+          "spiegazione": "Il clustering individua gruppi senza richiedere target di classe per l’addestramento."
+        },
+        {
+          "elemento": "NumPy",
+          "risposta_id": "ruolo-3",
+          "nodo_id": "ia-python-numpy-lab",
+          "spiegazione": "[F1] prevede il laboratorio Python/NumPy; NumPy è una libreria per il calcolo numerico, non un formato di presentazione."
+        },
+        {
+          "elemento": "Quiz chiusi IA",
+          "risposta_id": "ruolo-4",
+          "nodo_id": "ia-esame-quiz-lab-lode",
+          "spiegazione": "[F1] distingue il voto determinato dai quiz dal laboratorio ON/OFF; per la lode integrata occorre 30 in entrambi i moduli e la lode in almeno uno."
+        }
+      ],
+      "distrattori": [
+        {
+          "testo": "Classificazione lineare: raggruppamento senza etichette",
+          "tipo": "plausibile",
+          "spiegazione": "Confonde la classificazione supervisionata con il clustering non supervisionato."
+        },
+        {
+          "testo": "LLM: tecnica di clustering ufficiale del modulo",
+          "tipo": "fuori_contesto",
+          "spiegazione": "[F1] descrive apprendimento automatico e NumPy; non presenta gli LLM come tecnica ufficiale di clustering."
+        },
+        {
+          "testo": "Agente AI: strumento di branching Git",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Branch e merge appartengono al controllo versione; un agente AI non è uno strumento Git di branching."
+        }
+      ]
+    }
   ]
 }
