@@ -1,10 +1,11 @@
+import { filtraPerModulo } from './modulo-ia.js';
 // Sessione del simulatore salvata localmente. Nessun punteggio o formato d'esame viene presunto.
 import { leggiTimer, timerNuovo, timerInPausa, timerInCorso } from './timer.js';
 
 export const CHIAVE_STORAGE = 'tecweb:simulatore:v1';
 
 export function creaSessione(prova, now) {
-  return { versione: 1, prova, fase: 'svolgimento', risposte: {}, timer: timerNuovo(now, prova.durataMs) };
+  return { versione: 1, prova, fase: 'svolgimento', risposte: {}, confermate: {}, registrati: {}, timer: timerNuovo(now, prova.durataMs) };
 }
 
 export function sessioneValida(data) {
@@ -36,10 +37,10 @@ export function cancellaSessione(storage, key = CHIAVE_STORAGE) {
   try { storage.removeItem(key); } catch { /* modalità privata */ }
 }
 
-export function leggiRisposta(sessione, id) { return String(sessione?.risposte?.[id] || ''); }
+export function leggiRisposta(sessione, id) { return sessione?.risposte?.[id] ?? ''; }
 
 export function scriviRisposta(sessione, id, testo) {
-  return { ...sessione, risposte: { ...sessione.risposte, [id]: String(testo) } };
+  return { ...sessione, risposte: { ...sessione.risposte, [id]: testo } };
 }
 
 export function sessioneInCorsoValida(sessione, now) {
@@ -59,4 +60,15 @@ export function consegna(sessione, now) {
 }
 export function scaduta(sessione) {
   return { ...sessione, fase: 'consegnata', timer: { ...sessione.timer, running: false, startedAt: null, elapsedMs: sessione.timer.durataMs } };
+}
+
+// Proiezione non distruttiva: lo storico e il salvataggio originale non vengono cancellati.
+export function sessionePerModulo(sessione, includiIA = false) {
+  if (!sessione) return null;
+  const esercizi = filtraPerModulo(sessione.prova.esercizi, includiIA);
+  if (!esercizi.length) return null;
+  const ids = new Set(esercizi.map((e) => e.id));
+  const seleziona = (record) => Object.fromEntries(Object.entries(record || {}).filter(([id]) => ids.has(id)));
+  return { ...sessione, prova: { ...sessione.prova, esercizi },
+    risposte: seleziona(sessione.risposte), confermate: seleziona(sessione.confermate), registrati: seleziona(sessione.registrati) };
 }

@@ -40,3 +40,11 @@
   .sim-timer-actions { width: 100%; }
   .sim-timer-actions .btn { flex: 1; }
 }
+.sim fieldset { min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: .75rem; }
+.sim legend { padding: .2rem; font-weight: 600; }
+.sim-opzione { display: block; padding: .5rem 0; overflow-wrap: anywhere; }
+.sim select, .sim input[type=text], .sim input[type=number] { max-width: 100%; min-height: 44px; font: inherit; }
+.sim select { display: block; width: 100%; white-space: normal; }
+.sim pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.sim input:focus-visible, .sim select:focus-visible { outline: 3px solid var(--acc); outline-offset: 2px; }
+.sim-feedback { overflow-wrap: anywhere; }
