@@ -36,12 +36,12 @@
       "type": "integer",
       "minimum": 1,
       "maximum": 7,
-      "description": "Area tematica (1=Fondamenti rete e HTTP, 2=Architetture, 3=Front-end, 4=Back-end e strumenti, 5=Web semantico, 6=Tesina, 7=Modulo IA - apprendimento automatico, serve per la lode)"
+      "description": "Area tematica: 1 rete e HTTP, 2 architetture, 3 front-end, 4 back-end e strumenti, 5 Web semantico ed evoluzione, 6 tesina, 7 modulo IA ufficiale"
     },
     "gruppo": {
       "type": "string",
       "enum": ["A", "B", "C"],
-      "description": "Classificazione dal materiale utente: A=iper-riciclati (~65%), B=varianti (~20%), C=punti ciechi (~15%)"
+      "description": "Priorità di studio rispetto al programma [F1]: A=esplicito o indispensabile, B=contesto utile, C=opzionale o non elencato; non indica frequenze d’esame"
     },
     "worker": {
       "type": "string",
@@ -159,7 +159,7 @@
           "description": "Motivazione legata a programma + testi + gruppo A/B/C"
         }
       },
-      "description": "Priorità: motivazione basata su gruppo A/B/C e formato d'esame IPOTIZZATO"
+      "description": "Priorità di studio motivata dal programma [F1] e dal ruolo didattico, senza inventare frequenze o punteggi per nodo"
     },
     "risorse": {
       "type": "array",
@@ -255,7 +255,7 @@
           "type": "string",
           "minLength": 20,
           "maxLength": 200,
-          "description": "1-2 righe: dove esce all'esame, gruppo A/B/C, quanti punti vale"
+          "description": "1-2 righe: perché il nodo è utile e gruppo A/B/C; nessun punteggio per nodo non documentato"
         },
         "scenario_fil_rouge": {
           "type": "string",

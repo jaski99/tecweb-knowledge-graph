@@ -1,122 +1,59 @@
-# tecweb-kg — Knowledge Graph per Tecnologie Web (UNIMORE)
+# tecweb-kg — Knowledge graph per Tecnologie Web e IA (UNIMORE)
 
-**Fonte unica**: `graph/graph.json` (schema v3).
+Progetto di studio per **[INF-37] Intelligenza Artificiale e Tecnologie Web**, offerta **2026/27** di Ingegneria Informatica (MO), **coorte 2024/25**. Il modulo Tecnologie Web è della prof.ssa **Laura Po** (6 CFU/54 ore); l'integrato è di **12 CFU/108 ore**, con il prof. **Simone Calderara** titolare e docente del modulo IA [F1], [F8]. Se appartieni alla coorte del nuovo manifesto 2026/27, verifica il tuo piano: il raccordo con INF-37 non è stato trovato [F7].
 
-Vedi:
-- `docs/CONTRACTS.md` — Contratti del knowledge graph
-- `docs/SYLLABUS.md` — Programma del corso e fonti
-- `docs/ARENA_PLAN.md` — Piano di lavoro e fasi
-- `docs/MATERIALE_UTENTE.md` — Materiale fornito dall'utente
-- `docs/STATUS.md` — Stato del progetto
+Il [programma](docs/SYLLABUS.md) distingue fatti ufficiali, ipotesi e informazioni non trovate; il [formato d'esame](docs/EXAM_FORMAT.md) descrive TW e IA. I gruppi A/B/C sono **priorità di studio**, non frequenze accertate di domande. Il [piano di miglioramento](docs/IMPROVEMENT_PLAN.md) definisce scope e ordine di integrazione.
 
-## Web App (`web/`)
+- [Elenco nodi e priorità](docs/NODES.md) — 40 nodi presenti e 16 pianificati per X2/X3.
+- [Contratti del grafo](docs/CONTRACTS.md) — schema del nodo v4, aree, lezioni e build.
+- [Stato e limiti](docs/STATUS.md) · [Piano Arena](docs/ARENA_PLAN.md) · [Materiale utente originale](docs/MATERIALE_UTENTE.md).
 
-App statica in italiano, vanilla JS a moduli ES, nessuna build obbligatoria (Cytoscape.js + dagre da CDN).
+## Web app
 
-- **Avvio locale**:
-  ```bash
-  cd web && python3 -m http.server 8000
-  ```
-  → <http://localhost:8000> (carica `../graph/graph.json` se servi dalla root del repo)
-  
-- **Override graph**: `?graph=URL` per caricare un grafo personalizzato
-
-- **Viste**:
-  - Grafo interattivo (colore = area, forma = tipo, archi hard pieni / soft tratteggiati)
-  - Dettagli al clic con informazioni complete
-  - Percorso in ordine topologico con spunte (localStorage)
-  - Progresso per area con tempo residuo
-  - Filtri (area, tipo, priorità, testo, solo non completati)
-  - Checklist di ripasso
-
-- **Moduli**:
-  - `js/core/` — Logica pura (topo, validate, filters, progress, store, state)
-  - `js/data.js` — Caricamento e validazione
-  - `js/ui/` — Viste (una per file)
-  - `js/main.js` — Composition root
-
-- **Test**:
-  ```bash
-  cd web && node --test tests/*.test.js
-  ```
-
-## Deploy (GitHub Pages)
-
-- Workflow: `.github/workflows/pages.yml`
-- Su push a `main`: check + test → copia `graph.json` → pubblica `web/` su GitHub Pages
-- In Settings → Pages: selezionare "GitHub Actions"
-
-## Comandi utili
+App statica in italiano con grafo dei prerequisiti, percorso, progresso locale, lezioni, ripasso e simulatore. Le librerie dell'interfaccia sono caricate da CDN; la connessione è necessaria. La banca e il simulatore hanno limitazioni note, descritte nello [stato del progetto](docs/STATUS.md); il timer non è una durata d'esame ufficiale.
 
 ```bash
-# Setup ambiente
+sh web/build.sh
+cd web && python3 -m http.server 8000
+```
+
+Aprire `http://localhost:8000` sul computer che esegue il server. `?graph=URL` permette di selezionare un grafo alternativo. I progressi restano nel `localStorage` del browser.
+
+## Build e test
+
+```bash
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
+.venv/bin/pip install -r requirements.txt playwright
+.venv/bin/python -m playwright install --with-deps chromium
 
-# Build knowledge graph
 .venv/bin/python scripts/kg.py build
-
-# Esegui test
+.venv/bin/python scripts/gen_docs.py build
+sh web/build.sh
+.venv/bin/python scripts/kg.py check
+npm test --prefix web
 .venv/bin/pytest -q
-
-# Check URL (richiede rete)
-.venv/bin/python scripts/check_urls.py
-
-# Ordine topologico
-.venv/bin/python scripts/topo.py
+.venv/bin/python scripts/check_urls.py  # online
 ```
 
-## Struttura del repository
+`graph/graph.json` è generato da `graph/meta.json`, `graph/parts/*.json` e `graph/lezioni/<id>.json`; i documenti `PIANO_STUDIO.md` e `CHECKLIST_RIPASSO.md` sono generati dal grafo. Integrazione e conflitti sui file generati si risolvono rigenerandoli. `check_urls.py` controlla le risorse dei nodi, non il contenuto delle pagine né tutte le fonti documentali. Serve comunque aprire le fonti e verificare che siano pertinenti.
 
-```
-.
-├── graph/                  # Knowledge graph
-│   ├── graph.json          # Grafo completo (generato)
-│   ├── meta.json           # Metadati del corso
-│   ├── parts/              # Nodi per area
-│   │   ├── area-1.json     # Fondamenti rete e HTTP
-│   │   ├── area-2.json     # Architetture
-│   │   ├── area-3.json     # Front-end
-│   │   ├── area-4.json     # Back-end e strumenti
-│   │   ├── area-5.json     # Web semantico ed evoluzione
-│   │   └── area-6.json     # Tesina
-│   └── lezioni/            # Lezioni complete (v3)
-│       └── <id>.json       # Lezione per ogni nodo
-├── docs/                   # Documentazione
-│   ├── CONTRACTS.md       # Contratti
-│   ├── SYLLABUS.md        # Programma e fonti
-│   ├── ARENA_PLAN.md      # Piano di lavoro
-│   ├── MATERIALE_UTENTE.md # Materiale utente
-│   └── STATUS.md          # Stato progetto
-├── schema/                 # Schema JSON
-│   └── node.schema.json    # Schema per i nodi
-├── scripts/                # Script Python
-│   ├── kg.py               # Build del grafo
-│   ├── topo.py             # Ordine topologico
-│   └── check_urls.py       # Verifica URL
-├── tests/                  # Test pytest
-│   └── test_*.py           # Test vari
-├── web/                    # Web app statica
-│   ├── js/                 # Codice JavaScript
-│   ├── css/                # Stili CSS
-│   └── index.html          # Pagina principale
-└── requirements.txt        # Dipendenze Python
+## Struttura
+
+```text
+graph/                 Metadati, part per area, lezioni, grafo e banca quiz
+schema/                Schema JSON dei nodi e delle lezioni
+scripts/               Build, documenti, ordine topologico e controllo URL
+docs/                  Programma, contratti, piano, stato e ricerche
+tests/                 Test Python del grafo e dei contenuti
+web/                   Web app statica, test Node e test e2e Playwright
 ```
 
-## Contribuire
-
-1. **Fork** il repository
-2. **Crea un branch** per la tua feature (`git checkout -b feat/nome-feature`)
-3. **Commit** le modifiche (`git commit -m 'Aggiunto: ...'`)
-4. **Push** sul branch (`git push origin feat/nome-feature`)
-5. **Apri una Pull Request**
-
-**Regole**:
-- Tutti i test devono passare (`pytest -q`)
-- Le URL devono essere verificabili (`scripts/check_urls.py`)
-- Seguire i contratti in `docs/CONTRACTS.md`
-- Codice in italiano, commenti in italiano
+La pagina GitHub Pages viene pubblicata dal workflow su `main`. Per contribuire nel round corrente rispettare gli scope in [IMPROVEMENT_PLAN.md](docs/IMPROVEMENT_PLAN.md), verificare build e test e consegnare le modifiche sul proprio ramo di sessione.
 
 ## Licenza
 
-MIT License — vedi file `LICENSE` (da aggiungere).
+MIT License — il file `LICENSE` è da aggiungere.
+
+[F1]: <https://unimore.coursecatalogue.cineca.it/corsi/2024/10296/insegnamenti/2026/27352/2022/10000?annoOrdinamento=2022>
+[F7]: <https://www.ingmo.unimore.it/sites/dip02/files/2026-06/Laurea%20Ingegneria%20Informatica%20a.a.%202026_2027.pdf>
+[F8]: <https://moodle.unimore.it/course/info.php?id=22244>
