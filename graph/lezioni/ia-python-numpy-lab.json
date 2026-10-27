@@ -1,0 +1,106 @@
+{
+  "perche_ti_serve": "Gruppo A: il laboratorio usa Python e NumPy [F1]; non è indicato un punteggio per singola operazione.",
+  "scenario_fil_rouge": "La biblioteca online rappresenta in una tabella fittizia i libri per righe e due attributi numerici per colonne. La stessa tabella verrà usata come esempio per modelli di classificazione, gruppi e previsioni.",
+  "definizione_esame": {
+    "definizione": "Un array NumPy è una struttura multidimensionale omogenea per rappresentare dati numerici e operare sui loro assi.",
+    "scopo_vantaggio": "Le operazioni vettoriali e il broadcasting consentono di esprimere trasformazioni compatte, controllando le dimensioni.",
+    "esempio": "Una matrice libri-per-attributi si può moltiplicare per un vettore di scale e riassumere con medie per colonna."
+  },
+  "spiegazione": "Prerequisiti: nessuno nel grafo; sono utili le basi di Python. **Fonte e limiti:** esempi originali da documentazione Python e NumPy, non dalle slide del prof. Calderara, non pubbliche [F12]; il laboratorio è previsto da [F1].\n\n## Array e forma\n\nIn Python importa NumPy con `import numpy as np`. `np.array` costruisce un **ndarray**: gli elementi hanno un tipo (`dtype`) e la **shape** descrive la lunghezza di ogni asse. Per una matrice `X` con una riga per libro e una colonna per attributo, `X.shape` è `(numero_libri, numero_attributi)`. `X[0]` seleziona la prima riga e `X[:, 1]` la seconda colonna: gli indici partono da zero.\n\n## Elemento per elemento e prodotto scalare\n\nCon array compatibili, `a * b` moltiplica **elemento per elemento**. Per due vettori della stessa lunghezza `a @ b` somma i prodotti corrispondenti, ottenendo uno scalare; per matrici `@` segue invece le regole del prodotto matriciale. Una lista Python non va confusa con un array: le rispettive operazioni non hanno sempre lo stesso significato.\n\n```mermaid\nflowchart LR\n  X[\"Matrice libri e attributi\"] --> C[\"Controllo shape\"]\n  C --> B[\"Broadcasting delle scale\"]\n  B --> R[\"Risultato per elemento\"]\n  X --> M[\"Medie per colonna\"]\n```\n\n## Broadcasting senza indovinare\n\nNumPy confronta le dimensioni da destra: ogni coppia deve essere uguale oppure una deve valere uno; una dimensione mancante si considera uno. Così un vettore di lunghezza pari alle colonne può essere applicato a ogni riga. Se le dimensioni sono incompatibili si ottiene un errore: controlla `shape` prima di eseguire l’operazione. L’espansione è concettuale, non necessariamente una copia dei dati.\n\n## Statistiche lungo gli assi\n\n`X.mean(axis=0)` calcola una media **per colonna**; `axis=1` una per riga. `X.var(axis=0)` usa di default la varianza con divisore pari al numero di osservazioni (`ddof=0`). Con `ddof=1` il divisore diminuisce di uno: serve un numero adeguato di osservazioni. Le due varianti rispondono a esigenze statistiche diverse. Quando la media serve a trasformare i dati di un modello, stimala sul train e riusala sul test per evitare leakage.",
+  "analogia": {
+    "testo": "La matrice è come una tabella di biblioteca: ogni scaffale virtuale è una colonna e ogni riga contiene i valori di un libro.",
+    "limite": "Un array NumPy ha un tipo e dimensioni precise; non tutte le operazioni su tabelle o liste Python si comportano come su un ndarray."
+  },
+  "worked_example": {
+    "titolo": "Vettori, scale e statistiche",
+    "problema": "Applica due scale agli attributi di tre libri fittizi, poi calcola prodotto scalare, medie e varianze.",
+    "passi": [
+      "Crea la matrice e il vettore di scale, controllando le dimensioni.",
+      "Moltiplica per elemento con broadcasting e calcola il prodotto scalare della prima riga.",
+      "Calcola media e varianza delle colonne."
+    ],
+    "soluzione": "```python\nimport numpy as np\n\nX = np.array([[1., 2.], [3., 4.], [5., 6.]])\nscale = np.array([2., 0.5])\nscalato = X * scale          # le scale sono applicate a ogni riga\nscalare = X[0] @ scale       # prodotto scalare, non elemento per elemento\nmedie = X.mean(axis=0)\nvarianze = X.var(axis=0)     # ddof=0\nprint(scalato)               # [[2, 1], [6, 2], [10, 3]]\nprint(scalare)               # 3.0\nprint(medie, varianze)       # [3, 4], [8/3, 8/3]\n```\nLa matrice scalata è `[[2, 1], [6, 2], [10, 3]]`; le medie sono `[3, 4]` e le varianze `[8/3, 8/3]`.",
+    "perche_funziona": "La shape del vettore coincide con la dimensione finale della matrice; axis=0 aggrega le righe per ciascuna colonna."
+  },
+  "completion_problem": {
+    "titolo": "Centra le colonne",
+    "testo": "Data la matrice X = [[2, 4], [4, 8]], completa la centratura delle colonne.",
+    "passi_mancanti": [
+      "Calcola `media = X.mean(axis=0)`.",
+      "Sottrai la media da ogni riga usando broadcasting."
+    ],
+    "soluzione": "La media è `[3, 6]`; `X - media` dà `[[-1, -2], [1, 2]]`."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Calcola un prodotto scalare",
+    "testo": "Per i vettori x = [1, 3] e w = [2, 2], calcola x @ w e confrontalo con x * w.",
+    "suggerimento": "Nel prodotto scalare somma i prodotti dei valori nelle stesse posizioni.",
+    "soluzione_attesa": "`x @ w = 8`; `x * w` restituisce invece il vettore `[2, 6]`."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Scambiare `*` per il prodotto scalare di due vettori.",
+      "perche_sbagliato": "`*` è elemento per elemento; `@` somma i prodotti nel caso di vettori.",
+      "distrattore": "Il browser cambia colore."
+    },
+    {
+      "errore": "Assumere che il broadcasting funzioni con qualunque shape.",
+      "perche_sbagliato": "Dalle dimensioni finali, ogni coppia deve essere uguale oppure una delle due deve valere uno.",
+      "distrattore": "Il DNS cambia protocollo."
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa descrive `X.shape`? A) Le etichette di classe; B) Le dimensioni degli assi; C) Il metodo HTTP.",
+        "risposta": "B) La shape riporta la dimensione di ciascun asse."
+      },
+      {
+        "domanda": "Quale espressione calcola il prodotto scalare di vettori? A) `x or w`; B) `x * w`; C) `x @ w`.",
+        "risposta": "C) `x @ w` somma i prodotti delle componenti corrispondenti."
+      },
+      {
+        "domanda": "Per una matrice, `mean(axis=0)` aggrega: A) Le righe per colonna; B) Le colonne per riga; C) Le richieste HTTP.",
+        "risposta": "A) Il risultato contiene una media per ogni colonna."
+      },
+      {
+        "domanda": "Due dimensioni sono compatibili nel broadcasting se: A) Sono URI; B) Sono uguali o una vale uno; C) Sono sempre diverse.",
+        "risposta": "B) La verifica parte dagli assi finali, da destra verso sinistra."
+      },
+      {
+        "domanda": "Quale divisore usa `var` di default? A) Il numero meno uno; B) Un codice HTTP; C) Il numero di osservazioni.",
+        "risposta": "C) Il valore predefinito è `ddof=0`, quindi il divisore è il numero di osservazioni."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega con parole tue perché `X * scale` può applicare una scala diversa a ciascuna colonna.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "json-formato-dati",
+        "collegamento": "Le liste in JSON possono diventare array NumPy: shape e dtype vanno poi controllati."
+      },
+      {
+        "nodo": "ia-supervisionato-classificazione-lineare",
+        "collegamento": "Il prodotto scalare tra attributi e pesi produce lo score di un classificatore lineare."
+      },
+      {
+        "nodo": "ia-riduzione-dimensionalita",
+        "collegamento": "La PCA centra le colonne e usa operazioni matriciali sui dati di train."
+      }
+    ]
+  },
+  "riepilogo": "Un ndarray ha shape, assi e dtype.\n`*` è elemento per elemento; `@` esegue il prodotto scalare o matriciale.\nIl broadcasting richiede dimensioni compatibili da destra.\n`axis=0` riassume le colonne.\nLa varianza predefinita usa `ddof=0`.",
+  "flashcard": {
+    "fronte": "Come verifichi se un vettore scala le colonne di una matrice?",
+    "retro": "Confronta la lunghezza del vettore con l’ultima dimensione della matrice e applica le regole di broadcasting."
+  },
+  "checklist": {
+    "so_fare": [
+      "Calcolare prodotto scalare, media e varianza di array",
+      "Verificare la compatibilità delle shape"
+    ],
+    "so_dire": [
+      "Distinguere asse zero e asse uno",
+      "Spiegare il broadcasting senza supporre copie obbligatorie"
+    ]
+  }
+}

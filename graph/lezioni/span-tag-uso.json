@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Gruppo B (varianti isolate, ~20% dello scritto da MATERIALE_UTENTE): il tag span ricorre in definizioni e abbinamenti, spesso contro il div.",
+  "perche_ti_serve": "Gruppo C: span è un dettaglio facoltativo di HTML; il programma [F1] cita HTML5 senza elencare questo elemento.",
   "scenario_fil_rouge": "Nella scheda di un libro della libreria vuoi che solo il prezzo scontato sia rosso e in grassetto, nel mezzo di una frase normale: «Prezzo di copertina 19,90, da noi 14,90». Non serve un nuovo blocco né un elemento con un significato speciale: serve un contenitore neutro che avvolga quel pezzetto di testo per agganciarci uno stile. È il lavoro dello span.",
   "definizione_esame": {
     "definizione": "Lo <span> è il contenitore generico inline per il contenuto testuale (phrasing content): non rappresenta nulla di per sé e serve a raggruppare un frammento di contenuto in linea per applicargli stili, attributi comuni o agganci per JavaScript.",

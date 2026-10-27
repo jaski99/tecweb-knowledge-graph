@@ -22,7 +22,7 @@
     "tempo_studio_min": 45,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "La 3-tier è un esempio di sistema multi-livello, esplicitamente previsto da [F1]."
     },
     "risorse": [
       {
@@ -78,7 +78,7 @@
     "tempo_studio_min": 60,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "Creazione e fruizione di servizi RESTful sono esplicitamente previste dal programma [F1]."
     },
     "risorse": [
       {
@@ -150,7 +150,7 @@
     "tempo_studio_min": 40,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "I metodi HTTP sono strumenti per comprendere i servizi RESTful previsti da [F1]; i singoli metodi sono approfondimenti tecnici."
     },
     "risorse": [
       {
@@ -215,7 +215,7 @@
     "tempo_studio_min": 30,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "Il 404 è un caso utile per progettare e usare servizi HTTP/RESTful [F1]; non è nominato come voce autonoma."
     },
     "risorse": [
       {
@@ -287,7 +287,7 @@
     "tempo_studio_min": 50,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "La progettazione di API è una competenza di supporto ai servizi RESTful previsti da [F1]."
     },
     "risorse": [
       {
@@ -357,7 +357,7 @@
     "tempo_studio_min": 40,
     "priorita": {
       "livello": "media",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo B come argomento di variante; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "Sicurezza e rate limiting sono approfondimenti utili per i servizi Web, non voci esplicite di [F1]."
     },
     "risorse": [
       {

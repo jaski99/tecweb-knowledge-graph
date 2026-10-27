@@ -22,7 +22,7 @@
     "tempo_studio_min": 60,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "HTTP è esplicitamente nei fondamenti Web del programma [F1]."
     },
     "risorse": [
       {
@@ -89,7 +89,7 @@
     "tempo_studio_min": 45,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "La distinzione è una base utile per comprendere HTTP e lo stato delle applicazioni Web [F1]; non è una voce esplicita del syllabus."
     },
     "risorse": [
       {
@@ -142,7 +142,7 @@
     "tempo_studio_min": 40,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "Contesto tecnico utile per comprendere i protocolli Web [F1]; lo stack TCP/IP non è elencato come voce autonoma."
     },
     "risorse": [
       {
@@ -202,7 +202,7 @@
     "tempo_studio_min": 60,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "Il confronto chiarisce HTTP e HTTP/2, esplicitamente nel programma [F1]; HTTP/3 è approfondimento non elencato."
     },
     "risorse": [
       {
@@ -233,7 +233,7 @@
     "id": "quic-protocollo",
     "title": "QUIC: protocollo di trasporto per HTTP/3",
     "area": 1,
-    "gruppo": "A",
+    "gruppo": "B",
     "tipo": "concetto",
     "sapere": "QUIC è un protocollo di trasporto sicuro e multiplexato che usa UDP come veicolo. Fornisce stream, controllo di flusso, recupero delle perdite e controllo della congestione, integrando TLS 1.3; HTTP/3 mappa su QUIC. 0-RTT è possibile in condizioni di ripresa, non è garantito e comporta rischi di replay.",
     "saper_fare": [
@@ -257,8 +257,8 @@
     ],
     "tempo_studio_min": 30,
     "priorita": {
-      "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "livello": "media",
+      "motivazione": "QUIC approfondisce HTTP/3, non elencato in [F1], che cita invece HTTP/2."
     },
     "risorse": [
       {
@@ -308,7 +308,7 @@
     "tempo_studio_min": 40,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "URI è esplicitamente nel programma [F1]; URL e URN aiutano a distinguerne gli usi."
     },
     "risorse": [
       {
@@ -372,7 +372,7 @@
     "tempo_studio_min": 50,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "La gestione dello stato è utile nella progettazione di applicazioni Web [F1]; cookie e sessioni non sono voci esplicite del syllabus."
     },
     "risorse": [
       {
@@ -432,7 +432,7 @@
     "tempo_studio_min": 35,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "I codici di stato aiutano a progettare e utilizzare servizi HTTP/RESTful [F1]; la lista dei codici è approfondimento tecnico."
     },
     "risorse": [
       {
@@ -467,7 +467,7 @@
     "id": "multiplexing-http-2-3",
     "title": "Multiplexing: HTTP/2 vs HTTP/3",
     "area": 1,
-    "gruppo": "A",
+    "gruppo": "B",
     "tipo": "abilita",
     "sapere": "HTTP/1.1 può fare pipelining ma mantiene l’ordine delle risposte e non multiplexa stream indipendenti. HTTP/2 interlaccia stream su una connessione TCP, ma la perdita TCP può bloccare la consegna di tutti gli stream. HTTP/3 usa stream QUIC su UDP, con consegna ordinata per stream; la congestione resta condivisa sulla connessione.",
     "saper_fare": [
@@ -491,8 +491,8 @@
     ],
     "tempo_studio_min": 30,
     "priorita": {
-      "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "livello": "media",
+      "motivazione": "Approfondimento sul multiplexing: [F1] cita HTTP/2, non HTTP/3."
     },
     "risorse": [
       {
@@ -548,7 +548,7 @@
     "tempo_studio_min": 30,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+      "motivazione": "Distinguere contenuti statici e dinamici sostiene la progettazione delle applicazioni Web [F1]; è una distinzione didattica."
     },
     "risorse": [
       {

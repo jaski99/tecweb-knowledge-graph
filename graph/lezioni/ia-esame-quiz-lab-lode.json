@@ -1,0 +1,107 @@
+{
+  "perche_ti_serve": "Gruppo A: riepilogo della verifica IA e della lode dell’integrato secondo la scheda ufficiale [F1].",
+  "scenario_fil_rouge": "Una studentessa della biblioteca online ripassa il modulo IA e vuole distinguere ciò che il syllabus dice sul quiz, sul laboratorio e sul voto integrato, senza confondere i dati del sito con una prova ufficiale.",
+  "definizione_esame": {
+    "definizione": "La verifica IA comprende uno scritto con domande chiuse in forma di quiz e una prova di laboratorio al calcolatore valutata come idoneità ON/OFF [F1].",
+    "scopo_vantaggio": "Distinguere voto, idoneità e condizioni della lode permette di interpretare correttamente la verifica riportata nella scheda [F1].",
+    "esempio": "Il voto IA è determinato dai quiz in trentesimi; la lode integrata richiede 30 in entrambi i moduli e lode in almeno uno [F1]."
+  },
+  "spiegazione": "Prerequisiti: classificazione supervisionata e clustering; sono utili regressione, Bayes e riduzione delle dimensioni. **Fonte e limiti:** questa lezione originale non deriva dalle slide del prof. Calderara, non pubbliche [F12]. Le regole d’esame qui riportate provengono dalla scheda [F1]; gli esercizi sono originali, non prove ufficiali.\n\n## Due elementi distinti nel modulo IA\n\nLa scheda [F1] descrive un **esame scritto con domande chiuse in forma di quiz** e una **prova di laboratorio al calcolatore** sulle esercitazioni svolte durante il corso. Il voto del modulo IA è determinato dai quiz in **trentesimi**. Il laboratorio è indicato come idoneità **ON/OFF**: nella scheda non è presentato come un punteggio numerico da sommare al voto del quiz.\n\n```mermaid\nflowchart LR\n  Q[\"Quiz chiusi\"] --> V[\"Voto IA in trentesimi\"]\n  L[\"Laboratorio al calcolatore\"] --> I[\"Idoneità ON OFF\"]\n  V --> M[\"Media ponderata integrata\"]\n  T[\"Voto TW\"] --> M\n  M --> A[\"Arrotondamento per eccesso\"]\n```\n\n## Media dell’insegnamento integrato\n\nSecondo [F1], il voto complessivo è la **media ponderata** dei voti dei singoli moduli, **arrotondata per eccesso**. Ai fini della media, un voto di **30 e lode equivale a 30**. Una media ponderata tiene conto del peso dei voti; non si deve sostituirla a una somma di esiti ON/OFF o inventare regole aggiuntive sui pesi.\n\n## Condizioni della lode\n\n[F1] attribuisce la **lode finale esclusivamente se** lo studente consegue **30 in entrambi i moduli**, IA e Tecnologie Web, **con la lode in almeno uno**. Sono quindi due controlli distinti: il valore di ciascun voto e la presenza della lode in almeno un modulo. Avere la lode nel solo modulo TW non basta se l’IA non ha anch’esso 30; avere 30 in entrambi senza alcuna lode non soddisfa la seconda condizione.\n\n## Confini della fonte\n\nLa scheda citata non specifica qui il numero di domande, la durata della prova IA, punteggi per argomento o ulteriori soglie: non li inventiamo. Gli esempi e i richiami di questa lezione esercitano la lettura delle regole [F1], non riproducono quesiti ufficiali. Per eventuali aggiornamenti controlla la scheda e i materiali del corso accessibili allo studente.",
+  "analogia": {
+    "testo": "È come distinguere, nella biblioteca, una misura numerica da un contrassegno separato: non si sommano due cose di natura diversa.",
+    "limite": "L’analogia non introduce soglie o condizioni ulteriori: per voto, idoneità e lode valgono solo le regole della scheda [F1]."
+  },
+  "worked_example": {
+    "titolo": "Verifica le condizioni della lode",
+    "problema": "Una studentessa ha 30 e lode nel modulo IA e 30 nel modulo TW. Verifica le condizioni riportate in [F1].",
+    "passi": [
+      "Ai fini della media, considera il 30 e lode come 30.",
+      "Controlla che entrambi i voti siano 30.",
+      "Controlla che almeno uno dei moduli abbia la lode."
+    ],
+    "soluzione": "La media ponderata di due voti pari a 30 è 30; le condizioni riportate per la lode integrata sono soddisfatte perché entrambi i moduli hanno 30 e IA ha la lode [F1].",
+    "perche_funziona": "La lode nel modulo è trattata come 30 per la media; la condizione della lode finale controlla anche la presenza di almeno una lode [F1]."
+  },
+  "completion_problem": {
+    "titolo": "Distingui voto e idoneità",
+    "testo": "Completa il riepilogo della verifica IA: il voto viene dai quiz chiusi; il laboratorio è una idoneità separata.",
+    "passi_mancanti": [
+      "Indica la scala del voto determinato dai quiz.",
+      "Indica come è espresso l’esito del laboratorio."
+    ],
+    "soluzione": "I quiz determinano il voto in trentesimi; la prova di laboratorio è una idoneità ON/OFF [F1]."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Verifica la condizione mancante",
+    "testo": "Una studentessa ha 30 in entrambi i moduli, ma nessuno dei due voti ha la lode. La condizione per la lode integrata è soddisfatta?",
+    "suggerimento": "Controlla separatamente il valore dei voti e la presenza della lode in almeno un modulo.",
+    "soluzione_attesa": "No: pur avendo 30 in entrambi, manca la lode in almeno uno dei due moduli [F1]."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Sommare ON/OFF come se fosse un punteggio numerico.",
+      "perche_sbagliato": "La scheda descrive il laboratorio come idoneità, mentre il voto IA è determinato dai quiz [F1].",
+      "distrattore": "Un selettore CSS è un voto."
+    },
+    {
+      "errore": "Attribuire la lode integrata con 30 in entrambi ma senza lode nei moduli.",
+      "perche_sbagliato": "La scheda richiede anche la lode in almeno uno dei moduli [F1].",
+      "distrattore": "Un cookie è una lode."
+    },
+    {
+      "errore": "Arrotondare la media ponderata all’intero più vicino.",
+      "perche_sbagliato": "La scheda specifica arrotondamento per eccesso, non arrotondamento al più vicino [F1].",
+      "distrattore": "Un indirizzo IP è un voto."
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quale forma ha lo scritto IA? A) Solo prova orale; B) Una regola CSS; C) Quiz a domande chiuse.",
+        "risposta": "C) La scheda descrive uno scritto con domande chiuse in forma di quiz [F1]."
+      },
+      {
+        "domanda": "Come viene valutato il laboratorio IA? A) Idoneità ON/OFF; B) Metodo HTTP; C) Punti da sommare al quiz.",
+        "risposta": "A) La prova di laboratorio è descritta come idoneità ON/OFF [F1]."
+      },
+      {
+        "domanda": "Quale scala determina il voto IA? A) ON/OFF del quiz; B) Trentesimi dal quiz; C) Porte TCP.",
+        "risposta": "B) Il voto del modulo IA è determinato dai quiz in trentesimi [F1]."
+      },
+      {
+        "domanda": "Come si arrotonda la media ponderata integrata? A) Come un URL; B) Sempre per difetto; C) Per eccesso.",
+        "risposta": "C) La scheda prevede l’arrotondamento per eccesso [F1]."
+      },
+      {
+        "domanda": "Qual è la condizione della lode integrata? A) 30 in entrambi e lode in almeno uno; B) 30 senza lode in entrambi; C) Un cookie.",
+        "risposta": "A) Occorrono 30 in entrambi i moduli e lode in almeno uno [F1]."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega con parole tue perché il voto del quiz, l’idoneità del laboratorio e la lode integrata non sono la stessa cosa.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "ia-supervisionato-classificazione-lineare",
+        "collegamento": "La classificazione lineare è uno degli argomenti del modulo IA richiamati da [F1]."
+      },
+      {
+        "nodo": "ia-clustering-non-supervisionato",
+        "collegamento": "Il clustering è un altro argomento del modulo IA richiamato nella scheda [F1]."
+      }
+    ]
+  },
+  "riepilogo": "Quiz chiusi: voto IA in trentesimi [F1].\nLaboratorio al calcolatore: idoneità ON/OFF [F1].\nVoto integrato: media ponderata arrotondata per eccesso [F1].\nLa lode di un modulo conta come 30 nella media [F1].\nLode finale solo con 30 in entrambi e lode in almeno uno [F1].",
+  "flashcard": {
+    "fronte": "Quali condizioni riporta [F1] per la lode finale?",
+    "retro": "30 in entrambi i moduli, IA e TW, con la lode in almeno uno dei due."
+  },
+  "checklist": {
+    "so_fare": [
+      "Distinguere quiz in trentesimi e laboratorio ON/OFF",
+      "Controllare le condizioni della lode integrata"
+    ],
+    "so_dire": [
+      "Descrivere media ponderata e arrotondamento per eccesso",
+      "Spiegare come la lode di un modulo vale ai fini della media"
+    ]
+  }
+}

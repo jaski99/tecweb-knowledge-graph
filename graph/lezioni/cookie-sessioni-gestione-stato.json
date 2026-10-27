@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
+  "perche_ti_serve": "Gruppo A: cookie e sessioni aiutano a progettare applicazioni Web e a capire lo stato applicativo su HTTP [F1].",
   "scenario_fil_rouge": "Una lettrice accede alla biblioteca digitale e salva un libro nei preferiti. Il browser invia un cookie nelle richieste successive; il server usa il suo identificatore per recuperare preferenze e sessione senza confondere il cookie con l'intero archivio.",
   "definizione_esame": {
     "definizione": "Un cookie è un dato gestito dal browser secondo gli header HTTP; una sessione applicativa associa richieste e dati di stato, spesso tramite un identificatore nel cookie.",

@@ -3,7 +3,7 @@
     "id": "flask-rotte-jsonify",
     "title": "Flask: rotte e jsonify",
     "area": 4,
-    "gruppo": "C",
+    "gruppo": "A",
     "tipo": "abilita",
     "sapere": "Flask è un micro-framework Python per lo sviluppo web. Le rotte sono definite con @app.route('percorso') e gestiscono richieste HTTP. jsonify() converte dati Python (dict, list) in JSON per la risposta. Le rotte possono specificare i metodi HTTP consentiti (methods=['GET', 'POST', ...]).",
     "saper_fare": [
@@ -22,7 +22,7 @@
     "tempo_studio_min": 60,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo C; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+      "motivazione": "Python e Flask sono previsti da [F1] per la creazione e fruizione di servizi RESTful; rotte e jsonify sono esempi applicativi."
     },
     "risorse": [
       {
@@ -52,7 +52,7 @@
     "id": "flask-request-response",
     "title": "Flask: request e response",
     "area": 4,
-    "gruppo": "C",
+    "gruppo": "A",
     "tipo": "abilita",
     "sapere": "In Flask, l'oggetto request (da flask import request) contiene i dati della richiesta: args (query string), form (dati POST form), json (body JSON), headers, method, cookies. L'oggetto response può essere personalizzato: status code, headers, body. make_response() permette di creare risposte personalizzate.",
     "saper_fare": [
@@ -77,7 +77,7 @@
     "tempo_studio_min": 50,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo C; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+      "motivazione": "Flask e servizi RESTful sono esplicitamente previsti da [F1]; richieste e risposte sono competenze applicative."
     },
     "risorse": [
       {
@@ -107,7 +107,7 @@
     "id": "sqlite-crud",
     "title": "SQLite: operazioni CRUD",
     "area": 4,
-    "gruppo": "C",
+    "gruppo": "B",
     "tipo": "abilita",
     "sapere": "SQLite è un database SQL embedded, leggero, senza server. Le operazioni CRUD: Create (INSERT), Read (SELECT), Update (UPDATE), Delete (DELETE). In Python si usa tramite il modulo sqlite3: connect(), cursor(), execute(), commit(), close(). Per progetti Flask, Flask-SQLAlchemy offre un'interfaccia ORM.",
     "saper_fare": [
@@ -125,8 +125,8 @@
     ],
     "tempo_studio_min": 50,
     "priorita": {
-      "livello": "alta",
-      "motivazione": "Gruppo C; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+      "livello": "media",
+      "motivazione": "Prerequisito e contesto utili per un progetto Web; [F1] non impone SQLite e lascia libera la scelta delle tecnologie della tesina."
     },
     "risorse": [
       {
@@ -156,7 +156,7 @@
     "id": "git-comandi-base",
     "title": "Git: comandi base",
     "area": 4,
-    "gruppo": "C",
+    "gruppo": "A",
     "tipo": "abilita",
     "sapere": "Git è un sistema di versionamento distribuito. Comandi base: init (inizializza repo), add (aggiungi file allo staging), commit (salva cambiamenti localmente), status (stato), log (storia), branch (gestione rami), checkout (cambia ramo), merge (unisci rami), push/pull (sincronizzazione con remote), clone (copia repo).",
     "saper_fare": [
@@ -180,7 +180,7 @@
     "tempo_studio_min": 50,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo C; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+      "motivazione": "Git e il lavoro collaborativo con branch, merge e pull request sono elencati in [F1]."
     },
     "risorse": [
       {
@@ -215,7 +215,7 @@
     "id": "json-formato-dati",
     "title": "JSON: formato dati per il Web",
     "area": 4,
-    "gruppo": "C",
+    "gruppo": "A",
     "tipo": "concetto",
     "sapere": "JSON (JavaScript Object Notation) è un formato di scambio dati leggibile da umani e macchine. Sintassi: chiavi/valori in coppie, separati da :, oggetti tra {}, array tra []. Tipi di dati: string, number, boolean, null, object, array. In Python: json.dumps() (Python → JSON), json.loads() (JSON → Python). In JavaScript: JSON.stringify(), JSON.parse().",
     "saper_fare": [
@@ -233,8 +233,8 @@
     ],
     "tempo_studio_min": 30,
     "priorita": {
-      "livello": "media",
-      "motivazione": "Gruppo C nel grafo e argomento di supporto al syllabus; priorità media senza attribuire un peso d’esame non documentato."
+      "livello": "alta",
+      "motivazione": "JSON è elencato esplicitamente tra le tecnologie front-end in [F1]."
     },
     "risorse": [
       {

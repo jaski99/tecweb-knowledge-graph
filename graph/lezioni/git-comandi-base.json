@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Gruppo C: tema previsto dal syllabus/materiale disponibile; non è documentato un punteggio specifico per questo singolo nodo.",
+  "perche_ti_serve": "Gruppo A: Git, branching, merge e pull request sono esplicitamente previsti dal programma [F1].",
   "scenario_fil_rouge": "Una studentessa deve aggiungere la ricerca nel catalogo senza destabilizzare il ramo condiviso. Crea un branch, registra commit piccoli, pubblica il ramo e apre una pull request per far revisionare e integrare il lavoro.",
   "definizione_esame": {
     "definizione": "Git è un sistema distribuito di controllo versione; un branch è un riferimento mobile a una linea di sviluppo, merge integra storie di commit e una pull request è una proposta di revisione e integrazione offerta da una piattaforma.",

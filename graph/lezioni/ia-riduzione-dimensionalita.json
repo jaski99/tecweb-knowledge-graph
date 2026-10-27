@@ -1,0 +1,102 @@
+{
+  "perche_ti_serve": "Gruppo A: la riduzione delle dimensioni è nel programma IA [F1]; nessun punteggio per nodo è indicato.",
+  "scenario_fil_rouge": "La biblioteca online descrive libri fittizi con più attributi numerici. Se due attributi ripetono quasi la stessa informazione, vorrebbe rappresentare i libri con meno coordinate mantenendo una parte utile della variabilità.",
+  "definizione_esame": {
+    "definizione": "La riduzione della dimensionalità trasforma una rappresentazione in meno coordinate; la PCA usa direzioni ortogonali ordinate per varianza spiegata.",
+    "scopo_vantaggio": "Può semplificare rappresentazione e analisi conservando parte della variabilità, con possibile perdita di informazione.",
+    "esempio": "Per punti di biblioteca allineati lungo una retta, una componente principale può rappresentare esattamente i punti centrati."
+  },
+  "spiegazione": "Prerequisiti: feature e train/test; media e prodotti NumPy utili. **Fonte e limiti:** spiegazione ed esempi originali basati su fonti libere, non sulle slide del prof. Calderara, non pubbliche [F12]. La riduzione delle dimensioni è prevista da [F1].\n\n## Perché ridurre\n\nUna tabella può avere molte feature, alcune ridondanti. **Ridurre la dimensionalità** significa sostituirle o rappresentarle con meno coordinate, per esempio per visualizzare o comprimere. La trasformazione può scartare informazione; meno dimensioni non garantiscono migliori previsioni. La **PCA** è un metodo lineare non supervisionato: non usa le etichette per scegliere le direzioni.\n\n## Centratura e direzioni principali\n\nCalcola la media di ogni colonna sul **train** e sottraila: i dati sono centrati. La prima componente principale è una direzione unitaria che massimizza la varianza delle proiezioni; le successive sono ortogonali alle precedenti e ordinate per varianza spiegata. Con la decomposizione ai valori singolari `X_c = U S Vt`, le righe di `Vt` rappresentano le direzioni principali. Il segno di una direzione può invertirsi senza cambiare la soluzione geometrica.\n\n```mermaid\nflowchart LR\n  X[\"Dati di train\"] --> M[\"Media e centratura\"]\n  M --> S[\"Decomposizione SVD\"]\n  S --> C[\"Scelta delle componenti\"]\n  C --> P[\"Proiezione\"]\n  P --> R[\"Ricostruzione approssimata\"]\n```\n\n## Proiezione e ricostruzione\n\nPer una componente unitaria `v`, la nuova coordinata è `z = X_c @ v`. La ricostruzione con quella sola direzione è `z * v + media`: in generale è approssimata, perché le direzioni scartate non sono recuperate. Nell’esempio allineato una componente conserva tutta la varianza osservata. La **quota di varianza spiegata** è la varianza della componente divisa per la varianza totale; non è una misura diretta della capacità di predire il target.\n\n## Scala e dati mai visti\n\nLa PCA centra le feature ma non le porta automaticamente alla stessa scala. Un attributo con unità numeriche più grandi può dominare; valuta se standardizzare, stimando eventuali scale solo sul train. Anche media e componenti si apprendono solo sul train; sul test si applicano senza riadattarle, evitando data leakage. Direzione di massima varianza e informazione utile alla classificazione non coincidono necessariamente.",
+  "analogia": {
+    "testo": "È come proiettare l’ombra di punti su una retta scelta per conservarne il maggior allargamento possibile.",
+    "limite": "La proiezione può far coincidere punti diversi e perdere dettagli; l’ombra più estesa non garantisce che resti il dettaglio più utile."
+  },
+  "worked_example": {
+    "titolo": "Una componente per punti allineati",
+    "problema": "Centra tre libri fittizi con due attributi, ricava la prima componente con SVD e ricostruisci i punti.",
+    "passi": [
+      "Calcola e sottrai le medie delle colonne del train.",
+      "Ottieni la direzione principale dalla decomposizione SVD e proietta i punti.",
+      "Ricostruisci i dati e applica la stessa trasformazione a un libro di test."
+    ],
+    "soluzione": "```python\nimport numpy as np\n\nX_train = np.array([[1., 1.], [2., 2.], [3., 3.]])\nmedia = X_train.mean(axis=0)\ncentrato = X_train - media\n_, singolari, vt = np.linalg.svd(centrato, full_matrices=False)\ncomponente = vt[0]  # il segno della direzione è arbitrario\nproiezione = centrato @ componente\nricostruito = proiezione[:, None] * componente + media\nquota = singolari[0] ** 2 / np.sum(singolari ** 2)\nX_test = np.array([[4., 4.]])\ntest_proiettato = (X_test - media) @ componente\nprint(media)           # [2. 2.]\nprint(ricostruito)     # circa [[1, 1], [2, 2], [3, 3]]\nprint(quota)           # circa 1.0\nprint(test_proiettato)  # + o - 2 * sqrt(2), secondo il segno SVD\n```\nLa media è `[2, 2]`; una componente ricostruisce questi punti e spiega tutta la varianza osservata.",
+    "perche_funziona": "I punti centrati sono allineati e hanno rango uno: la direzione principale conserva tutta la variazione presente in questo esempio."
+  },
+  "completion_problem": {
+    "titolo": "Proietta punti centrati",
+    "testo": "I punti [1, 1], [2, 2], [3, 3] hanno media [2, 2]. Usa la direzione unitaria [1/√2, 1/√2].",
+    "passi_mancanti": [
+      "Sottrai la media a ogni punto.",
+      "Calcola il prodotto scalare di ogni punto centrato con la direzione."
+    ],
+    "soluzione": "I punti centrati sono `[[-1, -1], [0, 0], [1, 1]]`; le coordinate proiettate sono `[-√2, 0, √2]`."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Riconosci una perdita di informazione",
+    "testo": "Due punti centrati distinti hanno la stessa proiezione sulla sola componente scelta. Si possono distinguere usando solo quella coordinata?",
+    "suggerimento": "Confronta le coordinate dopo la proiezione, non prima.",
+    "soluzione_attesa": "No: le coordinate ridotte coincidono, quindi le differenze scartate non sono recuperabili da quella sola proiezione."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Ricalcolare media e componenti sul test prima di valutarlo.",
+      "perche_sbagliato": "Usare il test nel fit della trasformazione provoca leakage; riusa le quantità apprese sul train.",
+      "distrattore": "Una porta TCP è una componente principale."
+    },
+    {
+      "errore": "Dire che la componente di massima varianza è sempre la più predittiva.",
+      "perche_sbagliato": "La PCA non usa il target: la variabilità maggiore può essere irrilevante per la previsione.",
+      "distrattore": "Un cookie è un autovettore."
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "La PCA standard usa le etichette per scegliere le direzioni? A) No; B) Sì; C) Solo se cambia il CSS.",
+        "risposta": "A) È non supervisionata e sceglie direzioni in base alla varianza delle feature."
+      },
+      {
+        "domanda": "Che cosa si sottrae per centrare il test? A) Un URL; B) La media appresa sul train; C) La media del test.",
+        "risposta": "B) Si riusa la media del train per evitare leakage."
+      },
+      {
+        "domanda": "Quale proprietà hanno le componenti principali distinte? A) Sono sempre uguali; B) Sono header; C) Sono ortogonali.",
+        "risposta": "C) Nella PCA standard le direzioni principali sono ortogonali."
+      },
+      {
+        "domanda": "La PCA standard scala sempre automaticamente le feature? A) No; B) Solo con HTTP; C) Sì.",
+        "risposta": "A) Centra i dati; un’eventuale standardizzazione è una scelta separata."
+      },
+      {
+        "domanda": "Una proiezione con meno componenti conserva sempre tutto? A) Sì; B) No; C) Solo con un cookie.",
+        "risposta": "B) Le componenti scartate possono contenere informazione non ricostruibile."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega con parole tue perché la direzione che conserva più varianza può non essere quella più utile a distinguere i libri.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "ia-python-numpy-lab",
+        "collegamento": "Media lungo le colonne, broadcasting e prodotto matriciale implementano centratura e proiezione."
+      },
+      {
+        "nodo": "ia-introduzione-apprendimento",
+        "collegamento": "La PCA è non supervisionata e va appresa sul train per evitare leakage."
+      }
+    ]
+  },
+  "riepilogo": "La PCA è una riduzione lineare non supervisionata.\nCentra usando la media stimata sul train.\nLe direzioni ortogonali sono ordinate per varianza spiegata.\nScartare componenti può perdere informazione.\nScala e leakage influenzano l’interpretazione.",
+  "flashcard": {
+    "fronte": "Perché il segno della componente principale può cambiare?",
+    "retro": "Una direzione e la sua opposta descrivono la stessa retta: la proiezione cambia segno, non la geometria."
+  },
+  "checklist": {
+    "so_fare": [
+      "Centrare, proiettare e ricostruire punti semplici",
+      "Applicare al test le trasformazioni apprese sul train"
+    ],
+    "so_dire": [
+      "Spiegare varianza spiegata e perdita di informazione",
+      "Descrivere effetto della scala e segno delle componenti"
+    ]
+  }
+}
