@@ -1,14 +1,15 @@
-// Contratto condiviso, senza dipendenze dalla web app X5.
-export const CHIAVE_MODULO_IA = 'tecweb.moduloIA';
+// Adattatore del simulatore sul modulo condiviso: stessa chiave e stessa lettura della web app.
+import { AREA_IA, CHIAVE_MODULO_IA, isModuloIAAttivo } from '../../js/core/modulo-ia.js';
+
+export { CHIAVE_MODULO_IA };
 
 export function moduloIAAttivo(storage) {
-  try { return storage?.getItem(CHIAVE_MODULO_IA) === '1'; }
-  catch { return false; }
+  return isModuloIAAttivo(storage ?? null);
 }
 
 const nodoIA = (id) => typeof id === 'string' && id.startsWith('ia-');
 export function elementoIA(item) {
-  return item?.area === 7 || [item?.id, item?.nodo_id, item?.nodoId].some(nodoIA)
+  return item?.area === AREA_IA || [item?.id, item?.nodo_id, item?.nodoId].some(nodoIA)
     || (item?.abbinamenti || []).some((p) => nodoIA(p.nodo_id));
 }
 
