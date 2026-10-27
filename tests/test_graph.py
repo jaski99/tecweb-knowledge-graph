@@ -1,4 +1,5 @@
 import copy
+from collections import Counter
 import pytest
 from jsonschema import Draft202012Validator
 import re
@@ -27,6 +28,14 @@ def test_areas_declared():
 
 def test_ids_unique():
     assert len(IDS) == len(set(IDS))
+
+
+def test_part_ids_are_unique_before_build():
+    # La build usa un dizionario per ID: senza questo controllo un duplicato
+    # in due part potrebbe essere sovrascritto prima di arrivare al grafo.
+    counts = Counter(node["id"] for nodes in load_parts().values() for node in nodes)
+    duplicates = {node_id: count for node_id, count in counts.items() if count > 1}
+    assert not duplicates, f"ID duplicati nei part: {duplicates}"
 
 
 def test_prerequisites_exist():

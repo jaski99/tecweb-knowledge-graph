@@ -1,0 +1,209 @@
+[
+  {
+    "id": "python-base-web",
+    "title": "Python di base per applicazioni Web",
+    "area": 4,
+    "gruppo": "A",
+    "tipo": "abilita",
+    "sapere": "Python usa indentazione significativa per delimitare blocchi e offre tipi built-in come stringhe, numeri, liste e dizionari. Funzioni, condizioni, cicli e gestione esplicita dei dati consentono di trasformare input in output; nel Web ogni input esterno va validato prima dell’uso.",
+    "saper_fare": [
+      "Scrivere funzione Python con parametri e valore di ritorno",
+      "Usare dizionari e liste per dati destinati a JSON",
+      "Applicare condizioni e validazione di base a un input"
+    ],
+    "prerequisiti": [
+      {
+        "id": "json-formato-dati",
+        "forza": "soft",
+        "motivo": "Aiuta a riconoscere la forma dei dati che Python prepara per il Web."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "scritto: funzione Python",
+        "testo": "Scrivi una funzione che riceva lista di libri e restituisca titoli disponibili.",
+        "soluzione": "La funzione itera sui dizionari, controlla il campo booleano disponibile e costruisce una nuova lista. Deve usare get o controllare presenza della chiave se input non è garantito."
+      }
+    ],
+    "tempo_studio_min": 45,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Argomento esplicitamente elencato nel programma ufficiale [F1]; il gruppo A motiva questa priorità senza attribuire punteggi al nodo."
+    },
+    "risorse": [
+      {
+        "titolo": "Python: introduzione",
+        "url": "https://docs.python.org/3/tutorial/introduction.html",
+        "verificato": true
+      },
+      {
+        "titolo": "Python: strutture di controllo",
+        "url": "https://docs.python.org/3/tutorial/controlflow.html",
+        "verificato": true
+      },
+      {
+        "titolo": "Python: tipi di dati",
+        "url": "https://docs.python.org/3/tutorial/datastructures.html",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "PYTHON"
+      }
+    ],
+    "checklist_ripasso": [
+      "Indentazione definisce blocchi Python",
+      "Dizionario: chiave → valore; lista: sequenza ordinata",
+      "Validare input esterno prima dell’uso",
+      "Funzione: parametri, corpo, return"
+    ],
+    "worker": "X2"
+  },
+  {
+    "id": "servizi-restful-flask",
+    "title": "Servizi RESTful con Flask: crea e consuma API",
+    "area": 4,
+    "gruppo": "A",
+    "tipo": "tipo_esercizio",
+    "sapere": "Un servizio RESTful Flask associa risorse e metodi HTTP a funzioni che validano input e restituiscono JSON con jsonify. Un esercizio completo crea rotte coerenti per lettura, creazione, sostituzione, modifica parziale e cancellazione, e le consuma dal client controllando status e corpo della Response.",
+    "saper_fare": [
+      "Implementare rotte Flask GET, POST, PUT, PATCH e DELETE con jsonify",
+      "Restituire 200, 201, 204, 400 e 404 in casi coerenti",
+      "Inviare e consumare JSON dal browser con fetch e controllare response.ok"
+    ],
+    "prerequisiti": [
+      {
+        "id": "flask-request-response",
+        "forza": "hard",
+        "motivo": "Serve leggere JSON e costruire risposte Flask."
+      },
+      {
+        "id": "rest-metodi-http",
+        "forza": "hard",
+        "motivo": "Serve scegliere semantica di GET, POST, PUT, PATCH e DELETE."
+      },
+      {
+        "id": "json-formato-dati",
+        "forza": "hard",
+        "motivo": "Serve validare e serializzare rappresentazioni JSON."
+      },
+      {
+        "id": "javascript-fetch-async-await",
+        "forza": "soft",
+        "motivo": "Serve consumare API con fetch."
+      },
+      {
+        "id": "codici-stato-http",
+        "forza": "soft",
+        "motivo": "Aiuta a motivare gli status restituiti."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "scritto: crea e consuma API REST",
+        "testo": "Crea API Flask per libri con GET, POST, PUT, PATCH e DELETE e scrivi client fetch che invii modifica parziale.",
+        "soluzione": "Collezione con GET e POST, risorsa con PUT, PATCH e DELETE. Ogni rotta valida body e distingue 400 per input errato da 404 per id assente. Il client invia Content-Type JSON, usa JSON.stringify, controlla response.ok e non chiama response.json per 204."
+      }
+    ],
+    "tempo_studio_min": 60,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Argomento esplicitamente elencato nel programma ufficiale [F1]; il gruppo A motiva questa priorità senza attribuire punteggi al nodo."
+    },
+    "risorse": [
+      {
+        "titolo": "Flask: quickstart",
+        "url": "https://flask.palletsprojects.com/en/stable/quickstart/",
+        "verificato": true
+      },
+      {
+        "titolo": "Flask API: jsonify",
+        "url": "https://flask.palletsprojects.com/en/stable/api/#flask.json.jsonify",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: uso della Fetch API",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "FLASK"
+      },
+      {
+        "libro": "MDN"
+      }
+    ],
+    "checklist_ripasso": [
+      "GET lettura; POST creazione; PUT sostituzione; PATCH modifica parziale; DELETE rimozione",
+      "jsonify produce risposta JSON; validare body prima dell’uso",
+      "200 successo; 201 creazione; 204 senza corpo; 400 input; 404 risorsa assente",
+      "fetch: header JSON, JSON.stringify, response.ok e corpo solo quando presente"
+    ],
+    "worker": "X2"
+  },
+  {
+    "id": "git-workflow-collaborativo",
+    "title": "Git: workflow collaborativo con branch, merge e pull request",
+    "area": 4,
+    "gruppo": "A",
+    "tipo": "abilita",
+    "sapere": "Un workflow Git collaborativo isola una modifica in branch, registra commit piccoli e sincronizza lavoro con remote. Merge integra storia nel branch corrente; pull request è una richiesta di integrazione offerta da una piattaforma di hosting e può includere revisione, controlli e discussione prima del merge.",
+    "saper_fare": [
+      "Creare branch di lavoro e pubblicarlo sul remote",
+      "Aggiornare branch prima dell’integrazione e risolvere conflitti consapevolmente",
+      "Spiegare differenza fra git merge e pull request di piattaforma"
+    ],
+    "prerequisiti": [
+      {
+        "id": "git-comandi-base",
+        "forza": "hard",
+        "motivo": "Serve conoscere repository, staging, commit, branch e remote."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "scritto: workflow collaborativo",
+        "testo": "Descrivi un flusso per aggiungere pagina dei libri senza lavorare direttamente sul branch condiviso.",
+        "soluzione": "Si aggiorna branch condiviso, si crea branch descrittivo, si fanno commit coerenti e si pubblica branch. Sulla piattaforma si apre pull request; dopo revisione e controlli merge integra. Conflitti si risolvono leggendo modifiche, eseguendo test e creando commit di risoluzione."
+      }
+    ],
+    "tempo_studio_min": 40,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Argomento esplicitamente elencato nel programma ufficiale [F1]; il gruppo A motiva questa priorità senza attribuire punteggi al nodo."
+    },
+    "risorse": [
+      {
+        "titolo": "Git: branch",
+        "url": "https://git-scm.com/docs/git-branch",
+        "verificato": true
+      },
+      {
+        "titolo": "Git: merge",
+        "url": "https://git-scm.com/docs/git-merge",
+        "verificato": true
+      },
+      {
+        "titolo": "Git: pull",
+        "url": "https://git-scm.com/docs/git-pull",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "GIT"
+      }
+    ],
+    "checklist_ripasso": [
+      "Branch: linea di sviluppo isolata",
+      "Commit: cambiamento registrato con messaggio coerente",
+      "Merge: comando che integra nel branch corrente",
+      "Pull request: proposta di integrazione sulla piattaforma",
+      "Conflitto: scelta, test e commit esplicito"
+    ],
+    "worker": "X2"
+  }
+]

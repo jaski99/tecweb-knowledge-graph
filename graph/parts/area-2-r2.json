@@ -1,0 +1,132 @@
+[
+  {
+    "id": "architetture-mashup",
+    "title": "Architetture mashup: comporre servizi e dati",
+    "area": 2,
+    "gruppo": "A",
+    "tipo": "concetto",
+    "sapere": "Un mashup è un’applicazione che integra dati, contenuti o funzionalità di più sorgenti in una sola esperienza. La composizione deve mantenere espliciti contratti, origine dei dati, errori e responsabilità delle sorgenti.",
+    "saper_fare": [
+      "Individuare sorgenti e ruolo di un aggregatore",
+      "Descrivere il flusso di una composizione di API",
+      "Gestire un fallimento parziale senza confondere le sorgenti"
+    ],
+    "prerequisiti": [
+      {
+        "id": "rest-principi",
+        "forza": "hard",
+        "motivo": "Serve l’interfaccia HTTP orientata alle risorse."
+      },
+      {
+        "id": "json-formato-dati",
+        "forza": "hard",
+        "motivo": "Le rappresentazioni scambiate sono JSON."
+      },
+      {
+        "id": "architettura-3-tier",
+        "forza": "soft",
+        "motivo": "Aiuta a collocare l’aggregatore nel livello applicativo."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "scritto: architettura di integrazione",
+        "testo": "Per una scheda di libro indica come mostrare insieme dati locali e disponibilità ottenuta da un servizio distinto.",
+        "soluzione": "Il browser richiede una vista al backend della biblioteca; l’aggregatore ottiene la disponibilità, controlla il risultato e restituisce JSON coerente. Se la seconda sorgente fallisce, il contratto distingue il dato locale dalla disponibilità non ottenuta."
+      }
+    ],
+    "tempo_studio_min": 40,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Argomento esplicitamente elencato nel programma ufficiale [F1]; il gruppo A motiva questa priorità senza attribuire punteggi al nodo."
+    },
+    "risorse": [
+      {
+        "titolo": "MDN: panoramica client-server",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Client-Server_overview",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: uso della Fetch API",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "MDN"
+      }
+    ],
+    "checklist_ripasso": [
+      "Mashup: composizione di sorgenti o servizi distinti",
+      "Aggregatore: coordina contratti e risultati",
+      "Un timeout esterno non equivale a un 404 locale"
+    ],
+    "worker": "X2"
+  },
+  {
+    "id": "sviluppo-event-driven",
+    "title": "Sviluppo event-driven: eventi, handler e stato",
+    "area": 2,
+    "gruppo": "A",
+    "tipo": "concetto",
+    "sapere": "Nello sviluppo event-driven il flusso dell’applicazione reagisce a eventi, come click, risposta asincrona o messaggio remoto. Un listener registra un handler; l’handler aggiorna stato o avvia un’azione senza bloccare il resto dell’interfaccia.",
+    "saper_fare": [
+      "Associare un evento a un handler con responsabilità limitata",
+      "Distinguere evento locale e completamento di un’operazione remota",
+      "Aggiornare l’interfaccia dopo un risultato asincrono controllato"
+    ],
+    "prerequisiti": [
+      {
+        "id": "dom-virtual-dom",
+        "forza": "hard",
+        "motivo": "Serve comprendere elementi e aggiornamenti dell’interfaccia."
+      },
+      {
+        "id": "eventi-locali-vs-remoti",
+        "forza": "soft",
+        "motivo": "Aiuta a classificare l’origine degli eventi."
+      },
+      {
+        "id": "javascript-fetch-async-await",
+        "forza": "soft",
+        "motivo": "Serve per modellare operazioni remote asincrone."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "scritto: flusso a eventi",
+        "testo": "Descrivi cosa accade quando il bibliotecario preme «Prenota» e il server conferma la richiesta.",
+        "soluzione": "Il click attiva un listener. L’handler invia e attende la richiesta senza bloccare la pagina; solo una risposta positiva aggiorna lo stato visibile, mentre un errore produce un messaggio coerente."
+      }
+    ],
+    "tempo_studio_min": 40,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Argomento esplicitamente elencato nel programma ufficiale [F1]; il gruppo A motiva questa priorità senza attribuire punteggi al nodo."
+    },
+    "risorse": [
+      {
+        "titolo": "MDN: EventTarget.addEventListener()",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: uso della Fetch API",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "MDN"
+      }
+    ],
+    "checklist_ripasso": [
+      "Evento: segnale che innesca una reazione",
+      "Listener: registrazione; handler: funzione eseguita",
+      "Aggiornare la UI dopo la Response controllata"
+    ],
+    "worker": "X2"
+  }
+]

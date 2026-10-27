@@ -1,3 +1,5 @@
+> **Nota di contesto (round 2):** il testo originale dell'utente qui sotto è conservato integralmente. La scheda ufficiale INF-37 2026/27 della coorte 2024/25 conferma scritto 0–23, tesina 0–10 e PowerPoint di massimo 8 minuti; prevede anche il modulo IA e una specifica regola per la lode [F1]. Le percentuali, le ricorrenze delle domande, la scaletta di 4 slide e la conversione dei punteggi riportate sotto sono **[IPOTESI]**, non regole ufficiali verificate. La durata dello scritto è **[NON TROVATO]**; Flask e SQLite sono esempi, non tecnologie obbligatorie. Il programma, i limiti delle fonti e il significato aggiornato di A/B/C sono in [SYLLABUS.md](SYLLABUS.md) e [NODES.md](NODES.md).
+
 # Tecnologie Web — materiale dato dall'utente (24-25/10/2026)
 Fonte: appunti/analisi dell'utente sulle prove passate (PDF delle prove NON disponibili sulla box, solo questa analisi). Docente: la "docente" (nome non indicato).
 

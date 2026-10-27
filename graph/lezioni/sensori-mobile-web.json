@@ -1,0 +1,98 @@
+{
+  "perche_ti_serve": "Il programma ufficiale [F1] cita un accenno ai sensori mobili: questo nodo B chiarisce API standard, permessi e limiti.",
+  "scenario_fil_rouge": "La Biblioteca Aurora sta rendendo il proprio catalogo disponibile sul Web: studenti e bibliotecari cercano libri, propongono modifiche e collaborano sullo stesso servizio. Ogni scelta di questa lezione risolve un passaggio concreto di quel progetto, senza cambiare scenario.",
+  "definizione_esame": {
+    "definizione": "Le API dei sensori mobili nel Web espongono dati del dispositivo quando browser, contesto e permessi lo consentono.",
+    "scopo_vantaggio": "Consentono funzioni contestuali mantenendo controllo dell’utente e un’alternativa senza sensore.",
+    "esempio": "La biblioteca propone la sede vicina con Geolocation dopo consenso, oppure lascia scegliere manualmente la sede."
+  },
+  "spiegazione": "## Prima l’intuizione e i prerequisiti\n\n**Richiama eventi e risultati asincroni del browser.** La posizione può aiutare a ordinare sedi, non autorizza l’applicazione a dedurre che l’utente debba condividerla. La Geolocation API standard documentata da MDN è soggetta a contesto sicuro e consenso dell’utente. Nel progetto della Biblioteca Aurora la domanda iniziale è concreta: come proporre una sede vicina senza bloccare chi rifiuta il permesso o usa un browser senza il sensore. Prima di scegliere una API o scrivere istruzioni, identifica i dati coinvolti, chi è responsabile di ogni passaggio e quale risultato il browser deve comunicare. Questo evita di confondere il nome di una tecnologia con il problema che risolve.\n\n## Il flusso da saper disegnare\n\nIl flusso ha tre rami: il browser supporta la funzionalità e ottiene una posizione; l’utente o il browser rifiuta; la funzionalità non è presente. `getCurrentPosition` usa callback di successo ed errore. Le coordinate sono dati sensibili e con precisione variabile, non una promessa di posizione esatta. Un buon ragionamento mantiene distinto ciò che avvia l’azione, ciò che trasforma i dati e ciò che rende il risultato visibile. Se uno dei passaggi fallisce, il comportamento previsto deve essere dichiarato: un’interfaccia affidabile non inventa un esito positivo né nasconde l’incertezza.\n\n```mermaid\nflowchart TD\n    A[Click: trova sede vicina] --> B{Geolocation disponibile?}\n    B -->|No| C[Scelta manuale sede]\n    B -->|Sì| D[Richiesta consenso browser]\n    D -->|Concesso| E[Callback posizione]\n    D -->|Negato o errore| C\n    E --> F[Ordina sedi]\n```\n\n## Applica l’idea con codice commentato\n\nMDN documenta anche gli eventi di orientamento. Il loro supporto e requisiti di autorizzazione possono variare: fai feature detection e non rendere essenziale un’interfaccia basata solo sull’orientamento. L’esempio usa Geolocation e conserva sempre l’alternativa.\n\n```javascript\nconst esito = document.querySelector('#esito');\n\nfunction trovaSedeVicinoAMe() {\n  // La chiamata avviene dopo un’azione utente in una pagina HTTPS.\n  if (!('geolocation' in navigator)) {\n    esito.textContent = 'Scegli una sede manualmente.';\n    return;\n  }\n  navigator.geolocation.getCurrentPosition(\n    posizione => { esito.textContent = `Latitudine: ${posizione.coords.latitude}`; },\n    () => { esito.textContent = 'Posizione non disponibile: scegli una sede.'; }\n  );\n}\n```\n\nIl frammento è piccolo apposta: mostra il contratto essenziale senza far perdere di vista il passaggio concettuale. Nella pratica il codice va inserito in un progetto con test, gestione degli errori e responsabilità separate. Un input proveniente da utente, browser o rete non diventa attendibile soltanto perché ha raggiunto una funzione.\n\n## Confronto che evita una trappola\n\nHTTPS non sostituisce il consenso, e il consenso non garantisce precisione. La scelta manuale deve restare disponibile e raggiungibile.\n\n| Situazione | Significato | Risposta dell’applicazione |\n|---|---|---|\n| Consenso e posizione | Dato disponibile con precisione dichiarata | Ordinare sedi senza sovrastimare precisione |\n| Rifiuto o errore | Posizione non disponibile | Offrire scelta manuale |\n| Nessun supporto | API assente | Non invocarla e mantenere alternativa |\n\n## Verifica mentale prima di proseguire\n\nPrima di integrare un sensore controlla HTTPS, supporto reale, ramo di errore e modalità manuale. L’obiettivo del nodo B è riconoscere vincoli e responsabilità. Ripeti il percorso con un caso normale e con un caso limite: domanda iniziale, controllo, esito. Se riesci a spiegare perché i due casi hanno risposte diverse, non stai soltanto memorizzando parole chiave ma stai applicando un contratto tecnico.",
+  "analogia": {
+    "testo": "È come chiedere a un lettore quale sede preferisce: la biblioteca può fare una proposta se riceve l’informazione, ma non può inventarla se il lettore non la comunica.",
+    "limite": "Un sensore produce misure, non preferenze certe; browser e dispositivi non hanno tutti stesso supporto o stessi requisiti di autorizzazione."
+  },
+  "worked_example": {
+    "titolo": "Trova la sede più vicina",
+    "problema": "Aggiungi un pulsante che propone sedi vicine usando posizione soltanto se browser e utente lo consentono.",
+    "passi": [
+      "Esegui azione dopo click esplicito.",
+      "Controlla che navigator.geolocation esista.",
+      "Chiama getCurrentPosition in contesto sicuro.",
+      "Gestisci callback di successo ed errore.",
+      "Mantieni scelta manuale."
+    ],
+    "soluzione": "Il click chiama una funzione che verifica la presenza della API. Se presente invoca getCurrentPosition con due callback; la prima usa coordinate e la seconda guida alla scelta manuale. Se la API manca non viene chiamata.",
+    "perche_funziona": "Il flusso rispetta la decisione dell’utente, non assume supporto universale e non lascia l’utente senza una strada per cercare una sede."
+  },
+  "completion_problem": {
+    "titolo": "Completa il ramo senza supporto",
+    "testo": "Completa la funzione affinché non invochi Geolocation quando il browser non la espone e mostri il controllo manuale.",
+    "passi_mancanti": [
+      "Fare feature detection con operatore in.",
+      "Uscire dalla funzione nel ramo senza supporto.",
+      "Invocare getCurrentPosition soltanto nel ramo supportato."
+    ],
+    "soluzione": "if (!('geolocation' in navigator)) {\n  esito.textContent = 'Seleziona una sede dall’elenco';\n  return; // Non chiamare una API assente.\n}\nnavigator.geolocation.getCurrentPosition(suSuccesso, suErrore);"
+  },
+  "esercizio_autonomo": {
+    "titolo": "Progetta alternativa accessibile",
+    "testo": "Aggiungi scelta manuale di sede utilizzabile anche quando consenso, HTTPS o sensore non sono disponibili.",
+    "suggerimento": "L’alternativa non deve comparire soltanto dopo un errore: rendila sempre raggiungibile e descrivine lo scopo.",
+    "soluzione_attesa": "La pagina offre una select o collegamenti con nomi delle sedi e label chiara. «Trova sede vicina» è un miglioramento opzionale; ogni esito della Geolocation API conserva la scelta manuale."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Chiamare Geolocation senza HTTPS e consenso",
+      "perche_sbagliato": "Geolocation richiede contesto sicuro e l’utente può negare il permesso; entrambi sono rami normali del flusso.",
+      "distrattore": "Un merge Git concede la posizione."
+    },
+    {
+      "errore": "Interpretare coordinate come posizione esatta",
+      "perche_sbagliato": "La misura ha precisione e disponibilità variabili; va trattata come dato con limite, non certezza assoluta.",
+      "distrattore": "Il box model misura la latitudine."
+    },
+    {
+      "errore": "Rendere posizione l’unico modo per scegliere sede",
+      "perche_sbagliato": "Supporto e consenso non sono garantiti, quindi serve sempre un percorso manuale equivalente.",
+      "distrattore": "Un elemento article sostituisce il consenso."
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quali condizioni richiede Geolocation?",
+        "risposta": "Richiede supporto del browser, contesto sicuro e consenso utente prima di usare la posizione."
+      },
+      {
+        "domanda": "Che cosa fa il ramo di errore?",
+        "risposta": "Spiega che la posizione non è disponibile e lascia una modalità manuale per lo stesso obiettivo."
+      },
+      {
+        "domanda": "Perché fare feature detection?",
+        "risposta": "Per non invocare API assenti e mantenere comportamento corretto in browser e dispositivi diversi."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega perché il pulsante per trovare la sede vicina non può essere l’unica strada per cercare una biblioteca.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "javascript-fetch-async-await",
+        "collegamento": "Entrambe le situazioni richiedono gestire risultati successivi all’azione utente, ma Geolocation usa callback della API del browser."
+      }
+    ]
+  },
+  "riepilogo": "I sensori Web sono facoltativi e soggetti a browser, HTTPS e permessi. Geolocation segue un’azione utente. Gestisci successo, errore e supporto assente. La precisione non è assoluta. Offri sempre una scelta manuale equivalente.",
+  "flashcard": {
+    "fronte": "Quali controlli precedono Geolocation?",
+    "retro": "Verificare supporto con feature detection, usare contesto sicuro e gestire consenso dell’utente con alternativa manuale."
+  },
+  "checklist": {
+    "so_fare": [
+      "Richiedere posizione con ramo di errore",
+      "Progettare una scelta manuale alternativa"
+    ],
+    "so_dire": [
+      "Spiegare consenso e contesto sicuro",
+      "Descrivere limiti di supporto dei sensori"
+    ]
+  }
+}

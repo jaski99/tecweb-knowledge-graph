@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
+  "perche_ti_serve": "Gruppo A: il programma [F1] cita HTTP e HTTP/2; HTTP/3 è qui un approfondimento di confronto.",
   "scenario_fil_rouge": "La pagina di un negozio digitale richiede HTML, fogli di stile, immagini e dati del catalogo. Le diverse versioni HTTP trasportano la stessa semantica, ma organizzano messaggi, connessioni e flussi in modo diverso.",
   "definizione_esame": {
     "definizione": "Le versioni HTTP condividono la semantica di base ma differiscono nel framing e nell'uso del trasporto per scambiare più richieste.",

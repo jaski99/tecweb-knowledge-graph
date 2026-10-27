@@ -1,0 +1,103 @@
+{
+  "perche_ti_serve": "Il programma ufficiale [F1] richiede creare e fruire servizi RESTful con Python e Flask: questo esercizio A unisce server e client.",
+  "scenario_fil_rouge": "La Biblioteca Aurora sta rendendo il proprio catalogo disponibile sul Web: studenti e bibliotecari cercano libri, propongono modifiche e collaborano sullo stesso servizio. Ogni scelta di questa lezione risolve un passaggio concreto di quel progetto, senza cambiare scenario.",
+  "definizione_esame": {
+    "definizione": "Un servizio RESTful Flask associa risorsa e metodo HTTP a una rotta che valida dati e restituisce JSON con status coerente.",
+    "scopo_vantaggio": "Permette a browser e server di cooperare con contratti espliciti per creare, leggere, sostituire, modificare e rimuovere risorse.",
+    "esempio": "Per `/api/libri/7`, PATCH aggiorna titolo e il client fetch mostra il risultato dopo una risposta 200."
+  },
+  "spiegazione": "## Prima l’intuizione e i prerequisiti\n\n**Richiama request/response Flask, metodi REST e JSON.** L’esercizio della Biblioteca Aurora ha una collezione `/api/libri` e singole risorse `/api/libri/<id>`. Ogni body ricevuto è non fidato: get_json può non produrre un oggetto e ogni campo richiede controllo prima dell’uso. Nel progetto della Biblioteca Aurora la domanda iniziale è concreta: come creare e poi consumare una API senza trattare un body invalido, un id assente e una risposta senza corpo come lo stesso caso. Prima di scegliere una API o scrivere istruzioni, identifica i dati coinvolti, chi è responsabile di ogni passaggio e quale risultato il browser deve comunicare. Questo evita di confondere il nome di una tecnologia con il problema che risolve.\n\n## Il flusso da saper disegnare\n\nIl percorso completo è **crea e consuma**. GET legge con 200; POST crea con 201; PUT sostituisce rappresentazione completa; PATCH modifica campi dichiarati; DELETE rimuove con 204 senza corpo. Per input invalido il contratto restituisce 400; per id assente restituisce 404. jsonify costruisce la rappresentazione JSON nei casi che hanno corpo. Un buon ragionamento mantiene distinto ciò che avvia l’azione, ciò che trasforma i dati e ciò che rende il risultato visibile. Se uno dei passaggi fallisce, il comportamento previsto deve essere dichiarato: un’interfaccia affidabile non inventa un esito positivo né nasconde l’incertezza.\n\n```mermaid\nflowchart LR\n    A[Browser fetch] --> B[Rotta Flask]\n    B --> C{Metodo e body validi?}\n    C -->|No| D[400 JSON]\n    C -->|Sì| E{Risorsa esiste?}\n    E -->|No| F[404 JSON]\n    E -->|Sì o POST| G[200, 201 o 204]\n    G --> A\n```\n\n## Applica l’idea con codice commentato\n\nIl server seguente usa un dizionario in memoria solo per concentrarsi sul contratto HTTP. L’esempio contiene tutte le rotte richieste, jsonify e gli status da riconoscere; una persistenza reale è una responsabilità separata.\n\n```python\nfrom flask import Flask, jsonify, request\n\napp = Flask(__name__)\nlibri = {1: {'id': 1, 'titolo': 'Solaris'}}\n\ndef body_con_titolo(richiesti=True):\n    dati = request.get_json(silent=True)\n    # Valida tipo e campo prima di usare l'input del client.\n    if not isinstance(dati, dict) or (richiesti and not isinstance(dati.get('titolo'), str)):\n        return None\n    return dati\n\n@app.get('/api/libri')\ndef elenco_libri():\n    return jsonify(list(libri.values())), 200\n\n@app.post('/api/libri')\ndef crea_libro():\n    dati = body_con_titolo()\n    if dati is None or not dati['titolo'].strip():\n        return jsonify(error='titolo non valido'), 400\n    nuovo_id = max(libri, default=0) + 1\n    libri[nuovo_id] = {'id': nuovo_id, 'titolo': dati['titolo']}\n    return jsonify(libri[nuovo_id]), 201\n\n@app.put('/api/libri/<int:libro_id>')\ndef sostituisci_libro(libro_id):\n    dati = body_con_titolo()\n    if dati is None or not dati['titolo'].strip():\n        return jsonify(error='titolo non valido'), 400\n    if libro_id not in libri:\n        return jsonify(error='libro non trovato'), 404\n    libri[libro_id] = {'id': libro_id, 'titolo': dati['titolo']}\n    return jsonify(libri[libro_id]), 200\n\n@app.patch('/api/libri/<int:libro_id>')\ndef modifica_libro(libro_id):\n    dati = body_con_titolo(richiesti=False)\n    if dati is None or not isinstance(dati.get('titolo'), str) or not dati['titolo'].strip():\n        return jsonify(error='patch non valida'), 400\n    if libro_id not in libri:\n        return jsonify(error='libro non trovato'), 404\n    libri[libro_id]['titolo'] = dati['titolo']\n    return jsonify(libri[libro_id]), 200\n\n@app.delete('/api/libri/<int:libro_id>')\ndef elimina_libro(libro_id):\n    if libro_id not in libri:\n        return jsonify(error='libro non trovato'), 404\n    del libri[libro_id]\n    return '', 204  # 204 non include un corpo JSON.\n```\n\nIl frammento è piccolo apposta: mostra il contratto essenziale senza far perdere di vista il passaggio concettuale. Nella pratica il codice va inserito in un progetto con test, gestione degli errori e responsabilità separate. Un input proveniente da utente, browser o rete non diventa attendibile soltanto perché ha raggiunto una funzione.\n\n## Confronto che evita una trappola\n\nPUT non è una PATCH generica e 400 non descrive risorsa assente. Il metodo esprime l’effetto; status e corpo descrivono l’esito del contratto.\n\n| Metodo | Effetto sulla risorsa | Risposta riuscita |\n|---|---|---|\n| GET | Legge collezione | 200 con JSON |\n| POST | Crea nella collezione | 201 con JSON |\n| PUT | Sostituisce risorsa | 200 con JSON |\n| PATCH | Modifica campi dichiarati | 200 con JSON |\n| DELETE | Rimuove risorsa | 204 senza corpo |\n\n## Verifica mentale prima di proseguire\n\nProva body mancante, titolo vuoto, id assente ed eliminazione riuscita. Se sai perché il client non interpreta 204 come JSON e perché 404 è diverso da 400, sai spiegare l’intero esercizio. Ripeti il percorso con un caso normale e con un caso limite: domanda iniziale, controllo, esito. Se riesci a spiegare perché i due casi hanno risposte diverse, non stai soltanto memorizzando parole chiave ma stai applicando un contratto tecnico.",
+  "analogia": {
+    "testo": "È come lo sportello della biblioteca: una richiesta ben compilata crea, sostituisce, corregge o cancella una scheda; lo scontrino comunica se la pratica è riuscita, incompleta o rivolta a un libro inesistente.",
+    "limite": "Uno sportello umano può chiedere chiarimenti a voce; un’API deve definire campi, metodi e status perché client e server non indovinano intenzioni."
+  },
+  "worked_example": {
+    "titolo": "Crea e consuma il catalogo REST",
+    "problema": "Implementa rotte Flask per libri e client che modifica titolo del libro 1. Devono comparire GET, POST, PUT, PATCH, DELETE, jsonify e status 200, 201, 204, 400, 404.",
+    "passi": [
+      "Definisci collezione e funzione di validazione JSON.",
+      "Esponi GET e POST sulla collezione.",
+      "Esponi PUT, PATCH e DELETE sulla risorsa.",
+      "Distingui 400 e 404.",
+      "Restituisci 200, 201 o 204 per successo.",
+      "Dal client invia PATCH e controlla Response."
+    ],
+    "soluzione": "const risposta = await fetch('/api/libri/1', {\n  method: 'PATCH',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ titolo: 'Solaris aggiornato' })\n});\n// fetch non rifiuta automaticamente un 404: verificare status.\nif (!risposta.ok) throw new Error(`HTTP ${risposta.status}`);\nconst libro = await risposta.json();\nconsole.log(libro.titolo);\n\nSul server PATCH valida il titolo, restituisce 400 per body invalido, 404 per id assente e jsonify(libro), 200 dopo aggiornamento.",
+    "perche_funziona": "Server e client condividono contratto: il server valida prima di cambiare dati, ogni metodo esprime operazione distinta e il client decide dal codice di stato e dalla presenza del corpo."
+  },
+  "completion_problem": {
+    "titolo": "Completa il client DELETE",
+    "testo": "Completa il client che elimina libro 1. Deve controllare l’esito ma non provare a convertire in JSON una risposta 204.",
+    "passi_mancanti": [
+      "Inviare fetch con metodo DELETE.",
+      "Controllare response ok e comunicare errore.",
+      "Terminare con messaggio senza response.json per 204."
+    ],
+    "soluzione": "const risposta = await fetch('/api/libri/1', { method: 'DELETE' });\nif (!risposta.ok) throw new Error(`HTTP ${risposta.status}`);\n// DELETE riuscito risponde 204: non esiste JSON da leggere.\nesito.textContent = 'Libro eliminato';"
+  },
+  "esercizio_autonomo": {
+    "titolo": "Aggiungi validazione e percorso errore",
+    "testo": "Estendi POST affinché rifiuti body assente, body non oggetto e titolo di soli spazi; progetta messaggio client per 400 e 404.",
+    "suggerimento": "Distingui validità body dall’esistenza dell’id: sono condizioni diverse e producono status diversi.",
+    "soluzione_attesa": "Il server usa request.get_json(silent=True), verifica dizionario e stringa non vuota con strip, poi restituisce jsonify(error=...), 400. Per risorsa assente restituisce jsonify(error=...), 404. Il client mostra messaggio coerente."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Usare 400 quando l’id della risorsa non esiste",
+      "perche_sbagliato": "400 segnala richiesta non valida; id valido nella forma ma assente nel catalogo richiede 404.",
+      "distrattore": "Un componente React sceglie lo status HTTP."
+    },
+    {
+      "errore": "Leggere JSON dopo risposta 204",
+      "perche_sbagliato": "204 significa nessun contenuto, quindi response.json produrrebbe errore di parsing inutile.",
+      "distrattore": "Un tag footer restituisce corpo JSON."
+    },
+    {
+      "errore": "Usare PATCH senza definire contratto",
+      "perche_sbagliato": "PATCH modifica secondo documento o contratto dichiarato; qui accetta titolo, mentre PUT richiede rappresentazione completa.",
+      "distrattore": "Un sensore mobile valida body Flask."
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quale status usa POST riuscito?",
+        "risposta": "POST crea una risorsa e restituisce 201 con la rappresentazione JSON creata."
+      },
+      {
+        "domanda": "Quando PATCH restituisce 400 e 404?",
+        "risposta": "Restituisce 400 per body o campo invalido e 404 quando body è valido ma id non esiste."
+      },
+      {
+        "domanda": "Perché fetch controlla response ok?",
+        "risposta": "Perché fetch risolve anche per status HTTP di errore, quindi client deve interpretare la Response."
+      },
+      {
+        "domanda": "Perché DELETE non legge JSON dopo 204?",
+        "risposta": "Perché 204 indica risposta senza corpo e non esiste JSON da analizzare."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega l’intero tragitto di una PATCH dal pulsante browser alla risposta JSON del server Flask.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "rest-metodi-http",
+        "collegamento": "GET, POST, PUT, PATCH e DELETE esprimono semantiche HTTP diverse che le rotte Flask devono rispettare."
+      }
+    ]
+  },
+  "riepilogo": "Flask collega rotte, metodi HTTP e JSON. GET legge, POST crea, PUT sostituisce, PATCH modifica, DELETE rimuove. Valida body. Usa 400 per input invalido e 404 per risorsa assente. fetch richiede controllo di ok; 204 non ha corpo.",
+  "flashcard": {
+    "fronte": "Perché fetch deve controllare response ok?",
+    "retro": "Una risposta 400 o 404 non rifiuta automaticamente la Promise: il client deve leggere status e decidere come gestire il risultato."
+  },
+  "checklist": {
+    "so_fare": [
+      "Creare rotte Flask per tutti i metodi richiesti",
+      "Consumare JSON con fetch e gestire status diversi"
+    ],
+    "so_dire": [
+      "Confrontare 400 e 404",
+      "Spiegare perché 204 non ha corpo"
+    ]
+  }
+}
