@@ -65,7 +65,13 @@
       "Applicare broadcasting e prodotto scalare",
       "Calcolare medie e varianze per colonna"
     ],
-    "prerequisiti": [],
+    "prerequisiti": [
+      {
+        "id": "python-base-web",
+        "forza": "soft",
+        "motivo": "Le basi di Python aiutano a comprendere liste, indici e funzioni usati con NumPy."
+      }
+    ],
     "esercizi": [
       {
         "tipo_esame": "Allenamento originale, non prova ufficiale",

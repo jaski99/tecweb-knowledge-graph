@@ -52,24 +52,24 @@
   "richiamo_attivo": {
     "domande": [
       {
-        "domanda": "Quale target usa la regressione? A) Un URL; B) Solo etichetta di classe; C) Numerico.",
-        "risposta": "C) La regressione cerca di predire un target numerico."
+        "domanda": "Quale tipo di target si cerca di stimare nella regressione? A) Un’etichetta nominale; B) Una classe binaria; C) Una quantità numerica.",
+        "risposta": "C) La regressione predice una quantità numerica. Etichette nominali e classi binarie sono invece tipici target di classificazione."
       },
       {
-        "domanda": "Cosa minimizzano i minimi quadrati ordinari sul train? A) Somma degli scarti quadratici; B) Numero di classi; C) Porte di rete.",
-        "risposta": "A) Minimizzano la somma dei quadrati dei residui del train."
+        "domanda": "Cosa minimizzano i minimi quadrati ordinari sul train? A) La somma degli scarti quadratici; B) La media degli scarti assoluti (MAE); C) La somma delle distanze quadratiche dai centroidi.",
+        "risposta": "A) Minimizzano la somma dei quadrati dei residui del train. La MAE usa valori assoluti; le distanze dai centroidi appartengono all’obiettivo del k-means."
       },
       {
-        "domanda": "Qual è il ruolo della colonna di uno nell’esempio? A) Definire CSS; B) Stimare l’intercetta; C) Ordinare il test.",
-        "risposta": "B) Il coefficiente di quella colonna rappresenta l’intercetta."
+        "domanda": "A che cosa serve la colonna di uno nella matrice dell’esempio lineare? A) A normalizzare ogni feature; B) A stimare l’intercetta; C) A sostituire i target osservati.",
+        "risposta": "B) Il coefficiente della colonna di uno rappresenta l’intercetta. Non normalizza le feature e non sostituisce il vettore dei target."
       },
       {
-        "domanda": "L’MSE può essere negativo? A) Sì; B) Solo con cookie; C) No.",
-        "risposta": "C) È una media di quadrati, quindi non può essere negativo."
+        "domanda": "L’MSE può essere negativo? A) Sì, se il modello sovrastima i target; B) Sì, se prevalgono i residui negativi; C) No, perché è una media di quadrati.",
+        "risposta": "C) È una media di quadrati, quindi non può essere negativo: i residui con segni opposti non si compensano nell’MSE."
       },
       {
-        "domanda": "Quando una previsione è un’estrapolazione? A) Fuori dall’intervallo osservato; B) Quando cambia il DNS; C) Solo sul train.",
-        "risposta": "A) Si tratta di estrapolazione quando si predice fuori dall’intervallo osservato."
+        "domanda": "Con una sola feature, quando una previsione è un’estrapolazione? A) Quando la feature è fuori dall’intervallo osservato nel train; B) Quando la feature è dentro l’intervallo del train; C) Quando la previsione è valutata sul test.",
+        "risposta": "A) Si estrapola fuori dall’intervallo dei valori osservati nel train. Essere sul test, da solo, non implica estrapolazione."
       }
     ],
     "spiega_con_parole_tue": "Spiega con parole tue perché una retta perfetta sul train può avere errore diverso su altri libri.",

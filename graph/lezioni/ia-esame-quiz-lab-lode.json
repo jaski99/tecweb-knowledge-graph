@@ -57,24 +57,24 @@
   "richiamo_attivo": {
     "domande": [
       {
-        "domanda": "Quale forma ha lo scritto IA? A) Solo prova orale; B) Una regola CSS; C) Quiz a domande chiuse.",
-        "risposta": "C) La scheda descrive uno scritto con domande chiuse in forma di quiz [F1]."
+        "domanda": "Quale forma ha lo scritto IA secondo la scheda del corso? A) Solo prova orale; B) Scritto con sole domande aperte; C) Quiz a domande chiuse.",
+        "risposta": "C) La scheda descrive uno scritto con domande chiuse in forma di quiz [F1], non un orale esclusivo o uno scritto con sole domande aperte."
       },
       {
-        "domanda": "Come viene valutato il laboratorio IA? A) Idoneità ON/OFF; B) Metodo HTTP; C) Punti da sommare al quiz.",
-        "risposta": "A) La prova di laboratorio è descritta come idoneità ON/OFF [F1]."
+        "domanda": "Come viene valutato il laboratorio IA secondo la scheda? A) Idoneità ON/OFF; B) Voto numerico separato dal quiz; C) Punti da sommare al voto del quiz.",
+        "risposta": "A) La prova di laboratorio è descritta come idoneità ON/OFF [F1], non come un voto numerico da sommare al quiz."
       },
       {
-        "domanda": "Quale scala determina il voto IA? A) ON/OFF del quiz; B) Trentesimi dal quiz; C) Porte TCP.",
-        "risposta": "B) Il voto del modulo IA è determinato dai quiz in trentesimi [F1]."
+        "domanda": "Come si determina il voto del modulo IA secondo la scheda? A) Con la sola idoneità ON/OFF; B) Con un voto in trentesimi determinato dai quiz; C) Con un voto assegnato esclusivamente dal laboratorio.",
+        "risposta": "B) Il voto del modulo IA è determinato dai quiz in trentesimi [F1]; il laboratorio è valutato come idoneità ON/OFF."
       },
       {
-        "domanda": "Come si arrotonda la media ponderata integrata? A) Come un URL; B) Sempre per difetto; C) Per eccesso.",
-        "risposta": "C) La scheda prevede l’arrotondamento per eccesso [F1]."
+        "domanda": "Come si arrotonda la media ponderata integrata secondo la scheda? A) All’intero più vicino; B) Sempre per difetto; C) Per eccesso.",
+        "risposta": "C) La scheda prevede l’arrotondamento per eccesso [F1], non sempre per difetto né genericamente all’intero più vicino."
       },
       {
-        "domanda": "Qual è la condizione della lode integrata? A) 30 in entrambi e lode in almeno uno; B) 30 senza lode in entrambi; C) Un cookie.",
-        "risposta": "A) Occorrono 30 in entrambi i moduli e lode in almeno uno [F1]."
+        "domanda": "Quale condizione è richiesta per la lode integrata secondo la scheda? A) 30 in entrambi i moduli e lode in almeno uno; B) 30 in entrambi i moduli senza lode; C) 30 e lode in un modulo senza 30 nell’altro.",
+        "risposta": "A) Occorrono 30 in entrambi i moduli e lode in almeno uno [F1]. Avere due 30 senza lode, o la lode senza 30 nell’altro modulo, non soddisfa questa condizione."
       }
     ],
     "spiega_con_parole_tue": "Spiega con parole tue perché il voto del quiz, l’idoneità del laboratorio e la lode integrata non sono la stessa cosa.",

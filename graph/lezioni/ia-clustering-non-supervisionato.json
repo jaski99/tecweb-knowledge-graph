@@ -52,24 +52,24 @@
   "richiamo_attivo": {
     "domande": [
       {
-        "domanda": "Quale informazione non serve come target al clustering? A) Distanza; B) Etichette di classe; C) Feature.",
-        "risposta": "B) Il clustering non richiede target di classe noti per l’addestramento."
+        "domanda": "Che cosa distingue il clustering dalla classificazione supervisionata? A) Richiede etichette di classe per apprendere; B) Raggruppa osservazioni senza target di classe; C) Predice necessariamente un target numerico.",
+        "risposta": "B) Il clustering non richiede target di classe noti per apprendere i gruppi. Classificazione e regressione supervisionate apprendono invece da target."
       },
       {
-        "domanda": "Come si aggiorna un centroide k-means? A) Con un header; B) A caso ogni volta; C) Con la media dei punti assegnati.",
-        "risposta": "C) Si calcola la media delle coordinate dei punti nel gruppo."
+        "domanda": "Come si aggiorna un centroide nel k-means standard? A) Con la mediana di ogni coordinata; B) Con la media di tutti i punti, indipendentemente dal gruppo; C) Con la media dei punti assegnati al gruppo.",
+        "risposta": "C) Si calcola la media delle coordinate dei punti assegnati a quel centroide. La mediana è una scelta diversa e la media globale ignora le assegnazioni."
       },
       {
-        "domanda": "Che cosa misura l’inerzia? A) Somma di distanze quadratiche dai centroidi; B) Larghezza CSS; C) Numero di etichette vere.",
-        "risposta": "A) È la somma degli scarti quadratici dai rispettivi centroidi."
+        "domanda": "Che cosa misura l’inerzia del k-means? A) La somma delle distanze quadratiche dai centroidi assegnati; B) La somma delle distanze tra centroidi; C) Il numero totale di cluster.",
+        "risposta": "A) È la somma degli scarti quadratici di ogni punto dal proprio centroide, non la distanza tra centroidi né il numero di gruppi."
       },
       {
-        "domanda": "La scala delle feature può cambiare i cluster? A) No; B) Sì; C) Solo se il server è spento.",
-        "risposta": "B) La scala influenza le distanze e quindi le assegnazioni."
+        "domanda": "La scala delle feature può cambiare i cluster ottenuti con k-means? A) No, la distanza euclidea non dipende mai dalla scala; B) Sì, perché la scala modifica le distanze; C) Solo se cambia il numero di cluster.",
+        "risposta": "B) La scala influenza le distanze e quindi le assegnazioni, anche mantenendo lo stesso numero di cluster."
       },
       {
-        "domanda": "K-means garantisce sempre il minimo globale? A) Solo con HTTP; B) Sì; C) No.",
-        "risposta": "C) Può convergere a soluzioni locali che dipendono dall’inizializzazione."
+        "domanda": "K-means garantisce sempre il minimo globale dell’inerzia? A) Sì, con inizializzazione casuale; B) Sì, perché l’inerzia diminuisce durante gli aggiornamenti; C) No, può fermarsi in una soluzione locale.",
+        "risposta": "C) Può convergere a soluzioni locali che dipendono dall’inizializzazione. La diminuzione dell’inerzia non garantisce il minimo globale."
       }
     ],
     "spiega_con_parole_tue": "Spiega con parole tue perché gruppi di libri trovati da k-means non equivalgono a preferenze note dei lettori.",

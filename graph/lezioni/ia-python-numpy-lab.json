@@ -6,7 +6,7 @@
     "scopo_vantaggio": "Le operazioni vettoriali e il broadcasting consentono di esprimere trasformazioni compatte, controllando le dimensioni.",
     "esempio": "Una matrice libri-per-attributi si può moltiplicare per un vettore di scale e riassumere con medie per colonna."
   },
-  "spiegazione": "Prerequisiti: nessuno nel grafo; sono utili le basi di Python. **Fonte e limiti:** esempi originali da documentazione Python e NumPy, non dalle slide del prof. Calderara, non pubbliche [F12]; il laboratorio è previsto da [F1].\n\n## Array e forma\n\nIn Python importa NumPy con `import numpy as np`. `np.array` costruisce un **ndarray**: gli elementi hanno un tipo (`dtype`) e la **shape** descrive la lunghezza di ogni asse. Per una matrice `X` con una riga per libro e una colonna per attributo, `X.shape` è `(numero_libri, numero_attributi)`. `X[0]` seleziona la prima riga e `X[:, 1]` la seconda colonna: gli indici partono da zero.\n\n## Elemento per elemento e prodotto scalare\n\nCon array compatibili, `a * b` moltiplica **elemento per elemento**. Per due vettori della stessa lunghezza `a @ b` somma i prodotti corrispondenti, ottenendo uno scalare; per matrici `@` segue invece le regole del prodotto matriciale. Una lista Python non va confusa con un array: le rispettive operazioni non hanno sempre lo stesso significato.\n\n```mermaid\nflowchart LR\n  X[\"Matrice libri e attributi\"] --> C[\"Controllo shape\"]\n  C --> B[\"Broadcasting delle scale\"]\n  B --> R[\"Risultato per elemento\"]\n  X --> M[\"Medie per colonna\"]\n```\n\n## Broadcasting senza indovinare\n\nNumPy confronta le dimensioni da destra: ogni coppia deve essere uguale oppure una deve valere uno; una dimensione mancante si considera uno. Così un vettore di lunghezza pari alle colonne può essere applicato a ogni riga. Se le dimensioni sono incompatibili si ottiene un errore: controlla `shape` prima di eseguire l’operazione. L’espansione è concettuale, non necessariamente una copia dei dati.\n\n## Statistiche lungo gli assi\n\n`X.mean(axis=0)` calcola una media **per colonna**; `axis=1` una per riga. `X.var(axis=0)` usa di default la varianza con divisore pari al numero di osservazioni (`ddof=0`). Con `ddof=1` il divisore diminuisce di uno: serve un numero adeguato di osservazioni. Le due varianti rispondono a esigenze statistiche diverse. Quando la media serve a trasformare i dati di un modello, stimala sul train e riusala sul test per evitare leakage.",
+  "spiegazione": "Prerequisiti: basi di Python consigliate (`python-base-web`, prerequisito soft). **Fonte e limiti:** esempi originali da documentazione Python e NumPy, non dalle slide del prof. Calderara, non pubbliche [F12]; il laboratorio è previsto da [F1].\n\n## Array e forma\n\nIn Python importa NumPy con `import numpy as np`. `np.array` costruisce un **ndarray**: gli elementi hanno un tipo (`dtype`) e la **shape** descrive la lunghezza di ogni asse. Per una matrice `X` con una riga per libro e una colonna per attributo, `X.shape` è `(numero_libri, numero_attributi)`. `X[0]` seleziona la prima riga e `X[:, 1]` la seconda colonna: gli indici partono da zero.\n\n## Elemento per elemento e prodotto scalare\n\nCon array compatibili, `a * b` moltiplica **elemento per elemento**. Per due vettori della stessa lunghezza `a @ b` somma i prodotti corrispondenti, ottenendo uno scalare; per matrici `@` segue invece le regole del prodotto matriciale. Una lista Python non va confusa con un array: le rispettive operazioni non hanno sempre lo stesso significato.\n\n```mermaid\nflowchart LR\n  X[\"Matrice libri e attributi\"] --> C[\"Controllo shape\"]\n  C --> B[\"Broadcasting delle scale\"]\n  B --> R[\"Risultato per elemento\"]\n  X --> M[\"Medie per colonna\"]\n```\n\n## Broadcasting senza indovinare\n\nNumPy confronta le dimensioni da destra: ogni coppia deve essere uguale oppure una deve valere uno; una dimensione mancante si considera uno. Così un vettore di lunghezza pari alle colonne può essere applicato a ogni riga. Se le dimensioni sono incompatibili si ottiene un errore: controlla `shape` prima di eseguire l’operazione. L’espansione è concettuale, non necessariamente una copia dei dati.\n\n## Statistiche lungo gli assi\n\n`X.mean(axis=0)` calcola una media **per colonna**; `axis=1` una per riga. `X.var(axis=0)` usa di default la varianza con divisore pari al numero di osservazioni (`ddof=0`). Con `ddof=1` il divisore diminuisce di uno: serve un numero adeguato di osservazioni. Le due varianti rispondono a esigenze statistiche diverse. Quando la media serve a trasformare i dati di un modello, stimala sul train e riusala sul test per evitare leakage.",
   "analogia": {
     "testo": "La matrice è come una tabella di biblioteca: ogni scaffale virtuale è una colonna e ogni riga contiene i valori di un libro.",
     "limite": "Un array NumPy ha un tipo e dimensioni precise; non tutte le operazioni su tabelle o liste Python si comportano come su un ndarray."
@@ -52,28 +52,32 @@
   "richiamo_attivo": {
     "domande": [
       {
-        "domanda": "Che cosa descrive `X.shape`? A) Le etichette di classe; B) Le dimensioni degli assi; C) Il metodo HTTP.",
-        "risposta": "B) La shape riporta la dimensione di ciascun asse."
+        "domanda": "Che cosa descrive `X.shape`? A) Il tipo degli elementi; B) Le dimensioni degli assi; C) I valori contenuti nell’array.",
+        "risposta": "B) La shape riporta la dimensione di ciascun asse. Il tipo degli elementi è descritto da `dtype`, non dalla shape."
       },
       {
-        "domanda": "Quale espressione calcola il prodotto scalare di vettori? A) `x or w`; B) `x * w`; C) `x @ w`.",
-        "risposta": "C) `x @ w` somma i prodotti delle componenti corrispondenti."
+        "domanda": "Per due vettori NumPy compatibili, quale espressione calcola il prodotto scalare? A) `np.sum(x + w)`; B) `x * w`; C) `x @ w`.",
+        "risposta": "C) `x @ w` somma i prodotti delle componenti corrispondenti. `x * w` moltiplica per elemento; `np.sum(x + w)` somma le componenti, non i loro prodotti."
       },
       {
-        "domanda": "Per una matrice, `mean(axis=0)` aggrega: A) Le righe per colonna; B) Le colonne per riga; C) Le richieste HTTP.",
-        "risposta": "A) Il risultato contiene una media per ogni colonna."
+        "domanda": "Per una matrice, `mean(axis=0)` aggrega: A) Le righe, ottenendo una media per colonna; B) Le colonne, ottenendo una media per riga; C) Tutti gli elementi in un unico scalare.",
+        "risposta": "A) Il risultato contiene una media per ogni colonna. `axis=1` produce medie per riga; senza specificare l’asse si aggregano tutti gli elementi."
       },
       {
-        "domanda": "Due dimensioni sono compatibili nel broadcasting se: A) Sono URI; B) Sono uguali o una vale uno; C) Sono sempre diverse.",
-        "risposta": "B) La verifica parte dagli assi finali, da destra verso sinistra."
+        "domanda": "Due dimensioni, confrontate da destra, sono compatibili nel broadcasting quando: A) Sono diverse ed entrambe maggiori di uno; B) Sono uguali o una vale uno; C) Una è multipla dell’altra.",
+        "risposta": "B) Ogni coppia di dimensioni deve essere uguale oppure avere almeno una dimensione pari a uno. Essere multipla non basta; una dimensione mancante è trattata come uno."
       },
       {
-        "domanda": "Quale divisore usa `var` di default? A) Il numero meno uno; B) Un codice HTTP; C) Il numero di osservazioni.",
-        "risposta": "C) Il valore predefinito è `ddof=0`, quindi il divisore è il numero di osservazioni."
+        "domanda": "Quale divisore usa `var` di default? A) Il numero di osservazioni meno uno; B) La radice quadrata del numero di osservazioni; C) Il numero di osservazioni.",
+        "risposta": "C) Il valore predefinito è `ddof=0`, quindi il divisore è il numero di osservazioni. Con `ddof=1` si sottrae uno."
       }
     ],
     "spiega_con_parole_tue": "Spiega con parole tue perché `X * scale` può applicare una scala diversa a ciascuna colonna.",
     "collegamenti_interleaving": [
+      {
+        "nodo": "python-base-web",
+        "collegamento": "Liste, funzioni e indici di Python sono una base utile per comprendere gli array NumPy."
+      },
       {
         "nodo": "json-formato-dati",
         "collegamento": "Le liste in JSON possono diventare array NumPy: shape e dtype vanno poi controllati."
