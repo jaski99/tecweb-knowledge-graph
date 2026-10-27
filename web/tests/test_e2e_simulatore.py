@@ -11,7 +11,15 @@ from playwright.sync_api import sync_playwright
 
 WEB = Path(__file__).resolve().parent.parent
 BANK = json.loads((WEB.parent / "graph/quiz.json").read_text())["elementi"]
-BY_ID = {i["id"]: i for i in BANK}
+GRAPH = json.loads((WEB.parent / "graph/graph.json").read_text())
+# Il catalogo comprende anche esercizi aperti, non soltanto la banca quiz.
+BY_ID = {
+    f"{node['id']}#{index}": {**exercise, "tipo": "aperta", "nodo_id": node["id"]}
+    for node in GRAPH["nodi"]
+    for index, exercise in enumerate(node.get("esercizi", []))
+    if exercise.get("testo", "").strip() and exercise.get("soluzione", "").strip()
+}
+BY_ID.update({item["id"]: item for item in BANK})
 VIEWPORTS = {"mobile": {"width": 390, "height": 844}, "desktop": {"width": 1440, "height": 900}}
 
 
@@ -82,7 +90,27 @@ def rispondi(article, corretta=True):
             field = article.locator('input[type="text"]').nth(i)
             field.fill(variants[0] if corretta else "errato")
             field.press("Tab")
+    elif item["tipo"] == "aperta":
+        article.locator("textarea").fill(item["soluzione"] if corretta else "Risposta da rivedere")
     return item
+
+
+def prova_tipologie(page):
+    """Casi reali espliciti per tutti i tipi: non dipendono dalla fortuna di un seed."""
+    scelti = {}
+    for item in BANK:
+        scelti.setdefault(item["tipo"], item)
+    sample = list(scelti.values()) + [next(item for item in BANK if item["id"].startswith("q6-"))]
+    page.evaluate("""async (elementi) => {
+      const { generaProva } = await import('./modules/simulatore/genera.js');
+      const { creaSessione, mettiInPausa } = await import('./modules/simulatore/sessione.js');
+      const prova = generaProva([], { quiz: {elementi}, quanti: elementi.length, seed: 3, modalita: 'allenamento' });
+      const sessione = mettiInPausa(creaSessione(prova, Date.now()), Date.now());
+      localStorage.setItem('tecweb:simulatore:v1', JSON.stringify(sessione));
+    }""", sample)
+    page.reload()
+    page.wait_for_selector(".sim-q")
+    return len(sample)
 
 
 @pytest.mark.parametrize("viewport", VIEWPORTS)
@@ -92,8 +120,9 @@ def test_simulazione_senza_appunti_ripresa_consegna_report(browser, base_url, vi
     assert "Senza appunti" in page.locator(".sim").inner_text()
     assert page.locator(".sim-soluzione-testo").count() == 0
     assert page.locator(".sim-q a").count() == 0
-    assert page.locator(".sim-q fieldset legend").count() == 12
     articles = page.locator(".sim-q")
+    totale = articles.count()
+    assert page.locator(".sim-q fieldset legend").count() == totale
     ids = [a.get_attribute("data-q") for a in articles.all()]
     for article in articles.all():
         rispondi(article, corretta=False)
@@ -109,7 +138,7 @@ def test_simulazione_senza_appunti_ripresa_consegna_report(browser, base_url, vi
     assert page.locator("#sim-timer").inner_text() == frozen
     assert page.locator('input[type="radio"]:checked').count() > 0
     page.click("#sim-consegna")
-    assert page.locator(".sim-soluzione-testo").count() == 12
+    assert page.locator(".sim-soluzione-testo").count() == totale
     assert "non viene calcolato un voto" in page.inner_text("#sim-riepilogo").lower()
     assert "Riapri questi nodi" in page.locator("#sim-report").inner_text()
     assert page.locator("#sim-report a").count() > 0
@@ -126,6 +155,7 @@ def test_simulazione_senza_appunti_ripresa_consegna_report(browser, base_url, vi
 @pytest.mark.parametrize("viewport", VIEWPORTS)
 def test_allenamento_feedback_tastiera_abbinamento_e_tipi_nuovi(browser, base_url, viewport):
     context, page, errors = apri(browser, base_url, viewport, "allenamento")
+    totale = prova_tipologie(page)
     assert page.locator("#sim-timer").count() == 0
     kinds = set()
     for article in page.locator(".sim-q").all():
@@ -140,7 +170,7 @@ def test_allenamento_feedback_tastiera_abbinamento_e_tipi_nuovi(browser, base_ur
     assert history and all(e["corretto"] and e["modalita"] == "allenamento" for e in history)
     page.reload()
     page.wait_for_selector(".sim-soluzione-testo")
-    assert page.locator("fieldset:disabled").count() == 12
+    assert page.locator("fieldset:disabled").count() == totale
     page.click("#sim-consegna")
     assert len(page.evaluate("JSON.parse(localStorage.getItem('ids-kg:esiti-quiz:v1'))")) == len(history)
     assert page.locator("#sim-report a").count() == 0
@@ -198,4 +228,29 @@ def test_nuova_sessione_impostazioni_visibili_coerenti(browser, base_url):
     assert page.locator("#sim-timer").inner_text().startswith("00:10:")
     assert page.locator(".sim-soluzione-testo").count() == 0
     assert not errors, errors
+    context.close()
+
+
+@pytest.mark.parametrize("viewport", VIEWPORTS)
+def test_catalogo_senza_banca_gestisce_aperte_in_tutte_le_aree(browser, base_url, viewport):
+    context = browser.new_context(viewport=VIEWPORTS[viewport], service_workers="block")
+    page = context.new_page()
+    page.route("**/quiz.json", lambda route: route.fulfill(json={
+        "versione": 2, "descrizione": "Banca temporaneamente non disponibile", "elementi": [],
+    }))
+    page.goto(base_url + "#/simulatore")
+    page.wait_for_selector("#sim-inizia")
+    page.click("#sim-inizia")
+    page.wait_for_selector(".sim-q")
+    sessione = page.evaluate("JSON.parse(localStorage.getItem('tecweb:simulatore:v1'))")
+    aree_catalogo = {node["area"] for node in GRAPH["nodi"] if node.get("esercizi")}
+    if len(sessione["prova"]["esercizi"]) >= len(aree_catalogo):
+        assert {item["area"] for item in sessione["prova"]["esercizi"]} == aree_catalogo
+    for article in page.locator(".sim-q").all():
+        assert rispondi(article)["tipo"] == "aperta"
+    page.click("#sim-consegna")
+    page.wait_for_selector("#sim-report")
+    assert page.locator(".sim-soluzione-testo").count() == len(sessione["prova"]["esercizi"])
+    assert page.evaluate("localStorage.getItem('ids-kg:esiti-quiz:v1')") is None
+    assert "da autovalutare" in page.locator("#sim-report").inner_text()
     context.close()

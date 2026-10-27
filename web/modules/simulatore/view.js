@@ -6,7 +6,8 @@ import { consegna, creaSessione, leggiRisposta, leggiSessione, mettiInPausa,
   riprendi, salvaSessione, scaduta, scriviRisposta } from './sessione.js';
 import { etichettaEsito, riepilogoRisposte } from './punteggio.js';
 import { rispostaCompleta, esitiItem, reportAree } from './correzione.js';
-import { registraEsito } from './esiti.js';
+// Il lettore X5 può usare un doppio read-only: richiediamo il writer solo all’uso.
+import * as storicoEsiti from './esiti.js';
 import { controlliRisposta, feedbackItem } from './controlli.js';
 
 export function createSimulatoreView() {
@@ -27,7 +28,7 @@ export function createSimulatoreView() {
     const registra = (item) => {
       if (session.registrati?.[item.id]) return;
       for (const esito of esitiItem(item, session.risposte[item.id], session.prova.modalita || 'simulazione', new Date(now()).toISOString())) {
-        if (!registraEsito(storage, esito)) saveOk = false;
+        if (!storicoEsiti.registraEsito?.(storage, esito)) saveOk = false;
       }
       session.registrati = { ...session.registrati, [item.id]: true };
     };

@@ -1,6 +1,6 @@
 {
   "versione": 2,
-  "descrizione": "Banca originale di ripasso sui temi TW 2026/27 [F1]. Q1–Q5 sono proposte didattiche R3 §3.5.2, non tratte da prove reali. Fase A: nodi esistenti, aree 1–6; distribuzione non ufficiale.",
+  "descrizione": "Banca originale di ripasso TW e IA 2026/27 [F1], aree 1–7. Q1–Q6 sono proposte didattiche R3 §3.5.2, non tratte da prove reali né predittive dell’esame; i quiz IA non derivano dalle slide del docente. Distribuzione didattica, non ufficiale.",
   "elementi": [
     {
       "id": "q1-programma",
@@ -352,8 +352,8 @@
     {
       "id": "q5-mashup-eventi",
       "tipo": "scelta_multipla",
-      "area": 3,
-      "nodo_id": "eventi-locali-vs-remoti",
+      "area": 2,
+      "nodo_id": "sviluppo-event-driven",
       "titolo": "Q5 · Mashup, eventi e sensori",
       "origine": "originale",
       "fonte": "[F1] per il perimetro del programma; elaborazione didattica, non prova reale",
@@ -1137,19 +1137,19 @@
         {
           "elemento": "React",
           "risposta_id": "ruolo-1",
-          "nodo_id": "dom-virtual-dom",
+          "nodo_id": "react-componenti-jsx",
           "spiegazione": "React è citato in [F1]; il ruolo frontend è elaborazione didattica di Q2 originale R3 §3.5.2."
         },
         {
           "elemento": "Flask",
           "risposta_id": "ruolo-2",
-          "nodo_id": "flask-rotte-jsonify",
+          "nodo_id": "servizi-restful-flask",
           "spiegazione": "[F1] associa Flask al backend e ai servizi RESTful."
         },
         {
           "elemento": "Git",
           "risposta_id": "ruolo-3",
-          "nodo_id": "git-comandi-base",
+          "nodo_id": "git-workflow-collaborativo",
           "spiegazione": "[F1] elenca questi strumenti per il lavoro collaborativo."
         },
         {
@@ -1371,6 +1371,621 @@
         ]
       },
       "spiegazione": "await attende la risposta; json() legge e decodifica il corpo. Non si esegue il codice inserito: si confrontano solo varianti esplicite."
+    },
+    {
+      "id": "b-mashup-guasto-parziale",
+      "tipo": "scelta_multipla",
+      "area": 2,
+      "nodo_id": "architetture-mashup",
+      "titolo": "Mashup e guasti parziali",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione architetture-mashup; non tratta da prove reali",
+      "domanda": "Il catalogo locale risponde, ma il servizio esterno di disponibilità va in timeout. Come gestire il mashup?",
+      "opzioni": [
+        {
+          "testo": "Mostrare i dati locali e segnalare separatamente l’indisponibilità del servizio esterno",
+          "spiegazione": "Le sorgenti di un mashup mantengono contratti e guasti distinti: un timeout esterno non prova che il libro locale non esista.",
+          "id": "a"
+        },
+        {
+          "testo": "Mostrare sempre «libro inesistente» anche se il catalogo locale lo contiene",
+          "spiegazione": "Un errore del servizio di disponibilità non equivale a un 404 del catalogo: confonde cause e responsabilità.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "Risolvere il timeout cambiando la priorità della cascata CSS",
+          "spiegazione": "La cascata CSS regola lo stile: non risolve un guasto di un servizio remoto.",
+          "tipo": "fuori_contesto",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "Le sorgenti di un mashup mantengono contratti e guasti distinti: un timeout esterno non prova che il libro locale non esista."
+    },
+    {
+      "id": "b-event-driven-conferma",
+      "tipo": "scelta_multipla",
+      "area": 2,
+      "nodo_id": "sviluppo-event-driven",
+      "titolo": "Eventi e conferma remota",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione sviluppo-event-driven; non tratta da prove reali",
+      "domanda": "Un click avvia la prenotazione via HTTP. Quando si può mostrare la conferma di riuscita?",
+      "opzioni": [
+        {
+          "testo": "Appena parte fetch, perché una Promise creata equivale a un successo",
+          "spiegazione": "La creazione della Promise non garantisce né completamento né successo; vanno controllati risposta ed errori.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Quando git add prepara il foglio di stile",
+          "spiegazione": "Lo staging Git non informa sull’esito della prenotazione HTTP.",
+          "tipo": "fuori_contesto",
+          "id": "b"
+        },
+        {
+          "testo": "Dopo aver ricevuto e controllato una risposta di successo dal servizio",
+          "spiegazione": "Il click esprime un’intenzione; la conferma dipende dall’esito remoto. L’handler può intanto mostrare uno stato di attesa.",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "Il click esprime un’intenzione; la conferma dipende dall’esito remoto. L’handler può intanto mostrare uno stato di attesa."
+    },
+    {
+      "id": "b-html5-struttura",
+      "tipo": "scelta_multipla",
+      "area": 3,
+      "nodo_id": "html5-struttura-semantica",
+      "titolo": "HTML5 semantico",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione html5-struttura-semantica; non tratta da prove reali",
+      "domanda": "Quale struttura esprime meglio un catalogo con schede di libri autonome?",
+      "opzioni": [
+        {
+          "testo": "Una rotta HTTP PATCH usata come elemento di intestazione",
+          "spiegazione": "Un metodo HTTP non è un elemento semantico HTML.",
+          "tipo": "fuori_contesto",
+          "id": "a"
+        },
+        {
+          "testo": "Un main per il contenuto dominante, con article per ciascuna scheda autonoma",
+          "spiegazione": "I tag esprimono il ruolo: main identifica il contenuto dominante, article una parte autonoma; lo stile resta separato.",
+          "id": "b"
+        },
+        {
+          "testo": "Un main per ogni colonna visiva, scelto solo per il suo stile predefinito",
+          "spiegazione": "main non è un generico contenitore di colonne e la semantica non si sceglie in base allo stile predefinito.",
+          "tipo": "plausibile",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "I tag esprimono il ruolo: main identifica il contenuto dominante, article una parte autonoma; lo stile resta separato."
+    },
+    {
+      "id": "b-react-state",
+      "tipo": "scelta_multipla",
+      "area": 3,
+      "nodo_id": "react-componenti-jsx",
+      "titolo": "React: props e stato",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione react-componenti-jsx; non tratta da prove reali",
+      "domanda": "Un componente React riceve il titolo come prop e conserva un contatore con useState. Come aggiornare il contatore?",
+      "opzioni": [
+        {
+          "testo": "Chiamare il setter dello stato, senza modificare direttamente la prop del padre",
+          "spiegazione": "Il setter comunica l’aggiornamento a React; le props restano input del componente. JSX descrive l’interfaccia da renderizzare.",
+          "id": "a"
+        },
+        {
+          "testo": "Assegnare direttamente il nuovo valore alla variabile di stato e alla prop",
+          "spiegazione": "L’assegnazione diretta non comunica l’aggiornamento a React; una prop ricevuta non va mutata dal figlio.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "Inviare un codice HTTP 204 al compilatore Git",
+          "spiegazione": "Codici HTTP e Git non sono il meccanismo con cui React aggiorna lo stato del componente.",
+          "tipo": "fuori_contesto",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "Il setter comunica l’aggiornamento a React; le props restano input del componente. JSX descrive l’interfaccia da renderizzare."
+    },
+    {
+      "id": "b-sensori-consenso",
+      "tipo": "scelta_multipla",
+      "area": 3,
+      "nodo_id": "sensori-mobile-web",
+      "titolo": "Sensori: permessi e alternativa",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione sensori-mobile-web; non tratta da prove reali",
+      "domanda": "La biblioteca propone la sede vicina tramite Geolocation. Come gestire il permesso negato?",
+      "opzioni": [
+        {
+          "testo": "Bloccare la scelta della sede perché ogni browser deve fornire coordinate precise",
+          "spiegazione": "Le coordinate non sono garantite né necessariamente esatte; il rifiuto del permesso è un caso normale da gestire.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Cambiare il box model CSS per calcolare la latitudine",
+          "spiegazione": "Il box model descrive dimensioni e spazi dei box, non misure geografiche del dispositivo.",
+          "tipo": "fuori_contesto",
+          "id": "b"
+        },
+        {
+          "testo": "Offrire la scelta manuale della sede e spiegare che la posizione non è disponibile",
+          "spiegazione": "Supporto, consenso e precisione non sono garantiti. Un percorso manuale preserva la funzione senza costringere a concedere il permesso.",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "Supporto, consenso e precisione non sono garantiti. Un percorso manuale preserva la funzione senza costringere a concedere il permesso."
+    },
+    {
+      "id": "b-python-dizionari",
+      "tipo": "scelta_multipla",
+      "area": 4,
+      "nodo_id": "python-base-web",
+      "titolo": "Python: dati in ingresso",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione python-base-web; non tratta da prove reali",
+      "domanda": "Una funzione Python riceve dati Web come dizionario. Che cosa va verificato prima di usare dati[\"titolo\"]?",
+      "opzioni": [
+        {
+          "testo": "Che una media query delimiti il blocco Python",
+          "spiegazione": "Le media query appartengono al CSS; in Python i blocchi sono delimitati dall’indentazione.",
+          "tipo": "fuori_contesto",
+          "id": "a"
+        },
+        {
+          "testo": "Che la chiave esista e che il valore abbia tipo e contenuto attesi",
+          "spiegazione": "Un dizionario può essere privo della chiave o contenere valori inattesi: validare l’input evita di scambiare struttura e correttezza dei dati.",
+          "id": "b"
+        },
+        {
+          "testo": "Solo che l’oggetto sia un dizionario, perché questo garantisce tutti i campi",
+          "spiegazione": "Il tipo dizionario non garantisce né chiavi né tipi dei valori; un accesso a una chiave assente può sollevare KeyError.",
+          "tipo": "plausibile",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "Un dizionario può essere privo della chiave o contenere valori inattesi: validare l’input evita di scambiare struttura e correttezza dei dati."
+    },
+    {
+      "id": "b-flask-creazione-rest",
+      "tipo": "scelta_multipla",
+      "area": 4,
+      "nodo_id": "servizi-restful-flask",
+      "titolo": "Flask: creazione REST",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione servizi-restful-flask; non tratta da prove reali",
+      "domanda": "POST /api/libri riceve un body JSON valido e crea un libro. Quale risposta rende esplicita la creazione?",
+      "opzioni": [
+        {
+          "testo": "Una risposta JSON con codice 201, dopo la validazione dell’input",
+          "spiegazione": "201 segnala creazione. Validare il body e distinguere errori e successo rende chiaro il contratto del servizio.",
+          "id": "a"
+        },
+        {
+          "testo": "Sempre 200 con un messaggio «errore» nel corpo, anche quando la validazione fallisce",
+          "spiegazione": "Usare sempre successo nasconde la distinzione tra input invalido e creazione; lo status va scelto in modo coerente.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "SMTP come metodo di routing Flask per restituire il JSON",
+          "spiegazione": "SMTP è un protocollo di posta, non un metodo HTTP per una risorsa REST.",
+          "tipo": "fuori_contesto",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "201 segnala creazione. Validare il body e distinguere errori e successo rende chiaro il contratto del servizio."
+    },
+    {
+      "id": "b-git-conflitto",
+      "tipo": "scelta_multipla",
+      "area": 4,
+      "nodo_id": "git-workflow-collaborativo",
+      "titolo": "Git: integrazione consapevole",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione git-workflow-collaborativo; non tratta da prove reali",
+      "domanda": "Durante un merge Git compare un conflitto. Quale procedura è corretta?",
+      "opzioni": [
+        {
+          "testo": "Scegliere sempre la versione del proprio ramo senza leggere l’altra",
+          "spiegazione": "Una scelta indiscriminata può perdere modifiche necessarie; branch e merge non sostituiscono la comprensione del contenuto.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Aspettare che un sensore mobile elimini i marcatori di conflitto",
+          "spiegazione": "Le API dei sensori non risolvono i conflitti della storia Git.",
+          "tipo": "fuori_contesto",
+          "id": "b"
+        },
+        {
+          "testo": "Capire entrambe le modifiche, risolvere il contenuto, eseguire test e registrare la risoluzione",
+          "spiegazione": "Git segnala il conflitto ma non conosce l’intenzione corretta. La risoluzione richiede una decisione verificata, non una scelta automatica arbitraria.",
+          "id": "c"
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "Git segnala il conflitto ma non conosce l’intenzione corretta. La risoluzione richiede una decisione verificata, non una scelta automatica arbitraria."
+    },
+    {
+      "id": "b-ia-generalizzazione",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-introduzione-apprendimento",
+      "titolo": "IA: apprendimento e generalizzazione",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-introduzione-apprendimento; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Un modello memorizza tutti gli esempi di addestramento ma sbaglia su nuovi esempi simili. Quale problema suggerisce?",
+      "opzioni": [
+        {
+          "testo": "Underfitting dimostrato soltanto dall’errore di training nullo",
+          "spiegazione": "L’underfitting indica difficoltà a rappresentare anche la struttura dei dati di training; il caso descritto suggerisce invece overfitting.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Un miglioramento garantito aggiungendo le etichette del test al training e valutando sullo stesso test",
+          "spiegazione": "Riutilizzare il test nell’apprendimento contamina la valutazione: non dimostra capacità di generalizzazione.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "Overfitting: basso errore sui dati di addestramento non garantisce generalizzazione",
+          "spiegazione": "L’obiettivo è generalizzare a dati non usati per apprendere; memorizzare il training può dare prestazioni scarse su dati nuovi.",
+          "id": "c"
+        },
+        {
+          "testo": "Generalizzazione perfetta, perché l’errore di training è nullo",
+          "spiegazione": "Il training non fornisce da solo una stima delle prestazioni su dati non visti.",
+          "tipo": "plausibile",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "L’obiettivo è generalizzare a dati non usati per apprendere; memorizzare il training può dare prestazioni scarse su dati nuovi."
+    },
+    {
+      "id": "b-ia-numpy-axis",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-python-numpy-lab",
+      "titolo": "NumPy: righe e feature",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-python-numpy-lab; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "X contiene tre campioni e due feature per campione. Qual è la forma di X e quale operazione calcola la media di ogni feature?",
+      "opzioni": [
+        {
+          "testo": "shape (3, 2) e X.mean() senza indicare alcun asse",
+          "spiegazione": "Senza axis si aggregano tutti gli elementi in un solo valore, non una media distinta per feature.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "shape (3, 2) e X.mean(axis=0)",
+          "spiegazione": "Le righe sono campioni e le colonne feature; ridurre axis=0 calcola una media per colonna, producendo due valori.",
+          "id": "b"
+        },
+        {
+          "testo": "shape (3, 2) e X.mean(axis=1)",
+          "spiegazione": "axis=1 aggrega le feature dentro ciascun campione, producendo tre medie di riga, non due medie per feature.",
+          "tipo": "plausibile",
+          "id": "c"
+        },
+        {
+          "testo": "shape (2, 3) perché il numero di campioni è sempre il secondo asse",
+          "spiegazione": "Con la convenzione dichiarata i tre campioni occupano le righe, quindi il primo asse ha lunghezza tre.",
+          "tipo": "plausibile",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "Le righe sono campioni e le colonne feature; ridurre axis=0 calcola una media per colonna, producendo due valori."
+    },
+    {
+      "id": "b-ia-classificazione-lineare",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-supervisionato-classificazione-lineare",
+      "titolo": "Classificazione lineare",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-supervisionato-classificazione-lineare; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Un classificatore binario decide dal segno di w·x + b. Che cosa descrive w·x + b = 0?",
+      "opzioni": [
+        {
+          "testo": "La frontiera decisionale lineare nello spazio delle feature considerate",
+          "spiegazione": "La funzione affine cambia segno ai lati della frontiera: un iperpiano nello spazio delle feature, una retta in due dimensioni.",
+          "id": "a"
+        },
+        {
+          "testo": "Un centroide di clustering calcolato senza etichette",
+          "spiegazione": "La frontiera separa le decisioni di un classificatore; non è un centroide di un algoritmo di clustering.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "La prova che l’accuratezza sui dati futuri sarà perfetta",
+          "spiegazione": "La forma della frontiera non garantisce generalizzazione o accuratezza: occorre valutare il modello.",
+          "tipo": "plausibile",
+          "id": "c"
+        },
+        {
+          "testo": "Una stima del numero di componenti principali da conservare",
+          "spiegazione": "Il numero di componenti di una riduzione dimensionale non si determina imponendo il punteggio del classificatore a zero.",
+          "tipo": "plausibile",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "La funzione affine cambia segno ai lati della frontiera: un iperpiano nello spazio delle feature, una retta in due dimensioni."
+    },
+    {
+      "id": "b-ia-bayes-posteriori",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-bayes-apprendimento-statistico",
+      "titolo": "Bayes: priori e posteriori",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-bayes-apprendimento-statistico; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Nel confronto tra classi con Bayes, che cosa determina P(classe | dati) a meno di una costante comune?",
+      "opzioni": [
+        {
+          "testo": "Solo P(dati | classe), anche quando le probabilità a priori delle classi differiscono",
+          "spiegazione": "Ignorare il priori può cambiare la decisione quando le classi hanno probabilità iniziali diverse.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "P(classe) divisa per P(dati | classe)",
+          "spiegazione": "La regola di Bayes moltiplica priori e verosimiglianza, non divide il priori per la verosimiglianza.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "P(classe | dati) coincide sempre con P(dati | classe)",
+          "spiegazione": "Invertire il condizionamento senza considerare priori ed evidenza confonde posteriore e verosimiglianza.",
+          "tipo": "plausibile",
+          "id": "c"
+        },
+        {
+          "testo": "P(dati | classe) moltiplicata per P(classe)",
+          "spiegazione": "Il posteriore è proporzionale a verosimiglianza per probabilità a priori; il termine P(dati) normalizza tra le classi.",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "d",
+      "spiegazione": "Il posteriore è proporzionale a verosimiglianza per probabilità a priori; il termine P(dati) normalizza tra le classi."
+    },
+    {
+      "id": "b-ia-clustering-etichette",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-clustering-non-supervisionato",
+      "titolo": "Clustering non supervisionato",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-clustering-non-supervisionato; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Per raggruppare campioni senza etichette usando le feature, quale impostazione è coerente con il clustering?",
+      "opzioni": [
+        {
+          "testo": "Garantire che ogni gruppo trovato corrisponda a una classe reale",
+          "spiegazione": "I gruppi dipendono dal metodo e dalle feature: non c’è garanzia di corrispondenza con categorie esterne.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Valutare sempre l’accuratezza confrontando predizioni con etichette che non sono disponibili",
+          "spiegazione": "Senza etichette non si può calcolare direttamente quell’accuratezza supervisionata; occorrono criteri adatti ai dati disponibili.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "Cercare gruppi in base a un criterio di somiglianza, senza assumere che siano classi note",
+          "spiegazione": "Il clustering cerca struttura nei dati non etichettati; i gruppi dipendono da rappresentazione e criterio, non garantiscono categorie semantiche vere.",
+          "id": "c"
+        },
+        {
+          "testo": "Addestrare sempre con le etichette vere delle classi come target obbligatorio",
+          "spiegazione": "Questo descrive un’impostazione supervisionata; il clustering non richiede etichette di classe per l’addestramento.",
+          "tipo": "plausibile",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "c",
+      "spiegazione": "Il clustering cerca struttura nei dati non etichettati; i gruppi dipendono da rappresentazione e criterio, non garantiscono categorie semantiche vere."
+    },
+    {
+      "id": "b-ia-regressione-target",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-regressione",
+      "titolo": "Regressione e classificazione",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-regressione; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Quale compito è un esempio di regressione supervisionata?",
+      "opzioni": [
+        {
+          "testo": "Ridurre il numero di feature senza prevedere alcun target",
+          "spiegazione": "La riduzione dimensionale ha un obiettivo diverso dalla previsione del target numerico.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Prevedere un valore numerico continuo a partire da campioni con target numerici noti",
+          "spiegazione": "La regressione supervisionata apprende una relazione tra feature e un target numerico, per esempio un consumo previsto.",
+          "id": "b"
+        },
+        {
+          "testo": "Assegnare esclusivamente l’etichetta «positivo» oppure «negativo»",
+          "spiegazione": "Prevedere una classe discreta è un compito di classificazione, anche se le etichette sono codificate con numeri.",
+          "tipo": "plausibile",
+          "id": "c"
+        },
+        {
+          "testo": "Formare gruppi da campioni privi di target",
+          "spiegazione": "Questo descrive il clustering, non una regressione supervisionata con target numerico.",
+          "tipo": "plausibile",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "b",
+      "spiegazione": "La regressione supervisionata apprende una relazione tra feature e un target numerico, per esempio un consumo previsto."
+    },
+    {
+      "id": "b-ia-pca-varianza",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-riduzione-dimensionalita",
+      "titolo": "Riduzione dimensionale",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-riduzione-dimensionalita; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Nella PCA non supervisionata, quale criterio orienta la scelta delle prime componenti?",
+      "opzioni": [
+        {
+          "testo": "Catturare quanta più varianza possibile tramite direzioni ortogonali",
+          "spiegazione": "La PCA cerca direzioni ortogonali di varianza elevata; non usa le etichette e può perdere informazione scartando componenti.",
+          "id": "a"
+        },
+        {
+          "testo": "Massimizzare necessariamente l’accuratezza di classificazione usando le etichette",
+          "spiegazione": "La PCA non supervisionata non ottimizza direttamente l’accuratezza sulle classi: alta varianza e discriminazione non coincidono sempre.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "Garantire che scartare dimensioni conservi sempre tutta l’informazione",
+          "spiegazione": "Ridurre il numero di componenti può perdere informazione; conservare varianza non è una garanzia assoluta di conservazione di tutto il contenuto utile.",
+          "tipo": "plausibile",
+          "id": "c"
+        },
+        {
+          "testo": "Restituire automaticamente i gruppi di un algoritmo di clustering",
+          "spiegazione": "Una proiezione in meno dimensioni non equivale di per sé a un raggruppamento dei campioni.",
+          "tipo": "plausibile",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "a",
+      "spiegazione": "La PCA cerca direzioni ortogonali di varianza elevata; non usa le etichette e può perdere informazione scartando componenti."
+    },
+    {
+      "id": "b-ia-verifica-lab",
+      "tipo": "scelta_multipla",
+      "area": 7,
+      "nodo_id": "ia-esame-quiz-lab-lode",
+      "titolo": "Verifica IA e laboratorio [F1]",
+      "origine": "originale",
+      "fonte": "[F1] per il perimetro; elaborazione didattica originale sulla lezione ia-esame-quiz-lab-lode; non tratta dalle slide del prof. Calderara né da prove reali",
+      "domanda": "Quale descrizione della verifica del modulo IA è documentata in [F1]?",
+      "opzioni": [
+        {
+          "testo": "Un voto determinato soltanto dalla qualità del clustering eseguito in laboratorio",
+          "spiegazione": "[F1] attribuisce il voto ai quiz e descrive il laboratorio come idoneità, non come unico voto numerico.",
+          "tipo": "plausibile",
+          "id": "a"
+        },
+        {
+          "testo": "Una somma di punteggi ufficiali separati per regressione, Bayes e PCA",
+          "spiegazione": "[F1] non fornisce questa distribuzione di punteggi per argomento; non si può inventarla.",
+          "tipo": "plausibile",
+          "id": "b"
+        },
+        {
+          "testo": "Il solo laboratorio NumPy elimina la necessità dei quiz chiusi",
+          "spiegazione": "[F1] prevede quiz chiusi e prova di laboratorio; il laboratorio non sostituisce i quiz.",
+          "tipo": "plausibile",
+          "id": "c"
+        },
+        {
+          "testo": "Quiz chiusi che determinano il voto in trentesimi e laboratorio come idoneità ON/OFF",
+          "spiegazione": "[F1] distingue il voto determinato dai quiz dalla prova di laboratorio come idoneità ON/OFF; non viene inventato alcun peso aggiuntivo.",
+          "id": "d"
+        }
+      ],
+      "risposta_corretta": "d",
+      "spiegazione": "[F1] distingue il voto determinato dai quiz dalla prova di laboratorio come idoneità ON/OFF; non viene inventato alcun peso aggiuntivo."
+    },
+    {
+      "id": "q6-ia-tecniche-verifica",
+      "tipo": "abbinamento",
+      "area": 7,
+      "nodo_id": "ia-esame-quiz-lab-lode",
+      "titolo": "Q6 · Apprendimento e verifica IA",
+      "origine": "originale",
+      "fonte": "[F1] per programma e verifica; Q6 originale R3 §3.5.2, non tratto da prove reali o slide del prof. Calderara",
+      "istruzioni": "Abbina ogni termine al ruolo pertinente; scarta i distrattori senza attribuire pesi non documentati.",
+      "opzioni": [
+        {
+          "id": "ruolo-1",
+          "testo": "Apprendimento supervisionato"
+        },
+        {
+          "id": "ruolo-2",
+          "testo": "Apprendimento non supervisionato"
+        },
+        {
+          "id": "ruolo-3",
+          "testo": "Laboratorio Python"
+        },
+        {
+          "id": "ruolo-4",
+          "testo": "Determinano il voto del modulo IA in trentesimi"
+        }
+      ],
+      "abbinamenti": [
+        {
+          "elemento": "Classificazione lineare",
+          "risposta_id": "ruolo-1",
+          "nodo_id": "ia-supervisionato-classificazione-lineare",
+          "spiegazione": "Si apprende da esempi con target di classe: non si cercano soltanto gruppi senza etichette."
+        },
+        {
+          "elemento": "Clustering",
+          "risposta_id": "ruolo-2",
+          "nodo_id": "ia-clustering-non-supervisionato",
+          "spiegazione": "Il clustering individua gruppi senza richiedere target di classe per l’addestramento."
+        },
+        {
+          "elemento": "NumPy",
+          "risposta_id": "ruolo-3",
+          "nodo_id": "ia-python-numpy-lab",
+          "spiegazione": "[F1] prevede il laboratorio Python/NumPy; NumPy è una libreria per il calcolo numerico, non un formato di presentazione."
+        },
+        {
+          "elemento": "Quiz chiusi IA",
+          "risposta_id": "ruolo-4",
+          "nodo_id": "ia-esame-quiz-lab-lode",
+          "spiegazione": "[F1] distingue il voto determinato dai quiz dal laboratorio ON/OFF; per la lode integrata occorre 30 in entrambi i moduli e la lode in almeno uno."
+        }
+      ],
+      "distrattori": [
+        {
+          "testo": "Classificazione lineare: raggruppamento senza etichette",
+          "tipo": "plausibile",
+          "spiegazione": "Confonde la classificazione supervisionata con il clustering non supervisionato."
+        },
+        {
+          "testo": "LLM: tecnica di clustering ufficiale del modulo",
+          "tipo": "fuori_contesto",
+          "spiegazione": "[F1] descrive apprendimento automatico e NumPy; non presenta gli LLM come tecnica ufficiale di clustering."
+        },
+        {
+          "testo": "Agente AI: strumento di branching Git",
+          "tipo": "fuori_contesto",
+          "spiegazione": "Branch e merge appartengono al controllo versione; un agente AI non è uno strumento Git di branching."
+        }
+      ]
     }
   ]
 }

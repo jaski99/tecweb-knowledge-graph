@@ -98,17 +98,50 @@ test('seed: stessa prova, opzioni diverse con altri seed, correttezza sempre per
   assert.equal(new Set(a.esercizi.map((e) => e.id)).size, a.esercizi.length);
 });
 
-test('blueprint bilanciato per le aree disponibili, durata configurabile e nessun voto', () => {
-  const prova = generaProva(graph.nodi, { quiz: banca, seed: 9, quanti: 12, durataMs: 90000 });
+test('blueprint bilanciato per le aree effettive, durata configurabile e nessun voto', () => {
+  const aree = new Set(catalogoEsercizi(graph.nodi, banca).map((e) => e.area));
+  const quanti = aree.size * 2;
+  const prova = generaProva(graph.nodi, { quiz: banca, seed: 9, quanti, durataMs: 90000 });
   assert.equal(prova.durataMs, 90000);
   const counts = new Map();
   prova.esercizi.forEach((e) => counts.set(e.area, (counts.get(e.area) || 0) + 1));
-  assert.deepEqual([...counts.values()], [2, 2, 2, 2, 2, 2]);
-  assert.ok(prova.esercizi.every((e) => e.tipo !== 'aperta'));
+  assert.deepEqual(new Set(counts.keys()), aree);
+  assert.ok([...counts.values()].every((count) => count === quanti / aree.size));
+  const areeConBanca = new Set(banca.elementi.map((e) => e.area));
+  assert.ok(prova.esercizi.every((e) => !areeConBanca.has(e.area) || e.tipo !== 'aperta'));
   assert.equal('voto' in prova, false);
-  const extra = { ...banca.elementi[0], id: 'area-futura', area: 7 };
-  assert.equal(new Set(generaProva([], { quiz: { elementi: [...banca.elementi, extra] }, quanti: 7 }).esercizi.map((e) => e.area)).size, 7);
+  const extra = { ...banca.elementi[0], id: 'area-futura', area: Math.max(...aree) + 1 };
+  const bancaFutura = { elementi: [...banca.elementi, extra] };
+  const attese = new Set(bancaFutura.elementi.map((e) => e.area));
+  const futura = generaProva([], { quiz: bancaFutura, quanti: attese.size });
+  assert.deepEqual(new Set(futura.esercizi.map((e) => e.area)), attese);
   assert.deepEqual(generaProva([], { quiz: null }).esercizi, []);
+});
+
+for (const numeroAree of [1, 3, 8]) test(`blueprint senza costanti: ${numeroAree} aree non consecutive`, () => {
+  const elementi = Array.from({ length: numeroAree * 3 }, (_, i) => ({
+    ...banca.elementi[0], id: `fixture-${i}`, area: 10 + (i % numeroAree) * 2,
+  }));
+  const prova = generaProva([], { quiz: { elementi }, quanti: numeroAree * 2, seed: 4 });
+  const counts = new Map();
+  prova.esercizi.forEach((e) => counts.set(e.area, (counts.get(e.area) || 0) + 1));
+  assert.equal(counts.size, numeroAree);
+  assert.ok([...counts.values()].every((n) => n === 2));
+});
+
+test('area senza banca: usa le aperte del grafo senza perderle o attribuire esiti automatici', () => {
+  const aree = [...new Set(graph.nodi.map((n) => n.area))];
+  const areaSenzaQuiz = aree.at(-1);
+  const quiz = { elementi: banca.elementi.filter((i) => i.area !== areaSenzaQuiz) };
+  const prova = generaProva(graph.nodi, { quiz, quanti: aree.length * 2, seed: 9 });
+  const aperte = prova.esercizi.filter((i) => i.area === areaSenzaQuiz);
+  assert.ok(aperte.length > 0);
+  for (const item of aperte) {
+    assert.equal(item.tipo, 'aperta');
+    assert.ok(item.id.includes('#'));
+    assert.equal(correggi(item, item.soluzione), null);
+    assert.deepEqual(esitiItem(item, item.soluzione, 'allenamento', new Date(0).toISOString()), []);
+  }
 });
 
 test('abbinamenti: distrattori selezionabili, niente risposta corretta per posizione', () => {

@@ -8,11 +8,21 @@ Lo schema Draft 2020-12 conserva la validazione della banca storica v1 e
 aggiunge i quattro tipi v2. L’adattatore legge **elementi**, senza scartarne
 nessuno, e mantiene anche gli esercizi aperti del grafo.
 
-La banca di **fase A** comprende 42 elementi nelle aree 1–6, tutti collegati
-a nodi preesistenti. I temi seguono il programma TW 2026/27 **[F1]**:
+La banca, dopo il merge di X2/X3 e il via libera alla **fase B**, comprende
+**59 elementi nelle aree 1–7**: i 42 della fase A, 8 quiz dedicati ai nuovi
+nodi TW, 8 quiz dedicati ai nodi IA e l’abbinamento Q6.
+Tutti i riferimenti puntano a nodi integrati nel grafo. I temi TW seguono
+il programma 2026/27 **[F1]**:
 URI/HTTP/HTTP2, multi-livello, REST, HTML5/CSS/JS/AJAX/JSON, Flask, Git e tesina.
 L’area 5 usa AJAX (non aggiunge RDF/SPARQL non elencati in [F1]).
-Area 7 e nuovi nodi sono riservati alla fase B, dopo il via libera del coordinatore.
+La fase B copre esplicitamente mashup, event-driven, HTML5 semantico, React,
+sensori mobili, Python, servizi RESTful Flask e workflow Git collaborativo.
+L’area IA copre introduzione/apprendimento, laboratorio Python/NumPy,
+classificazione lineare, Bayes, clustering, regressione, riduzione dimensionale
+e verifica quiz/laboratorio. Le scelte multiple IA usano **distrattori plausibili
+di apprendimento automatico**, tutti spiegati, invece di alternative estranee.
+I contenuti IA sono elaborazioni didattiche standard delle lezioni X3:
+**non derivano dalle slide del prof. Calderara**, non pubbliche [F12].
 
 **Tutti i quesiti sono originali, non tratti da prove reali, non predittivi
 delle domande del docente.** `origine: "originale"` e `fonte` lo dichiarano
@@ -22,22 +32,28 @@ I codici [F1], [F4], [F5] rimandano al registro delle fonti in
 [`research/R3-programma-esame.md`](research/R3-programma-esame.md), §§3.2, 3.5.2, 3.7.
 Non vengono aggiunti URL esterni alla banca.
 
-### Q1–Q5 da R3 §3.5.2
+### Q1–Q6 da R3 §3.5.2
 
 - **Q1** `q1-programma`: scelta multipla sull’elenco ufficiale, con distrattori
   da programmi diversi e fuori contesto.
 - **Q2** `q2-tecnologia-ruolo`: React, Flask, Git, AJAX. Area principale 4;
-  ogni coppia collega il nodo preesistente pertinente, anche di altra area.
-  React rimanda temporaneamente a `dom-virtual-dom`; il nodo React dedicato
-  sarà usato in fase B. Il ruolo frontend è elaborazione didattica.
+  ogni coppia collega il nodo specifico pertinente, anche di altra area:
+  `react-componenti-jsx`, `servizi-restful-flask`, `git-workflow-collaborativo`,
+  `ajax-fetch-xhr`. Il ruolo frontend è elaborazione didattica.
 - **Q3** `q3-rotta-json`: completamento di una rotta Flask GET con jsonify;
   confronto testuale, nessuna esecuzione di codice.
 - **Q4** `q4-tesina`, `q4-appunti`, `q4-intermedie`: tre vero/falso con
   giustificazione. Il formato binario non introduce una terza opzione assurda;
   i distrattori fuori contesto sono negli altri tipi.
 - **Q5** `q5-mashup-eventi`: adattamento a scelta multipla della proposta
-  aperta, sui nodi esistenti. **[IPOTESI didattica]** esplicita: le definizioni
-  di mashup/event-driven/sensori non sono citazioni delle slide del docente.
+  aperta, ora collegato al nodo integrato `sviluppo-event-driven`.
+  **[IPOTESI didattica]** esplicita: le definizioni di mashup/event-driven/sensori
+  non sono citazioni delle slide del docente.
+- **Q6** `q6-ia-tecniche-verifica`: abbinamento originale tra classificazione
+  lineare, clustering, NumPy e quiz chiusi IA, con i rispettivi nodi specifici.
+  Conserva la distinzione tra voto dei quiz e idoneità ON/OFF del laboratorio
+  [F1]. Include il contrasto plausibile classificazione/clustering e distrattori
+  fuori contesto della proposta R3. Nessuna griglia di punteggi viene inventata.
 
 ## Campi comuni e vincoli
 
@@ -55,7 +71,11 @@ congruenza dei segnaposto e varietà della posizione della risposta corretta.
 `domanda`, `opzioni` (3–6 oggetti `{id, testo, spiegazione?, tipo?}`),
 `risposta_corretta` (ID, **non indice**), `spiegazione`.
 `tipo` di un’opzione errata può essere `plausibile` o `fuori_contesto`.
-La banca corrente spiega **ogni opzione**. Per v1 il feedback usa come fallback
+La banca corrente spiega **ogni opzione**. Le scelte multiple TW hanno sia
+alternative plausibili sia fuori contesto; quelle IA hanno alternative errate
+tutte plausibili di ML (ad esempio priori/posteriori, assi NumPy,
+classificazione/clustering/regressione, varianza PCA/accuratezza).
+Per v1 il feedback usa come fallback
 la spiegazione generale. Il seed rimescola la presentazione, senza cambiare ID
 né l’associazione alla spiegazione.
 
@@ -128,3 +148,13 @@ atomica tra le due chiavi localStorage).
 Test Python su banca vera, schema e invarianti; Node su adattatore, seed,
 correzione, report, timer, sessione ed esiti; Playwright su desktop e mobile,
 tastiera, modalità, persistenza e consegna.
+
+I test ricavano le aree dal grafo/catalogo, non da una costante sul loro numero.
+Il blueprint è verificato anche con aree sintetiche non consecutive e con una
+banca che non copre un’area: in quel caso si usano le aperte del grafo, senza
+registrarle come corrette o sbagliate automaticamente. Gli e2e indicizzano
+sia la banca sia gli esercizi `nodo#indice`; il caso «banca indisponibile» prova
+questa regressione su mobile e desktop. I controlli di tutti i tipi usano casi
+reali selezionati esplicitamente, senza presumere che un particolare seed li
+estragga sempre tutti. La copertura della banca deve coincidere con le aree
+dichiarate nel grafo e ogni nodo X2/X3 deve avere un quiz chiuso dedicato.
