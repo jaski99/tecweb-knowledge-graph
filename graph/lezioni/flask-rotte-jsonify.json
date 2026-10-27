@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Gruppo C: tema previsto dal syllabus/materiale disponibile; non è documentato un punteggio specifico per questo singolo nodo.",
+  "perche_ti_serve": "Gruppo A: Flask e i servizi RESTful sono esplicitamente previsti dal programma [F1]; le rotte collegano URL e risposte.",
   "scenario_fil_rouge": "La biblioteca online vuole esporre un catalogo: il browser chiede /api/libri, Flask seleziona la funzione associata alla rotta e restituisce una risposta JSON che il client può leggere senza ricevere una pagina HTML.",
   "definizione_esame": {
     "definizione": "Una rotta Flask associa un URL e, facoltativamente, metodi HTTP a una funzione Python; jsonify serializza dati Python compatibili in una risposta HTTP JSON.",

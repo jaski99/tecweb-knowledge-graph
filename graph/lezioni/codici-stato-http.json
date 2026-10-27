@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
+  "perche_ti_serve": "Gruppo A: gli status rendono comprensibili gli esiti delle richieste HTTP e delle API, collegate ai servizi RESTful in [F1].",
   "scenario_fil_rouge": "La biblioteca riceve richieste per libri presenti, libri inesistenti e pagine spostate. Un codice di stato sintetico permette al browser e all'API di capire l'esito senza dedurlo dal solo testo della risposta.",
   "definizione_esame": {
     "definizione": "Un codice di stato HTTP è un codice a tre cifre che comunica la classe dell'esito di una richiesta nella risposta.",

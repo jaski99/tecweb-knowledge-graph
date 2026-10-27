@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti sulle API (Gruppo A): fondamentale per lo scritto.",
+  "perche_ti_serve": "Gruppo A: i vincoli REST aiutano a comprendere i servizi RESTful previsti dal programma [F1].",
   "scenario_fil_rouge": "La biblioteca digitale vuole offrire lo stesso catalogo a browser e app. Un'interfaccia uniforme basata su risorse consente ai client di scambiare rappresentazioni senza conoscere i dettagli interni del servizio.",
   "definizione_esame": {
     "definizione": "REST è uno stile architetturale per sistemi distribuiti definito da vincoli, non un protocollo né un formato dati.",

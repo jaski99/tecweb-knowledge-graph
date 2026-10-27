@@ -109,7 +109,7 @@
 
 **Fronte**: Cascata CSS: in che ordine si risolve un conflitto e come si calcola la specificità?
 
-**Retro**: Origine e importanza (normali: browser, utente, autore; !important rovescia le origini), poi specificità ID-classi-tipi confrontata lessicograficamente, poi ordine di apparizione. Undici classi non battono un id.
+**Retro**: Nel modello semplificato: origine e importanza, layer, specificità ID-classi-tipi, prossimità di scope e ordine. Per le dichiarazioni normali dell'autore un layer successivo batte uno precedente prima della specificità; !important inverte l'ordine dei layer.
 
 
 ### DOM e Virtual DOM
@@ -233,9 +233,9 @@
 
 ### Tesina: presentazione PowerPoint (max 8 minuti)
 
-**Fronte**: Qual è il filo narrativo delle quattro slide?
+**Fronte**: Quali contenuti può seguire la presentazione della tesina?
 
-**Retro**: Problema e obiettivi → architettura e flusso dati → codice significativo → demo o schermate; la traccia di tempo proposta è 1+2+3+2 minuti.
+**Retro**: Una possibile traccia: problema → architettura → codice → demo. PowerPoint di massimo 8 minuti [F1]; nessun numero di slide è specificato.
 
 
 ### Quiz e form: domande a scelta multipla e raccolta risposte
@@ -634,7 +634,7 @@
 - [ ] **API Design: best practice RESTful**: Usare un verbo nell'URI per ogni azione → Nelle API orientate alle risorse, il percorso identifica la risorsa e il metodo HTTP esprime l'intento; le convenzioni vanno documentate.
 - [ ] **API Design: best practice RESTful**: Restituire sempre 200 e mettere l'errore nel testo → Lo status HTTP è una parte del contratto usata da client e intermediari e deve riflettere l'esito.
 - [ ] **CSS: Box Model**: Includere color, background o script tra le componenti del box model negli abbinamenti → Le componenti (aree) del box model sono esattamente quattro: content, padding, border e margin. Colore e sfondo sono proprietà che si dipingono dentro la scatola, non aree della scatola.
-- [ ] **CSS: Box Model**: Sommare due margin verticali adiacenti aspettandosi la somma → Per il margin collapsing, margin-top e margin-bottom di blocchi adiacenti nel flusso normale si fondono nel valore più grande. Due margin da 20px danno 20px di spazio, non 40.
+- [ ] **CSS: Box Model**: Sommare due margin verticali adiacenti aspettandosi la somma → Quando due margini verticali adiacenti collassano, il maggiore vale solo se sono positivi: 20px e 20px danno 20px. Con 20px e −8px il risultato è 12px; con −20px e −8px è −20px.
 - [ ] **CSS: Box Model**: Dire che width include sempre padding e border → Con il valore iniziale box-sizing: content-box, width misura solo il content. Padding e border sono inclusi in width solo con box-sizing: border-box.
 - [ ] **CSS: Box Model**: Confondere padding e margin rispetto allo sfondo → Il padding è dentro la scatola e mostra lo sfondo dell'elemento; il margin è fuori dal bordo, è trasparente e lascia vedere lo sfondo del contenitore. Se vuoi spazio colorato attorno al testo, serve il padding.
 - [ ] **CSS: Box Model**: Applicare width e margin-top a uno span aspettandosi effetto sul layout → Span è inline non sostituito: width e height non si applicano e i margin verticali non spostano le righe. Per dimensionarlo serve display: inline-block o block.
@@ -642,7 +642,7 @@
 - [ ] **CSS: origini, cascading e ereditarietà**: Credere che margin, padding e border si ereditino dai genitori → Sono proprietà non ereditarie: sui figli, senza dichiarazioni dirette, valgono i valori iniziali. Si ereditano soprattutto le proprietà tipografiche come color e font-family; per forzare le altre serve il valore inherit.
 - [ ] **CSS: origini, cascading e ereditarietà**: Dire che con !important vince sempre l'autore sulle altre origini → Con !important l'ordine delle origini si rovescia: tra le dichiarazioni importanti vincono user agent e user sull'author. Il rovesciamento serve a proteggere esigenze di browser e utente, per esempio di accessibilità.
 - [ ] **CSS: origini, cascading e ereditarietà**: Pensare che il valore ereditato dal genitore batta una regola diretta poco specifica → L'ereditarietà interviene solo se la cascata non produce dichiarazioni per quella proprietà sull'elemento. Qualsiasi dichiarazione diretta, anche del foglio del browser, ha la precedenza sul valore ereditato.
-- [ ] **CSS: origini, cascading e ereditarietà**: Confondere l'ordine di apparizione con il criterio principale di risoluzione dei conflitti → L'ordine di apparizione decide solo a parità di origine, importanza e specificità. Scrivere una regola dopo non la fa vincere contro un selettore più specifico o contro un'origine più forte.
+- [ ] **CSS: origini, cascading e ereditarietà**: Confondere l'ordine di apparizione con il criterio principale di risoluzione dei conflitti → L'ordine di apparizione decide solo dopo origine, importanza, layer, specificità e, quando rilevante, prossimità di scope. Una regola scritta dopo non batte automaticamente una dichiarazione di precedenza superiore.
 - [ ] **DOM e Virtual DOM**: Dire che il DOM fa parte del linguaggio JavaScript → Il DOM è una Web API fornita dal browser, indipendente dal linguaggio: JavaScript la usa, ma il linguaggio ECMAScript in sé (per esempio in Node.js) non include document né i nodi della pagina.
 - [ ] **DOM e Virtual DOM**: Presentare il Virtual DOM come sostituto che elimina il DOM reale → Il Virtual DOM è solo una descrizione in memoria: ciò che l'utente vede è sempre il DOM reale del browser, aggiornato applicando le differenze nella fase di patch. Senza DOM reale non ci sarebbe pagina.
 - [ ] **DOM e Virtual DOM**: Affermare che il Virtual DOM è sempre più veloce di qualsiasi manipolazione diretta → Costruire e confrontare alberi virtuali ha un costo; un aggiornamento manuale mirato può fare meno lavoro. Il vantaggio certo è il modello dichiarativo che tiene interfaccia e stato allineati con meno codice fragile.
@@ -692,8 +692,8 @@
 - [ ] **Eventi: locali vs remoti**: Pensare che con HTTP ordinario il server possa avvisare la pagina quando vuole → Nel modello richiesta-risposta di HTTP è il client a iniziare: il server non apre conversazioni. Per questo servono polling, long polling, oppure canali persistenti come SSE e WebSocket (questo dopo un handshake iniziale via HTTP).
 - [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Trattare Web 1.0, 2.0, 3.0, 4.0 come versioni ufficiali rilasciate in date precise → Sono etichette descrittive di tendenze, con confini sfumati e fasi che convivono: nessun organismo le rilascia e le datazioni sono solo indicative. Le domande si risolvono con le caratteristiche, non con gli anni.
 - [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Attribuire i contenuti generati dagli utenti al Web 1.0 → Il Web 1.0 è di sola lettura: pochi autori, pagine statiche uguali per tutti. Partecipazione, profili e contenuti degli utenti sono la firma del Web 2.0.
-- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Rispondere sul Web 3.0 con significati diversi dal web semantico del materiale del corso → Nel materiale di studio del corso (SYLLABUS e MATERIALE_UTENTE) il 3.0 è il Web semantico: dati condivisi e riusabili tra applicazioni con formati comuni come RDF e significato elaborabile dalle macchine. È in quel quadro che vanno date le risposte.
-- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Far entrare negli abbinamenti opzioni fuori contesto come LAN o fasi di installazione → Sono i distrattori segnalati dal materiale di studio: termini di reti locali o di sistemi operativi non sono generazioni del Web. Un'opzione che non riguarda contenuti, interazione, dati o servizi web va scartata immediatamente.
+- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Trattare Web 3.0 come un termine con un unico significato ufficiale → Questa lezione usa l’accezione semantica, mentre Web3 compare anche in contesti blockchain; il programma [F1] non stabilisce una definizione 3.0.
+- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Far entrare negli abbinamenti opzioni fuori contesto come LAN o fasi di installazione → Negli esercizi di ripasso, termini di reti locali o sistemi operativi non sono generazioni del Web: usa le definizioni degli scenari per scartare le opzioni fuori contesto.
 - [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Credere che una nuova generazione elimini del tutto le precedenti → Le fasi si sovrappongono: oggi convivono pagine statiche, applicazioni partecipative e dati semantici. Descrivono modelli d'uso prevalenti in un periodo, non sostituzioni complete.
 - [ ] **SQLite: operazioni CRUD**: Inserire input utente concatenandolo nella query. → Il dato può essere interpretato come SQL; i placeholder separano codice e valore.
 - [ ] **SQLite: operazioni CRUD**: Dimenticare WHERE in UPDATE o DELETE. → La query potrebbe modificare o cancellare tutte le righe della tabella.
@@ -705,7 +705,7 @@
 - [ ] **Tesina: Domande di revisione codice**: Definire PUT e PATCH equivalenti → PUT sostituisce la rappresentazione secondo il contratto, PATCH applica una modifica parziale.
 - [ ] **Tesina: Domande di revisione codice**: Dire che il cookie conserva automaticamente lo stato nel server → Il cookie è trasmesso dal browser; il server deve definire e gestire il meccanismo di sessione.
 - [ ] **Tesina: presentazione PowerPoint (max 8 minuti)**: Riempire ogni slide di codice → Il testo fitto distrae dall’argomento e non aiuta a capire una scelta.
-- [ ] **Tesina: presentazione PowerPoint (max 8 minuti)**: Presentare i tempi proposti come valutazione ufficiale → La scansione 1+2+3+2 compare nel materiale utente ma non è stata verificata come regola ufficiale.
+- [ ] **Tesina: presentazione PowerPoint (max 8 minuti)**: Presentare il numero di slide o la ripartizione dei tempi come requisito ufficiale → Il programma [F1] indica PowerPoint di massimo 8 minuti; non specifica il numero di slide né una ripartizione interna dei tempi.
 - [ ] **Tesina: presentazione PowerPoint (max 8 minuti)**: Affidarsi a una demo mai provata → Un guasto interrompe il discorso e impedisce di verificare il flusso.
 - [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Affidarsi al solo colore per il feedback → Il significato deve essere comunicato anche con testo, perché il colore da solo non è sufficiente.
 - [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Usare name diversi per ogni radio della stessa domanda → Si perderebbe il comportamento di selezione esclusiva nativo del gruppo.
