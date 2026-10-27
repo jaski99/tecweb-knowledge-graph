@@ -2,7 +2,7 @@
 // Dipendenze (grafo, storage, documento, orologio, confirm) iniettate da avvia.js via ctx:
 // questa vista non legge mai globali. Il CSS è caricato qui, così l'aggancio in
 // avvia.js resta una sola riga di register come per gli altri moduli.
-import { clear, h } from '../dom.js';
+import { append, clear, h } from '../dom.js';
 import { mazzoAnkiTSV } from '../../js/core/backup.js';
 import { scaricaFile } from '../../js/ui/download.js';
 import { formatGiornoIt, toIsoDay } from './giorni.js';
@@ -65,7 +65,7 @@ export function createRipassoView() {
       const draw = (focusSelector = '#ripasso-titolo') => {
         clear(root);
         root.className = 'module-page rip';
-        root.append(pagina());
+        append(root, pagina());
         root.querySelector(focusSelector)?.focus();
       };
 

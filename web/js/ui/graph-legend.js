@@ -1,4 +1,4 @@
-import { h, clear } from './dom.js';
+import { h, fill } from './dom.js';
 import { areaColor, TIPO_ICON, TIPO_LABEL } from '../config.js';
 import { LIVELLI } from '../core/mastery.js';
 
@@ -12,7 +12,7 @@ export function legendaAttiva(key, value, filters, forze) {
 export function createGraphLegend(root, graph, { onFilter, onEdge, onDepth, onPrereq, onCenter }) {
   const button = (key, val, label, extra = {}) => h('button', { type: 'button', class: 'btn legend-item',
     'data-legend': key, 'data-value': String(val), 'aria-pressed': 'false', onclick: () => key === 'forze' ? onEdge(val) : onFilter(key, val), ...extra }, label);
-  clear(root).append(
+  fill(root,
     h('summary', {}, 'Legenda e filtri del grafo'),
     h('p', { class: 'muted' }, 'I pulsanti filtrano il grafo, il percorso e l’elenco. Le forme indicano il tipo; le etichette mostrano area e padronanza.'),
     h('p', { class: 'muted' }, '[F1] Fonte ufficiale documentata in docs/research/R3-programma-esame.md.'),

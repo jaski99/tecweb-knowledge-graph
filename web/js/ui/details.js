@@ -1,5 +1,5 @@
 // Pannello dettagli del nodo selezionato.
-import { h, clear } from './dom.js';
+import { h, clear, append } from './dom.js';
 import { areaBadge, tipoBadge, prioBadge, masteryBadge } from './badges.js';
 import { studyStatusSelect } from './study-status.js';
 import { successors } from '../core/topo.js';
@@ -26,7 +26,7 @@ export function createDetailsView(root, graph, { onSelect, onToggleDone, onClose
       root.hidden = !n;
       if (!n) return;
       const succ = successors(graph.nodi, n.id);
-      root.append(
+      append(root,
         h('div', { class: 'det-head' },
           h('h2', { id: 'det-title', tabindex: '-1' }, n.title),
           h('button', { type: 'button', class: 'icon', 'aria-label': 'Chiudi dettagli', onclick: onClose }, '✕')),

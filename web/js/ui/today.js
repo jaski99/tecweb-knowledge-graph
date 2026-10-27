@@ -1,5 +1,5 @@
 // Presentazione del piano; persistenza e callback sono iniettate.
-import { h, clear } from './dom.js';
+import { h, fill } from './dom.js';
 import { pianoOggi, BUDGET_SESSIONE } from '../core/session-plan.js';
 import { STORAGE_KEYS } from '../config.js';
 import { formatMinuti } from '../core/progress.js';
@@ -24,7 +24,7 @@ export function createTodayView(root, graph, { storage, carte, onOpen, onChange,
       const budget = BUDGET_SESSIONE.includes(savedBudget) ? savedBudget : BUDGET_SESSIONE[0];
       const piano = pianoOggi({ nodi: graph.nodi, ordine: graph.order, padronanza: mastery, statiStudio, carte,
         datiRipasso: leggiStato(storage), oggi, dataEsame, budget });
-      clear(root).append(
+      fill(root,
         h('div', { class: 'today-heading' }, h('h2', {}, 'Sessione di oggi'), h('span', { class: 'muted' }, 'Un suggerimento modificabile, non un obbligo.')),
         h('div', { class: 'today-options' },
           h('label', {}, 'Data dell’appello (facoltativa)', h('input', { id: 'exam-date', type: 'date', value: isIsoDay(dataEsame) ? dataEsame : '',

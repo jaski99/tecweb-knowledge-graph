@@ -1,5 +1,5 @@
 // Progresso per area e totale con tempo residuo.
-import { h, clear } from './dom.js';
+import { h, fill } from './dom.js';
 import { computeProgress, formatMinuti, masteryProgress } from '../core/progress.js';
 import { areaColor } from '../config.js';
 
@@ -12,7 +12,7 @@ export function createProgressView(root, graph) {
     render({ done, mastery = new Map() }) {
       const m = masteryProgress(graph.nodi, mastery);
       const p = computeProgress(graph.nodi, graph.aree, done);
-      clear(root).append(
+      fill(root,
         bar('Totale', p.totale),
         h('p', { class: 'muted', id: 'mastery-group-a' }, `Gruppo A padroneggiato: ${m.padroneggiati}/${m.totale} (${m.percentuale}%).`),
         h('details', { class: 'mastery-explanation' }, h('summary', {}, 'Come si calcola la padronanza'),

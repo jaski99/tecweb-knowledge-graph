@@ -1,5 +1,5 @@
 // Controlli dei filtri: il metodo toggle consente alla legenda di usare gli stessi filtri.
-import { h } from './dom.js';
+import { h, append } from './dom.js';
 import { TIPO_LABEL, PRIO_LABEL } from '../config.js';
 
 export function createFiltersView(root, graph, { onChange, initial }) {
@@ -11,7 +11,7 @@ export function createFiltersView(root, graph, { onChange, initial }) {
   let t;
   const stato = (val, label) => h('label', { class: 'chip' },
     h('input', { type: 'radio', name: 'stato-studio', value: val, checked: f.stato === val, onchange: () => { f.stato = val; emit(); } }), ' ', label);
-  root.append(
+  append(root,
     h('label', { class: 'search' }, h('span', { class: 'sr-only' }, 'Cerca nel titolo, nel sapere e nella lezione'),
       h('input', { id: 'search', type: 'search', autocomplete: 'off', placeholder: 'Cerca titolo, sapere, lezione…  (/)',
         'aria-keyshortcuts': '/', oninput: (e) => { clearTimeout(t); t = setTimeout(() => { f.q = e.target.value; emit(); }, 120); } })),

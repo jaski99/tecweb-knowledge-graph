@@ -1,5 +1,5 @@
 // Vista Lezione a tutta pagina: spiegazione completa, esempi svolti a passi, autoverifica, navigazione nel percorso.
-import { h, clear } from './dom.js';
+import { h, clear, append } from './dom.js';
 import { areaBadge, tipoBadge, prioBadge } from './badges.js';
 import { formatMinuti } from '../core/progress.js';
 import { lessonNav, hasLesson, createStepper, nextToStudy } from '../core/lesson.js';
@@ -197,14 +197,14 @@ export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, o
       if (!n) {
         if (graph.nodiInattivi?.has(id) && onActivateIA) {
           const status = h('p', { role: 'status', class: 'error' });
-          root.append(
+          append(root,
             h('div', { class: 'ls-top' }, h('button', { type: 'button', class: 'btn', onclick: onClose }, closeLabel)),
             h('article', { class: 'lesson' },
               h('h1', { id: 'lesson-title', tabindex: '-1' }, 'Modulo IA (secondo semestre) disattivato'),
               h('button', { type: 'button', class: 'btn primary', id: 'attiva-modulo-ia', onclick: () => {
                 if (!onActivateIA()) status.textContent = 'Il browser non permette di salvare la preferenza.';
               } }, 'Attiva il modulo IA'), status));
-        } else root.append(h('p', { class: 'error' }, `Nodo "${id}" non trovato.`), h('button', { type: 'button', class: 'btn', onclick: onClose }, '← Torna al grafo'));
+        } else append(root, h('p', { class: 'error' }, `Nodo "${id}" non trovato.`), h('button', { type: 'button', class: 'btn', onclick: onClose }, '← Torna al grafo'));
         return;
       }
       const nav = lessonNav(graph.order, id);
@@ -224,7 +224,7 @@ export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, o
           h('label', { class: 'check big' }, h('input', { type: 'checkbox', checked: done.has(n.id), onchange: (e) => onToggleDone(n.id, e.target.checked) }), ' Ho capito: segna come completato')),
         ...(hasLesson(n) ? lessonBody(n) : fallbackBody(n)),
         ...commonTail(n));
-      root.append(
+      append(root,
         h('div', { class: 'ls-top' },
           h('button', { type: 'button', class: 'btn', onclick: onClose }, closeLabel),
           onToggleTheme ? h('div', { class: 'ls-tools' }, h('button', { type: 'button', class: 'btn', 'data-theme-toggle': '1', onclick: onToggleTheme })) : null,
