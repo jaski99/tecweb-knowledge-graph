@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
+  "perche_ti_serve": "Gruppo A: distinguere contenuti statici e dinamici chiarisce il funzionamento delle applicazioni Web previste in [F1].",
   "scenario_fil_rouge": "La biblioteca pubblica copertine e fogli di stile uguali per tutti, ma genera l'elenco dei libri in base alla ricerca e ai permessi della lettrice. Entrambi i risultati viaggiano tramite HTTP, anche se sono prodotti in modi diversi.",
   "definizione_esame": {
     "definizione": "Il contenuto statico è servito da una rappresentazione già preparata; quello dinamico è costruito o selezionato durante la richiesta in base a logica o dati variabili.",

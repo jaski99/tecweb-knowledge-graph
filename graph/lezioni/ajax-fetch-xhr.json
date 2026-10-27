@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Gruppo B: tema previsto dal syllabus/materiale disponibile; non è documentato un punteggio specifico per questo singolo nodo.",
+  "perche_ti_serve": "Gruppo A: AJAX e JavaScript sono esplicitamente previsti in [F1]; le richieste asincrone collegano interfaccia e servizi.",
   "scenario_fil_rouge": "Quando uno studente cerca un libro, la pagina invia una richiesta al server e aggiorna solo l’elenco dei risultati. La navigazione non deve interrompersi né ricaricare l’intero documento per ogni ricerca.",
   "definizione_esame": {
     "definizione": "AJAX è un insieme di tecniche per scambiare dati in modo asincrono con il server e aggiornare parti della pagina; oggi si usano spesso Fetch e JSON, anche se il nome conserva XML.",

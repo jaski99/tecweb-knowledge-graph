@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
+  "perche_ti_serve": "Gruppo A: distinguere HTTP e stato applicativo aiuta a comprendere servizi e applicazioni Web previsti in [F1].",
   "scenario_fil_rouge": "Una studentessa aggiunge due libri al carrello della biblioteca digitale, passa alla pagina di riepilogo e poi apre una nuova pagina. Vuole ritrovare il carrello: il protocollo di trasporto dei messaggi, da solo, non ricorda le richieste precedenti.",
   "definizione_esame": {
     "definizione": "HTTP è stateless: la semantica del protocollo non lega una richiesta alla sequenza di richieste precedenti del client.",

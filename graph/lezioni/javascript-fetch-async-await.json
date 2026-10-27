@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Gruppo C (punti ciechi, ~15%): è codice pratico da scrivere a memoria, e nella tesina collega il front-end alle API del back-end.",
+  "perche_ti_serve": "Gruppo A: JavaScript è nel programma [F1]; fetch e async/await collegano il front-end ai servizi Web.",
   "scenario_fil_rouge": "La pagina del catalogo della libreria non deve ricaricarsi a ogni ricerca: quando il lettore digita «Dune», JavaScript chiede in background all'API del negozio l'elenco dei titoli e aggiorna solo la griglia dei risultati. La richiesta parte subito ma la risposta arriva dopo: fetch, Promise e async/await sono gli strumenti per gestirla senza bloccare la pagina.",
   "definizione_esame": {
     "definizione": "fetch() è la funzione delle Web API che avvia una richiesta HTTP asincrona e restituisce subito una Promise; async/await è la sintassi che permette di attendere le Promise scrivendo il codice in sequenza, come se fosse sincrono, senza bloccare il thread principale.",

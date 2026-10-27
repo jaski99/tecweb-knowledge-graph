@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Gruppo B (varianti isolate, ~20% dello scritto da MATERIALE_UTENTE): ricorre il tag canvas con un piccolo disegno 2D da saper leggere e scrivere.",
+  "perche_ti_serve": "Gruppo C: canvas è un approfondimento grafico facoltativo di HTML5; non è elencato in modo specifico in [F1].",
   "scenario_fil_rouge": "Nella pagina delle statistiche la libreria vuole un grafico a barre con i libri venduti per genere, disegnato al volo nel browser a partire dai numeri. Non è un'immagine pronta caricata dal server: è JavaScript che prende un'area rettangolare della pagina e ci disegna dentro rettangoli ed etichette, pixel per pixel. Quell'area è l'elemento canvas.",
   "definizione_esame": {
     "definizione": "L'elemento <canvas> è un'area rettangolare nella pagina su cui si disegna grafica raster (una bitmap) tramite JavaScript; la Canvas API 2D fornisce il contesto di disegno, ottenuto con getContext('2d'), con metodi per tracciare e riempire forme, testo e immagini.",

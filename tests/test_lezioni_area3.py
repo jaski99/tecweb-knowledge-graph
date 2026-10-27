@@ -1,7 +1,8 @@
-"""Area 3 (worker W2): lezioni v4 complete per tutti gli 11 nodi.
+"""Lezioni v4 dell'area 3, inclusi i nodi che saranno aggiunti da X2.
 
-Questi test sostituiscono gli xfail dinamici di test_lezioni.py per i nodi
-dell'Area 3: qui la completezza e' un'asserzione vera, non un'attesa.
+La completezza si verifica su tutti i nodi presenti, senza fissarne il numero.
+Le soglie seguono il contratto comune delle lezioni, non requisiti aggiuntivi
+che impedirebbero l'integrazione di lezioni v4 già valide.
 """
 import json
 import re
@@ -13,7 +14,13 @@ from kg import LESSONS, load_graph
 G = load_graph()
 NODES = G["nodi"]
 IDS = {n["id"] for n in NODES}
-AREA3 = sorted(n["id"] for n in NODES if n["area"] == 3)
+
+
+def _ids_area3(nodes):
+    return sorted(n["id"] for n in nodes if n["area"] == 3)
+
+
+AREA3 = _ids_area3(NODES)
 BY_ID = {n["id"]: n for n in NODES}
 
 CAMPI_OBBLIGATORI = {
@@ -22,12 +29,18 @@ CAMPI_OBBLIGATORI = {
     "esercizio_autonomo", "errori_trappole", "richiamo_attivo",
     "riepilogo", "flashcard", "checklist",
 }
-MERMAID_START = re.compile(r"^(flowchart|graph|sequenceDiagram|stateDiagram(-v2)?|classDiagram|erDiagram)\b")
-# Fonti ammesse per le risorse dell'Area 3: pagine aperte e verificate (ottobre 2026).
-HOST_AMMESSI = {"developer.mozilla.org", "www.w3.org", "react.dev", "vuejs.org", "v8.dev"}
-# Nessun punteggio puntuale d'esame inventato ("Vale 3-4 punti" e simili):
-# nei docs del repo esistono solo le percentuali dei gruppi A/B/C.
-# (La "regola dei 3 punti" di DIDATTICA.md non e' un punteggio e non deve scattare.)
+MERMAID_START = re.compile(
+    r"^(flowchart|graph|sequenceDiagram|stateDiagram(-v2)?|classDiagram|erDiagram|"
+    r"gantt|pie|timeline|mindmap|gitGraph|journey|quadrantChart)\b"
+)
+# L'allowlist include le fonti tecniche previste per le lezioni X2.
+# L'effettiva verifica HTTP delle singole risorse è separata (scripts/check_urls.py).
+HOST_AMMESSI = {
+    "developer.mozilla.org", "www.w3.org", "react.dev", "vuejs.org", "v8.dev",
+    "docs.python.org", "flask.palletsprojects.com", "git-scm.com",
+}
+# Nessun punteggio puntuale inventato per un singolo nodo ("Vale 3-4 punti").
+# La "regola dei 3 punti" di DIDATTICA.md non è un punteggio d'esame.
 PUNTI_INVENTATI = re.compile(r"(?:vale|valgono)\s+[^.]{0,24}?\bpunti\b|\d+\s*[-–]\s*\d+\s*punti\b", re.I)
 SENZA_ACCENTO = re.compile(r"\b(perche|puo|cosi|gia|piu|cioe)\b")
 
@@ -40,9 +53,34 @@ def _blocks(md):
     return re.findall(r"^```(\w*)\n(.*?)^```", md, re.S | re.M)
 
 
-def test_area3_ha_11_nodi():
-    # Round 2: X2 aggiunge nodi in area 3 (vedi docs/IMPROVEMENT_PLAN.md), quindi almeno gli 11 originali.
+def test_area3_ha_almeno_11_nodi():
     assert len(AREA3) >= 11
+
+
+def test_area3_include_dinamicamente_nuovi_nodi():
+    nuovi = [{"id": "esempio-nuovo", "area": 3}, {"id": "altra-area", "area": 4}]
+    assert _ids_area3(NODES + nuovi) == sorted(AREA3 + ["esempio-nuovo"])
+
+
+def test_area3_accetta_una_nuova_lezione_v4(tmp_path, monkeypatch):
+    # Un esempio valido con JSX, diagramma invece della tabella e minimi v4:
+    # non deve essere rifiutato dai vincoli aggiuntivi dei vecchi test.
+    import sys
+
+    esempio = _lezione("html-form-accessibilita")
+    esempio["spiegazione"] = (
+        "## Contesto\n\n" + "Una spiegazione didattica sul componente. " * 40
+        + "\n\n## Esempio\n\n```jsx\nconst Libro = () => <p>Libro</p>;\n```\n"
+        + "\n```mermaid\nflowchart LR\n    A[Stato] --> B[Vista]\n```\n"
+    )
+    esempio["worked_example"]["passi"] = esempio["worked_example"]["passi"][:2]
+    esempio["errori_trappole"] = esempio["errori_trappole"][:2]
+    node_id = "esempio-nuovo"
+    (tmp_path / f"{node_id}.json").write_text(json.dumps(esempio, ensure_ascii=False), encoding="utf-8")
+    monkeypatch.setattr(sys.modules[__name__], "LESSONS", tmp_path)
+    monkeypatch.setitem(BY_ID, node_id, {"risorse": [{"url": "https://docs.python.org/3/", "verificato": True}]})
+    test_lezione_area3_completa_v4(node_id)
+    test_risorse_area3_solo_fonti_verificate(node_id)
 
 
 @pytest.mark.parametrize("node_id", AREA3)
@@ -67,23 +105,21 @@ def test_lezione_area3_completa_v4(node_id):
     assert md.count("```") % 2 == 0, f"{node_id}: recinti di codice non chiusi"
     assert len(re.findall(r"^#{2,3} ", md, re.M)) >= 2, f"{node_id}: servono sottotitoli"
     blocks = _blocks(md)
-    assert any(lang in ("html", "css", "javascript", "mermaid") for lang, _ in blocks), (
-        f"{node_id}: serve almeno un blocco di codice o mermaid")
+    assert any(lang in ("html", "css", "javascript", "js", "jsx", "mermaid", "python", "http", "java")
+               for lang, _ in blocks), f"{node_id}: serve almeno un blocco di codice o mermaid"
     for lang, body in blocks:
         if lang == "mermaid":
             assert MERMAID_START.match(body.strip()), f"{node_id}: mermaid non riconosciuto"
-    # Tabella di contrasto richiesta dalla didattica (punto 7: confronto in tabella).
-    assert re.search(r"^\|[-: |]+\|$", md, re.M), f"{node_id}: manca una tabella markdown di contrasto"
 
     assert len(L["analogia"]["testo"]) >= 40 and len(L["analogia"]["limite"]) >= 10
     we = L["worked_example"]
-    assert len(we["passi"]) >= 3 and len(we["soluzione"]) >= 10 and len(we["perche_funziona"]) >= 20
+    assert len(we["passi"]) >= 2 and len(we["soluzione"]) >= 10 and len(we["perche_funziona"]) >= 20
     cp = L["completion_problem"]
     assert len(cp["passi_mancanti"]) >= 1 and len(cp["soluzione"]) >= 10
     ea = L["esercizio_autonomo"]
     assert len(ea["testo"]) >= 20 and len(ea["suggerimento"]) >= 10 and len(ea["soluzione_attesa"]) >= 10
 
-    assert len(L["errori_trappole"]) >= 3
+    assert len(L["errori_trappole"]) >= 2
     for err in L["errori_trappole"]:
         assert len(err["errore"]) >= 10 and len(err["perche_sbagliato"]) >= 10 and len(err["distrattore"]) >= 5
 

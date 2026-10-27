@@ -1,10 +1,7 @@
 """Schema v4: lezioni complete con struttura in 10 punti secondo DIDATTICA.md."""
-import copy
-import os
 import re
 import pytest
-from jsonschema import Draft202012Validator
-from kg import load_graph, load_schema
+from kg import load_graph
 
 G = load_graph()
 NODES = G["nodi"]
@@ -14,10 +11,6 @@ LEZIONI_IDS = {n["id"] for n in WITH}
 MERMAID_START = re.compile(r"^(flowchart|graph|classDiagram|sequenceDiagram|stateDiagram(-v2)?|erDiagram|gantt|pie|timeline|mindmap|gitGraph|journey|quadrantChart)\b")
 BOOK_REFERRAL = re.compile(r"(vedi|consulta|leggi|rimando a(l)?|si veda)\s+(il\s+)?(libro|testo|manuale|capitolo|cap\.)", re.I)
 
-# Nodi che NON hanno lezione (da completare in Fase 2)
-NODI_SENZA_LEZIONE = sorted(IDS - LEZIONI_IDS)
-
-
 def test_almeno_3_lezioni_seed():
     """Verifica che esistano almeno le 3 lezioni seed complete."""
     seed_ids = {"http-stateless-vs-stateful", "rest-metodi-http", "css-box-model"}
@@ -26,7 +19,7 @@ def test_almeno_3_lezioni_seed():
 
 
 def test_lezioni_complete():
-    """In Fase 2, TUTTI i 41 nodi devono avere lezione."""
+    """Tutti i nodi presenti devono avere una lezione."""
     todo = sorted(IDS - LEZIONI_IDS)
     assert not todo, f"{len(todo)} nodi senza lezione: {', '.join(todo)}"
 
@@ -157,12 +150,12 @@ def test_lezione_completa_v4(lezione_id):
 
 
 def test_tutte_le_lezioni_complete():
-    """Verifica che TUTTI i 41 nodi abbiano lezione (Fase 2 completata)."""
+    """Verifica la completezza indipendentemente dal numero di nodi."""
     todo = sorted(IDS - LEZIONI_IDS)
     assert not todo, f"{len(todo)} nodi senza lezione: {', '.join(todo)}"
 
 
-def test_almeno_3_lezioni_seed():
+def test_lezioni_in_file_separati():
     """Verifica che le lezioni siano in file separati e non inline."""
     from kg import load_parts, load_lessons
     ids = {n["id"] for part in load_parts().values() for n in part}

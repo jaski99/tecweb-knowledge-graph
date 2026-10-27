@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
+  "perche_ti_serve": "Gruppo A: conoscere i livelli aiuta a collocare HTTP e HTTP/2, esplicitamente presenti nel programma [F1].",
   "scenario_fil_rouge": "Quando il browser della biblioteca carica una scheda, i dati attraversano più protocolli: HTTP descrive la richiesta, il trasporto la consegna tra processi e IP instrada i pacchetti fino alla rete locale del server.",
   "definizione_esame": {
     "definizione": "La suite TCP/IP organizza la comunicazione di Internet in livelli: accesso alla rete, Internet, trasporto e applicazione.",
