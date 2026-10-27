@@ -140,6 +140,13 @@
 **Retro**: Ogni controllo vuole una label associata (for/id o wrapping) come nome accessibile per persone e tecnologie assistive, e un attributo name perché il valore venga inviato al server. Il placeholder non sostituisce la label.
 
 
+### HTML5: struttura semantica della pagina
+
+**Fronte**: A cosa serve HTML semantico?
+
+**Retro**: A esprimere il ruolo del contenuto con elementi appropriati, così struttura e navigazione restano comprensibili oltre l’aspetto grafico.
+
+
 ### JavaScript moderno: fetch, async/await
 
 **Fronte**: Fetch: qual è la sequenza corretta per leggere dati JSON in sicurezza?
@@ -166,6 +173,13 @@
 **Fronte**: Git: branch, merge e pull request: qual è la definizione, lo scopo e un esempio?
 
 **Retro**: Git è un sistema distribuito di controllo versione; un branch è un riferimento mobile a una linea di sviluppo, merge integra storie di commit e una pull request è una proposta di revisione e integrazione offerta da una piattaforma. I branch isolano il lavoro e i commit ne registrano la storia; revisione e integrazione esplicita riducono il rischio di introdurre modifiche non controllate. Si crea `feat/ricerca`, si pubblica con push e si propone una pull request da quel ramo verso `main`.
+
+
+### Git: workflow collaborativo con branch, merge e pull request
+
+**Fronte**: Git merge e pull request sono la stessa cosa?
+
+**Retro**: No: merge è comando Git che integra storia; pull request è proposta della piattaforma per discutere, controllare e poi integrare un branch.
 
 
 ### SQLite: operazioni CRUD
@@ -238,11 +252,25 @@
 **Retro**: Criterio: dove nasce l'evento. Locali nel browser (click, input, submit) con addEventListener. Remoti dal server: polling (richieste periodiche), long polling (risposta trattenuta), SSE (flusso solo server verso client), WebSocket (persistente bidirezionale).
 
 
+### Sviluppo event-driven: eventi, handler e stato
+
+**Fronte**: Click e risposta HTTP sono lo stesso evento?
+
+**Retro**: No: il click è locale e avvia un’azione; la risposta HTTP è remota e determina se l’azione richiesta è riuscita.
+
+
 ### Motore JavaScript: parser, AST, profiler, JIT
 
 **Fronte**: Pipeline di un motore JS: fasi in ordine e nomi V8?
 
 **Retro**: Parser (costruisce l'AST), interprete Ignition (bytecode eseguito subito), profiler/feedback (parti calde e tipi osservati), compilatore JIT TurboFan (codice macchina per le parti calde), con deottimizzazione se le assunzioni cadono.
+
+
+### Sensori nel Web mobile: posizione e orientamento
+
+**Fronte**: Quali controlli precedono Geolocation?
+
+**Retro**: Verificare supporto con feature detection, usare contesto sicuro e gestire consenso dell’utente con alternativa manuale.
 
 
 ### Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0
@@ -257,6 +285,34 @@
 **Fronte**: JSON: formato dati per il Web: qual è la definizione, lo scopo e un esempio?
 
 **Retro**: JSON (JavaScript Object Notation) è un formato testuale indipendente dal linguaggio per rappresentare valori strutturati: oggetti, array, stringhe, numeri, booleani e null. Un formato condiviso rende interoperabile lo scambio di dati tra client e server; parser e serializer convertono tra testo JSON e strutture native. La stringa `{"titolo":"Il Web","disponibile":true}` rappresenta un oggetto con due membri JSON.
+
+
+### Architetture mashup: comporre servizi e dati
+
+**Fronte**: Che cos’è un’architettura mashup?
+
+**Retro**: È la composizione di dati, contenuti o funzioni di sorgenti diverse in un’unica applicazione, con contratti ed errori gestiti esplicitamente.
+
+
+### React: componenti, JSX, props e stato
+
+**Fronte**: Props e state in React: differenza?
+
+**Retro**: Le props sono input ricevuti dal padre e letti dal componente; state è memoria locale aggiornata con il setter di useState.
+
+
+### Python di base per applicazioni Web
+
+**Fronte**: Lista e dizionario Python: differenza?
+
+**Retro**: La lista è sequenza ordinata; il dizionario associa chiavi a valori ed è utile per campi nominati come quelli di un libro.
+
+
+### Servizi RESTful con Flask: crea e consuma API
+
+**Fronte**: Perché fetch deve controllare response ok?
+
+**Retro**: Una risposta 400 o 404 non rifiuta automaticamente la Promise: il client deve leggere status e decidere come gestire il risultato.
 
 
 ### AJAX: Asynchronous JavaScript and XML
@@ -413,6 +469,18 @@
 - [ ] CORS disciplina la lettura cross-origin nei browser
 - [ ] TLS, autenticazione, autorizzazione e validazione hanno ruoli distinti
 
+### Sviluppo event-driven: eventi, handler e stato (priorità ALTA, gruppo A)
+
+- [ ] Evento: segnale che innesca una reazione
+- [ ] Listener: registrazione; handler: funzione eseguita
+- [ ] Aggiornare la UI dopo la Response controllata
+
+### Architetture mashup: comporre servizi e dati (priorità ALTA, gruppo A)
+
+- [ ] Mashup: composizione di sorgenti o servizi distinti
+- [ ] Aggregatore: coordina contratti e risultati
+- [ ] Un timeout esterno non equivale a un 404 locale
+
 
 ## Area 3. Front-end
 
@@ -444,6 +512,12 @@
 - [ ] GET: dati nell'URL per le letture; POST: dati nel corpo per scritture e dati sensibili
 - [ ] Label per ogni controllo (for/id o wrapping): il placeholder non la sostituisce
 - [ ] Validazione nel browser per il feedback; il server rivalida sempre
+
+### HTML5: struttura semantica della pagina (priorità ALTA, gruppo A)
+
+- [ ] Scegli elemento per significato, non per stile
+- [ ] Un solo main per il contenuto dominante
+- [ ] Heading e landmark devono descrivere una struttura leggibile
 
 ### JavaScript moderno: fetch, async/await (priorità ALTA, gruppo C)
 
@@ -484,12 +558,25 @@
 - [ ] In V8: Ignition è l'interprete del bytecode, TurboFan il compilatore ottimizzante
 - [ ] Il motore implementa il linguaggio; il DOM lo fornisce il browser, non il motore
 
+### Sensori nel Web mobile: posizione e orientamento (priorità MEDIA, gruppo B)
+
+- [ ] Geolocation: consenso e contesto sicuro
+- [ ] Feature detection prima dell’uso
+- [ ] Gestire errore, precisione e alternativa manuale
+- [ ] Orientamento: supporto e permessi possono variare
+
 ### Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0 (priorità MEDIA, gruppo B)
 
 - [ ] Etichette descrittive di tendenze, non versioni rilasciate: le fasi convivono
 - [ ] 1.0 leggo: statico, sola lettura; 2.0 scrivo: partecipazione e contenuti degli utenti
 - [ ] 3.0 significo: web semantico e dati riusabili (RDF); 4.0 seguo: ubiquo e intelligente
 - [ ] Negli abbinamenti scarta i distrattori fuori contesto (per esempio LAN)
+
+### React: componenti, JSX, props e stato (priorità ALTA, gruppo A)
+
+- [ ] Componente: funzione che restituisce JSX
+- [ ] Props: input letti dal componente
+- [ ] State: memoria locale aggiornata con il setter
 
 ### Tag <span>: uso e scopi (priorità BASSA, gruppo B)
 
@@ -520,6 +607,14 @@
 - [ ] merge integra nel branch corrente; gestire conflitti con status/add
 - [ ] push pubblica; pull aggiorna; pull request è una funzione della piattaforma
 
+### Git: workflow collaborativo con branch, merge e pull request (priorità ALTA, gruppo A)
+
+- [ ] Branch: linea di sviluppo isolata
+- [ ] Commit: cambiamento registrato con messaggio coerente
+- [ ] Merge: comando che integra nel branch corrente
+- [ ] Pull request: proposta di integrazione sulla piattaforma
+- [ ] Conflitto: scelta, test e commit esplicito
+
 ### SQLite: operazioni CRUD (priorità ALTA, gruppo C)
 
 - [ ] CRUD: INSERT, SELECT, UPDATE, DELETE
@@ -531,6 +626,20 @@
 - [ ] JSON: oggetti, array, stringhe, numeri, booleani e null
 - [ ] Python: dumps/loads per stringa, dump/load per file
 - [ ] Validare i dati dopo il parsing; JSON non è un database
+
+### Python di base per applicazioni Web (priorità ALTA, gruppo A)
+
+- [ ] Indentazione definisce blocchi Python
+- [ ] Dizionario: chiave → valore; lista: sequenza ordinata
+- [ ] Validare input esterno prima dell’uso
+- [ ] Funzione: parametri, corpo, return
+
+### Servizi RESTful con Flask: crea e consuma API (priorità ALTA, gruppo A)
+
+- [ ] GET lettura; POST creazione; PUT sostituzione; PATCH modifica parziale; DELETE rimozione
+- [ ] jsonify produce risposta JSON; validare body prima dell’uso
+- [ ] 200 successo; 201 creazione; 204 senza corpo; 400 input; 404 risorsa assente
+- [ ] fetch: header JSON, JSON.stringify, response.ok e corpo solo quando presente
 
 
 ## Area 5. Web semantico ed evoluzione
@@ -659,6 +768,9 @@
 - [ ] **HTML: form e accessibilità**: Credere che la validazione nel browser renda sicuri i dati → Required, pattern e controlli JavaScript vivono nel client e si possono aggirare inviando una richiesta costruita a mano. La validazione lato client serve all'esperienza utente; il server deve sempre rivalidare.
 - [ ] **HTML: form e accessibilità**: Scrivere method="patch" in un form per aggiornare una risorsa REST → I form HTML supportano nativamente get e post. PATCH, PUT e DELETE verso un'API si inviano con JavaScript (fetch), oppure il server deve accettare un POST e interpretarlo lato suo.
 - [ ] **HTML: form e accessibilità**: Lasciare un button senza type dentro il form per un'azione secondaria → Senza type, un button dentro un form si comporta come submit e invia i dati. Per azioni JavaScript che non devono inviare va scritto esplicitamente type="button".
+- [ ] **HTML5: struttura semantica della pagina**: Scegliere tag HTML solo per lo stile predefinito → Il ruolo semantico dipende dal contenuto; l’aspetto è compito del CSS e può cambiare senza cambiare il tag.
+- [ ] **HTML5: struttura semantica della pagina**: Usare più main per riquadri della pagina → main identifica il contenuto dominante del documento, non ogni colonna o pannello visivo.
+- [ ] **HTML5: struttura semantica della pagina**: Usare section come sinonimo universale di div → section rappresenta un gruppo tematico, di solito con intestazione; un raggruppamento neutro può restare div.
 - [ ] **JavaScript moderno: fetch, async/await**: Aspettarsi che fetch fallisca da solo quando il server risponde 404 → La Promise di fetch diventa rejected per i fallimenti nel completare la richiesta (come gli errori di rete), non per gli stati HTTP di errore: un 404 produce una Response normale. Va controllato response.ok o response.status e gestito esplicitamente.
 - [ ] **JavaScript moderno: fetch, async/await**: Dimenticare await davanti a risposta.json() → json() restituisce una Promise, non i dati già interpretati: senza await ottieni la Promise e ogni accesso ai campi dà undefined. La lettura del corpo è il secondo tempo asincrono dopo l'arrivo della Response.
 - [ ] **JavaScript moderno: fetch, async/await**: Usare await in una funzione normale o pensare che blocchi tutta la pagina → await sta nelle funzioni async (o al livello più alto dei moduli) e sospende solo quella funzione: il browser continua a disegnare e a gestire gli eventi durante l'attesa.
@@ -673,6 +785,9 @@
 - [ ] **Git: comandi base**: Dire che `git pull` crea una pull request. → `git pull` aggiorna il repository locale; una PR è una richiesta gestita dalla piattaforma di hosting.
 - [ ] **Git: comandi base**: Eseguire merge mentre si è sul branch sorgente pensando di integrare main nel branch destinazione. → Il merge integra il branch nominato nel branch corrente; va prima selezionata la destinazione.
 - [ ] **Git: comandi base**: Credere che un push equivalga a un merge. → Push pubblica commit sul remote; non integra da solo il branch in main.
+- [ ] **Git: workflow collaborativo con branch, merge e pull request**: Chiamare pull request un comando Git → Pull request è funzione della piattaforma; Git fornisce commit, branch, push e merge ma non quel comando universale.
+- [ ] **Git: workflow collaborativo con branch, merge e pull request**: Pensare che push integri un branch → Push pubblica commit sul remote; integrazione richiede merge o processo equivalente sul branch di destinazione.
+- [ ] **Git: workflow collaborativo con branch, merge e pull request**: Risolvere conflitto scegliendo sempre una versione → Git non conosce intenzione corretta: bisogna capire modifiche, decidere contenuto e verificare risultato.
 - [ ] **SQLite: operazioni CRUD**: Inserire input utente concatenandolo nella query. → Il dato può essere interpretato come SQL; i placeholder separano codice e valore.
 - [ ] **SQLite: operazioni CRUD**: Dimenticare WHERE in UPDATE o DELETE. → La query potrebbe modificare o cancellare tutte le righe della tabella.
 - [ ] **SQLite: operazioni CRUD**: Pensare che `with conn` chiuda automaticamente la connessione. → Il context manager gestisce la transazione; la connessione resta da chiudere esplicitamente.
@@ -708,11 +823,17 @@
 - [ ] **Eventi: locali vs remoti**: Presentare il polling come aggiornamento in tempo reale senza costi → Il polling interroga a intervalli: tra un controllo e l'altro le novità aspettano, e molti controlli tornano a vuoto consumando richieste. È semplice, ma né istantaneo né gratuito.
 - [ ] **Eventi: locali vs remoti**: Confondere preventDefault e stopPropagation → preventDefault annulla l'azione predefinita del browser (per esempio l'invio del form); stopPropagation interrompe la propagazione dell'evento ad altri nodi. Scambiarli lascia partire invii indesiderati o non ferma i listener degli antenati.
 - [ ] **Eventi: locali vs remoti**: Pensare che con HTTP ordinario il server possa avvisare la pagina quando vuole → Nel modello richiesta-risposta di HTTP è il client a iniziare: il server non apre conversazioni. Per questo servono polling, long polling, oppure canali persistenti come SSE e WebSocket (questo dopo un handshake iniziale via HTTP).
+- [ ] **Sviluppo event-driven: eventi, handler e stato**: Confermare l’azione nel momento del click → Il click segnala l’intenzione dell’utente, non l’esito del servizio remoto; occorre aspettare e controllare la risposta.
+- [ ] **Sviluppo event-driven: eventi, handler e stato**: Usare una Promise come se fosse già una risposta → Senza await non esiste ancora una Response da cui leggere status e corpo.
+- [ ] **Sviluppo event-driven: eventi, handler e stato**: Mettere tutto in un handler enorme → Separare selezione DOM, rete e presentazione rende lo stato più leggibile e verificabile.
 - [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Dire che il parser esegue il codice JavaScript → Il parser analizza il testo sorgente e costruisce l'AST, segnalando gli errori di sintassi. L'esecuzione comincia dopo, con l'interprete che gira sul bytecode generato a partire dall'AST.
 - [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Confondere l'AST con il codice macchina o con il bytecode → L'AST è la rappresentazione ad albero della struttura del programma, ancora indipendente dalla macchina. Il bytecode è una rappresentazione compatta eseguita dall'interprete; il codice macchina è il prodotto finale del JIT per le parti calde.
 - [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Pensare che il JIT compili tutto il programma prima di iniziare a eseguirlo → Just-In-Time significa durante l'esecuzione e in modo selettivo: si comincia interpretando il bytecode e si compila in codice macchina solo ciò che il profiler segnala come caldo. Compilare tutto prima è la strategia AOT, diversa.
 - [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Attribuire il DOM al motore JavaScript → Il motore implementa il linguaggio ECMAScript; il DOM lo fornisce il browser che ospita il motore, come precisa la documentazione ufficiale di V8. In Node.js, infatti, document non esiste.
 - [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Credere che una volta ottimizzato, il codice resti tale per sempre → Le ottimizzazioni JIT sono speculative, basate sui tipi osservati dal feedback: se arriva un valore di tipo diverso, il motore deottimizza e torna al bytecode per mantenere il risultato corretto.
+- [ ] **Sensori nel Web mobile: posizione e orientamento**: Chiamare Geolocation senza HTTPS e consenso → Geolocation richiede contesto sicuro e l’utente può negare il permesso; entrambi sono rami normali del flusso.
+- [ ] **Sensori nel Web mobile: posizione e orientamento**: Interpretare coordinate come posizione esatta → La misura ha precisione e disponibilità variabili; va trattata come dato con limite, non certezza assoluta.
+- [ ] **Sensori nel Web mobile: posizione e orientamento**: Rendere posizione l’unico modo per scegliere sede → Supporto e consenso non sono garantiti, quindi serve sempre un percorso manuale equivalente.
 - [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Trattare Web 1.0, 2.0, 3.0, 4.0 come versioni ufficiali rilasciate in date precise → Sono etichette descrittive di tendenze, con confini sfumati e fasi che convivono: nessun organismo le rilascia e le datazioni sono solo indicative. Le domande si risolvono con le caratteristiche, non con gli anni.
 - [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Attribuire i contenuti generati dagli utenti al Web 1.0 → Il Web 1.0 è di sola lettura: pochi autori, pagine statiche uguali per tutti. Partecipazione, profili e contenuti degli utenti sono la firma del Web 2.0.
 - [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Rispondere sul Web 3.0 con significati diversi dal web semantico del materiale del corso → Nel materiale di studio del corso (SYLLABUS e MATERIALE_UTENTE) il 3.0 è il Web semantico: dati condivisi e riusabili tra applicazioni con formati comuni come RDF e significato elaborabile dalle macchine. È in quel quadro che vanno date le risposte.
@@ -721,6 +842,18 @@
 - [ ] **JSON: formato dati per il Web**: Scrivere `True`, `False` e `None` come token JSON. → La sintassi JSON usa `true`, `false` e `null`; i token Python non sono validi in JSON.
 - [ ] **JSON: formato dati per il Web**: Aggiungere commenti o virgole finali a un documento JSON. → Non fanno parte della grammatica JSON standard e causano errori di parsing.
 - [ ] **JSON: formato dati per il Web**: Pensare che JSON valido significhi dati sicuri o corretti. → JSON garantisce la sintassi, non schema applicativo, autorizzazione o sicurezza.
+- [ ] **Architetture mashup: comporre servizi e dati**: Scambiare mashup e copia completa dei dati → Le sorgenti restano autonome: la composizione riguarda contratti e risultati, non duplicare senza criterio ogni archivio.
+- [ ] **Architetture mashup: comporre servizi e dati**: Trattare ogni errore come libro inesistente → Un 404 locale e un timeout esterno hanno cause e azioni diverse e devono restare distinguibili.
+- [ ] **Architetture mashup: comporre servizi e dati**: Usare JSON senza controllare la Response → fetch risolve anche per status HTTP di errore, quindi lo status va interpretato prima di usare il corpo.
+- [ ] **React: componenti, JSX, props e stato**: Modificare direttamente una variabile di state → Un’assegnazione diretta non comunica a React il cambiamento da renderizzare; va chiamato il setter di useState.
+- [ ] **React: componenti, JSX, props e stato**: Modificare una prop ricevuta dal padre → Le props sono input del componente; alterarle rende poco chiara la direzione dei dati e non aggiorna il padre.
+- [ ] **React: componenti, JSX, props e stato**: Trattare JSX come HTML senza contesto → JSX è sintassi JavaScript che deve essere gestita dall’ambiente React prima di produrre elementi di interfaccia.
+- [ ] **Python di base per applicazioni Web**: Usare indentazione soltanto come stile visivo → In Python l’indentazione delimita davvero blocchi: un livello errato cambia flusso o genera errore.
+- [ ] **Python di base per applicazioni Web**: Confondere lista e dizionario → Lista contiene elementi per posizione; dizionario associa campi a chiavi, quindi accesso e operazioni non coincidono.
+- [ ] **Python di base per applicazioni Web**: Considerare valido ogni dizionario ricevuto → Un input può mancare di chiavi o avere tipi inattesi; serve validazione prima di elaborarlo.
+- [ ] **Servizi RESTful con Flask: crea e consuma API**: Usare 400 quando l’id della risorsa non esiste → 400 segnala richiesta non valida; id valido nella forma ma assente nel catalogo richiede 404.
+- [ ] **Servizi RESTful con Flask: crea e consuma API**: Leggere JSON dopo risposta 204 → 204 significa nessun contenuto, quindi response.json produrrebbe errore di parsing inutile.
+- [ ] **Servizi RESTful con Flask: crea e consuma API**: Usare PATCH senza definire contratto → PATCH modifica secondo documento o contratto dichiarato; qui accetta titolo, mentre PUT richiede rappresentazione completa.
 - [ ] **AJAX: Asynchronous JavaScript and XML**: Dire che AJAX deve ricevere XML. → XML è nel nome storico; la tecnica può usare JSON o altri formati.
 - [ ] **AJAX: Asynchronous JavaScript and XML**: Credere che fetch rifiuti automaticamente la Promise con status 404. → Una risposta HTTP 404 normalmente risolve la Promise; si deve controllare `response.ok` o `status`.
 - [ ] **AJAX: Asynchronous JavaScript and XML**: Inserire titoli ricevuti con `innerHTML` senza sanificazione. → Testo remoto può contenere markup non attendibile; `textContent` lo tratta come testo.

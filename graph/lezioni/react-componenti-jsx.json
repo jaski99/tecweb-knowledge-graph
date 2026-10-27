@@ -1,0 +1,98 @@
+{
+  "perche_ti_serve": "Il programma ufficiale [F1] nomina React: questo nodo A serve a costruire e spiegare componenti JSX con props e stato.",
+  "scenario_fil_rouge": "La Biblioteca Aurora sta rendendo il proprio catalogo disponibile sul Web: studenti e bibliotecari cercano libri, propongono modifiche e collaborano sullo stesso servizio. Ogni scelta di questa lezione risolve un passaggio concreto di quel progetto, senza cambiare scenario.",
+  "definizione_esame": {
+    "definizione": "Un componente React è una funzione JavaScript che descrive una parte dell’interfaccia restituendo JSX.",
+    "scopo_vantaggio": "Scompone l’interfaccia in unità riusabili, passa dati in ingresso come props e conserva cambiamenti locali nello stato.",
+    "esempio": "La scheda React di un libro riceve il titolo come prop e conserva il numero di richieste con useState."
+  },
+  "spiegazione": "## Prima l’intuizione e i prerequisiti\n\n**Richiama DOM, JavaScript e fetch asincrono.** Una pagina del catalogo può essere descritta come componenti: un catalogo contiene molte schede libro. JSX assomiglia a HTML ma è sintassi dentro JavaScript; un ambiente React lo trasforma nella descrizione usata per aggiornare l’interfaccia. Nel progetto della Biblioteca Aurora la domanda iniziale è concreta: come rendere riusabile la scheda di un libro senza mescolare il titolo ricevuto e il contatore locale. Prima di scegliere una API o scrivere istruzioni, identifica i dati coinvolti, chi è responsabile di ogni passaggio e quale risultato il browser deve comunicare. Questo evita di confondere il nome di una tecnologia con il problema che risolve.\n\n## Il flusso da saper disegnare\n\nLe props sono argomenti che il padre passa al figlio e che il figlio legge. Lo state è memoria del componente; il setter di useState segnala a React il prossimo valore e un nuovo rendering. Separare input e stato rende esplicito chi fornisce un dato e chi può cambiarlo. Un buon ragionamento mantiene distinto ciò che avvia l’azione, ciò che trasforma i dati e ciò che rende il risultato visibile. Se uno dei passaggi fallisce, il comportamento previsto deve essere dichiarato: un’interfaccia affidabile non inventa un esito positivo né nasconde l’incertezza.\n\n```mermaid\nflowchart TD\n    A[Componente Catalogo] -->|prop titolo| B[SchedaLibro]\n    B --> C[JSX]\n    C --> D[Interfaccia]\n    E[Click] --> F[setState]\n    F --> B\n```\n\n## Applica l’idea con codice commentato\n\nIl componente riceve una prop, inizializza stato e registra un handler JSX. Il setter calcola il prossimo conteggio invece di mutare direttamente il valore corrente.\n\n```jsx\nimport { useState } from 'react';\n\nfunction SchedaLibro({ titolo }) {\n  const [richieste, setRichieste] = useState(0);\n  return (\n    <article>\n      <h2>{titolo}</h2>\n      {/* Il setter crea il prossimo stato dal valore precedente. */}\n      <button onClick={() => setRichieste(n => n + 1)}>\n        Richiedi ({richieste})\n      </button>\n    </article>\n  );\n}\n```\n\nIl frammento è piccolo apposta: mostra il contratto essenziale senza far perdere di vista il passaggio concettuale. Nella pratica il codice va inserito in un progetto con test, gestione degli errori e responsabilità separate. Un input proveniente da utente, browser o rete non diventa attendibile soltanto perché ha raggiunto una funzione.\n\n## Confronto che evita una trappola\n\nNon confondere JSX con DOM, né props con state. JSX descrive la vista, il DOM è la struttura del browser; props arrivano dall’esterno e state appartiene alla singola istanza del componente.\n\n| Concetto | Da dove arriva | Come cambia |\n|---|---|---|\n| JSX | Dal componente | Con un nuovo rendering |\n| Props | Dal padre | Il figlio le legge |\n| State | Dal componente | Con il suo setter |\n| DOM | Dal browser | React applica aggiornamenti necessari |\n\n## Verifica mentale prima di proseguire\n\nUn componente è delimitato quando ha nome chiaro, input espliciti e stato di cui sa spiegare il ciclo di vita. I dati JSON possono essere trasformati dal padre in props per le schede. Ripeti il percorso con un caso normale e con un caso limite: domanda iniziale, controllo, esito. Se riesci a spiegare perché i due casi hanno risposte diverse, non stai soltanto memorizzando parole chiave ma stai applicando un contratto tecnico.",
+  "analogia": {
+    "testo": "Un componente è come una scheda riutilizzabile del catalogo: il bibliotecario scrive i dati in ingresso e la scheda tiene un piccolo contatore delle azioni fatte su di essa.",
+    "limite": "Una scheda cartacea non si ridisegna automaticamente; React ricalcola la descrizione dell’interfaccia quando cambia lo stato."
+  },
+  "worked_example": {
+    "titolo": "Scheda libro con contatore",
+    "problema": "Crea una scheda che riceve un titolo e aumenta un contatore quando lo studente preme «Richiedi».",
+    "passi": [
+      "Importa useState dall’ambiente React.",
+      "Dichiara SchedaLibro con la prop titolo.",
+      "Inizializza richieste a zero e conserva il setter.",
+      "Mostra la prop nel JSX.",
+      "Usa onClick per richiamare il setter."
+    ],
+    "soluzione": "Il componente riceve `({ titolo })`, dichiara `[richieste, setRichieste] = useState(0)` e rende un pulsante. L’handler `setRichieste(n => n + 1)` crea lo stato successivo a partire dal precedente.",
+    "perche_funziona": "Props e state hanno ruoli distinti: il titolo è dato dal padre, il contatore è memoria della singola scheda ed è aggiornato nel modo atteso da React."
+  },
+  "completion_problem": {
+    "titolo": "Completa la prop e lo stato",
+    "testo": "Completa il componente affinché visualizzi il titolo ricevuto e aumenti il contatore senza mutare direttamente la variabile.",
+    "passi_mancanti": [
+      "Ricevere titolo tra le props.",
+      "Inizializzare lo stato con useState.",
+      "Usare il setter nel gestore del click."
+    ],
+    "soluzione": "function SchedaLibro({ titolo }) {\n  const [richieste, setRichieste] = useState(0);\n  return <button onClick={() => setRichieste(n => n + 1)}>{titolo}: {richieste}</button>;\n  // Il setter segnala a React il cambiamento.\n}"
+  },
+  "esercizio_autonomo": {
+    "titolo": "Separa catalogo e scheda",
+    "testo": "Progetta un componente Catalogo che riceva un array di libri e renda una SchedaLibro per ogni elemento con chiave e titolo.",
+    "suggerimento": "Il padre itera sull’array; la scheda non modifica l’array ricevuto come prop.",
+    "soluzione_attesa": "Catalogo usa `libri.map(libro => <SchedaLibro key={libro.id} titolo={libro.titolo} />)`. Ogni SchedaLibro legge titolo come prop e conserva solo stato locale, senza mutare libri."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Modificare direttamente una variabile di state",
+      "perche_sbagliato": "Un’assegnazione diretta non comunica a React il cambiamento da renderizzare; va chiamato il setter di useState.",
+      "distrattore": "Un codice HTTP 204 aggiorna il JSX."
+    },
+    {
+      "errore": "Modificare una prop ricevuta dal padre",
+      "perche_sbagliato": "Le props sono input del componente; alterarle rende poco chiara la direzione dei dati e non aggiorna il padre.",
+      "distrattore": "Un tag nav incrementa lo state."
+    },
+    {
+      "errore": "Trattare JSX come HTML senza contesto",
+      "perche_sbagliato": "JSX è sintassi JavaScript che deve essere gestita dall’ambiente React prima di produrre elementi di interfaccia.",
+      "distrattore": "Git merge interpreta un componente React."
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa restituisce spesso un componente React?",
+        "risposta": "Restituisce JSX, una descrizione dichiarativa della parte di interfaccia rappresentata."
+      },
+      {
+        "domanda": "Qual è la differenza fra props e state?",
+        "risposta": "Props sono input dal padre; state è memoria locale aggiornata dal componente con il proprio setter."
+      },
+      {
+        "domanda": "Perché si usa il setter di useState?",
+        "risposta": "Per comunicare a React il nuovo stato e permettere il rendering aggiornato invece di mutare una variabile."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega perché una scheda libro può leggere il titolo dal padre ma conservare localmente un contatore.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "dom-virtual-dom",
+        "collegamento": "React descrive l’interfaccia in componenti e aggiorna la vista senza confondere questa descrizione con il DOM del browser."
+      }
+    ]
+  },
+  "riepilogo": "React compone l’interfaccia con funzioni che restituiscono JSX. Props entrano dal padre e si leggono. State appartiene al componente e cambia con il setter. JSX non coincide con il DOM. Componenti piccoli rendono espliciti dati e responsabilità.",
+  "flashcard": {
+    "fronte": "Props e state in React: differenza?",
+    "retro": "Le props sono input ricevuti dal padre e letti dal componente; state è memoria locale aggiornata con il setter di useState."
+  },
+  "checklist": {
+    "so_fare": [
+      "Creare un componente JSX con props",
+      "Aggiornare state con useState e il setter"
+    ],
+    "so_dire": [
+      "Distinguere JSX e DOM",
+      "Confrontare props e state"
+    ]
+  }
+}
