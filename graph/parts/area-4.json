@@ -11,7 +11,13 @@
       "Usare jsonify per restituire JSON",
       "Gestire parametri URL e query string"
     ],
-    "prerequisiti": [],
+    "prerequisiti": [
+      {
+        "id": "python-base-web",
+        "forza": "hard",
+        "motivo": "Le basi di Python sono necessarie per comprendere funzioni, dati e decoratori nelle rotte Flask."
+      }
+    ],
     "esercizi": [
       {
         "tipo_esame": "scritto: implementa API Flask",

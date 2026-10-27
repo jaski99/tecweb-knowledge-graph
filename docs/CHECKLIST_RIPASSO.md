@@ -140,20 +140,6 @@
 **Retro**: await fetch per ottenere la Response, controllo di response.ok (gli stati di errore non causano rejected), poi await risposta.json() per i dati; il tutto in una funzione async con try/catch per rete, stati HTTP e JSON non valido.
 
 
-### Flask: rotte e jsonify
-
-**Fronte**: Flask: rotte e jsonify: qual è la definizione, lo scopo e un esempio?
-
-**Retro**: Una rotta Flask associa un URL e, facoltativamente, metodi HTTP a una funzione Python; jsonify serializza dati Python compatibili in una risposta HTTP JSON. Il routing separa gli indirizzi dalle funzioni applicative; JSON consente a client diversi di scambiare dati strutturati con un formato interoperabile. GET /api/libri/7 restituisce con jsonify un oggetto che descrive il libro con identificativo 7.
-
-
-### Flask: request e response
-
-**Fronte**: Flask: request e response: qual è la definizione, lo scopo e un esempio?
-
-**Retro**: In Flask, `request` espone i dati HTTP in ingresso nel contesto della richiesta; una response è il messaggio HTTP in uscita, composto da status, header e corpo. Separare lettura, validazione e risposta rende esplicito il contratto dell’endpoint e permette di segnalare input errati senza confonderli con risorse mancanti. Una vista legge `request.args["q"]` dalla query string e restituisce `jsonify({"q": q}), 200`.
-
-
 ### Git: comandi base
 
 **Fronte**: Git: branch, merge e pull request: qual è la definizione, lo scopo e un esempio?
@@ -194,6 +180,20 @@
 **Fronte**: Lista e dizionario Python: differenza?
 
 **Retro**: La lista è sequenza ordinata; il dizionario associa chiavi a valori ed è utile per campi nominati come quelli di un libro.
+
+
+### Flask: rotte e jsonify
+
+**Fronte**: Flask: rotte e jsonify: qual è la definizione, lo scopo e un esempio?
+
+**Retro**: Una rotta Flask associa un URL e, facoltativamente, metodi HTTP a una funzione Python; jsonify serializza dati Python compatibili in una risposta HTTP JSON. Il routing separa gli indirizzi dalle funzioni applicative; JSON consente a client diversi di scambiare dati strutturati con un formato interoperabile. GET /api/libri/7 restituisce con jsonify un oggetto che descrive il libro con identificativo 7.
+
+
+### Flask: request e response
+
+**Fronte**: Flask: request e response: qual è la definizione, lo scopo e un esempio?
+
+**Retro**: In Flask, `request` espone i dati HTTP in ingresso nel contesto della richiesta; una response è il messaggio HTTP in uscita, composto da status, header e corpo. Separare lettura, validazione e risposta rende esplicito il contratto dell’endpoint e permette di segnalare input errati senza confonderli con risorse mancanti. Una vista legge `request.args["q"]` dalla query string e restituisce `jsonify({"q": q}), 200`.
 
 
 ### Servizi RESTful con Flask: crea e consuma API
@@ -645,18 +645,6 @@
 
 ## Area 4. Back-end e strumenti
 
-### Flask: rotte e jsonify (priorità ALTA, gruppo A)
-
-- [ ] @app.route/@app.get associa URL e metodi a una vista
-- [ ] I parametri dinamici sono passati alla funzione secondo il converter
-- [ ] jsonify restituisce JSON; status HTTP distingue successo ed errore
-
-### Flask: request e response (priorità ALTA, gruppo A)
-
-- [ ] request.args: query string; request.form: campi form; get_json: body JSON
-- [ ] Validare tipo, presenza e vincoli prima di usare l’input
-- [ ] Response: status, header e corpo; 400 input errato, 404 risorsa assente
-
 ### Git: comandi base (priorità ALTA, gruppo A)
 
 - [ ] branch/switch: creare e cambiare linea di sviluppo
@@ -683,6 +671,18 @@
 - [ ] Dizionario: chiave → valore; lista: sequenza ordinata
 - [ ] Validare input esterno prima dell’uso
 - [ ] Funzione: parametri, corpo, return
+
+### Flask: rotte e jsonify (priorità ALTA, gruppo A)
+
+- [ ] @app.route/@app.get associa URL e metodi a una vista
+- [ ] I parametri dinamici sono passati alla funzione secondo il converter
+- [ ] jsonify restituisce JSON; status HTTP distingue successo ed errore
+
+### Flask: request e response (priorità ALTA, gruppo A)
+
+- [ ] request.args: query string; request.form: campi form; get_json: body JSON
+- [ ] Validare tipo, presenza e vincoli prima di usare l’input
+- [ ] Response: status, header e corpo; 400 input errato, 404 risorsa assente
 
 ### Servizi RESTful con Flask: crea e consuma API (priorità ALTA, gruppo A)
 
@@ -744,9 +744,9 @@
 
 ### Tesina: presentazione PowerPoint (max 8 minuti) (priorità ALTA, gruppo A)
 
-- [ ] 8 minuti totali
-- [ ] 4 slide: obiettivi, architettura, codice, demo
-- [ ] Tempi: 1 + 2 + 3 + 2 minuti
+- [ ] PowerPoint: massimo 8 minuti [F1]
+- [ ] [IPOTESI] Quattro slide: obiettivi, architettura, codice, demo (materiale utente)
+- [ ] [IPOTESI] Tempi: 1 + 2 + 3 + 2 minuti (materiale utente)
 - [ ] Demo dal vivo o screen
 
 ### Quiz e form: domande a scelta multipla e raccolta risposte (priorità MEDIA, gruppo B)
@@ -877,12 +877,6 @@
 - [ ] **JavaScript moderno: fetch, async/await**: Usare await in una funzione normale o pensare che blocchi tutta la pagina → await sta nelle funzioni async (o al livello più alto dei moduli) e sospende solo quella funzione: il browser continua a disegnare e a gestire gli eventi durante l'attesa.
 - [ ] **JavaScript moderno: fetch, async/await**: Presentare async/await come alternativa che sostituisce le Promise → async/await è sintassi costruita sulle Promise: una funzione async restituisce una Promise e await ne attende la conclusione. Cambia la leggibilità, non il meccanismo sottostante.
 - [ ] **JavaScript moderno: fetch, async/await**: Mandare un corpo JSON dimenticando intestazione o serializzazione → Nel body va una stringa prodotta con JSON.stringify e l'intestazione Content-Type: application/json dice al server come interpretarla. Senza, il server può non riconoscere i dati o leggerli nel formato sbagliato.
-- [ ] **Flask: rotte e jsonify**: Restituire un dizionario Python credendo che sia testo HTML. → Il client si aspetta JSON; una risposta HTML non rispetta il formato concordato dell’endpoint.
-- [ ] **Flask: rotte e jsonify**: Usare 404 per ogni input non valido. → 404 riguarda la risorsa non trovata; un corpo malformato è tipicamente un errore di richiesta, per esempio 400.
-- [ ] **Flask: rotte e jsonify**: Pensare che jsonify memorizzi i dati nel database. → jsonify serializza la risposta, non fornisce persistenza né accesso al database.
-- [ ] **Flask: request e response**: Usare 404 per un JSON malformato. → La rotta esiste ma la richiesta è errata: 400 è più adatto; 404 riguarda la risorsa non trovata.
-- [ ] **Flask: request e response**: Leggere sempre il body con `request.form` anche se il client invia JSON. → I dati sono in formati diversi: form e JSON hanno media type e decoder differenti.
-- [ ] **Flask: request e response**: Restituire 200 anche quando una prenotazione viene creata. → 201 descrive la creazione riuscita; lo status è parte del contratto della risposta.
 - [ ] **Git: comandi base**: Dire che `git pull` crea una pull request. → `git pull` aggiorna il repository locale; una PR è una richiesta gestita dalla piattaforma di hosting.
 - [ ] **Git: comandi base**: Eseguire merge mentre si è sul branch sorgente pensando di integrare main nel branch destinazione. → Il merge integra il branch nominato nel branch corrente; va prima selezionata la destinazione.
 - [ ] **Git: comandi base**: Credere che un push equivalga a un merge. → Push pubblica commit sul remote; non integra da solo il branch in main.
@@ -901,6 +895,12 @@
 - [ ] **Python di base per applicazioni Web**: Usare indentazione soltanto come stile visivo → In Python l’indentazione delimita davvero blocchi: un livello errato cambia flusso o genera errore.
 - [ ] **Python di base per applicazioni Web**: Confondere lista e dizionario → Lista contiene elementi per posizione; dizionario associa campi a chiavi, quindi accesso e operazioni non coincidono.
 - [ ] **Python di base per applicazioni Web**: Considerare valido ogni dizionario ricevuto → Un input può mancare di chiavi o avere tipi inattesi; serve validazione prima di elaborarlo.
+- [ ] **Flask: rotte e jsonify**: Restituire un dizionario Python credendo che sia testo HTML. → Il client si aspetta JSON; una risposta HTML non rispetta il formato concordato dell’endpoint.
+- [ ] **Flask: rotte e jsonify**: Usare 404 per ogni input non valido. → 404 riguarda la risorsa non trovata; un corpo malformato è tipicamente un errore di richiesta, per esempio 400.
+- [ ] **Flask: rotte e jsonify**: Pensare che jsonify memorizzi i dati nel database. → jsonify serializza la risposta, non fornisce persistenza né accesso al database.
+- [ ] **Flask: request e response**: Usare 404 per un JSON malformato. → La rotta esiste ma la richiesta è errata: 400 è più adatto; 404 riguarda la risorsa non trovata.
+- [ ] **Flask: request e response**: Leggere sempre il body con `request.form` anche se il client invia JSON. → I dati sono in formati diversi: form e JSON hanno media type e decoder differenti.
+- [ ] **Flask: request e response**: Restituire 200 anche quando una prenotazione viene creata. → 201 descrive la creazione riuscita; lo status è parte del contratto della risposta.
 - [ ] **Servizi RESTful con Flask: crea e consuma API**: Usare 400 quando l’id della risorsa non esiste → 400 segnala richiesta non valida; id valido nella forma ma assente nel catalogo richiede 404.
 - [ ] **Servizi RESTful con Flask: crea e consuma API**: Leggere JSON dopo risposta 204 → 204 significa nessun contenuto, quindi response.json produrrebbe errore di parsing inutile.
 - [ ] **Servizi RESTful con Flask: crea e consuma API**: Usare PATCH senza definire contratto → PATCH modifica secondo documento o contratto dichiarato; qui accetta titolo, mentre PUT richiede rappresentazione completa.

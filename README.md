@@ -4,13 +4,13 @@ Progetto di studio per **[INF-37] Intelligenza Artificiale e Tecnologie Web**, o
 
 Il [programma](docs/SYLLABUS.md) distingue fatti ufficiali, ipotesi e informazioni non trovate; il [formato d'esame](docs/EXAM_FORMAT.md) descrive TW e IA. I gruppi A/B/C sono **priorità di studio**, non frequenze accertate di domande. Il [piano di miglioramento](docs/IMPROVEMENT_PLAN.md) definisce scope e ordine di integrazione.
 
-- [Elenco nodi e priorità](docs/NODES.md) — 40 nodi presenti e 16 pianificati per X2/X3.
+- [Elenco nodi e priorità](docs/NODES.md) — 56 nodi presenti, inclusi gli 8 TW di X2 e gli 8 IA di X3.
 - [Contratti del grafo](docs/CONTRACTS.md) — schema del nodo v4, aree, lezioni e build.
 - [Stato e limiti](docs/STATUS.md) · [Piano Arena](docs/ARENA_PLAN.md) · [Materiale utente originale](docs/MATERIALE_UTENTE.md).
 
 ## Web app
 
-App statica in italiano con grafo dei prerequisiti, percorso, progresso locale, lezioni, ripasso e simulatore. Le librerie dell'interfaccia sono caricate da CDN; la connessione è necessaria. La banca e il simulatore hanno limitazioni note, descritte nello [stato del progetto](docs/STATUS.md); il timer non è una durata d'esame ufficiale.
+App statica in italiano con grafo dei prerequisiti, percorso, progresso locale, lezioni, ripasso e simulatore. Le librerie dell'interfaccia sono incluse localmente; dopo la prima visita e il completamento della cache, la PWA può funzionare offline. La banca e il simulatore hanno limitazioni note, descritte nello [stato del progetto](docs/STATUS.md); il timer non è una durata d'esame ufficiale.
 
 ```bash
 sh web/build.sh

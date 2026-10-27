@@ -4,21 +4,19 @@
 
 Il progetto segue **INF-37 2026/27, coorte 2024/25**, Ingegneria Informatica (MO): modulo TW della prof.ssa Laura Po e modulo IA del prof. Simone Calderara [F1], [F3], [F8]. Le modalità verificate, le ipotesi e i limiti per altre coorti sono descritti in [SYLLABUS.md](SYLLABUS.md) e [EXAM_FORMAT.md](EXAM_FORMAT.md).
 
-## Disponibile sul ramo X1
+## Disponibile
 
-- **40 nodi esistenti con lezione**, nelle aree 1–6; aree dichiarate 1–7. L'area 7 è prevista nei metadati ma non contiene ancora nodi.
-- Priorità dei nodi e legenda A/B/C riallineate al programma [F1]; la tabella completa e i conteggi sono in [NODES.md](NODES.md).
-- Identificativi e contratti per **16 nodi pianificati**: 8 TW in arrivo da X2 e 8 IA in arrivo da X3. Non sono lezioni già disponibili.
-- Contratti, fonti e modalità d'esame documentati; build del grafo, documenti generati, web app statica, banca quiz e test sono già presenti nel repository.
+- **56 nodi con lezione** nelle aree 1–7: i 40 iniziali rivisti da X4, 8 nuovi nodi TW di X2 e 8 IA di X3. Conteggi, tempi stimati e prerequisiti sono in [NODES.md](NODES.md).
+- Priorità A/B/C riallineate al programma [F1] anche nella legenda del piano generato. Le quattro slide e la loro ripartizione sono **[IPOTESI]** del materiale utente; [F1] conferma solo il limite di **massimo 8 minuti** per il PowerPoint.
+- Gli archi I-2 collegano le basi Python a Flask e al laboratorio IA e aggiungono alla tesina i prerequisiti soft su servizi RESTful e Git. Flask/CRUD sono un esempio didattico, non un vincolo della tesina.
+- La web app include i miglioramenti X5, librerie locali e PWA; contratti, fonti, build del grafo, banca quiz e test sono presenti.
+- La banca quiz e il simulatore (X6) leggono il formato `elementi`, aree 1–7; il timer della simulazione è un'**ipotesi**, non una durata ufficiale. Vedi [QUIZ_FORMAT.md](QUIZ_FORMAT.md).
+- Il modulo IA (area 7) è **nascosto di default** in percorso, progresso, piano, simulatore e ripasso; si attiva con l'interruttore del sito (preferenza locale `tecweb.moduloIA`).
 
 ## Lavoro ancora aperto
 
-- **X4** deve riallineare e correggere le 40 lezioni esistenti: nel frattempo possono contenere formulazioni o priorità precedenti. L'esempio Flask/CRUD è una proposta didattica, non un vincolo per la tesina.
-- **X2/X3** devono creare i nodi e le lezioni pianificati, compresa l'area IA; le slide ufficiali richiedono accesso Moodle e non sono pubbliche [F8], [F12].
-- **X6** deve collegare la banca quiz al simulatore e aggiornare quiz e modalità; il timer già presente è un'**ipotesi**, non una durata ufficiale. **X5** cura i miglioramenti della web app.
-- `scripts/gen_docs.py` conserva la vecchia legenda con percentuali: serve aggiornarlo in integrazione e rigenerare i documenti, non correggerli a mano. Il part esistente della tesina contiene ancora una checklist con **4 slide** non etichettate: è una **[IPOTESI]**, da chiarire nel relativo scope. Le lezioni preesistenti possono contenere altri esempi o priorità da riallineare con X4.
-- **[NON TROVATO]** prove passate pubbliche, durata ufficiale dello scritto, numero ufficiale di slide e griglia dettagliata [F1], [F12]. Le percentuali degli appunti utente non sono dati ufficiali.
-- **Verifica URL nella sandbox X1:** `python scripts/check_urls.py` ha restituito errori di connessione per tutte le 69 risorse uniche del grafo, perché i loro host non sono raggiungibili dall'ambiente. Nessun HTTP 200 è stato verificato da quel comando: va ripetuto da una rete abilitata. Gli errori non dimostrano che i link siano invalidi.
+- **[NON TROVATO]** prove passate pubbliche, durata ufficiale dello scritto, numero ufficiale di slide e griglia dettagliata [F1], [F12]. Le percentuali degli appunti utente non sono dati ufficiali; le slide interne richiedono accesso Moodle [F12].
+- **Verifica URL nella sandbox corrente:** `python scripts/check_urls.py` ha restituito 93 errori di connessione su 93 risorse uniche e nessuna risposta OK. Nessun HTTP 200 è stato verificato da quel comando: ripetere il controllo da una rete abilitata. Gli errori non dimostrano che i link siano invalidi.
 
 Il piano vincolante, gli scope e l'ordine di integrazione sono in [IMPROVEMENT_PLAN.md](IMPROVEMENT_PLAN.md).
 

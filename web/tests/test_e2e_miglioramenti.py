@@ -109,6 +109,48 @@ def test_area7_elenco_stati_piano_e_lezioni_sempre_accessibili(browser, base_url
     context.close()
 
 
+@pytest.mark.parametrize("viewport", list(VIEWPORTS))
+def test_integrazione_prerequisiti_e_ipotesi_visibili(browser, base_url, viewport):
+    context = browser.new_context(viewport=VIEWPORTS[viewport], is_mobile=viewport == "mobile", has_touch=viewport == "mobile", service_workers="block")
+    page = context.new_page()
+    errors = controlli(page)
+    titles = {node["id"]: node["title"] for node in GRAPH["nodi"]}
+    checks = (
+        ("flask-rotte-jsonify", (("python-base-web", "indispensabile"),)),
+        ("tesina-progetto-flask-crud", (("servizi-restful-flask", "utile"), ("git-workflow-collaborativo", "utile"))),
+        ("ia-python-numpy-lab", (("python-base-web", "utile"),)),
+    )
+    for node_id, prerequisites in checks:
+        if node_id.startswith("ia-"):
+            # Il modulo IA è nascosto di default: lo si attiva solo per la lezione IA.
+            page.evaluate("localStorage.setItem('tecweb.moduloIA', '1')")
+            page.goto(f"{base_url}#/lezione/{node_id}")
+            page.reload()
+        else:
+            page.goto(f"{base_url}#/lezione/{node_id}")
+        page.wait_for_function("title => document.querySelector('#lesson-title')?.innerText === title", arg=titles[node_id])
+        for prerequisite, badge in prerequisites:
+            row = page.locator("#sec-prereq li").filter(has_text=titles[prerequisite])
+            assert row.count() == 1 and badge in row.inner_text()
+        # Aspetta il diagramma: cambiando lezione prima del rendering, Mermaid
+        # può calcolare le dimensioni su elementi che sono già stati rimossi.
+        page.wait_for_selector("#sec-spiegazione pre.mermaid svg[viewBox]")
+        no_overflow(page)
+
+    page.goto(f"{base_url}#/lezione/tesina-presentazione-8-minuti")
+    page.wait_for_function("title => document.querySelector('#lesson-title')?.innerText === title", arg=titles["tesina-presentazione-8-minuti"])
+    exercise = page.locator("#sec-esercizi article.ex").first
+    assert exercise.locator("p.muted").inner_text().startswith("[IPOTESI]")
+    assert exercise.locator("p").nth(1).inner_text().startswith("[IPOTESI]")
+    exercise.locator("summary").click()
+    solution = exercise.locator("p.sol").inner_text()
+    assert solution.startswith("[IPOTESI]") and "massimo 8 minuti [F1]" in solution
+    page.wait_for_selector("#sec-spiegazione pre.mermaid svg[viewBox]")
+    no_overflow(page)
+    assert not errors, errors
+    context.close()
+
+
 def test_grafo_da_tastiera_e_legenda(browser, base_url):
     context = browser.new_context(viewport=VIEWPORTS["desktop"], service_workers="block")
     page = context.new_page()

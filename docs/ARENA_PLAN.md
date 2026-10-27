@@ -6,7 +6,7 @@ Il piano operativo vincolante del round 2, inclusi contratti, scope dettagliati 
 
 Il sito aiuta a studiare l'integrato **INF-37 2026/27**, Ingegneria Informatica (MO), nella scheda per la **coorte 2024/25**: Tecnologie Web, prof.ssa Laura Po, e modulo IA, prof. Simone Calderara [F1], [F3], [F8]. Chi segue il manifesto delle nuove immatricolazioni deve verificare la propria coorte [F7]. Il [syllabus](SYLLABUS.md) distingue fatti, ipotesi e informazioni non trovate; il [materiale utente](MATERIALE_UTENTE.md) è conservato con la sua nota di contesto, non è l'unica fonte.
 
-A/B/C sono priorità didattiche rispetto a [F1]: A = esplicito o indispensabile, B = contesto utile, C = opzionale/non elencato. Non sono frequenze accertate di domande. Le sette aree e le lezioni in arrivo sono elencate in [NODES.md](NODES.md); l'area 7 è il modulo IA ufficiale, non un'ipotesi su LLM.
+A/B/C sono priorità didattiche rispetto a [F1]: A = esplicito o indispensabile, B = contesto utile, C = opzionale/non elencato. Non sono frequenze accertate di domande. Le sette aree e le lezioni presenti sono elencate in [NODES.md](NODES.md); l'area 7 è il modulo IA ufficiale, non un'ipotesi su LLM.
 
 ## Worker del round 2
 
@@ -19,7 +19,7 @@ A/B/C sono priorità didattiche rispetto a [F1]: A = esplicito o indispensabile,
 | X5 | Web app | `web/` e workflow assegnati, escluse le parti del simulatore riservate a X6. |
 | X6 | Quiz e simulatore | Banca, schema, documentazione, simulatore e relativi test; fase b dopo X2 e X3. |
 
-Per i percorsi esatti e il contratto degli esiti consultare [IMPROVEMENT_PLAN.md](IMPROVEMENT_PLAN.md#2-worker-scope-esclusivo-ramo). Gli ID nuovi sono definitivi; i nuovi part evitano collisioni, mentre gli archi da nodi esistenti a nodi nuovi sono compito dell'integrazione.
+Per i percorsi esatti e il contratto degli esiti consultare [IMPROVEMENT_PLAN.md](IMPROVEMENT_PLAN.md#2-worker-scope-esclusivo-ramo). Gli ID sono definitivi e i part separati evitano collisioni; gli archi I-2 da nodi esistenti a nodi X2/X3 sono integrati nel grafo.
 
 ## Consegna e integrazione
 

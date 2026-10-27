@@ -26,6 +26,16 @@
         "id": "javascript-fetch-async-await",
         "forza": "hard",
         "motivo": "fetch è necessario per comunicazione front-end ↔ back-end."
+      },
+      {
+        "id": "servizi-restful-flask",
+        "forza": "soft",
+        "motivo": "Gli esercizi sui servizi RESTful aiutano a progettare e verificare le API del progetto."
+      },
+      {
+        "id": "git-workflow-collaborativo",
+        "forza": "soft",
+        "motivo": "Il workflow Git aiuta a tracciare e rivedere le modifiche anche in un progetto individuale."
       }
     ],
     "esercizi": [
@@ -74,10 +84,10 @@
     "area": 6,
     "gruppo": "A",
     "tipo": "abilita",
-    "sapere": "Il materiale utente propone una presentazione della tesina di 8 minuti organizzata in 4 slide: problema e obiettivi, architettura, codice significativo, dimostrazione. La scansione temporale suggerita è 1 + 2 + 3 + 2 minuti; va trattata come traccia di preparazione, non come regola ufficiale verificata.",
+    "sapere": "[FATTO] La presentazione PowerPoint dura al massimo 8 minuti [F1]. [IPOTESI] Il materiale utente propone quattro slide su problema e obiettivi, architettura, codice e demo, con ripartizione 1 + 2 + 3 + 2 minuti: è una possibile traccia, non un requisito ufficiale verificato.",
     "saper_fare": [
       "Selezionare evidenze tecniche che sostengano problema, scelte e risultato",
-      "Distribuire il discorso nelle quattro slide e rispettare il tempo complessivo previsto",
+      "[IPOTESI] Distribuire il discorso in quattro slide secondo la traccia del materiale utente, rispettando il limite di 8 minuti [F1].",
       "Preparare una demo ripetibile e un’alternativa con schermate statiche"
     ],
     "prerequisiti": [
@@ -89,9 +99,9 @@
     ],
     "esercizi": [
       {
-        "tipo_esame": "presentazione: quattro slide",
-        "testo": "Prepara una traccia di quattro slide per un catalogo di libri Flask CRUD, usando la scansione proposta nel materiale utente.",
-        "soluzione": "Slide 1 (1 min): problema e obiettivi misurabili. Slide 2 (2 min): client, server Flask e persistenza, con flusso dati. Slide 3 (3 min): una rotta CRUD, validazione e richiesta fetch; commenta una scelta e un limite. Slide 4 (2 min): demo breve dell’interazione completa oppure schermate preparate. Prova la scaletta con cronometro e riduci i dettagli se superi il tempo."
+        "tipo_esame": "[IPOTESI] presentazione: esempio di quattro slide",
+        "testo": "[IPOTESI] Prepara una possibile traccia di quattro slide per un catalogo di libri Flask CRUD, usando la scansione proposta nel materiale utente, non una regola ufficiale.",
+        "soluzione": "[IPOTESI] Esempio dal materiale utente: slide 1 (1 min), problema e obiettivi misurabili; slide 2 (2 min), client, server Flask e persistenza; slide 3 (3 min), una rotta CRUD, validazione e richiesta fetch; slide 4 (2 min), demo o schermate. Prova la scaletta con un cronometro: il limite verificato è massimo 8 minuti [F1], non un numero obbligatorio di slide."
       }
     ],
     "tempo_studio_min": 60,
@@ -113,9 +123,9 @@
     ],
     "riferimenti_testo": [],
     "checklist_ripasso": [
-      "8 minuti totali",
-      "4 slide: obiettivi, architettura, codice, demo",
-      "Tempi: 1 + 2 + 3 + 2 minuti",
+      "PowerPoint: massimo 8 minuti [F1]",
+      "[IPOTESI] Quattro slide: obiettivi, architettura, codice, demo (materiale utente)",
+      "[IPOTESI] Tempi: 1 + 2 + 3 + 2 minuti (materiale utente)",
       "Demo dal vivo o screen"
     ],
     "worker": "W4"
