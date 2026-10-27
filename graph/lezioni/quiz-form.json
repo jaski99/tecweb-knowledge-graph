@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Competenza del Gruppo C per costruire quiz di ripasso; HTML e JavaScript sono nel programma ricostruito, ma non è confermato come specifico quesito d’esame.",
+  "perche_ti_serve": "Gruppo B: un quiz con form è uno strumento di ripasso; [F1] prevede domande chiuse senza specificare questo formato.",
   "scenario_fil_rouge": "Una biblioteca vuole proporre un quiz online sulle regole del prestito. Ogni domanda deve essere leggibile da tastiera e screen reader, consentire una sola risposta, distinguere mancata selezione da risposta errata e comunicare il risultato senza affidarsi solo a un colore.",
   "definizione_esame": {
     "definizione": "Un quiz a scelta multipla presenta una domanda, un insieme finito di opzioni e una regola per valutare la risposta selezionata.",

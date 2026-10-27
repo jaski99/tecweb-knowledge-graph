@@ -1,245 +1,118 @@
-# Programma: Tecnologie Web — UNIMORE
+# Programma — INF-37, Tecnologie Web e Intelligenza Artificiale
 
-**Corso di Laurea**: Ingegneria Informatica (L-8) — Dipartimento di Ingegneria "Enzo Ferrari"
-**Anno Accademico**: 2026/2027
-**CFU**: 6
-**Ore**: 48 (24 lezioni + 24 laboratorio)
-**Semestre**: Terzo anno, secondo semestre (da confermare)
-**Lingua**: Italiano
+## Corso e coorte di riferimento
 
-## Fonti consultate (25/10/2026)
+**[FATTO]** Questo progetto segue la scheda dell'insegnamento integrato **[INF-37] Intelligenza Artificiale e Tecnologie Web**, Ingegneria Informatica (MO), UNIMORE: **a.a. 2026/27, coorte di immatricolazione 2024/25**, terzo anno, ciclo annuale, **12 CFU e 108 ore** [F1], [F3]. La titolarità dell'integrato è di **Simone Calderara**. Il modulo **Tecnologie Web**, tenuto dalla prof.ssa **Laura Po**, vale **6 CFU e 54 ore**; il modulo **Intelligenza Artificiale e Apprendimento Automatico**, tenuto dal prof. Calderara, vale anch'esso **6 CFU e 54 ore** [F1], [F8].
 
-| URL | Cosa conferma | Verificato |
+**[IPOTESI]** La scelta di usare questa scheda per il progetto è riferita alla coorte 2024/25: non va estesa automaticamente ad altre coorti. Il manifesto per le nuove immatricolazioni 2026/27 presenta insegnamenti separati [F7]; **[NON TROVATO]** una spiegazione ufficiale del raccordo con INF-37 [F1], [F3], [F7], [F14]. Chi segue un piano diverso deve verificare la propria scheda. Il programma può essere modificato: ricontrollare [F1] e Moodle prima dell'appello.
+
+## Contenuti ufficiali: Tecnologie Web
+
+**[FATTO]** Il programma [F1] comprende:
+
+1. **Fondamenti e architetture**: cenni storici; URI, HTTP e HTTP/2; progettazione di sistemi multi-livello, architetture mashup e sviluppo event-driven.
+2. **Front-end**: HTML5, CSS, JavaScript, AJAX, JSON e React; accenno all'interazione con i sensori dei dispositivi mobili.
+3. **Back-end e servizi**: Python e Flask per creare e utilizzare interfacce e servizi RESTful.
+4. **Controllo di versione e progetti**: Git, tracciamento del codice e collaborazione con branching, merge e pull request.
+
+Per TW è gradita una conoscenza di base di database, SQL, Java e Python [F1]. Le lezioni sono in italiano, con presentazioni prevalentemente in inglese ed esercitazioni pratiche; la frequenza non è obbligatoria [F1].
+
+## Esame del modulo Tecnologie Web
+
+**[FATTO]** La verifica comprende [F1]:
+
+- **Prova scritta: 0–23 punti.** Domande aperte e chiuse ed esercizi che verificano la capacità di realizzare un'applicazione Web; non sono consentiti appunti né altro materiale.
+- **Tesina individuale: 0–10 punti.** Ideazione e realizzazione di un'applicazione Web, con tecnologie a libera scelta; richiede circa **tre settimane**. La frase sulle tecnologie nella scheda ufficiale è tronca: non aggiungiamo vincoli non documentati.
+- **Presentazione e discussione:** PowerPoint di **massimo 8 minuti** e discussione di scelte progettuali e codice con il docente, su appuntamento.
+- **Prove intermedie:** non previste.
+
+**[IPOTESI]** Una simulazione di **2 ore** e una scaletta di **4 slide** sono proposte del materiale utente, non regole ufficiali. **[NON TROVATO]** conferma della durata dello scritto e del numero di slide [F1]; l'unico limite di presentazione verificato è quello di 8 minuti. Non è neppure specificato come gli intervalli di scritto e tesina siano convertiti nel voto del modulo: non trattiamo la loro somma come una formula ufficiale. Flask e SQLite possono essere esempi di progetto, non requisiti obbligatori.
+
+## Modulo ufficiale IA e voto integrato
+
+**[FATTO]** Il modulo IA tratta introduzione all'intelligenza artificiale, teoria dei metodi di apprendimento, apprendimento supervisionato e classificazione lineare, apprendimento statistico e bayesiano, clustering e apprendimento non supervisionato, regressione e riduzione delle dimensioni, con laboratorio Python/NumPy [F1], [F8]. La verifica prevede uno scritto con **domande chiuse in forma di quiz**, il cui voto è in trentesimi, e una prova di **laboratorio al calcolatore con idoneità ON/OFF** [F1]. Non è un modulo opzionale né un programma sugli LLM.
+
+**[FATTO]** Il voto dell'integrato è la **media ponderata** dei voti dei due moduli, arrotondata per eccesso; ai fini della media 30 e lode equivale a 30. La **lode finale** richiede **30 in entrambi i moduli e la lode in almeno uno** [F1].
+
+## Materiali per la preparazione
+
+**[FATTO]** La scheda indica **slide e materiale fornito durante le lezioni**, tool software analizzati ed esercitazioni svolte; le slide e il materiale sono caricati progressivamente su Moodle. Eventuali libri o articoli aggiuntivi sono comunicati a lezione o per la tesina, ma [F1] non nomina un libro di testo. La pagina pubblica del corso [F8] descrive i moduli, mentre l'accesso ai materiali del corso [F12] richiede login.
+
+Le risorse MDN, RFC, W3C, Flask, Git, Python, NumPy, scikit-learn e React presenti nel grafo sono **approfondimenti tecnici**, non testi ufficiali assegnati dai docenti. La RFC 9110 tratta la **semantica HTTP**; la RFC 9112 specifica **HTTP/1.1**. La disponibilità di una pagina non attesta da sola che il suo contenuto faccia parte dell'esame.
+
+## Priorità e stato delle evidenze
+
+I gruppi A/B/C sono **una scelta di studio del progetto**, non percentuali di domande: **A** = tema elencato in [F1] o base indispensabile per scritto/tesina; **B** = contesto o approfondimento utile; **C** = opzionale o non elencato nel programma 2026/27. Le percentuali e le ricorrenze negli appunti dell'utente sono **[IPOTESI]**, non dati verificati. Le priorità e i nodi pianificati sono in [NODES.md](NODES.md).
+
+| Stato | Cosa sappiamo e limiti | Fonti |
 |---|---|---|
-| [Manifesto Studi Ingegneria Informatica 2026/2027](https://www.ingmo.unimore.it/sites/dip02/files/2026-06/Laurea%20Ingegneria%20Informatica%20a.a.%202026_2027.pdf) | Presenza del corso "Tecnologie web" (6 CFU, 3° anno) | ✅ HTTP 200 |
-| [SUA-LT Ingegneria Informatica](https://www.ingmo.unimore.it/sites/dip02/files/2024-05/SUA-LT%20INGINF_0.pdf) | Competenze in tecnologie web per sviluppatori | ✅ HTTP 200 |
-| [Programmazione per il web - UNIMORE Course Catalogue](https://unimore.coursecatalogue.cineca.it/af/2027?ad=I215-020&annoOrdinamento=2025&coorte=2025&corso=16-315&pds=16-315-1) | **Programma ufficiale UNIMORE**: 6 CFU, orale, Django, MVC, ORM, CSS/HTML/JS/Ajax/jQuery/Bootstrap, evoluzione Web, cloud computing | ✅ HTTP 200, [1] |
+| **[FATTO]** | Coorte della scheda, CFU, docenti e argomenti ufficiali dei moduli | [F1], [F3], [F8], [F14] |
+| **[FATTO]** | Scritto TW 0–23 senza appunti, tesina 0–10, PowerPoint max 8 minuti; quiz e laboratorio IA; media e lode | [F1] |
+| **[FATTO]** | Slide e materiale via Moodle, tool ed esercitazioni; nessun titolo di libro è nominato nella scheda | [F1], [F8], [F12] |
+| **[IPOTESI]** | Scritto di 2 ore, presentazione di 4 slide, frequenze 65/20/15 e conversione dei punteggi TW: ipotesi interne, non regole accertate | [F1]; [materiale utente](MATERIALE_UTENTE.md) |
+| **[IPOTESI]** | Il raccordo tra INF-37 e il manifesto per le nuove coorti non è documentato: non assumere che le regole coincidano | [F1], [F3], [F7], [F14] |
+| **[NON TROVATO]** | Durata ufficiale dello scritto, numero di slide, formula di conversione dei punteggi TW e griglia dettagliata | [F1]; [ricerca R3](research/R3-programma-esame.md#36-dichiarazione-esplicita-di-ciò-che-non-ho-trovato) |
+| **[NON TROVATO]** | Prove passate pubbliche e slide pubbliche del modulo 2026/27; accesso Moodle richiesto | [F8], [F12], [F13] |
+| **[NON TROVATO]** | Vincolo di usare Flask/SQLite nella tesina; inclusione esplicita di HTTP/3, QUIC o Web semantico nel programma | [F1] |
 
-**Nota importante**: Il corso ufficiale UNIMORE si chiama **"Programmazione per il web"** (I215-020), non "Tecnologie Web". Questo knowledge graph è basato su un corso simile con **Flask** invece di **Django** per il backend. Le differenze principali:
-- **Backend**: Django (ufficiale) vs Flask (questo KG)
-- **Valutazione**: Orale + Progetto (ufficiale) vs Scritto + Tesina (questo KG, basato su materiale utente)
-- **Peso progetto**: 70% (ufficiale) vs variabile (questo KG)
+## Fonti F1–F27
 
-**Cosa NON è stato trovato**:
-- Programma dettagliato ufficiale UNIMORE per un corso chiamato esattamente "Tecnologie Web" (il nome potrebbe essere un'alternativa o un corso di un altro anno accademico)
-- Modalità d'esame ufficiale specifica per "Tecnologie Web" (assunta scritto + tesina basata su materiale utente)
-- Testi di riferimento ufficiali del docente
-- Nome del docente titolare per l'a.a. 2026/2027
+Registro e limiti di ciascuna fonte: [ricerca R3, §3.7](research/R3-programma-esame.md#37-registro-delle-fonti-con-url-verificati-aperti-il-27102026). R3 riferisce di aver aperto e letto questi URL il 27/10/2026. Le fonti F4–F5, F10–F11 e F16–F27 riguardano anni, corsi o materiali diversi: servono al confronto, **non** definiscono il programma INF-37 2026/27. F12 e F27 rimandano al login; un eventuale HTTP 200 della pagina di login non rende pubbliche le slide.
 
-[1]: Programma ufficiale trovato via ricerca web: "[I215-020] - Programmazione per il web"
+| Fonte | Descrizione e uso |
+|---|---|
+| [F1] | Course Catalogue: scheda ufficiale INF-37 2026/27, percorso ordinario. |
+| [F2] | Stessa scheda per il percorso Accademia Militare. |
+| [F3] | Piano di studi della coorte 2024/25, percorso Accademia Militare. |
+| [F4] | Scheda INF-37 dell'anno precedente: non sostituisce F1. |
+| [F5] | Scheda di un altro insegnamento del CdL Informatica: non è il programma di questo modulo. |
+| [F6] | Homepage del Course Catalogue. |
+| [F7] | Manifesto di Ingegneria Informatica per le nuove immatricolazioni 2026/27. |
+| [F8] | Scheda pubblica Moodle dell'integrato e dei moduli. |
+| [F9] | Ricerca Moodle dei corsi omonimi. |
+| [F10] | Scheda Moodle INF-37 dell'anno precedente. |
+| [F11] | Scheda Moodle di un altro corso omonimo. |
+| [F12] | Moodle INF-37 2026: accesso con login. |
+| [F13] | Area pubblica ESSE3. |
+| [F14] | Profilo istituzionale della prof.ssa Po su UNIFIND. |
+| [F15] | Sito personale della prof.ssa Po. |
+| [F16] | Pagina didattica SECloud, riferita ad altro corso. |
+| [F17] | Repository pubblico di materiale di un altro corso. |
+| [F18] | README del repository, con indicazione del relativo Moodle. |
+| [F19] | Cartella di slide di quel repository, non del modulo qui seguito. |
+| [F20] | Issue di un progetto studentesco: non è una raccolta pubblica di prove. |
+| [F21] | Repository del progetto studentesco TriviaMore. |
+| [F22] | Indicazioni generiche sui tipi di domande del progetto studentesco. |
+| [F23] | Organizzazione GitHub studentesca, non fonte ufficiale d'esame. |
+| [F24] | Quiz di un altro ateneo, non prova UNIMORE. |
+| [F25] | Corso UNIMORE dal nome simile ma diverso. |
+| [F26] | Materiale d'esame di un altro ateneo. |
+| [F27] | Moodle dell'altro corso: accesso con login. |
 
-**Decisione**: Il programma sotto è **ricostruito** in base a:
-1. Le **6 aree tematiche** definite nel piano di lavoro (ARENA_PLAN.md)
-2. Il **materiale utente** fornito (gruppi A/B/C con argomenti ricorrenti nelle prove)
-3. **Fonti autorevoli esterne** (MDN, RFC IETF, W3C, documentazione Flask, Git)
-4. Programmi simili di altre università italiane (Bologna, Torino) per coerenza con gli standard nazionali
-
-## Obiettivi formativi
-
-Fornire allo studente le conoscenze fondamentali su:
-- I principi di funzionamento di Internet e del Web
-- Le tecnologie di base (HTTP, URI, HTML, CSS, JavaScript)
-- Le architetture delle applicazioni web (client-server, 3-tier)
-- Lo sviluppo lato client e lato server
-- Il Web semantico e l'evoluzione del Web
-- Strumenti pratici (Flask, Git) per lo sviluppo di applicazioni web complete
-
-## Contenuti (6 aree tematiche)
-
-### Area 1: Fondamenti di rete e HTTP
-**Fonti autorevoli**: RFC 9110 (HTTP/1.1), RFC 9113 (HTTP/2), RFC 9114 (HTTP/3), RFC 3986 (URI), MDN Web Docs, W3C
-
-- **Internet e il Web**: architettura client-server, modello a livelli (TCP/IP), stateless vs stateful
-- **Protocollo HTTP**: versioni 1.0/1.1/2/3, differenze chiave (multiplexing, QUIC su UDP, header compression)
-- **URI/URL/URN**: sintassi, semantica, differenze (RFC 3986)
-- **Cookie e sessioni**: gestione dello stato in HTTP (RFC 6265)
-- **Codifiche e MIME**: UTF-8, content negotiation, content-type
-
-**Risorse verificate**:
-- [RFC 9110 - HTTP/1.1](https://www.rfc-editor.org/rfc/rfc9110.html)
-- [RFC 9113 - HTTP/2](https://www.rfc-editor.org/rfc/rfc9113.html)
-- [RFC 9114 - HTTP/3](https://www.rfc-editor.org/rfc/rfc9114.html)
-- [RFC 3986 - URI](https://www.rfc-editor.org/rfc/rfc3986.html)
-- [RFC 6265 - HTTP State Management](https://www.rfc-editor.org/rfc/rfc6265.html)
-- [MDN: HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP)
-- [W3C: Web Architecture](https://www.w3.org/TR/webarch/)
-
-### Area 2: Architetture delle applicazioni web
-**Fonti autorevoli**: MDN, W3C, RFC REST, documentazione architetturale
-
-- **Architetture**: 3-tier (orizzontale/verticale), client-server, MVC/MVVM
-- **REST**: principi (stateless, resource-based, uniform interface), metodi HTTP (GET, POST, PUT, PATCH, DELETE)
-- **Codici di stato HTTP**: 2xx, 3xx, 4xx (404, 400, 401, 403), 5xx
-- **Sicurezza**: rate limiting, CORS, autenticazione di base
-- **API design**: best practice, versioning, documentazione (OpenAPI/Swagger)
-
-**Risorse verificate**:
-- [RFC 9110 - HTTP Semantics (metodi)](https://www.rfc-editor.org/rfc/rfc9110.html#name-methods)
-- [RFC 7231 - Semantics and Content (status codes)](https://www.rfc-editor.org/rfc/rfc7231.html)
-- [MDN: HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
-- [MDN: REST](https://developer.mozilla.org/en-US/docs/Glossary/REST)
-- [W3C: Web Services Architecture](https://www.w3.org/TR/ws-arch/)
-
-### Area 3: Front-end (HTML, CSS, JavaScript)
-**Fonti autorevoli**: MDN, W3C, ECMA-262, WHATWG
-
-- **HTML5**: struttura semantica, form, accessibilità (ARIA)
-- **CSS**: box model, origini (cascading), ereditarietà, specificità, Flexbox, Grid, responsive design
-- **DOM**: albero DOM, manipolazione, eventi
-- **JavaScript moderno**: ES6+, fetch API, async/await, Promise, moduli ES
-- **Virtual DOM**: concetto e implementazione (React, Vue)
-- **DHTML**: Dynamic HTML, combinazione HTML/CSS/JS
-- **Canvas**: API 2D, animazioni
-- **Motore JS**: parser, AST, JIT compilation, profiler
-
-**Risorse verificate**:
-- [MDN: HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)
-- [MDN: CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
-- [MDN: JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-- [MDN: DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_object_model)
-- [W3C: HTML5](https://www.w3.org/TR/html52/)
-- [W3C: CSS](https://www.w3.org/Style/CSS/specs/)
-- [ECMA-262 (ES2023)](https://262.ecma-international.org/14.0/)
-- [WHATWG: HTML Living Standard](https://html.spec.whatwg.org/)
-
-### Area 4: Back-end e strumenti
-**Fonti autorevoli**: Documentazione Flask, PEP Python, Git, SQLite
-
-- **Flask**: rotte (@app.route), request/response, jsonify, template rendering (Jinja2)
-- **Database**: SQLite (SQL basico, CRUD), JSON come formato dati
-- **Git**: comandi base (init, add, commit, branch, merge, pull request), workflow collaborativo
-- **Architettura**: separazione dei livelli, routing RESTful
-
-**Risorse verificate**:
-- [Flask Documentation](https://flask.palletsprojects.com/)
-- [Flask: Quickstart](https://flask.palletsprojects.com/en/3.0.x/quickstart/)
-- [SQLite Documentation](https://www.sqlite.org/docs.html)
-- [Git Documentation](https://git-scm.com/doc)
-- [GitHub: Understanding the GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow)
-- [PEP 8 - Python Style Guide](https://peps.python.org/pep-0008/)
-
-### Area 5: Web semantico ed evoluzione
-**Fonti autorevoli**: W3C, RFC, MDN
-
-- **Web Semantico**: RDF, OWL, SPARQL, Linked Data
-- **Evoluzione del Web**: Web 1.0 → 2.0 → 3.0 → 4.0
-- **AJAX**: Asynchronous JavaScript and XML, fetch API, XMLHttpRequest
-- **Formati**: XML, JSON, JSON-LD
-
-**Risorse verificate**:
-- [W3C: Semantic Web](https://www.w3.org/standards/semanticweb/)
-- [W3C: RDF](https://www.w3.org/RDF/)
-- [W3C: OWL](https://www.w3.org/OWL/)
-- [W3C: SPARQL](https://www.w3.org/TR/sparql11-query/)
-- [MDN: AJAX](https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX)
-- [MDN: Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
-
-### Area 6: Tesina (Progetto pratico)
-**Fonti autorevoli**: Documentazione Flask, best practice sviluppo web
-
-- **Progetto Flask**: applicazione CRUD completa
-- **Front-end**: HTML/CSS/JS o framework (opzionale)
-- **Database**: SQLite o JSON
-- **Presentazione**: 8 minuti con 4 slide (obiettivi, architettura, punti chiave codice, demo)
-- **Revisione codice**: domande su metodi HTTP, gestione stato (cookie/sessioni), chiamate asincrone
-- **Esercitazione guidata**: modello di presentazione, template di codice
-
-**Risorse verificate**:
-- [Flask: Tutorial](https://flask.palletsprojects.com/en/3.0.x/tutorial/)
-- [MDN: Web APIs](https://developer.mozilla.org/en-US/docs/Web/API)
-
-## Modulo IA (OPZIONALE)
-
-**Stato**: NON confermato nel programma ufficiale UNIMORE
-**Decisione**: Segnalato come **ipotesi** basata su:
-- Tendenza nazionale (altre università includono moduli IA nei corsi web)
-- Interesse crescente per LLM e agenti nel sviluppo web
-
-Se il corso lo prevede, aggiungere:
-- LLM nel ciclo di vita dello sviluppo web
-- Assistenti AI per generazione/modifica/refactoring/testing codice
-- Rischi e limiti del codice generato
-- Verifica umana
-
-**Da verificare**: Contattare il docente o consultare il programma ufficiale quando disponibile.
-
-## Testi di riferimento consigliati
-
-**Nessun testo ufficiale UNIMORE trovato**. Testi consigliati basati su standard di settore:
-
-- **MDN Web Docs** (gratuito, online): [https://developer.mozilla.org/](https://developer.mozilla.org/)
-- **RFC IETF**: [https://www.rfc-editor.org/](https://www.rfc-editor.org/)
-- **W3C Specifiche**: [https://www.w3.org/TR/](https://www.w3.org/TR/)
-- **Flask Documentation**: [https://flask.palletsprojects.com/](https://flask.palletsprojects.com/)
-- **Git Documentation**: [https://git-scm.com/doc](https://git-scm.com/doc)
-- **ECMA-262 (JavaScript)**: [https://262.ecma-international.org/](https://262.ecma-international.org/)
-
-## Modalità d'esame (IPOTESI)
-
-**Stato**: NON confermato ufficialmente
-
-Basato sul **materiale utente** (prove passate di corsi simili):
-- **Scritto**: 2 ore, ~23 punti massimi
-  - Teoria: domande aperte sui gruppi A/B/C
-  - Quiz: abbinamenti, domande a risposta multipla
-  - Esercizi pratici: codice, diagrammi, calcoli
-- **Tesina**: 10 punti massimi
-  - Progetto Flask + front-end CRUD
-  - Presentazione 8 minuti con 4 slide
-  - Revisione codice con domande tecniche
-
-**Obiettivo**: 20-22/23 allo scritto + 9-10/10 alla tesina = 30-32 → 30 (e lode se massimo anche in altri moduli)
-
-## Punti chiave dal materiale utente
-
-### Gruppo A (iper-riciclati, ~65% dello scritto)
-- Stateless vs stateful
-- DOM e Virtual DOM
-- HTTP 1/1.1/2/3
-- Cookie e sessioni
-- Web Semantico (RDF, OWL, SPARQL)
-- Architettura 3-tier
-- CSS (origini, box model, ereditarietà)
-- Quiz form, URI/URL/URN
-- REST (PATCH vs PUT, codice 404)
-
-### Gruppo B (varianti isolate, ~20%)
-- Tag `<canvas>`
-- DHTML
-- Fasi motore JS (parser, AST, profiler, JIT)
-- Eventi locali vs remoti
-- Rate limiting/sicurezza
-- Web 1.0 → 4.0
-- Tag `<span>`
-
-### Gruppo C (punti ciechi, ~15%, solo syllabus)
-- Rotte e API REST con Flask (@app.route, jsonify)
-- Comandi base Git (branch, merge, pull request)
-- JavaScript moderno (fetch(), async/await)
-
-## Strategia consigliata
-
-1. **Memorizzazione attiva** (2 giorni): regola dei 3 punti (definizione formale, vantaggio/scopo, esempio applicativo)
-2. **Punti ciechi di codice** (1 giorno): template Flask, template fetch, comandi Git
-3. **Simulazione** (0.5 giorni): domande mai viste → ruotano su Web Semantico (interoperabilità, RDF, OWL)
-4. **Tesina** (in parallelo/post-scritto): app Flask + front-end con CRUD e DB
-
-## Dichiarazione di trasparenza
-
-✅ **Trovato e verificato**:
-- Presenza del corso "Tecnologie web" nel manifesto studi UNIMORE
-- Standard e specifiche ufficiali (RFC, W3C, ECMA, MDN)
-- Documentazione strumenti (Flask, Git, SQLite)
-
-❌ **NON trovato**:
-- Programma ufficiale dettagliato UNIMORE per "Tecnologie Web"
-- Modalità d'esame ufficiale (formato, durata, pesi)
-- Nome del docente titolare per a.a. 2026/2027
-- Testi di riferimento ufficiali del docente
-
-⚠️ **Ipotesi**:
-- Le 6 aree tematiche sono **ricostruite** in base al materiale utente e alle best practice nazionali
-- La modalità d'esame è **ipotesi** basata su prove passate di corsi simili
-- Il modulo IA è **opzionale** e da confermare
-
-**Tutte le risorse elencate sono state verificate con `scripts/check_urls.py` (HTTP 200)**.
+[F1]: <https://unimore.coursecatalogue.cineca.it/corsi/2024/10296/insegnamenti/2026/27352/2022/10000?annoOrdinamento=2022>
+[F2]: <https://unimore.coursecatalogue.cineca.it/corsi/2024/10296/insegnamenti/2026/27352/2022/10001?schemaid=22867#3>
+[F3]: <https://unimore.coursecatalogue.cineca.it/corsi/2024/10296/insegnamenti/10001>
+[F4]: <https://unimore.coursecatalogue.cineca.it/corsi/2024/10296/insegnamenti/2025/27352/2022/10000?annoOrdinamento=2022>
+[F5]: <https://unimore.coursecatalogue.cineca.it/corsi/2025/10959/insegnamenti/2027/28671/2025/10000?annoOrdinamento=2025&coorte=2025>
+[F6]: <https://unimore.coursecatalogue.cineca.it/>
+[F7]: <https://www.ingmo.unimore.it/sites/dip02/files/2026-06/Laurea%20Ingegneria%20Informatica%20a.a.%202026_2027.pdf>
+[F8]: <https://moodle.unimore.it/course/info.php?id=22244>
+[F9]: <https://moodle.unimore.it/course/search.php?search=Tecnologie%20Web&perpage=all>
+[F10]: <https://moodle.unimore.it/course/info.php?id=17399>
+[F11]: <https://moodle.unimore.it/course/info.php?id=15028>
+[F12]: <https://moodle.unimore.it/course/view.php?id=22244>
+[F13]: <https://www.esse3.unimore.it/Root.do>
+[F14]: <https://unimore.unifind.cineca.it/get/person/090944>
+[F15]: <https://sites.google.com/view/laurapo/home>
+[F16]: <https://secloud.ing.unimore.it/teachings/>
+[F17]: <https://git.hipert.unimore.it/ncapodieci/techweb>
+[F18]: <https://git.hipert.unimore.it/ncapodieci/techweb/-/blob/main/README.md>
+[F19]: <https://git.hipert.unimore.it/ncapodieci/techweb/-/tree/main/slides>
+[F20]: <https://github.com/MarinCervinschi/TriviaMore/issues/187>
+[F21]: <https://github.com/MarinCervinschi/TriviaMore>
+[F22]: <https://github.com/MarinCervinschi/TriviaMore/blob/staging/.claude/skills/generate-questions/references/question-format.md>
+[F23]: <https://github.com/unimoreinginfo>
+[F24]: <https://www.studocu.com/it/quiz/tecnologie-web-parte-1/6357015>
+[F25]: <https://www.studocu.com/it/course/universita-degli-studi-di-modena-e-reggio-emilia/tecnologia-della-comunicazione/1705590>
+[F26]: <https://www.docsity.com/it/universita/it/alma-mater-studiorum-universita-di-bologna-unibo/esami/programmazione-e-tecnologie-web-unibo/>
+[F27]: <https://moodle.unimore.it/course/view.php?id=18403>

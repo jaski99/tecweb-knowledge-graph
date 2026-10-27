@@ -3,7 +3,7 @@
     "id": "tesina-progetto-flask-crud",
     "title": "Tesina: Progetto Flask + CRUD",
     "area": 6,
-    "gruppo": "C",
+    "gruppo": "A",
     "tipo": "abilita",
     "sapere": "Un progetto CRUD espone operazioni di creazione, lettura, aggiornamento ed eliminazione di una risorsa attraverso un’interfaccia web. Un backend Flask valida le richieste e dialoga con SQLite o con un archivio JSON; il front-end HTML/CSS/JavaScript invia richieste HTTP e mostra gli esiti. La scelta di PUT o PATCH dipende dalla semantica di aggiornamento implementata.",
     "saper_fare": [
@@ -38,7 +38,7 @@
     "tempo_studio_min": 180,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo C: preparazione pratica alla tesina secondo il materiale utente; il formato e i criteri ufficiali non sono confermati."
+      "motivazione": "La tesina individuale vale 0–10 punti [F1]; Flask e CRUD sono uno scenario di esercizio, non tecnologie obbligatorie."
     },
     "risorse": [
       {
@@ -70,9 +70,9 @@
   },
   {
     "id": "tesina-presentazione-8-minuti",
-    "title": "Tesina: Presentazione di 8 minuti con 4 slide",
+    "title": "Tesina: presentazione PowerPoint (max 8 minuti)",
     "area": 6,
-    "gruppo": "C",
+    "gruppo": "A",
     "tipo": "abilita",
     "sapere": "Il materiale utente propone una presentazione della tesina di 8 minuti organizzata in 4 slide: problema e obiettivi, architettura, codice significativo, dimostrazione. La scansione temporale suggerita è 1 + 2 + 3 + 2 minuti; va trattata come traccia di preparazione, non come regola ufficiale verificata.",
     "saper_fare": [
@@ -97,7 +97,7 @@
     "tempo_studio_min": 60,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo C: preparazione pratica alla tesina secondo il materiale utente; il formato e i criteri ufficiali non sono confermati."
+      "motivazione": "La tesina vale 0–10 punti e prevede una presentazione PowerPoint di massimo 8 minuti [F1]."
     },
     "risorse": [
       {
@@ -124,7 +124,7 @@
     "id": "tesina-domande-revisione-codice",
     "title": "Tesina: Domande di revisione codice",
     "area": 6,
-    "gruppo": "C",
+    "gruppo": "A",
     "tipo": "tipo_esercizio",
     "sapere": "Una revisione del codice richiede di motivare il flusso tra interfaccia, endpoint Flask e persistenza. Occorre distinguere i metodi HTTP, la gestione dello stato applicativo, le chiamate asincrone, la validazione e gli errori. Le domande qui sono esercizi di preparazione ricavati dai temi indicati nel materiale utente, non una lista ufficiale di quesiti.",
     "saper_fare": [
@@ -154,7 +154,7 @@
     "tempo_studio_min": 45,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo C: preparazione pratica alla tesina secondo il materiale utente; il formato e i criteri ufficiali non sono confermati."
+      "motivazione": "Per la tesina, valutata 0–10 punti, [F1] prevede la discussione delle scelte progettuali e del codice."
     },
     "risorse": [
       {
@@ -185,7 +185,7 @@
     "id": "tesina-esercitazione-guidata",
     "title": "Tesina: Esercitazione guidata e modello presentazione",
     "area": 6,
-    "gruppo": "C",
+    "gruppo": "A",
     "tipo": "tipo_esercizio",
     "sapere": "L’esercitazione guida dalla scelta di una risorsa piccola e verificabile fino a una demo e a una presentazione. Il modello è una traccia riutilizzabile, non una prescrizione del docente: specifica requisiti, dati, endpoint, interfaccia, test manuali e narrazione tecnica.",
     "saper_fare": [
@@ -203,8 +203,8 @@
     ],
     "tempo_studio_min": 60,
     "priorita": {
-      "livello": "media",
-      "motivazione": "Gruppo C: preparazione pratica alla tesina secondo il materiale utente; il formato e i criteri ufficiali non sono confermati."
+      "livello": "alta",
+      "motivazione": "Esercitazione di preparazione alla tesina individuale valutata 0–10 punti [F1]; non è una traccia ufficiale."
     },
     "risorse": [
       {
@@ -231,7 +231,7 @@
     "id": "quiz-form",
     "title": "Quiz e form: domande a scelta multipla e raccolta risposte",
     "area": 6,
-    "gruppo": "C",
+    "gruppo": "B",
     "tipo": "abilita",
     "sapere": "Un quiz a scelta multipla usa controlli HTML per raccogliere una risposta e JavaScript per confrontarla con una chiave, calcolare un esito e comunicarlo. Il markup deve associare domande e opzioni in modo accessibile; il feedback va esposto anche alle tecnologie assistive e non deve basarsi solo sul colore.",
     "saper_fare": [
@@ -261,7 +261,7 @@
     "tempo_studio_min": 45,
     "priorita": {
       "livello": "media",
-      "motivazione": "Gruppo C: competenza utile per costruire quiz di ripasso, coerente con il programma ricostruito; non è un formato ufficiale accertato."
+      "motivazione": "Costruire un form per quiz è uno strumento di ripasso; [F1] indica domande chiuse, non un formato di quiz form per TW."
     },
     "risorse": [
       {
