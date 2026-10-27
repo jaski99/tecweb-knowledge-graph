@@ -9,7 +9,7 @@ import { frameDiagrams, fitDiagrams } from './diagram.js';
 import { bindSectionNav } from './toc.js';
 import { syncThemeButtons } from '../core/theme.js';
 
-export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, onToggleTheme, closeLabel = '← Percorso' }) {
+export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, onToggleTheme, onDataChange, storage = globalThis.localStorage, closeLabel = '← Percorso' }) {
   const title = (id) => (graph.byId.get(id) || { title: id }).title;
   const lessonLink = (id, text) => h('button', { type: 'button', class: 'link', onclick: () => onOpen(id) }, text || title(id));
   const block = (cls, heading, ...body) => h('section', { class: `ls ${cls}`, id: `sec-${cls}` }, h('h2', {}, heading), ...body);
@@ -63,14 +63,14 @@ export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, o
     const L = n.lezione;
     const checkedKey = `ids-kg:checklist:${n.id}:v1`;
     let saved = {};
-    try { saved = JSON.parse(localStorage.getItem(checkedKey) || '{}'); } catch { saved = {}; }
+    try { saved = JSON.parse(storage.getItem(checkedKey) || '{}'); } catch { saved = {}; }
     const checklist = (items, prefix) => h('ul', { class: 'lesson-checklist' }, items.map((text, i) => {
       const key = `${prefix}-${i}`;
       return h('li', {}, h('label', { class: 'check' }, h('input', {
         type: 'checkbox', checked: Boolean(saved[key]),
         onchange: (e) => {
           saved[key] = e.target.checked;
-          try { localStorage.setItem(checkedKey, JSON.stringify(saved)); } catch { /* storage non disponibile */ }
+          try { storage.setItem(checkedKey, JSON.stringify(saved)); onDataChange?.(); } catch { /* storage non disponibile */ }
         },
       }), text));
     }));
@@ -176,19 +176,19 @@ export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, o
   }
 
   // Fine lezione: un solo tocco per segnarla e passare alla prossima non ancora studiata del percorso.
-  function finishBar(n, nav, done) {
-    const target = nextToStudy(graph.order, new Set([...done, n.id]), n.id);
+  function finishBar(n, nav, done, esclusi) {
+    const target = nextToStudy(graph.order, new Set([...done, ...esclusi, n.id]), n.id);
     const go = () => { onToggleDone(n.id, true); if (target) onOpen(target); };
     return h('div', { class: 'ls-finish' },
       h('button', { type: 'button', class: 'btn primary big', 'data-action': 'done-next', onclick: go },
         target ? '✓ Segna come studiato e vai alla prossima' : '✓ Segna come studiato'),
-      target ? h('p', { class: 'muted' }, 'Prossima: ', h('strong', {}, title(target)), target !== nav.next ? ' (salta quelle già studiate)' : '') : h('p', { class: 'muted' }, 'Hai completato tutto il percorso 🎉'));
+      target ? h('p', { class: 'muted' }, 'Prossima: ', h('strong', {}, title(target)), target !== nav.next ? ' (salta quelle già studiate)' : '') : h('p', { class: 'muted' }, 'Non ci sono altri nodi da studiare nel percorso.'));
   }
 
   let detachNav = () => {};
   let mediaToken = 0;
   return {
-    async render(id, done) {
+    async render(id, done, esclusi = done) {
       detachNav();
       detachNav = () => {};
       clear(root);
@@ -222,7 +222,7 @@ export function createLessonView(root, graph, { onOpen, onClose, onToggleDone, o
         h('div', { class: 'section-progress' }, progressLabel, progressBar),
         h('div', { class: 'lesson-frame' },
           toc,
-          h('div', { class: 'lesson-col' }, article, finishBar(n, nav, done), navBar(nav, 'bottom'))),
+          h('div', { class: 'lesson-col' }, article, finishBar(n, nav, done, esclusi), navBar(nav, 'bottom'))),
       );
       detachNav = bindSectionNav(toc, { label: progressLabel, bar: progressBar, fill: progressFill }, article);
       syncThemeButtons(root.ownerDocument, root.ownerDocument.documentElement.dataset.theme || 'light');

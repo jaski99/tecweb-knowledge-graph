@@ -53,3 +53,15 @@ test('state pub/sub', () => {
   const s = createState({ x: 1 }); let seen; s.subscribe((v) => (seen = v.x)); s.set({ x: 2 });
   assert.equal(seen, 2); assert.equal(s.get().x, 2);
 });
+
+test('banca quiz lenta non blocca il caricamento del grafo né delle lezioni', async () => {
+  let risolviQuiz;
+  const fetchFn = (url) => url === 'graph.json' ? Promise.resolve({ ok: true, json: async () => graph() })
+    : new Promise((resolve) => { risolviQuiz = resolve; });
+  const g = await loadGraph(['graph.json'], fetchFn, ['quiz.json'], { deferQuiz: true });
+  assert.equal(g.nodi.length, 4);
+  assert.equal(g.quiz, undefined);
+  risolviQuiz({ ok: true, json: async () => ({ elementi: [{ id: 'q' }] }) });
+  await g.quizPronto;
+  assert.equal(g.quiz.elementi[0].id, 'q');
+});
