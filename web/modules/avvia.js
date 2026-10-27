@@ -75,6 +75,7 @@ export function avviaModuli(ctx) {
         content.replaceChildren();
         const teardown = view.render(content, {
           graph: ctx.graph,
+          grafoAttivo: ctx.grafoAttivo,
           storage: ctx.storage,
           document: doc,
           now: ctx.now,

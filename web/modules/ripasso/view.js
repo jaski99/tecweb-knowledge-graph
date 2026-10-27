@@ -9,7 +9,7 @@ import { formatGiornoIt, toIsoDay } from './giorni.js';
 import { costruisciMazzo, codaStudio, filtraCarte, PRIORITA, prossimaScadenza } from './mazzo.js';
 import { applicaVoto, formatIntervallo, intervalloPrevisto, VOTI } from './sm2.js';
 import { carteSanguisuga, padronanzaPerArea, previsioneSettimana, riepilogoCarte, statoCarta } from './statistiche.js';
-import { cancellaStato, conRevisione, leggiStato, LIMITE_NUOVE_MAX, nuoveDisponibili, salvaStato, statoVuoto } from './store.js';
+import { azzeraNodiAttivi, cancellaStato, conRevisione, giorniContabili, leggiStato, LIMITE_NUOVE_MAX, nuoveDisponibili, salvaStato, statoVuoto } from './store.js';
 
 const CSS_HREF = 'modules/ripasso/style.css';
 const ETICHETTE_VOTO = { ancora: 'Ancora', difficile: 'Difficile', bene: 'Bene', facile: 'Facile' };
@@ -33,7 +33,7 @@ export function createRipassoView() {
     render(root, ctx) {
       const doc = ctx.document || root.ownerDocument;
       ensureCss(doc);
-      const graph = ctx.graph || { nodi: [], aree: [] };
+      const graph = ctx.grafoAttivo || ctx.graph || { nodi: [], aree: [] };
       const storage = ctx.storage;
       const now = ctx.now || (() => Date.now());
       const ask = ctx.confirm || ((msg) => root.ownerDocument.defaultView?.confirm(msg));
@@ -43,6 +43,10 @@ export function createRipassoView() {
       const titoloArea = new Map((graph.aree || []).map((a) => [a.id, a.titolo]));
 
       let dati = leggiStato(storage);
+      // Un filtro salvato su un'area ora inattiva non deve svuotare il mazzo.
+      if (dati.filtri.area !== null && !titoloArea.has(dati.filtri.area)) {
+        dati = { ...dati, filtri: { ...dati.filtri, area: null } };
+      }
       let saveOk = true;
       let coda = [];
       let pos = 0;
@@ -52,7 +56,7 @@ export function createRipassoView() {
       const persist = () => { saveOk = salvaStato(storage, dati); ctx.onDataChange?.(); };
       const carteFiltrate = () => filtraCarte(mazzo, dati.filtri);
       const ricostruisciCoda = () => {
-        coda = codaStudio(carteFiltrate(), dati.carte, oggi(), { maxNuove: nuoveDisponibili(dati, oggi()) });
+        coda = codaStudio(carteFiltrate(), dati.carte, oggi(), { maxNuove: nuoveDisponibili(dati, oggi(), mazzo) });
         pos = 0;
         rivelata = false;
       };
@@ -101,10 +105,16 @@ export function createRipassoView() {
       }
 
       function azzera() {
-        if (!ask('Azzerare i progressi del ripasso salvati in questo browser? Le carte torneranno tutte nuove.')) return;
-        cancellaStato(storage);
-        dati = statoVuoto();
-        ctx.onDataChange?.();
+        if (!ask('Azzerare i progressi del ripasso salvati in questo browser? Le carte attive torneranno nuove.')) return;
+        const conservati = azzeraNodiAttivi(dati, graph.nodi);
+        if (Object.keys(conservati.carte).length || Object.keys(conservati.nuovePerGiorno).length) {
+          dati = conservati;
+          persist();
+        } else {
+          saveOk = cancellaStato(storage);
+          dati = statoVuoto();
+          ctx.onDataChange?.();
+        }
         visteSessione = 0;
         ricostruisciCoda();
         draw('#ripasso-titolo');
@@ -126,7 +136,7 @@ export function createRipassoView() {
           h('section', { class: 'rip-stats', 'aria-label': 'Riepilogo del mazzo' },
             stat('ripasso-dovute', String(riepilogo.dovute), 'carte dovute oggi'),
             stat('ripasso-nuove', String(riepilogo.nuove), 'carte nuove'),
-            stat('ripasso-serie', String(giorniRegistrati), giorniRegistrati === 1 ? 'giorno di studio registrato' : 'giorni di studio registrati'),
+            giorniRegistrati === null ? null : stat('ripasso-serie', String(giorniRegistrati), giorniRegistrati === 1 ? 'giorno di studio registrato' : 'giorni di studio registrati'),
             stat('ripasso-padronanza', `${riepilogo.percentualePadronanza}%`, 'carte consolidate')),
         ];
       }
@@ -163,7 +173,7 @@ export function createRipassoView() {
               },
             })),
           h('p', { class: 'muted rip-filtri-nota' }, `${carteFiltrate().length} carte nel filtro · ${mazzo.length} in tutto il mazzo. `
-            + `Nuove disponibili oggi: ${nuoveDisponibili(dati, oggi())}. Il limite è globale e non limita le carte già scadute.`));
+            + `Nuove disponibili oggi: ${nuoveDisponibili(dati, oggi(), mazzo)}. Il limite riguarda tutto il mazzo attivo e non limita le carte già scadute.`));
       }
 
       function sezioneCarta() {
@@ -264,7 +274,7 @@ export function createRipassoView() {
       function pagina() {
         const giorno = oggi();
         const riepilogo = riepilogoCarte(mazzo, dati.carte, giorno);
-        const giorniRegistrati = dati.giorni.length;
+        const giorniRegistrati = giorniContabili(dati, graph.nodiInattivi);
         return h('div', {},
           ...intestazione(riepilogo, giorniRegistrati),
           sezioneFiltri(),

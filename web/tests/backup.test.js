@@ -11,12 +11,13 @@ const leggiEsiti = (s) => JSON.parse(s.getItem('ids-kg:esiti-quiz:v1'));
 
 test('backup completo e round trip, inclusi prefissi storici e reader X6', () => {
   const s = memory({ 'ids-kg:completati:v1': '["node-1"]', 'ids.ripasso.v1': JSON.stringify({ versione: 1, carte: {}, giorni: [], filtri: { area: null, priorita: null } }),
-    'tecweb:simulatore:v1': '{"versione":1}', 'ids-kg:esiti-quiz:v1': JSON.stringify(quiz), 'other': 'no' });
+    'tecweb:simulatore:v1': '{"versione":1}', 'tecweb.moduloIA': '1', 'ids-kg:esiti-quiz:v1': JSON.stringify(quiz), 'other': 'no' });
   const b = creaBackup(s, leggiEsiti);
-  assert.equal(Object.keys(b.dati).length, 4);
+  assert.equal(Object.keys(b.dati).length, 5);
   const t = memory({ 'other': 'intatto' });
-  assert.equal(importaBackup(t, JSON.stringify(b)), 4);
+  assert.equal(importaBackup(t, JSON.stringify(b)), 5);
   assert.equal(t.getItem('ids-kg:esiti-quiz:v1'), JSON.stringify(quiz));
+  assert.equal(t.getItem('tecweb.moduloIA'), '1');
   assert.equal(t.getItem('other'), 'intatto');
   assert.throws(() => creaBackup(s), /lettore degli esiti/);
 });
@@ -33,6 +34,16 @@ test('validazione totale prima della scrittura e ripristino su errore di quota',
   b.dati['ids-kg:data-esame:v1'] = '2026-02-28';
   assert.throws(() => importaBackup(s, b), /ripristinati/);
   assert.equal(s.getItem('ids-kg:tema:v1'), 'light');
+});
+
+test('backup valida la preferenza IA prima di scrivere e accetta anche il valore spento', () => {
+  const s = memory({ 'tecweb.moduloIA': '1' });
+  const backup = { formato: 'tecweb-knowledge-graph', versione: 1, dati: { 'tecweb.moduloIA': '0' } };
+  assert.equal(importaBackup(s, backup), 1);
+  assert.equal(s.getItem('tecweb.moduloIA'), '0');
+  backup.dati['tecweb.moduloIA'] = 'true';
+  assert.throws(() => importaBackup(s, backup), /non valido/);
+  assert.equal(s.getItem('tecweb.moduloIA'), '0');
 });
 
 test('TSV Anki: tre campi senza tabulazioni o a capo interni e tag', () => {

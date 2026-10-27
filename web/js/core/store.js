@@ -10,6 +10,11 @@ export function createSetStore(storage, key) {
     has: (id) => set.has(id),
     values: () => new Set(set),
     toggle(id, on = !set.has(id)) { on ? set.add(id) : set.delete(id); save(); return on; },
+    removeWhere(predicate) {
+      const before = set.size;
+      set = new Set([...set].filter((id) => !predicate(id)));
+      if (set.size !== before) save();
+    },
     clear() { set = new Set(); save(); },
   };
 }

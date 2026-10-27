@@ -13,7 +13,7 @@ export function pianoOggi({ nodi = [], ordine = [], padronanza = new Map(), stat
   const disponibili = ordine.map((id) => byId.get(id)).filter((n) => n && padronanza.get(n.id) !== 'padroneggiato' && prerequisitiSoddisfatti(n, statiStudio));
   const prossimo = disponibili.find((n) => !['completato', 'so-gia'].includes(statiStudio[n.id]))
     || disponibili.find((n) => statiStudio[n.id] !== 'so-gia') || null;
-  const coda = codaStudio(carte, dati.carte, oggi, { maxNuove: nuoveDisponibili(dati, oggi) });
+  const coda = codaStudio(carte, dati.carte, oggi, { maxNuove: nuoveDisponibili(dati, oggi, carte) });
   const dovute = coda.filter((c) => dati.carte?.[c.id]?.revisioni > 0);
   const nuove = coda.length - dovute.length;
   const viste = new Set(nodi.filter((n) => (padronanza.get(n.id) || 'non-iniziato') !== 'non-iniziato' || statiStudio[n.id]).map((n) => n.id));
