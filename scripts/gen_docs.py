@@ -36,11 +36,12 @@ def piano(g):
     
     L = [ORIGINE, "# Piano di studio — Tecnologie Web UNIMORE\n",
          "Ordine topologico dei nodi (ogni prerequisito prima del nodo che lo usa); a parità di vincoli prima la priorità **ALTA**, poi area e id. "
-         f"Sessioni da circa {SESSIONE_MIN // 60} ore (un nodo non viene mai spezzato).\n\n",
+         f"Sessioni di studio da circa {SESSIONE_MIN // 60} ore (un nodo non viene mai spezzato).\n\n",
          "## Legenda\n",
-         "- **Gruppo A**: iper-riciclati (~65% dello scritto) - argomenti fondamentali\n",
-         "- **Gruppo B**: varianti (~20%) - argomenti occasionali\n",
-         "- **Gruppo C**: punti ciechi (~15%) - argomenti pratici da studiare attivamente\n\n",
+         "- **Gruppo A**: temi esplicitamente elencati nel [programma ufficiale (F1)](SYLLABUS.md) o indispensabili per lo scritto o per la tesina.\n",
+         "- **Gruppo B**: approfondimenti o contesto utile.\n",
+         "- **Gruppo C**: argomenti non elencati nel programma 2026/27 o opzionali.\n",
+         "I gruppi indicano priorità di studio, non frequenze o percentuali accertate delle domande d'esame.\n\n",
          "## Tempo totale per area\n",
          "| area | titolo | nodi | A | B | C | tempo |",
          "|---|---|---|---|---|---|---|"]

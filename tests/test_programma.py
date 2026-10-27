@@ -1,10 +1,11 @@
 """Contratti del programma INF-37 e delle priorità del round 2.
 
-I nodi X2/X3 sono verificati nel catalogo, non richiesti nel grafo: potranno
-arrivare nei loro part senza rendere questi test dipendenti dall'ordine dei merge.
+I nodi X2/X3 integrati, i conteggi e le relazioni del catalogo sono verificati
+rispetto a tutte le sorgenti del grafo.
 """
 from collections import Counter
 from hashlib import sha256
+import html
 import json
 from pathlib import Path
 import re
@@ -176,52 +177,94 @@ def test_titolo_tesina_e_schema_documentale():
 
 
 def test_nodi_presenti_documentati_con_gruppo_e_prerequisiti():
-    text = read_doc("NODES.md").split("## Nodi pianificati", 1)[0]
-    rows = markdown_rows(text)
-    nodes = base_nodes()
-    assert set(nodes) <= set(rows)
-    for node_id, node in nodes.items():
-        row = rows[node_id]
-        assert row[2:5] == [node["gruppo"], node["priorita"]["livello"], node["tipo"]]
-        for column, strength in ((5, "hard"), (6, "soft")):
-            expected = {p["id"] for p in node["prerequisiti"] if p["forza"] == strength}
-            assert prerequisite_ids(row[column]) == expected, (node_id, strength)
-        assert row[7] == node["worker"]
+    catalogue = read_doc("NODES.md")
+    rows = markdown_rows(catalogue)
+    parts = load_parts()
+    nodes = {node["id"]: node for part in parts.values() for node in part}
+    assert set(nodes) == set(rows)
+    assert len(re.findall(r"^\| `[^`]+` \|", catalogue, re.MULTILINE)) == len(nodes)
+    assert "in arrivo" not in catalogue.lower()
+    assert "## Nodi pianificati" not in catalogue
+
+    area = None
+    for line in catalogue.splitlines():
+        heading = re.match(r"^### Area (\d+) —", line)
+        if heading:
+            area = int(heading.group(1))
+        match = re.match(r"^\| `([^`]+)` \|", line)
+        if match:
+            node_id = match.group(1)
+            node = nodes[node_id]
+            row = rows[node_id]
+            assert len(row) == 8
+            assert area == node["area"]
+            assert html.unescape(row[1]) == node["title"]
+            assert row[2:5] == [node["gruppo"], node["priorita"]["livello"], node["tipo"]]
+            for column, strength in ((5, "hard"), (6, "soft")):
+                expected = {p["id"] for p in node["prerequisiti"] if p["forza"] == strength}
+                assert prerequisite_ids(row[column]) == expected, (node_id, strength)
+            assert row[7] == node["worker"]
+            assert (ROOT / "graph/lezioni" / f"{node_id}.json").is_file()
 
 
-def test_nodi_pianificati_contratto_e_stato():
+def test_nodi_x2_x3_integrati_rispettano_il_contratto():
     plan = read_doc("IMPROVEMENT_PLAN.md").split("### 1.2 Nuovi nodi", 1)[1].split("Campo `worker`", 1)[0]
     expected = markdown_rows(plan)
     assert len(expected) == 16
     assert Counter(row[7] for row in expected.values()) == {"X2": 8, "X3": 8}
-
-    catalogue = read_doc("NODES.md")
-    all_rows = markdown_rows(catalogue)
-    available = {node["id"] for part in load_parts().values() for node in part}
+    parts = load_parts()
     for node_id, source in expected.items():
-        assert node_id in all_rows
-        # Integrazione può spostare il nodo dalla tabella pianificata a quella
-        # dei presenti; finché rimane pianificato verifichiamo l'intero contratto.
-        row = all_rows[node_id]
-        if len(row) == 9:
-            assert row[2:6] == [source[1], source[2], source[3], source[4]]
-            assert prerequisite_ids(row[6]) == prerequisite_ids(source[5])
-            assert prerequisite_ids(row[7]) == prerequisite_ids(source[6])
-            assert row[8] in {f"in arrivo {source[7]}", f"presente {source[7]}"}
-        else:
-            assert node_id in available
+        part_name = source[2].strip("`")
+        part_nodes = {node["id"]: node for node in parts[part_name]}
+        assert node_id in part_nodes
+        node = part_nodes[node_id]
+        assert (node["area"], node["gruppo"], node["tipo"], node["worker"]) == (
+            int(source[1]), source[3], source[4], source[7]
+        )
+        expected_hard = prerequisite_ids(source[5])
+        expected_soft = prerequisite_ids(source[6])
+        if node_id == "ia-python-numpy-lab":
+            # Arco aggiunto in integrazione I-2 oltre alla tabella 1.2.
+            expected_soft.add("python-base-web")
+        assert {p["id"] for p in node["prerequisiti"] if p["forza"] == "hard"} == expected_hard
+        assert {p["id"] for p in node["prerequisiti"] if p["forza"] == "soft"} == expected_soft
 
 
-def test_conteggi_del_catalogo_per_la_baseline():
+def test_conteggi_dei_40_nodi_originari():
     nodes = list(base_nodes().values())
     assert Counter(node["gruppo"] for node in nodes) == {"A": 27, "B": 7, "C": 6}
     assert Counter(node["tipo"] for node in nodes) == {"concetto": 23, "abilita": 15, "tipo_esercizio": 2}
     assert sum(node["tempo_studio_min"] for node in nodes) == 1890
-    # I conteggi testuali verranno aggiornati dall'integrazione quando arriveranno i nuovi nodi.
-    if not any(name.endswith("-r2.json") or name == "area-7.json" for name in load_parts()):
-        total_line = next(line for line in read_doc("NODES.md").splitlines() if line.startswith("| **Totale** |"))
-        for value in ("**40**", "**27**", "**7**", "**6**", "**16**", "**56**", "31 h 30 min"):
-            assert value in total_line
+
+
+def test_conteggi_e_tempi_del_catalogo_per_tutte_le_aree():
+    nodes = [node for part in load_parts().values() for node in part]
+    catalogue = read_doc("NODES.md")
+    rows = {}
+    total = None
+    for line in catalogue.splitlines():
+        fields = [field.strip().strip("*") for field in line.strip("|").split("|")]
+        area = re.match(r"^(\d+) —", fields[0])
+        if area:
+            rows[int(area.group(1))] = fields[1:]
+        elif fields[0] == "Totale":
+            total = fields[1:]
+
+    def expected_counts(selected):
+        groups = Counter(n["gruppo"] for n in selected)
+        minutes = sum(n["tempo_studio_min"] for n in selected)
+        return [str(len(selected)), str(groups["A"]), str(groups["B"]), str(groups["C"]),
+                f"{minutes // 60} h {minutes % 60:02d} min"]
+
+    assert set(rows) == set(range(1, 8))
+    for area, values in rows.items():
+        assert values == expected_counts([node for node in nodes if node["area"] == area])
+    assert total == expected_counts(nodes)
+    types = Counter(n["tipo"] for n in nodes)
+    for count, label in ((types["concetto"], "concetti"), (types["abilita"], "abilità"),
+                         (types["tipo_esercizio"], "tipi di esercizio")):
+        assert f"**{count} {label}**" in catalogue
+    assert f"**{len(nodes)} nodi presenti con lezione**" in catalogue
 
 
 def test_testo_utente_originale_preservato():

@@ -57,7 +57,7 @@ Seguire [DIDATTICA.md](DIDATTICA.md), lo schema e i test: spiegazioni autosuffic
 | `flashcard` | **Un oggetto** `{fronte, retro}`, non un array. |
 | `checklist` | Oggetto con array non vuoti `so_fare` e `so_dire`. |
 
-`mnemonica` è facoltativa. Il ripasso può creare ulteriori carte dalle domande di richiamo e dalla checklist del nodo. **Limite da coordinare:** il piano richiede almeno sei flashcard per le lezioni IA, ma lo schema v4 ammette un solo oggetto `flashcard`; non cambiare il formato unilateralmente. Chiarire con il coordinatore se la richiesta si riferisce alle carte complessive di ripasso o richiede una modifica concordata del contratto.
+`mnemonica` è facoltativa. Lo schema v4 ammette un solo oggetto `flashcard`; per le lezioni IA, il ripasso usa quella carta e le cinque domande chiuse di richiamo come sei carte distinte, come verificato dai test X3. Può inoltre creare carte dalla checklist del nodo, senza modificare il formato della lezione.
 
 ## Aree e riferimenti
 
@@ -69,7 +69,7 @@ Seguire [DIDATTICA.md](DIDATTICA.md), lo schema e i test: spiegazioni autosuffic
 | 4 | Back-end e strumenti | PYTHON, FLASK, GIT, SQLITE |
 | 5 | Web semantico ed evoluzione; AJAX | W3C, MDN, RFC |
 | 6 | Tesina e pratica | FLASK, MDN; tecnologie a libera scelta [F1] |
-| 7 | Modulo IA ufficiale: apprendimento automatico | PYTHON, NUMPY, SKLEARN; lezioni in arrivo X3 |
+| 7 | Modulo IA ufficiale: apprendimento automatico | PYTHON, NUMPY, SKLEARN; 8 lezioni X3 presenti |
 
 La presenza di un argomento nel grafo non lo rende parte del programma ufficiale: ad esempio RDF/OWL/SPARQL e HTTP/3 sono approfondimenti non elencati in [F1]. La **RFC 9110 definisce la semantica HTTP**, la **RFC 9112 definisce HTTP/1.1**; non chiamare la 9110 una specifica esclusiva di HTTP/1.1.
 
