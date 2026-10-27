@@ -6719,6 +6719,1337 @@
           ]
         }
       }
+    },
+    {
+      "id": "ia-bayes-apprendimento-statistico",
+      "title": "IA: apprendimento statistico e bayesiano",
+      "area": 7,
+      "gruppo": "A",
+      "tipo": "concetto",
+      "sapere": "L’apprendimento statistico modella incertezza e distribuzioni. Bayes combina prior e likelihood; naive Bayes assume indipendenza condizionata delle feature data la classe.",
+      "saper_fare": [
+        "Calcolare un posterior normalizzato",
+        "Distinguere prior e likelihood",
+        "Spiegare l’ipotesi naive"
+      ],
+      "prerequisiti": [
+        {
+          "id": "ia-supervisionato-classificazione-lineare",
+          "forza": "hard",
+          "motivo": "Il problema di classificazione supervisionata introduce feature e classi."
+        }
+      ],
+      "esercizi": [
+        {
+          "tipo_esame": "Allenamento originale, non prova ufficiale",
+          "testo": "Due classi hanno priori uguali e score non normalizzati 0,09 e 0,12. Quali posteriori ottieni?",
+          "soluzione": "La somma è 0,21: i posteriori sono 3/7 e 4/7; la seconda classe ha posterior maggiore."
+        }
+      ],
+      "tempo_studio_min": 50,
+      "priorita": {
+        "livello": "alta",
+        "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+      },
+      "risorse": [
+        {
+          "titolo": "scikit-learn: naive Bayes",
+          "url": "https://scikit-learn.org/stable/modules/naive_bayes.html",
+          "verificato": true
+        },
+        {
+          "titolo": "NumPy: quickstart",
+          "url": "https://numpy.org/doc/stable/user/quickstart.html",
+          "verificato": true
+        }
+      ],
+      "riferimenti_testo": [
+        {
+          "libro": "SKLEARN"
+        },
+        {
+          "libro": "NUMPY"
+        }
+      ],
+      "checklist_ripasso": [
+        "Prior, likelihood, evidenza e posterior",
+        "Indipendenza condizionata delle feature",
+        "Smoothing ed errori di stima"
+      ],
+      "worker": "X3",
+      "lezione": {
+        "perche_ti_serve": "Gruppo A: apprendimento statistico e bayesiano sono nel programma IA [F1]; nessun punteggio per nodo è indicato.",
+        "scenario_fil_rouge": "La biblioteca online vuole classificare un libro fittizio in base alla presenza di due attributi binari. Le probabilità iniziali e condizionate sono esempi didattici, non dati reali sui lettori.",
+        "definizione_esame": {
+          "definizione": "Il teorema di Bayes aggiorna la probabilità di una classe dopo avere osservato i dati, combinando prior e likelihood.",
+          "scopo_vantaggio": "Permette di esprimere l’incertezza e confrontare classi usando una distribuzione posterior normalizzata.",
+          "esempio": "Naive Bayes combina la probabilità iniziale della classe con le probabilità delle feature, assumendole indipendenti data la classe."
+        },
+        "spiegazione": "Prerequisiti: classificazione supervisionata, feature ed etichette. **Fonte e limiti:** testo ed esempi originali su basi statistiche libere, non dalle slide del prof. Calderara, non pubbliche [F12]; l’argomento è in [F1].\n\n## Ragionare con incertezza\n\nNell’apprendimento statistico si descrivono dati e target con un modello probabilistico, si stimano parametri dagli esempi e si valuta il comportamento su dati separati. Le frequenze campionarie sono stime, non certezze: dataset piccoli o distorti possono produrre stime fragili. Il modello e le sue ipotesi vanno esplicitati.\n\n## Bayes, passo per passo\n\nPer una classe `c` e osservazione `x`, il **prior** `P(c)` è la probabilità della classe prima di osservare `x`; la **likelihood** `P(x | c)` descrive la probabilità dell’osservazione se la classe è `c`. Il **posterior** è `P(c | x) = P(x | c) P(c) / P(x)`. Per classi esaustive e disgiunte, `P(x)` è la somma degli score `P(x | c) P(c)` su tutte le classi; deve essere positivo. Il denominatore normalizza i posteriori affinché sommino a uno.\n\n```mermaid\nflowchart LR\n  P[\"Prior di classe\"] --> S[\"Score non normalizzato\"]\n  L[\"Likelihood delle feature\"] --> S\n  S --> N[\"Normalizzazione\"]\n  N --> Q[\"Posterior e decisione\"]\n```\n\n## Che cosa rende naive il modello\n\nNaive Bayes assume che le feature siano **indipendenti condizionatamente alla classe**, non necessariamente indipendenti in generale. Di conseguenza, la likelihood congiunta si fattorizza nel prodotto delle likelihood delle singole feature. Per un attributo Bernoulli assente, la probabilità usata è `1 - P(presente | c)`. Per scegliere la classe più probabile è sufficiente confrontare gli score, perché il denominatore è comune; per riportare probabilità occorre normalizzare.\n\n## Stime e precauzioni\n\nIn un’applicazione, prior e probabilità condizionate possono essere stimati dal train. Una feature mai osservata in una classe può annullare uno score: lo **smoothing** può evitare probabilità nulle, con una scelta dichiarata. Feature correlate possono violare l’ipotesi naive; buone decisioni di classe non garantiscono probabilità ben calibrate. Valuta il modello su dati non usati per stimare i parametri.",
+        "analogia": {
+          "testo": "È come rivedere la propria stima sulla collocazione di un libro dopo aver letto indizi sull’etichetta e sulla copertina.",
+          "limite": "Le probabilità e l’indipendenza degli indizi sono ipotesi da stimare e verificare; gli indizi reali possono essere correlati."
+        },
+        "worked_example": {
+          "titolo": "Posteriori con feature binarie",
+          "problema": "Per due classi fittizie, combina priori uguali e likelihood di presenza e assenza dei due attributi.",
+          "passi": [
+            "Per ogni classe prendi la likelihood della feature presente e il complemento di quella assente.",
+            "Moltiplica le likelihood per il prior della classe.",
+            "Normalizza gli score e scegli il posterior maggiore."
+          ],
+          "soluzione": "```python\nimport numpy as np\n\npriori = np.array([0.5, 0.5])\np_presenza = np.array([[0.2, 0.1], [0.8, 0.7]])  # righe: classi\nx = np.array([1, 0])  # prima feature presente, seconda assente\nlikelihood = np.where(x == 1, p_presenza, 1 - p_presenza)\nscore = priori * likelihood.prod(axis=1)\nposteriori = score / score.sum()\nclasse = int(np.argmax(posteriori))\nprint(score)        # [0.09 0.12]\nprint(posteriori)   # [3/7, 4/7], circa [0.4286, 0.5714]\nprint(classe)       # 1, la seconda classe\n```\nGli score sono `0,09` e `0,12`; i posteriori sono `3/7` e `4/7`.",
+          "perche_funziona": "Il prodotto è valido sotto l’ipotesi di indipendenza condizionata; la somma degli score è positiva e normalizza le classi."
+        },
+        "completion_problem": {
+          "titolo": "Normalizza gli score",
+          "testo": "Due classi hanno score non normalizzati 0,09 e 0,12. Completa il calcolo dei posteriori.",
+          "passi_mancanti": [
+            "Somma gli score per ottenere l’evidenza.",
+            "Dividi ciascuno score per la stessa somma."
+          ],
+          "soluzione": "La somma è 0,21; i posteriori sono 3/7 e 4/7, quindi prevale la seconda classe."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Riconosci il ruolo della likelihood",
+          "testo": "Se `P(feature | classe)` cresce e il resto rimane invariato, come cambia lo score della classe? Quando aumenta certamente?",
+          "suggerimento": "Lo score moltiplica il prior per tutte le likelihood delle feature.",
+          "soluzione_attesa": "Lo score non diminuisce; aumenta se il prior e il prodotto delle altre likelihood sono positivi. Se uno è zero, resta zero."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Scambiare `P(classe | feature)` con `P(feature | classe)`.",
+            "perche_sbagliato": "Posterior e likelihood condizionano su eventi diversi e non coincidono in generale.",
+            "distrattore": "Un header HTTP è un prior."
+          },
+          {
+            "errore": "Sostenere che le feature naive siano sempre indipendenti senza condizioni.",
+            "perche_sbagliato": "L’ipotesi è indipendenza delle feature una volta fissata la classe.",
+            "distrattore": "Un selettore CSS è una probabilità."
+          }
+        ],
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Che cosa rappresenta il prior `P(c)`? A) La probabilità prima dell’osservazione; B) Il posterior; C) Il CSS.",
+              "risposta": "A) È la probabilità della classe prima di osservare la feature."
+            },
+            {
+              "domanda": "Che cos’è `P(x | c)`? A) Un metodo HTTP; B) Likelihood; C) Posterior della classe.",
+              "risposta": "B) È la probabilità dell’osservazione data la classe."
+            },
+            {
+              "domanda": "Quale indipendenza assume naive Bayes? A) Incondizionata sempre; B) Indipendenza dai server; C) Condizionata alla classe.",
+              "risposta": "C) Le feature si assumono indipendenti una volta fissata la classe."
+            },
+            {
+              "domanda": "A che cosa serve il denominatore di Bayes? A) A normalizzare; B) A cambiare porta; C) Ad aggiungere classi.",
+              "risposta": "A) Normalizza gli score affinché i posteriori sommino a uno."
+            },
+            {
+              "domanda": "Quale precauzione riguarda le probabilità predette? A) Sono sempre certe; B) Possono essere mal calibrate; C) Sono cookie.",
+              "risposta": "B) La scelta della classe può funzionare anche quando le probabilità sono mal calibrate."
+            }
+          ],
+          "spiega_con_parole_tue": "Spiega con parole tue come prior, likelihood e indipendenza condizionata portano alla decisione su un libro.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "ia-supervisionato-classificazione-lineare",
+              "collegamento": "Entrambi assegnano classi da feature, ma naive Bayes modella probabilità condizionate."
+            },
+            {
+              "nodo": "ia-introduzione-apprendimento",
+              "collegamento": "I parametri statistici si stimano sul train e si valutano su dati separati."
+            }
+          ]
+        },
+        "riepilogo": "Il prior precede l’osservazione; la likelihood descrive l’osservazione data la classe.\nBayes combina e normalizza gli score in posteriori.\nNaive Bayes assume indipendenza delle feature data la classe.\nSmoothing e valutazione aiutano a gestire stime fragili.\nProbabilità stimate e certezza non sono sinonimi.",
+        "flashcard": {
+          "fronte": "Qual è l’ipotesi naive di naive Bayes?",
+          "retro": "Le feature sono indipendenti tra loro condizionatamente alla classe, non necessariamente in generale."
+        },
+        "checklist": {
+          "so_fare": [
+            "Calcolare score e posteriori per due classi",
+            "Individuare un’eventuale probabilità nulla"
+          ],
+          "so_dire": [
+            "Distinguere prior, likelihood ed evidenza",
+            "Spiegare il limite dell’indipendenza condizionata"
+          ]
+        }
+      }
+    },
+    {
+      "id": "ia-clustering-non-supervisionato",
+      "title": "IA: clustering e apprendimento non supervisionato",
+      "area": 7,
+      "gruppo": "A",
+      "tipo": "concetto",
+      "sapere": "Il clustering cerca gruppi di osservazioni simili senza etichette. K-means alterna assegnazione ai centroidi e aggiornamento delle medie, minimizzando una somma di distanze quadratiche.",
+      "saper_fare": [
+        "Eseguire assegnazione e aggiornamento dei centroidi",
+        "Interpretare inerzia e limiti di k-means",
+        "Distinguere un cluster da una classe etichettata"
+      ],
+      "prerequisiti": [
+        {
+          "id": "ia-introduzione-apprendimento",
+          "forza": "hard",
+          "motivo": "Serve distinguere dati con target e dati senza target."
+        },
+        {
+          "id": "ia-python-numpy-lab",
+          "forza": "soft",
+          "motivo": "Array e broadcasting semplificano i calcoli delle distanze."
+        }
+      ],
+      "esercizi": [
+        {
+          "tipo_esame": "Allenamento originale, non prova ufficiale",
+          "testo": "Con punti [0, 2, 8, 10] e centroidi iniziali 0 e 10, quali centroidi ottieni dopo una assegnazione e un aggiornamento?",
+          "soluzione": "I gruppi sono [0, 2] e [8, 10]; i centroidi aggiornati sono 1 e 9."
+        }
+      ],
+      "tempo_studio_min": 50,
+      "priorita": {
+        "livello": "alta",
+        "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+      },
+      "risorse": [
+        {
+          "titolo": "scikit-learn: clustering e k-means",
+          "url": "https://scikit-learn.org/stable/modules/clustering.html",
+          "verificato": true
+        },
+        {
+          "titolo": "NumPy: broadcasting",
+          "url": "https://numpy.org/doc/stable/user/basics.broadcasting.html",
+          "verificato": true
+        }
+      ],
+      "riferimenti_testo": [
+        {
+          "libro": "SKLEARN"
+        },
+        {
+          "libro": "NUMPY"
+        }
+      ],
+      "checklist_ripasso": [
+        "Gruppi non supervisionati e scelta di k",
+        "Assegnazione, media e inerzia",
+        "Scala delle feature e inizializzazione"
+      ],
+      "worker": "X3",
+      "lezione": {
+        "perche_ti_serve": "Gruppo A: clustering e non supervisionato sono nel programma IA [F1]; nessun punteggio per nodo è indicato.",
+        "scenario_fil_rouge": "La biblioteca online non possiede etichette di gradimento attendibili, ma descrive libri fittizi con due attributi numerici. Vorrebbe esplorare gruppi di libri simili senza fingere di conoscere già le categorie.",
+        "definizione_esame": {
+          "definizione": "Il clustering è una famiglia di metodi non supervisionati che raggruppano osservazioni secondo un criterio di somiglianza.",
+          "scopo_vantaggio": "Aiuta a esplorare strutture nei dati senza richiedere una classe nota per ogni esempio.",
+          "esempio": "K-means assegna i libri al centro più vicino e sposta ciascun centro sulla media dei libri assegnati."
+        },
+        "spiegazione": "Prerequisiti: introduzione all’apprendimento; array e broadcasting sono utili. **Fonte e limiti:** testo ed esempi originali basati su documentazione libera, non sulle slide del prof. Calderara, non pubbliche [F12]. Il clustering è indicato in [F1].\n\n## Gruppi senza etichette\n\nNel non supervisionato osserviamo le feature senza un target di classe da imparare. Il **clustering** propone una suddivisione in gruppi relativamente simili secondo una distanza e un algoritmo scelti. Non esiste automaticamente un significato umano per un numero di cluster: la biblioteca deve interpretare i gruppi nel contesto e non chiamarli etichette vere.\n\n## K-means: il ciclo essenziale\n\nScegli `k`, il numero di gruppi, e una posizione iniziale per ogni **centroide**. Calcola la distanza quadratica da ogni punto a ogni centro; assegna il punto al centro più vicino. Poi aggiorna ogni centroide con la media dei punti assegnati. Ripeti assegnazione e aggiornamento finché i centroidi non cambiano più entro una tolleranza o fino a un limite scelto. Il centroide è una media: non deve coincidere con un libro presente.\n\n```mermaid\nflowchart LR\n  I[\"Inizializza centroidi\"] --> A[\"Assegna il centro più vicino\"]\n  A --> M[\"Aggiorna le medie\"]\n  M --> C[\"Verifica arresto\"]\n  C --> R[\"Gruppi risultanti\"]\n```\n\nNel diagramma il controllo rappresenta la ripetizione descritta nel testo quando l’arresto non è soddisfatto. L’**inerzia** è la somma delle distanze quadratiche dei punti dal centro del proprio gruppo. K-means cerca di ridurla, ma inizializzazioni diverse possono portare a soluzioni locali differenti; il risultato non è garantito globalmente ottimo.\n\n## Scelte e cautele\n\nIl numero `k` è una scelta del modello, non una verità trovata automaticamente. La scala delle feature influenza le distanze: se appropriato, apprendi la trasformazione sui dati disponibili per l’addestramento e applicala coerentemente ai nuovi dati. K-means favorisce gruppi compatti secondo la distanza euclidea e può trattare male gruppi di forma irregolare o con forte presenza di valori estremi. Se un gruppo diventa vuoto, occorre gestirlo esplicitamente; l’esempio svolto usa dati per cui non accade.",
+        "analogia": {
+          "testo": "È come distribuire libri su tavoli in base a quanto sono vicini a un segnaposto, poi spostare il segnaposto al centro dei libri sul tavolo.",
+          "limite": "La somiglianza numerica dipende da feature e scala; il tavolo non dimostra che i lettori considerino quei libri equivalenti."
+        },
+        "worked_example": {
+          "titolo": "K-means su quattro libri fittizi",
+          "problema": "Raggruppa quattro punti con due centroidi iniziali fissati e calcola centroidi e inerzia.",
+          "passi": [
+            "Calcola le distanze quadratiche da ogni libro ai centroidi.",
+            "Assegna ogni libro al centro più vicino e aggiorna le medie.",
+            "Ripeti fino alla stabilità, poi ricalcola etichette e inerzia."
+          ],
+          "soluzione": "```python\nimport numpy as np\n\nX = np.array([[1., 1.], [1., 3.], [8., 8.], [10., 8.]])\ncentri = np.array([[1., 1.], [10., 8.]])\nfor _ in range(10):  # limite prudenziale per il solo esempio\n    dist2 = ((X[:, None, :] - centri[None, :, :]) ** 2).sum(axis=2)\n    gruppi = np.argmin(dist2, axis=1)\n    if np.any(np.bincount(gruppi, minlength=len(centri)) == 0):\n        raise ValueError('Cluster vuoto: reinizializzare il centro')\n    nuovi = np.array([X[gruppi == k].mean(axis=0) for k in range(len(centri))])\n    if np.allclose(nuovi, centri):\n        break\n    centri = nuovi\ngruppi = np.argmin(((X[:, None, :] - centri[None, :, :]) ** 2).sum(axis=2), axis=1)\ninerzia = ((X - centri[gruppi]) ** 2).sum()\nprint(gruppi)       # [0 0 1 1]\nprint(centri)       # [[1. 2.], [9. 8.]]\nprint(inerzia)      # 4.0\n```\nI gruppi sono `[0, 0, 1, 1]`, i centroidi `[[1, 2], [9, 8]]` e l’inerzia è `4`.",
+          "perche_funziona": "Il broadcasting confronta ogni punto con ogni centroide; le medie minimizzano la somma degli scarti quadratici per assegnazioni fissate."
+        },
+        "completion_problem": {
+          "titolo": "Aggiorna due centroidi",
+          "testo": "Con punti [0, 2, 8, 10] e centroidi iniziali 0 e 10, completa un ciclo di k-means.",
+          "passi_mancanti": [
+            "Assegna ogni punto al centroide più vicino.",
+            "Calcola la media dei punti di ciascun gruppo."
+          ],
+          "soluzione": "I gruppi sono `[0, 2]` e `[8, 10]`; i nuovi centroidi sono `1` e `9`."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Un altro ciclo di assegnazione",
+          "testo": "Con punti [1, 3, 9] e centroidi iniziali 1 e 9, determina gruppi e centroidi dopo un aggiornamento.",
+          "suggerimento": "Associa ciascun punto al più vicino, poi calcola le medie.",
+          "soluzione_attesa": "I gruppi sono `[1, 3]` e `[9]`; i centroidi aggiornati sono `2` e `9`."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Interpretare gli indici dei cluster come etichette vere.",
+            "perche_sbagliato": "Gli indici identificano gruppi prodotti dall’algoritmo; non contengono da soli un significato umano.",
+            "distrattore": "Un codice di stato HTTP è un centroide."
+          },
+          {
+            "errore": "Pensare che k-means trovi sempre il minimo globale.",
+            "perche_sbagliato": "L’inizializzazione e la geometria dei dati possono portare a soluzioni locali diverse.",
+            "distrattore": "Una classe CSS è una distanza euclidea."
+          }
+        ],
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Quale informazione non serve come target al clustering? A) Distanza; B) Etichette di classe; C) Feature.",
+              "risposta": "B) Il clustering non richiede target di classe noti per l’addestramento."
+            },
+            {
+              "domanda": "Come si aggiorna un centroide k-means? A) Con un header; B) A caso ogni volta; C) Con la media dei punti assegnati.",
+              "risposta": "C) Si calcola la media delle coordinate dei punti nel gruppo."
+            },
+            {
+              "domanda": "Che cosa misura l’inerzia? A) Somma di distanze quadratiche dai centroidi; B) Larghezza CSS; C) Numero di etichette vere.",
+              "risposta": "A) È la somma degli scarti quadratici dai rispettivi centroidi."
+            },
+            {
+              "domanda": "La scala delle feature può cambiare i cluster? A) No; B) Sì; C) Solo se il server è spento.",
+              "risposta": "B) La scala influenza le distanze e quindi le assegnazioni."
+            },
+            {
+              "domanda": "K-means garantisce sempre il minimo globale? A) Solo con HTTP; B) Sì; C) No.",
+              "risposta": "C) Può convergere a soluzioni locali che dipendono dall’inizializzazione."
+            }
+          ],
+          "spiega_con_parole_tue": "Spiega con parole tue perché gruppi di libri trovati da k-means non equivalgono a preferenze note dei lettori.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "ia-introduzione-apprendimento",
+              "collegamento": "Il clustering applica l’idea di apprendimento non supervisionato ai dati della biblioteca."
+            },
+            {
+              "nodo": "ia-python-numpy-lab",
+              "collegamento": "Il broadcasting permette di calcolare insieme le distanze tra punti e centroidi."
+            }
+          ]
+        },
+        "riepilogo": "Il clustering cerca gruppi senza target di classe.\nK-means alterna assegnazione al centro vicino e media dei punti.\nL’inerzia somma distanze quadratiche entro i gruppi.\nScelta di k, scala e inizializzazione influenzano il risultato.\nUn gruppo scoperto non è una classe vera garantita.",
+        "flashcard": {
+          "fronte": "Quali due passi alterna k-means?",
+          "retro": "Assegna i punti al centroide più vicino e aggiorna ogni centroide con la media dei punti assegnati."
+        },
+        "checklist": {
+          "so_fare": [
+            "Calcolare assegnazioni e nuovi centroidi",
+            "Calcolare l’inerzia su dati semplici"
+          ],
+          "so_dire": [
+            "Distinguere cluster e classe etichettata",
+            "Spiegare gli effetti di scala e inizializzazione"
+          ]
+        }
+      }
+    },
+    {
+      "id": "ia-esame-quiz-lab-lode",
+      "title": "IA: quiz, laboratorio e lode dell’esame integrato",
+      "area": 7,
+      "gruppo": "A",
+      "tipo": "tipo_esercizio",
+      "sapere": "La verifica IA prevede quiz chiusi con voto in trentesimi e laboratorio come idoneità ON/OFF [F1]. Il voto integrato è una media ponderata arrotondata per eccesso; la lode ha condizioni specifiche [F1].",
+      "saper_fare": [
+        "Distinguere voto del quiz ed esito del laboratorio",
+        "Applicare le condizioni della lode integrata",
+        "Descrivere la media ponderata e il trattamento della lode"
+      ],
+      "prerequisiti": [
+        {
+          "id": "ia-supervisionato-classificazione-lineare",
+          "forza": "hard",
+          "motivo": "Il quiz riguarda gli argomenti del modulo IA."
+        },
+        {
+          "id": "ia-clustering-non-supervisionato",
+          "forza": "hard",
+          "motivo": "La preparazione include anche apprendimento non supervisionato."
+        },
+        {
+          "id": "ia-regressione",
+          "forza": "soft",
+          "motivo": "La regressione integra il ripasso dei metodi del modulo."
+        },
+        {
+          "id": "ia-bayes-apprendimento-statistico",
+          "forza": "soft",
+          "motivo": "Bayes integra il ripasso dei metodi del modulo."
+        },
+        {
+          "id": "ia-riduzione-dimensionalita",
+          "forza": "soft",
+          "motivo": "La riduzione delle dimensioni completa il ripasso dei metodi."
+        }
+      ],
+      "esercizi": [
+        {
+          "tipo_esame": "Allenamento originale, non prova ufficiale",
+          "testo": "Uno studente ha 30 e lode in IA e 30 in TW. Quali condizioni della lode integrata sono soddisfatte?",
+          "soluzione": "Entrambi i moduli hanno 30 e almeno uno ha la lode: sono soddisfatte le condizioni riportate in [F1]."
+        }
+      ],
+      "tempo_studio_min": 35,
+      "priorita": {
+        "livello": "alta",
+        "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+      },
+      "risorse": [
+        {
+          "titolo": "UNIMORE: scheda ufficiale INF-37, programma e verifica [F1]",
+          "url": "https://unimore.coursecatalogue.cineca.it/corsi/2024/10296/insegnamenti/2026/27352/2022/10000?annoOrdinamento=2022",
+          "verificato": true
+        }
+      ],
+      "riferimenti_testo": [],
+      "checklist_ripasso": [
+        "Quiz chiusi in trentesimi e laboratorio ON/OFF [F1]",
+        "Media ponderata arrotondata per eccesso [F1]",
+        "Lode: 30 in entrambi e lode in almeno uno [F1]"
+      ],
+      "worker": "X3",
+      "lezione": {
+        "perche_ti_serve": "Gruppo A: riepilogo della verifica IA e della lode dell’integrato secondo la scheda ufficiale [F1].",
+        "scenario_fil_rouge": "Una studentessa della biblioteca online ripassa il modulo IA e vuole distinguere ciò che il syllabus dice sul quiz, sul laboratorio e sul voto integrato, senza confondere i dati del sito con una prova ufficiale.",
+        "definizione_esame": {
+          "definizione": "La verifica IA comprende uno scritto con domande chiuse in forma di quiz e una prova di laboratorio al calcolatore valutata come idoneità ON/OFF [F1].",
+          "scopo_vantaggio": "Distinguere voto, idoneità e condizioni della lode permette di interpretare correttamente la verifica riportata nella scheda [F1].",
+          "esempio": "Il voto IA è determinato dai quiz in trentesimi; la lode integrata richiede 30 in entrambi i moduli e lode in almeno uno [F1]."
+        },
+        "spiegazione": "Prerequisiti: classificazione supervisionata e clustering; sono utili regressione, Bayes e riduzione delle dimensioni. **Fonte e limiti:** questa lezione originale non deriva dalle slide del prof. Calderara, non pubbliche [F12]. Le regole d’esame qui riportate provengono dalla scheda [F1]; gli esercizi sono originali, non prove ufficiali.\n\n## Due elementi distinti nel modulo IA\n\nLa scheda [F1] descrive un **esame scritto con domande chiuse in forma di quiz** e una **prova di laboratorio al calcolatore** sulle esercitazioni svolte durante il corso. Il voto del modulo IA è determinato dai quiz in **trentesimi**. Il laboratorio è indicato come idoneità **ON/OFF**: nella scheda non è presentato come un punteggio numerico da sommare al voto del quiz.\n\n```mermaid\nflowchart LR\n  Q[\"Quiz chiusi\"] --> V[\"Voto IA in trentesimi\"]\n  L[\"Laboratorio al calcolatore\"] --> I[\"Idoneità ON OFF\"]\n  V --> M[\"Media ponderata integrata\"]\n  T[\"Voto TW\"] --> M\n  M --> A[\"Arrotondamento per eccesso\"]\n```\n\n## Media dell’insegnamento integrato\n\nSecondo [F1], il voto complessivo è la **media ponderata** dei voti dei singoli moduli, **arrotondata per eccesso**. Ai fini della media, un voto di **30 e lode equivale a 30**. Una media ponderata tiene conto del peso dei voti; non si deve sostituirla a una somma di esiti ON/OFF o inventare regole aggiuntive sui pesi.\n\n## Condizioni della lode\n\n[F1] attribuisce la **lode finale esclusivamente se** lo studente consegue **30 in entrambi i moduli**, IA e Tecnologie Web, **con la lode in almeno uno**. Sono quindi due controlli distinti: il valore di ciascun voto e la presenza della lode in almeno un modulo. Avere la lode nel solo modulo TW non basta se l’IA non ha anch’esso 30; avere 30 in entrambi senza alcuna lode non soddisfa la seconda condizione.\n\n## Confini della fonte\n\nLa scheda citata non specifica qui il numero di domande, la durata della prova IA, punteggi per argomento o ulteriori soglie: non li inventiamo. Gli esempi e i richiami di questa lezione esercitano la lettura delle regole [F1], non riproducono quesiti ufficiali. Per eventuali aggiornamenti controlla la scheda e i materiali del corso accessibili allo studente.",
+        "analogia": {
+          "testo": "È come distinguere, nella biblioteca, una misura numerica da un contrassegno separato: non si sommano due cose di natura diversa.",
+          "limite": "L’analogia non introduce soglie o condizioni ulteriori: per voto, idoneità e lode valgono solo le regole della scheda [F1]."
+        },
+        "worked_example": {
+          "titolo": "Verifica le condizioni della lode",
+          "problema": "Una studentessa ha 30 e lode nel modulo IA e 30 nel modulo TW. Verifica le condizioni riportate in [F1].",
+          "passi": [
+            "Ai fini della media, considera il 30 e lode come 30.",
+            "Controlla che entrambi i voti siano 30.",
+            "Controlla che almeno uno dei moduli abbia la lode."
+          ],
+          "soluzione": "La media ponderata di due voti pari a 30 è 30; le condizioni riportate per la lode integrata sono soddisfatte perché entrambi i moduli hanno 30 e IA ha la lode [F1].",
+          "perche_funziona": "La lode nel modulo è trattata come 30 per la media; la condizione della lode finale controlla anche la presenza di almeno una lode [F1]."
+        },
+        "completion_problem": {
+          "titolo": "Distingui voto e idoneità",
+          "testo": "Completa il riepilogo della verifica IA: il voto viene dai quiz chiusi; il laboratorio è una idoneità separata.",
+          "passi_mancanti": [
+            "Indica la scala del voto determinato dai quiz.",
+            "Indica come è espresso l’esito del laboratorio."
+          ],
+          "soluzione": "I quiz determinano il voto in trentesimi; la prova di laboratorio è una idoneità ON/OFF [F1]."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Verifica la condizione mancante",
+          "testo": "Una studentessa ha 30 in entrambi i moduli, ma nessuno dei due voti ha la lode. La condizione per la lode integrata è soddisfatta?",
+          "suggerimento": "Controlla separatamente il valore dei voti e la presenza della lode in almeno un modulo.",
+          "soluzione_attesa": "No: pur avendo 30 in entrambi, manca la lode in almeno uno dei due moduli [F1]."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Sommare ON/OFF come se fosse un punteggio numerico.",
+            "perche_sbagliato": "La scheda descrive il laboratorio come idoneità, mentre il voto IA è determinato dai quiz [F1].",
+            "distrattore": "Un selettore CSS è un voto."
+          },
+          {
+            "errore": "Attribuire la lode integrata con 30 in entrambi ma senza lode nei moduli.",
+            "perche_sbagliato": "La scheda richiede anche la lode in almeno uno dei moduli [F1].",
+            "distrattore": "Un cookie è una lode."
+          },
+          {
+            "errore": "Arrotondare la media ponderata all’intero più vicino.",
+            "perche_sbagliato": "La scheda specifica arrotondamento per eccesso, non arrotondamento al più vicino [F1].",
+            "distrattore": "Un indirizzo IP è un voto."
+          }
+        ],
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Quale forma ha lo scritto IA? A) Solo prova orale; B) Una regola CSS; C) Quiz a domande chiuse.",
+              "risposta": "C) La scheda descrive uno scritto con domande chiuse in forma di quiz [F1]."
+            },
+            {
+              "domanda": "Come viene valutato il laboratorio IA? A) Idoneità ON/OFF; B) Metodo HTTP; C) Punti da sommare al quiz.",
+              "risposta": "A) La prova di laboratorio è descritta come idoneità ON/OFF [F1]."
+            },
+            {
+              "domanda": "Quale scala determina il voto IA? A) ON/OFF del quiz; B) Trentesimi dal quiz; C) Porte TCP.",
+              "risposta": "B) Il voto del modulo IA è determinato dai quiz in trentesimi [F1]."
+            },
+            {
+              "domanda": "Come si arrotonda la media ponderata integrata? A) Come un URL; B) Sempre per difetto; C) Per eccesso.",
+              "risposta": "C) La scheda prevede l’arrotondamento per eccesso [F1]."
+            },
+            {
+              "domanda": "Qual è la condizione della lode integrata? A) 30 in entrambi e lode in almeno uno; B) 30 senza lode in entrambi; C) Un cookie.",
+              "risposta": "A) Occorrono 30 in entrambi i moduli e lode in almeno uno [F1]."
+            }
+          ],
+          "spiega_con_parole_tue": "Spiega con parole tue perché il voto del quiz, l’idoneità del laboratorio e la lode integrata non sono la stessa cosa.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "ia-supervisionato-classificazione-lineare",
+              "collegamento": "La classificazione lineare è uno degli argomenti del modulo IA richiamati da [F1]."
+            },
+            {
+              "nodo": "ia-clustering-non-supervisionato",
+              "collegamento": "Il clustering è un altro argomento del modulo IA richiamato nella scheda [F1]."
+            }
+          ]
+        },
+        "riepilogo": "Quiz chiusi: voto IA in trentesimi [F1].\nLaboratorio al calcolatore: idoneità ON/OFF [F1].\nVoto integrato: media ponderata arrotondata per eccesso [F1].\nLa lode di un modulo conta come 30 nella media [F1].\nLode finale solo con 30 in entrambi e lode in almeno uno [F1].",
+        "flashcard": {
+          "fronte": "Quali condizioni riporta [F1] per la lode finale?",
+          "retro": "30 in entrambi i moduli, IA e TW, con la lode in almeno uno dei due."
+        },
+        "checklist": {
+          "so_fare": [
+            "Distinguere quiz in trentesimi e laboratorio ON/OFF",
+            "Controllare le condizioni della lode integrata"
+          ],
+          "so_dire": [
+            "Descrivere media ponderata e arrotondamento per eccesso",
+            "Spiegare come la lode di un modulo vale ai fini della media"
+          ]
+        }
+      }
+    },
+    {
+      "id": "ia-introduzione-apprendimento",
+      "title": "IA: introduzione all’apprendimento automatico",
+      "area": 7,
+      "gruppo": "A",
+      "tipo": "concetto",
+      "sapere": "L’apprendimento automatico ricava modelli dai dati. Distingui esempi con etichetta da dati senza etichette, generalizzazione e valutazione su dati separati.",
+      "saper_fare": [
+        "Distinguere attributi, etichette e previsioni",
+        "Separare addestramento, validazione e test",
+        "Leggere accuratezza e matrice di confusione"
+      ],
+      "prerequisiti": [],
+      "esercizi": [
+        {
+          "tipo_esame": "Allenamento originale, non prova ufficiale",
+          "testo": "Su dati di test, le etichette vere sono [1, 0, 1, 0] e le predizioni [1, 0, 0, 1]. Quali sono accuratezza e matrice di confusione?",
+          "soluzione": "Due predizioni su quattro sono corrette: accuratezza 0,5. Con righe vere e colonne predette, la matrice è [[1, 1], [1, 1]]."
+        }
+      ],
+      "tempo_studio_min": 50,
+      "priorita": {
+        "livello": "alta",
+        "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+      },
+      "risorse": [
+        {
+          "titolo": "scikit-learn User Guide",
+          "url": "https://scikit-learn.org/stable/user_guide.html",
+          "verificato": true
+        },
+        {
+          "titolo": "scikit-learn: valutazione dei modelli",
+          "url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+          "verificato": true
+        },
+        {
+          "titolo": "scikit-learn: evitare il data leakage",
+          "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+          "verificato": true
+        }
+      ],
+      "riferimenti_testo": [
+        {
+          "libro": "SKLEARN"
+        }
+      ],
+      "checklist_ripasso": [
+        "Dati etichettati e non etichettati",
+        "Train, validazione, test e leakage",
+        "Accuratezza e righe/colonne della matrice di confusione"
+      ],
+      "worker": "X3",
+      "lezione": {
+        "perche_ti_serve": "Gruppo A: l’apprendimento è nel programma IA [F1]; non è indicato un punteggio per singolo argomento.",
+        "scenario_fil_rouge": "La biblioteca online vorrebbe prevedere se un libro sarà preso in prestito, partendo da un piccolo archivio fittizio. Prima di proporre un modello decide quali dati raccogliere e come valutarlo su libri mai usati per addestrarlo.",
+        "definizione_esame": {
+          "definizione": "L’apprendimento automatico costruisce, a partire dai dati, un modello capace di formulare previsioni o individuare strutture.",
+          "scopo_vantaggio": "L’obiettivo è generalizzare a dati nuovi, misurando l’errore senza confondere apprendimento e valutazione.",
+          "esempio": "Con attributi dei libri e prestiti precedenti si impara a prevedere un’etichetta; senza etichette si possono cercare gruppi."
+        },
+        "spiegazione": "Prerequisiti: nessuno. **Fonte e limiti:** contenuti ed esempi originali basati su documentazione libera, non sulle slide del prof. Calderara, non pubbliche [F12]. Il programma è indicato da [F1].\n\n## Dal problema ai dati\n\nUn sistema di IA può impiegare regole fissate a mano oppure **apprendere** dai dati. Nel machine learning scegliamo una rappresentazione, una famiglia di modelli e un criterio con cui adattare i parametri. Una riga descrive un esempio; le colonne sono **attributi** o feature. La quantità da prevedere è il target. Le registrazioni della biblioteca usate qui sono piccoli dati fittizi, non prove ufficiali.\n\n## Due modi di apprendere\n\nNel **supervisionato** a ogni esempio di addestramento è associata una risposta: un’etichetta per classificare oppure un valore numerico per la regressione. Nel **non supervisionato** si cerca struttura in dati senza target, per esempio gruppi di libri simili. Un cluster non è automaticamente una categoria corretta o una preferenza reale del lettore.\n\n```mermaid\nflowchart LR\n  D[\"Dati disponibili\"] --> S[\"Separazione dei dati\"]\n  S --> T[\"Addestramento\"]\n  T --> M[\"Modello\"]\n  M --> V[\"Valutazione su test\"]\n```\n\n## Generalizzazione e overfitting\n\nDividi i dati prima delle trasformazioni: usa il **train** per apprendere anche medie e parametri di preprocessing, la **validazione** per scegliere modello e impostazioni, e il **test** tenuto da parte per la valutazione finale. Applica al test le trasformazioni già apprese sul train. Usare il test per scegliere una trasformazione è **data leakage** e rende la stima ottimistica. In dati temporali la divisione deve rispettare l’ordine degli eventi.\n\nUn modello in **overfitting** si adatta troppo al train, anche al rumore, e può comportarsi peggio su dati nuovi. Più complessità non garantisce più generalizzazione. Confrontare train e validazione e limitare la complessità sono possibili rimedi, non garanzie.\n\n## Valutare una classificazione\n\nL’**accuratezza** è il numero di predizioni corrette diviso il numero totale di esempi valutati. La **matrice di confusione** conta gli incroci tra classi vere, sulle righe, e classi previste, sulle colonne. L’accuratezza da sola può nascondere errori importanti se una classe è rara: guarda anche le singole celle e considera metriche coerenti con il problema.",
+        "analogia": {
+          "testo": "È come imparare a riconoscere libri in biblioteca dagli esempi già catalogati e poi verificarsi su nuovi libri, non su quelli già studiati.",
+          "limite": "Il modello non capisce necessariamente il significato dei libri: calcola a partire dagli attributi disponibili."
+        },
+        "worked_example": {
+          "titolo": "Valutare previsioni su un test fittizio",
+          "problema": "La biblioteca confronta etichette vere e previsioni già ottenute su libri di test mai usati nell’addestramento.",
+          "passi": [
+            "Contare i casi per ciascuna coppia di classe vera e prevista.",
+            "Disporre le classi vere sulle righe e quelle previste sulle colonne.",
+            "Calcolare la frazione di predizioni uguali alle etichette vere."
+          ],
+          "soluzione": "```python\nimport numpy as np\n\nvero = np.array([1, 0, 1, 0])\nprevisto = np.array([1, 0, 0, 1])\nmatrice = np.zeros((2, 2), dtype=int)\nnp.add.at(matrice, (vero, previsto), 1)  # righe vere, colonne previste\naccuratezza = np.mean(vero == previsto)\nprint(matrice)       # [[1 1], [1 1]]\nprint(accuratezza)   # 0.5\n```\nLa diagonale contiene due casi corretti su quattro; la matrice è `[[1, 1], [1, 1]]`.",
+          "perche_funziona": "Ogni coppia incrementa una cella della matrice; la diagonale conta i casi in cui classe vera e prevista coincidono."
+        },
+        "completion_problem": {
+          "titolo": "Completa la matrice",
+          "testo": "Su tre libri fittizi vero = [1, 1, 0] e previsto = [1, 0, 0]. Usa righe vere e colonne previste.",
+          "passi_mancanti": [
+            "Completa le due righe della matrice di confusione.",
+            "Conta le predizioni corrette e dividi per i tre esempi."
+          ],
+          "soluzione": "Matrice `[[1, 0], [1, 1]]`; due previsioni sono corrette, quindi l’accuratezza è 2/3."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Valuta un nuovo test",
+          "testo": "Con vero = [0, 0, 1, 1] e previsto = [0, 1, 1, 1], trova matrice e accuratezza.",
+          "suggerimento": "Conta prima le coppie con classe vera 0, poi quelle con classe vera 1.",
+          "soluzione_attesa": "La matrice è `[[1, 1], [0, 2]]` e l’accuratezza è 3/4: tre previsioni corrette su quattro."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Calcolare la media di normalizzazione su train e test insieme.",
+            "perche_sbagliato": "Il test influenzerebbe un parametro appreso: è leakage.",
+            "distrattore": "Il server HTTP cambia porta."
+          },
+          {
+            "errore": "Considerare l’accuratezza perfetta sul train una prova di generalizzazione.",
+            "perche_sbagliato": "Il modello può aver memorizzato rumore e peggiorare su dati nuovi.",
+            "distrattore": "Il colore CSS determina la classe."
+          }
+        ],
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Quali dati hanno un target noto nel supervisionato? A) Il train etichettato; B) Un foglio CSS; C) Solo il cluster.",
+              "risposta": "A) Il train etichettato associa attributi e target per apprendere."
+            },
+            {
+              "domanda": "Quale insieme va tenuto per la valutazione finale? A) Train; B) Test; C) Staging Git.",
+              "risposta": "B) Il test resta separato dalle scelte di addestramento e modello."
+            },
+            {
+              "domanda": "Che cosa descrive l’overfitting? A) Un cookie; B) Più memoria RAM; C) Eccessivo adattamento al train.",
+              "risposta": "C) Il modello può seguire anche il rumore e generalizzare male."
+            },
+            {
+              "domanda": "Con le righe vere, che cosa rappresenta una cella della matrice? A) Un confronto di classi; B) Un peso CSS; C) Una porta TCP.",
+              "risposta": "A) Conta i casi con quella classe vera e quella prevista."
+            },
+            {
+              "domanda": "Che cos’è l’accuratezza? A) Tempo di rete; B) Frazione di predizioni corrette; C) Numero di feature.",
+              "risposta": "B) È il numero di predizioni corrette diviso il totale valutato."
+            }
+          ],
+          "spiega_con_parole_tue": "Spiega con parole tue perché una biblioteca deve separare train e test anche prima di calcolare le medie.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "json-formato-dati",
+              "collegamento": "Dati JSON possono rappresentare le osservazioni prima di convertirle in feature numeriche."
+            },
+            {
+              "nodo": "ia-supervisionato-classificazione-lineare",
+              "collegamento": "La classificazione supervisionata usa etichette e si valuta con la matrice di confusione."
+            },
+            {
+              "nodo": "ia-clustering-non-supervisionato",
+              "collegamento": "Il clustering cerca gruppi senza usare un target di addestramento."
+            }
+          ]
+        },
+        "riepilogo": "Il machine learning apprende modelli dai dati.\nIl supervisionato usa target; il non supervisionato cerca strutture.\nTrain, validazione e test hanno ruoli distinti.\nL’overfitting può peggiorare le prestazioni su dati nuovi.\nAccuratezza e matrice di confusione descrivono errori diversi.",
+        "flashcard": {
+          "fronte": "Perché il test non deve contribuire al preprocessing?",
+          "retro": "Per evitare leakage: i parametri della trasformazione si apprendono sul train e si applicano anche al test."
+        },
+        "checklist": {
+          "so_fare": [
+            "Calcolare accuratezza e matrice con righe vere e colonne previste",
+            "Riconoscere un leakage nella preparazione dei dati"
+          ],
+          "so_dire": [
+            "Distinguere apprendimento supervisionato e non supervisionato",
+            "Spiegare generalizzazione e overfitting"
+          ]
+        }
+      }
+    },
+    {
+      "id": "ia-python-numpy-lab",
+      "title": "IA: laboratorio Python e NumPy",
+      "area": 7,
+      "gruppo": "A",
+      "tipo": "abilita",
+      "sapere": "Python e NumPy permettono di rappresentare dati numerici con array, eseguire prodotto scalare e broadcasting e calcolare media e varianza lungo gli assi.",
+      "saper_fare": [
+        "Creare array e leggere shape e assi",
+        "Applicare broadcasting e prodotto scalare",
+        "Calcolare medie e varianze per colonna"
+      ],
+      "prerequisiti": [],
+      "esercizi": [
+        {
+          "tipo_esame": "Allenamento originale, non prova ufficiale",
+          "testo": "Con x = [1, 2] e w = [2, 0.5], calcola il prodotto scalare.",
+          "soluzione": "Moltiplica gli elementi corrispondenti e somma: 1×2 + 2×0,5 = 3."
+        }
+      ],
+      "tempo_studio_min": 60,
+      "priorita": {
+        "livello": "alta",
+        "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+      },
+      "risorse": [
+        {
+          "titolo": "NumPy: quickstart",
+          "url": "https://numpy.org/doc/stable/user/quickstart.html",
+          "verificato": true
+        },
+        {
+          "titolo": "NumPy: regole del broadcasting",
+          "url": "https://numpy.org/doc/stable/user/basics.broadcasting.html",
+          "verificato": true
+        },
+        {
+          "titolo": "Python: tutorial ufficiale",
+          "url": "https://docs.python.org/3/tutorial/",
+          "verificato": true
+        }
+      ],
+      "riferimenti_testo": [
+        {
+          "libro": "NUMPY"
+        },
+        {
+          "libro": "PYTHON"
+        }
+      ],
+      "checklist_ripasso": [
+        "Array, shape e assi",
+        "Prodotto scalare rispetto a prodotto elemento per elemento",
+        "Broadcasting, media e varianza"
+      ],
+      "worker": "X3",
+      "lezione": {
+        "perche_ti_serve": "Gruppo A: il laboratorio usa Python e NumPy [F1]; non è indicato un punteggio per singola operazione.",
+        "scenario_fil_rouge": "La biblioteca online rappresenta in una tabella fittizia i libri per righe e due attributi numerici per colonne. La stessa tabella verrà usata come esempio per modelli di classificazione, gruppi e previsioni.",
+        "definizione_esame": {
+          "definizione": "Un array NumPy è una struttura multidimensionale omogenea per rappresentare dati numerici e operare sui loro assi.",
+          "scopo_vantaggio": "Le operazioni vettoriali e il broadcasting consentono di esprimere trasformazioni compatte, controllando le dimensioni.",
+          "esempio": "Una matrice libri-per-attributi si può moltiplicare per un vettore di scale e riassumere con medie per colonna."
+        },
+        "spiegazione": "Prerequisiti: nessuno nel grafo; sono utili le basi di Python. **Fonte e limiti:** esempi originali da documentazione Python e NumPy, non dalle slide del prof. Calderara, non pubbliche [F12]; il laboratorio è previsto da [F1].\n\n## Array e forma\n\nIn Python importa NumPy con `import numpy as np`. `np.array` costruisce un **ndarray**: gli elementi hanno un tipo (`dtype`) e la **shape** descrive la lunghezza di ogni asse. Per una matrice `X` con una riga per libro e una colonna per attributo, `X.shape` è `(numero_libri, numero_attributi)`. `X[0]` seleziona la prima riga e `X[:, 1]` la seconda colonna: gli indici partono da zero.\n\n## Elemento per elemento e prodotto scalare\n\nCon array compatibili, `a * b` moltiplica **elemento per elemento**. Per due vettori della stessa lunghezza `a @ b` somma i prodotti corrispondenti, ottenendo uno scalare; per matrici `@` segue invece le regole del prodotto matriciale. Una lista Python non va confusa con un array: le rispettive operazioni non hanno sempre lo stesso significato.\n\n```mermaid\nflowchart LR\n  X[\"Matrice libri e attributi\"] --> C[\"Controllo shape\"]\n  C --> B[\"Broadcasting delle scale\"]\n  B --> R[\"Risultato per elemento\"]\n  X --> M[\"Medie per colonna\"]\n```\n\n## Broadcasting senza indovinare\n\nNumPy confronta le dimensioni da destra: ogni coppia deve essere uguale oppure una deve valere uno; una dimensione mancante si considera uno. Così un vettore di lunghezza pari alle colonne può essere applicato a ogni riga. Se le dimensioni sono incompatibili si ottiene un errore: controlla `shape` prima di eseguire l’operazione. L’espansione è concettuale, non necessariamente una copia dei dati.\n\n## Statistiche lungo gli assi\n\n`X.mean(axis=0)` calcola una media **per colonna**; `axis=1` una per riga. `X.var(axis=0)` usa di default la varianza con divisore pari al numero di osservazioni (`ddof=0`). Con `ddof=1` il divisore diminuisce di uno: serve un numero adeguato di osservazioni. Le due varianti rispondono a esigenze statistiche diverse. Quando la media serve a trasformare i dati di un modello, stimala sul train e riusala sul test per evitare leakage.",
+        "analogia": {
+          "testo": "La matrice è come una tabella di biblioteca: ogni scaffale virtuale è una colonna e ogni riga contiene i valori di un libro.",
+          "limite": "Un array NumPy ha un tipo e dimensioni precise; non tutte le operazioni su tabelle o liste Python si comportano come su un ndarray."
+        },
+        "worked_example": {
+          "titolo": "Vettori, scale e statistiche",
+          "problema": "Applica due scale agli attributi di tre libri fittizi, poi calcola prodotto scalare, medie e varianze.",
+          "passi": [
+            "Crea la matrice e il vettore di scale, controllando le dimensioni.",
+            "Moltiplica per elemento con broadcasting e calcola il prodotto scalare della prima riga.",
+            "Calcola media e varianza delle colonne."
+          ],
+          "soluzione": "```python\nimport numpy as np\n\nX = np.array([[1., 2.], [3., 4.], [5., 6.]])\nscale = np.array([2., 0.5])\nscalato = X * scale          # le scale sono applicate a ogni riga\nscalare = X[0] @ scale       # prodotto scalare, non elemento per elemento\nmedie = X.mean(axis=0)\nvarianze = X.var(axis=0)     # ddof=0\nprint(scalato)               # [[2, 1], [6, 2], [10, 3]]\nprint(scalare)               # 3.0\nprint(medie, varianze)       # [3, 4], [8/3, 8/3]\n```\nLa matrice scalata è `[[2, 1], [6, 2], [10, 3]]`; le medie sono `[3, 4]` e le varianze `[8/3, 8/3]`.",
+          "perche_funziona": "La shape del vettore coincide con la dimensione finale della matrice; axis=0 aggrega le righe per ciascuna colonna."
+        },
+        "completion_problem": {
+          "titolo": "Centra le colonne",
+          "testo": "Data la matrice X = [[2, 4], [4, 8]], completa la centratura delle colonne.",
+          "passi_mancanti": [
+            "Calcola `media = X.mean(axis=0)`.",
+            "Sottrai la media da ogni riga usando broadcasting."
+          ],
+          "soluzione": "La media è `[3, 6]`; `X - media` dà `[[-1, -2], [1, 2]]`."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Calcola un prodotto scalare",
+          "testo": "Per i vettori x = [1, 3] e w = [2, 2], calcola x @ w e confrontalo con x * w.",
+          "suggerimento": "Nel prodotto scalare somma i prodotti dei valori nelle stesse posizioni.",
+          "soluzione_attesa": "`x @ w = 8`; `x * w` restituisce invece il vettore `[2, 6]`."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Scambiare `*` per il prodotto scalare di due vettori.",
+            "perche_sbagliato": "`*` è elemento per elemento; `@` somma i prodotti nel caso di vettori.",
+            "distrattore": "Il browser cambia colore."
+          },
+          {
+            "errore": "Assumere che il broadcasting funzioni con qualunque shape.",
+            "perche_sbagliato": "Dalle dimensioni finali, ogni coppia deve essere uguale oppure una delle due deve valere uno.",
+            "distrattore": "Il DNS cambia protocollo."
+          }
+        ],
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Che cosa descrive `X.shape`? A) Le etichette di classe; B) Le dimensioni degli assi; C) Il metodo HTTP.",
+              "risposta": "B) La shape riporta la dimensione di ciascun asse."
+            },
+            {
+              "domanda": "Quale espressione calcola il prodotto scalare di vettori? A) `x or w`; B) `x * w`; C) `x @ w`.",
+              "risposta": "C) `x @ w` somma i prodotti delle componenti corrispondenti."
+            },
+            {
+              "domanda": "Per una matrice, `mean(axis=0)` aggrega: A) Le righe per colonna; B) Le colonne per riga; C) Le richieste HTTP.",
+              "risposta": "A) Il risultato contiene una media per ogni colonna."
+            },
+            {
+              "domanda": "Due dimensioni sono compatibili nel broadcasting se: A) Sono URI; B) Sono uguali o una vale uno; C) Sono sempre diverse.",
+              "risposta": "B) La verifica parte dagli assi finali, da destra verso sinistra."
+            },
+            {
+              "domanda": "Quale divisore usa `var` di default? A) Il numero meno uno; B) Un codice HTTP; C) Il numero di osservazioni.",
+              "risposta": "C) Il valore predefinito è `ddof=0`, quindi il divisore è il numero di osservazioni."
+            }
+          ],
+          "spiega_con_parole_tue": "Spiega con parole tue perché `X * scale` può applicare una scala diversa a ciascuna colonna.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "json-formato-dati",
+              "collegamento": "Le liste in JSON possono diventare array NumPy: shape e dtype vanno poi controllati."
+            },
+            {
+              "nodo": "ia-supervisionato-classificazione-lineare",
+              "collegamento": "Il prodotto scalare tra attributi e pesi produce lo score di un classificatore lineare."
+            },
+            {
+              "nodo": "ia-riduzione-dimensionalita",
+              "collegamento": "La PCA centra le colonne e usa operazioni matriciali sui dati di train."
+            }
+          ]
+        },
+        "riepilogo": "Un ndarray ha shape, assi e dtype.\n`*` è elemento per elemento; `@` esegue il prodotto scalare o matriciale.\nIl broadcasting richiede dimensioni compatibili da destra.\n`axis=0` riassume le colonne.\nLa varianza predefinita usa `ddof=0`.",
+        "flashcard": {
+          "fronte": "Come verifichi se un vettore scala le colonne di una matrice?",
+          "retro": "Confronta la lunghezza del vettore con l’ultima dimensione della matrice e applica le regole di broadcasting."
+        },
+        "checklist": {
+          "so_fare": [
+            "Calcolare prodotto scalare, media e varianza di array",
+            "Verificare la compatibilità delle shape"
+          ],
+          "so_dire": [
+            "Distinguere asse zero e asse uno",
+            "Spiegare il broadcasting senza supporre copie obbligatorie"
+          ]
+        }
+      }
+    },
+    {
+      "id": "ia-regressione",
+      "title": "IA: regressione lineare e minimi quadrati",
+      "area": 7,
+      "gruppo": "A",
+      "tipo": "concetto",
+      "sapere": "La regressione predice un target numerico. La regressione lineare ai minimi quadrati stima pesi e intercetta minimizzando gli scarti quadratici; l’MSE valuta l’errore medio quadratico.",
+      "saper_fare": [
+        "Stimare una retta con minimi quadrati",
+        "Calcolare previsioni e MSE su test",
+        "Distinguere regressione da classificazione"
+      ],
+      "prerequisiti": [
+        {
+          "id": "ia-supervisionato-classificazione-lineare",
+          "forza": "hard",
+          "motivo": "I modelli supervisionati lineari introducono pesi, bias e train/test."
+        },
+        {
+          "id": "ia-python-numpy-lab",
+          "forza": "soft",
+          "motivo": "La soluzione numerica usa array e operazioni matriciali."
+        }
+      ],
+      "esercizi": [
+        {
+          "tipo_esame": "Allenamento originale, non prova ufficiale",
+          "testo": "Le previsioni [1, 5] sono confrontate con i target [2, 4]. Qual è l’MSE?",
+          "soluzione": "Gli errori sono -1 e 1; i quadrati sono 1 e 1, quindi l’MSE è 1."
+        }
+      ],
+      "tempo_studio_min": 50,
+      "priorita": {
+        "livello": "alta",
+        "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+      },
+      "risorse": [
+        {
+          "titolo": "scikit-learn: regressione lineare ai minimi quadrati",
+          "url": "https://scikit-learn.org/stable/modules/linear_model.html",
+          "verificato": true
+        },
+        {
+          "titolo": "scikit-learn: metriche di regressione",
+          "url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+          "verificato": true
+        },
+        {
+          "titolo": "NumPy: quickstart",
+          "url": "https://numpy.org/doc/stable/user/quickstart.html",
+          "verificato": true
+        }
+      ],
+      "riferimenti_testo": [
+        {
+          "libro": "SKLEARN"
+        },
+        {
+          "libro": "NUMPY"
+        }
+      ],
+      "checklist_ripasso": [
+        "Target numerico e retta di regressione",
+        "Minimi quadrati e intercetta",
+        "MSE su dati non usati nel fit"
+      ],
+      "worker": "X3",
+      "lezione": {
+        "perche_ti_serve": "Gruppo A: la regressione è nel programma IA [F1]; non è indicato un punteggio per singolo argomento.",
+        "scenario_fil_rouge": "La biblioteca online desidera stimare una quantità numerica associata a un libro fittizio a partire da una sua caratteristica. I dati sono inventati per studiare il metodo, non descrivono utenti reali.",
+        "definizione_esame": {
+          "definizione": "La regressione supervisionata apprende una funzione che associa feature a un target numerico; un modello lineare usa una combinazione affine delle feature.",
+          "scopo_vantaggio": "Consente di stimare valori continui e valutare l’errore delle previsioni su dati separati.",
+          "esempio": "Con una feature `x`, la previsione può essere `intercetta + coefficiente * x`, stimando i parametri dai libri del train."
+        },
+        "spiegazione": "Prerequisiti: modello supervisionato lineare; array NumPy utili. **Fonte e limiti:** testo ed esempi originali basati su fonti libere, non sulle slide del prof. Calderara, non pubbliche [F12]. La regressione è nel programma [F1].\n\n## Un numero, non una classe\n\nNella **regressione** il target è numerico: per esempio una quantità associata ai prestiti. La previsione di un modello lineare con una feature è `y_pred = b + w * x`; con più feature è `b + w @ x`. Il termine `b` è l’intercetta, `w` raccoglie i coefficienti. Il modello è lineare nei coefficienti; la presenza dell’intercetta non lo rende una classificazione.\n\n## Minimi quadrati\n\nSul train scegli i coefficienti che minimizzano la **somma dei quadrati dei residui**, dove un residuo è la differenza tra target osservato e valore previsto. La matrice di progetto include una colonna di uno quando si vuole stimare l’intercetta. `np.linalg.lstsq` calcola una soluzione ai minimi quadrati senza chiedere di invertire esplicitamente la matrice; anche quando le colonne non sono indipendenti la soluzione può non essere unica. Un fit perfetto sul train non prova che il modello predica bene dati nuovi.\n\n```mermaid\nflowchart LR\n  X[\"Feature e target di train\"] --> F[\"Minimi quadrati\"]\n  F --> W[\"Intercetta e coefficienti\"]\n  W --> P[\"Previsioni sul test\"]\n  P --> E[\"Errore quadratico medio\"]\n```\n\n## MSE e generalizzazione\n\nPer `n` esempi, l’**MSE** è `somma((y_vero - y_pred)²) / n`. È sempre non negativo; vale zero se tutte le previsioni valutate coincidono con i target. Poiché l’errore viene elevato al quadrato, errori grandi incidono molto e l’unità di misura è quella del target al quadrato. Una soglia o una percentuale di MSE «buona» non è universale: dipende dal problema.\n\nPrima separa train e test; scegli eventuali trasformazioni e iperparametri senza usare il test finale. Il modello lineare può essere inadeguato o in overfitting se troppo complesso rispetto ai dati. Le previsioni fuori dall’intervallo osservato sono **estrapolazioni** e richiedono cautela. Nell’esempio seguente i numeri sono fittizi e servono solo a rendere controllabile il calcolo.",
+        "analogia": {
+          "testo": "È come appoggiare un righello vicino a punti disegnati e scegliere la retta che riduce gli scarti quadratici dai punti osservati.",
+          "limite": "Una retta stimata non garantisce che la relazione rimanga valida per dati nuovi o lontani dai punti osservati."
+        },
+        "worked_example": {
+          "titolo": "Retta e MSE su un test separato",
+          "problema": "Stima la retta da tre esempi fittizi e calcola l’errore quadratico medio su due nuovi esempi.",
+          "passi": [
+            "Costruisci la matrice del train con colonna di uno e feature.",
+            "Stima intercetta e coefficiente con `lstsq`.",
+            "Predici il test e fai la media dei quadrati degli errori."
+          ],
+          "soluzione": "```python\nimport numpy as np\n\nx_train = np.array([0., 1., 2.])\ny_train = np.array([1., 3., 5.])\nX_train = np.column_stack((np.ones_like(x_train), x_train))\ncoefficienti = np.linalg.lstsq(X_train, y_train, rcond=None)[0]\nx_test = np.array([3., 4.])\ny_test = np.array([7., 10.])\nX_test = np.column_stack((np.ones_like(x_test), x_test))\nprevisto = X_test @ coefficienti\nmse = np.mean((y_test - previsto) ** 2)\nprint(coefficienti)  # circa [1. 2.]: intercetta, pendenza\nprint(previsto)      # circa [7. 9.]\nprint(mse)           # circa 0.5\n```\nLa retta stimata è circa `1 + 2x`, le previsioni `[7, 9]` e l’MSE del test `0,5`.",
+          "perche_funziona": "La colonna di uno permette di stimare l’intercetta; il test non influisce sui coefficienti calcolati dal train."
+        },
+        "completion_problem": {
+          "titolo": "Calcola l’MSE",
+          "testo": "Su due libri fittizi i target sono [2, 4] e le previsioni [1, 5]. Completa il calcolo.",
+          "passi_mancanti": [
+            "Calcola i due errori e i rispettivi quadrati.",
+            "Fai la media dei due quadrati."
+          ],
+          "soluzione": "Gli errori `y_vero - y_pred` sono `[1, -1]`; i quadrati sono `[1, 1]` e l’MSE è `1`."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Usa una retta stimata",
+          "testo": "Una retta fittizia passa esattamente per (1, 3) e (2, 5). Trova la previsione per x = 3.",
+          "suggerimento": "Calcola prima pendenza e intercetta della retta.",
+          "soluzione_attesa": "La pendenza è `2`, l’intercetta `1`; per `x = 3` la previsione è `7`."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Confondere l’MSE con la media degli errori con segno.",
+            "perche_sbagliato": "L’MSE eleva al quadrato ogni errore prima di calcolare la media; gli errori opposti non si cancellano.",
+            "distrattore": "Un header HTTP è un residuo."
+          },
+          {
+            "errore": "Valutare la generalizzazione sugli stessi dati usati per stimare la retta.",
+            "perche_sbagliato": "Gli errori di train non sono una valutazione indipendente su dati nuovi.",
+            "distrattore": "Un selettore CSS è una pendenza."
+          }
+        ],
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Quale target usa la regressione? A) Un URL; B) Solo etichetta di classe; C) Numerico.",
+              "risposta": "C) La regressione cerca di predire un target numerico."
+            },
+            {
+              "domanda": "Cosa minimizzano i minimi quadrati ordinari sul train? A) Somma degli scarti quadratici; B) Numero di classi; C) Porte di rete.",
+              "risposta": "A) Minimizzano la somma dei quadrati dei residui del train."
+            },
+            {
+              "domanda": "Qual è il ruolo della colonna di uno nell’esempio? A) Definire CSS; B) Stimare l’intercetta; C) Ordinare il test.",
+              "risposta": "B) Il coefficiente di quella colonna rappresenta l’intercetta."
+            },
+            {
+              "domanda": "L’MSE può essere negativo? A) Sì; B) Solo con cookie; C) No.",
+              "risposta": "C) È una media di quadrati, quindi non può essere negativo."
+            },
+            {
+              "domanda": "Quando una previsione è un’estrapolazione? A) Fuori dall’intervallo osservato; B) Quando cambia il DNS; C) Solo sul train.",
+              "risposta": "A) Si tratta di estrapolazione quando si predice fuori dall’intervallo osservato."
+            }
+          ],
+          "spiega_con_parole_tue": "Spiega con parole tue perché una retta perfetta sul train può avere errore diverso su altri libri.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "ia-supervisionato-classificazione-lineare",
+              "collegamento": "Regressione e classificazione lineare usano score affini ma target e decisioni diversi."
+            },
+            {
+              "nodo": "ia-python-numpy-lab",
+              "collegamento": "Il prodotto matriciale e la media NumPy realizzano previsioni e MSE."
+            }
+          ]
+        },
+        "riepilogo": "La regressione prevede un target numerico.\nIl modello lineare combina feature, pesi e intercetta.\nI minimi quadrati minimizzano gli scarti quadratici nel train.\nL’MSE è la media dei quadrati degli errori.\nIl test e le estrapolazioni vanno interpretati con cautela.",
+        "flashcard": {
+          "fronte": "Come si calcola l’MSE?",
+          "retro": "Si eleva al quadrato ogni differenza fra target e previsione, quindi si fa la media dei quadrati."
+        },
+        "checklist": {
+          "so_fare": [
+            "Stimare una retta e calcolare l’MSE su un test",
+            "Riconoscere un’estrapolazione"
+          ],
+          "so_dire": [
+            "Distinguere residuo e quadrato del residuo",
+            "Spiegare perché un buon fit sul train non basta"
+          ]
+        }
+      }
+    },
+    {
+      "id": "ia-riduzione-dimensionalita",
+      "title": "IA: riduzione della dimensionalità e PCA",
+      "area": 7,
+      "gruppo": "A",
+      "tipo": "concetto",
+      "sapere": "La riduzione della dimensionalità rappresenta i dati con meno componenti. La PCA centra i dati e individua direzioni ortogonali di massima varianza, con possibile perdita di informazione.",
+      "saper_fare": [
+        "Centrare dati usando la media del train",
+        "Proiettare su una componente principale",
+        "Spiegare varianza preservata e limiti della PCA"
+      ],
+      "prerequisiti": [
+        {
+          "id": "ia-introduzione-apprendimento",
+          "forza": "hard",
+          "motivo": "Servono feature, dati e separazione train/test."
+        },
+        {
+          "id": "ia-python-numpy-lab",
+          "forza": "soft",
+          "motivo": "Media per colonna e prodotti matriciali aiutano a calcolare la proiezione."
+        }
+      ],
+      "esercizi": [
+        {
+          "tipo_esame": "Allenamento originale, non prova ufficiale",
+          "testo": "I punti [1, 1], [2, 2], [3, 3] hanno media [2, 2]. Quante componenti principali bastano per ricostruirli esattamente in aritmetica esatta?",
+          "soluzione": "Basta una componente: i punti centrati sono tutti sulla stessa retta."
+        }
+      ],
+      "tempo_studio_min": 50,
+      "priorita": {
+        "livello": "alta",
+        "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+      },
+      "risorse": [
+        {
+          "titolo": "scikit-learn: decomposizione e PCA",
+          "url": "https://scikit-learn.org/stable/modules/decomposition.html",
+          "verificato": true
+        },
+        {
+          "titolo": "scikit-learn: evitare leakage nel preprocessing",
+          "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+          "verificato": true
+        },
+        {
+          "titolo": "NumPy: quickstart",
+          "url": "https://numpy.org/doc/stable/user/quickstart.html",
+          "verificato": true
+        }
+      ],
+      "riferimenti_testo": [
+        {
+          "libro": "SKLEARN"
+        },
+        {
+          "libro": "NUMPY"
+        }
+      ],
+      "checklist_ripasso": [
+        "Centratura con statistiche del train",
+        "Componenti ortogonali e varianza spiegata",
+        "Proiezione, ricostruzione e leakage"
+      ],
+      "worker": "X3",
+      "lezione": {
+        "perche_ti_serve": "Gruppo A: la riduzione delle dimensioni è nel programma IA [F1]; nessun punteggio per nodo è indicato.",
+        "scenario_fil_rouge": "La biblioteca online descrive libri fittizi con più attributi numerici. Se due attributi ripetono quasi la stessa informazione, vorrebbe rappresentare i libri con meno coordinate mantenendo una parte utile della variabilità.",
+        "definizione_esame": {
+          "definizione": "La riduzione della dimensionalità trasforma una rappresentazione in meno coordinate; la PCA usa direzioni ortogonali ordinate per varianza spiegata.",
+          "scopo_vantaggio": "Può semplificare rappresentazione e analisi conservando parte della variabilità, con possibile perdita di informazione.",
+          "esempio": "Per punti di biblioteca allineati lungo una retta, una componente principale può rappresentare esattamente i punti centrati."
+        },
+        "spiegazione": "Prerequisiti: feature e train/test; media e prodotti NumPy utili. **Fonte e limiti:** spiegazione ed esempi originali basati su fonti libere, non sulle slide del prof. Calderara, non pubbliche [F12]. La riduzione delle dimensioni è prevista da [F1].\n\n## Perché ridurre\n\nUna tabella può avere molte feature, alcune ridondanti. **Ridurre la dimensionalità** significa sostituirle o rappresentarle con meno coordinate, per esempio per visualizzare o comprimere. La trasformazione può scartare informazione; meno dimensioni non garantiscono migliori previsioni. La **PCA** è un metodo lineare non supervisionato: non usa le etichette per scegliere le direzioni.\n\n## Centratura e direzioni principali\n\nCalcola la media di ogni colonna sul **train** e sottraila: i dati sono centrati. La prima componente principale è una direzione unitaria che massimizza la varianza delle proiezioni; le successive sono ortogonali alle precedenti e ordinate per varianza spiegata. Con la decomposizione ai valori singolari `X_c = U S Vt`, le righe di `Vt` rappresentano le direzioni principali. Il segno di una direzione può invertirsi senza cambiare la soluzione geometrica.\n\n```mermaid\nflowchart LR\n  X[\"Dati di train\"] --> M[\"Media e centratura\"]\n  M --> S[\"Decomposizione SVD\"]\n  S --> C[\"Scelta delle componenti\"]\n  C --> P[\"Proiezione\"]\n  P --> R[\"Ricostruzione approssimata\"]\n```\n\n## Proiezione e ricostruzione\n\nPer una componente unitaria `v`, la nuova coordinata è `z = X_c @ v`. La ricostruzione con quella sola direzione è `z * v + media`: in generale è approssimata, perché le direzioni scartate non sono recuperate. Nell’esempio allineato una componente conserva tutta la varianza osservata. La **quota di varianza spiegata** è la varianza della componente divisa per la varianza totale; non è una misura diretta della capacità di predire il target.\n\n## Scala e dati mai visti\n\nLa PCA centra le feature ma non le porta automaticamente alla stessa scala. Un attributo con unità numeriche più grandi può dominare; valuta se standardizzare, stimando eventuali scale solo sul train. Anche media e componenti si apprendono solo sul train; sul test si applicano senza riadattarle, evitando data leakage. Direzione di massima varianza e informazione utile alla classificazione non coincidono necessariamente.",
+        "analogia": {
+          "testo": "È come proiettare l’ombra di punti su una retta scelta per conservarne il maggior allargamento possibile.",
+          "limite": "La proiezione può far coincidere punti diversi e perdere dettagli; l’ombra più estesa non garantisce che resti il dettaglio più utile."
+        },
+        "worked_example": {
+          "titolo": "Una componente per punti allineati",
+          "problema": "Centra tre libri fittizi con due attributi, ricava la prima componente con SVD e ricostruisci i punti.",
+          "passi": [
+            "Calcola e sottrai le medie delle colonne del train.",
+            "Ottieni la direzione principale dalla decomposizione SVD e proietta i punti.",
+            "Ricostruisci i dati e applica la stessa trasformazione a un libro di test."
+          ],
+          "soluzione": "```python\nimport numpy as np\n\nX_train = np.array([[1., 1.], [2., 2.], [3., 3.]])\nmedia = X_train.mean(axis=0)\ncentrato = X_train - media\n_, singolari, vt = np.linalg.svd(centrato, full_matrices=False)\ncomponente = vt[0]  # il segno della direzione è arbitrario\nproiezione = centrato @ componente\nricostruito = proiezione[:, None] * componente + media\nquota = singolari[0] ** 2 / np.sum(singolari ** 2)\nX_test = np.array([[4., 4.]])\ntest_proiettato = (X_test - media) @ componente\nprint(media)           # [2. 2.]\nprint(ricostruito)     # circa [[1, 1], [2, 2], [3, 3]]\nprint(quota)           # circa 1.0\nprint(test_proiettato)  # + o - 2 * sqrt(2), secondo il segno SVD\n```\nLa media è `[2, 2]`; una componente ricostruisce questi punti e spiega tutta la varianza osservata.",
+          "perche_funziona": "I punti centrati sono allineati e hanno rango uno: la direzione principale conserva tutta la variazione presente in questo esempio."
+        },
+        "completion_problem": {
+          "titolo": "Proietta punti centrati",
+          "testo": "I punti [1, 1], [2, 2], [3, 3] hanno media [2, 2]. Usa la direzione unitaria [1/√2, 1/√2].",
+          "passi_mancanti": [
+            "Sottrai la media a ogni punto.",
+            "Calcola il prodotto scalare di ogni punto centrato con la direzione."
+          ],
+          "soluzione": "I punti centrati sono `[[-1, -1], [0, 0], [1, 1]]`; le coordinate proiettate sono `[-√2, 0, √2]`."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Riconosci una perdita di informazione",
+          "testo": "Due punti centrati distinti hanno la stessa proiezione sulla sola componente scelta. Si possono distinguere usando solo quella coordinata?",
+          "suggerimento": "Confronta le coordinate dopo la proiezione, non prima.",
+          "soluzione_attesa": "No: le coordinate ridotte coincidono, quindi le differenze scartate non sono recuperabili da quella sola proiezione."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Ricalcolare media e componenti sul test prima di valutarlo.",
+            "perche_sbagliato": "Usare il test nel fit della trasformazione provoca leakage; riusa le quantità apprese sul train.",
+            "distrattore": "Una porta TCP è una componente principale."
+          },
+          {
+            "errore": "Dire che la componente di massima varianza è sempre la più predittiva.",
+            "perche_sbagliato": "La PCA non usa il target: la variabilità maggiore può essere irrilevante per la previsione.",
+            "distrattore": "Un cookie è un autovettore."
+          }
+        ],
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "La PCA standard usa le etichette per scegliere le direzioni? A) No; B) Sì; C) Solo se cambia il CSS.",
+              "risposta": "A) È non supervisionata e sceglie direzioni in base alla varianza delle feature."
+            },
+            {
+              "domanda": "Che cosa si sottrae per centrare il test? A) Un URL; B) La media appresa sul train; C) La media del test.",
+              "risposta": "B) Si riusa la media del train per evitare leakage."
+            },
+            {
+              "domanda": "Quale proprietà hanno le componenti principali distinte? A) Sono sempre uguali; B) Sono header; C) Sono ortogonali.",
+              "risposta": "C) Nella PCA standard le direzioni principali sono ortogonali."
+            },
+            {
+              "domanda": "La PCA standard scala sempre automaticamente le feature? A) No; B) Solo con HTTP; C) Sì.",
+              "risposta": "A) Centra i dati; un’eventuale standardizzazione è una scelta separata."
+            },
+            {
+              "domanda": "Una proiezione con meno componenti conserva sempre tutto? A) Sì; B) No; C) Solo con un cookie.",
+              "risposta": "B) Le componenti scartate possono contenere informazione non ricostruibile."
+            }
+          ],
+          "spiega_con_parole_tue": "Spiega con parole tue perché la direzione che conserva più varianza può non essere quella più utile a distinguere i libri.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "ia-python-numpy-lab",
+              "collegamento": "Media lungo le colonne, broadcasting e prodotto matriciale implementano centratura e proiezione."
+            },
+            {
+              "nodo": "ia-introduzione-apprendimento",
+              "collegamento": "La PCA è non supervisionata e va appresa sul train per evitare leakage."
+            }
+          ]
+        },
+        "riepilogo": "La PCA è una riduzione lineare non supervisionata.\nCentra usando la media stimata sul train.\nLe direzioni ortogonali sono ordinate per varianza spiegata.\nScartare componenti può perdere informazione.\nScala e leakage influenzano l’interpretazione.",
+        "flashcard": {
+          "fronte": "Perché il segno della componente principale può cambiare?",
+          "retro": "Una direzione e la sua opposta descrivono la stessa retta: la proiezione cambia segno, non la geometria."
+        },
+        "checklist": {
+          "so_fare": [
+            "Centrare, proiettare e ricostruire punti semplici",
+            "Applicare al test le trasformazioni apprese sul train"
+          ],
+          "so_dire": [
+            "Spiegare varianza spiegata e perdita di informazione",
+            "Descrivere effetto della scala e segno delle componenti"
+          ]
+        }
+      }
+    },
+    {
+      "id": "ia-supervisionato-classificazione-lineare",
+      "title": "IA: supervisionato e classificazione lineare",
+      "area": 7,
+      "gruppo": "A",
+      "tipo": "concetto",
+      "sapere": "La classificazione supervisionata apprende da coppie attributi-etichetta; un classificatore lineare decide tramite uno score e una soglia. Il perceptron aggiorna pesi e bias sugli errori.",
+      "saper_fare": [
+        "Calcolare score e classe con una soglia",
+        "Applicare un aggiornamento del perceptron",
+        "Valutare predizioni su esempi separati"
+      ],
+      "prerequisiti": [
+        {
+          "id": "ia-introduzione-apprendimento",
+          "forza": "hard",
+          "motivo": "Servono target, train/test e generalizzazione."
+        },
+        {
+          "id": "ia-python-numpy-lab",
+          "forza": "soft",
+          "motivo": "Prodotto scalare e array aiutano a eseguire il classificatore."
+        }
+      ],
+      "esercizi": [
+        {
+          "tipo_esame": "Allenamento originale, non prova ufficiale",
+          "testo": "Con w = [1, -1], b = -2 e x = [2, 1], quale classe restituisce la soglia a zero?",
+          "soluzione": "Lo score è 2 - 1 - 2 = -1, quindi la classe è negativa."
+        }
+      ],
+      "tempo_studio_min": 55,
+      "priorita": {
+        "livello": "alta",
+        "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+      },
+      "risorse": [
+        {
+          "titolo": "scikit-learn: modelli lineari",
+          "url": "https://scikit-learn.org/stable/modules/linear_model.html",
+          "verificato": true
+        },
+        {
+          "titolo": "scikit-learn: metriche",
+          "url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+          "verificato": true
+        },
+        {
+          "titolo": "NumPy: quickstart",
+          "url": "https://numpy.org/doc/stable/user/quickstart.html",
+          "verificato": true
+        }
+      ],
+      "riferimenti_testo": [
+        {
+          "libro": "SKLEARN"
+        },
+        {
+          "libro": "NUMPY"
+        }
+      ],
+      "checklist_ripasso": [
+        "Score lineare e soglia",
+        "Aggiornamento del perceptron",
+        "Train/test e matrice di confusione"
+      ],
+      "worker": "X3",
+      "lezione": {
+        "perche_ti_serve": "Gruppo A: la classificazione lineare è nel programma IA [F1]; non è indicato un punteggio per argomento.",
+        "scenario_fil_rouge": "La biblioteca online dispone di esempi fittizi di libri con due attributi e un’etichetta. Vuole distinguere i libri per cui è previsto un prestito da quelli per cui non lo è, senza riusare i libri di test per allenarsi.",
+        "definizione_esame": {
+          "definizione": "La classificazione supervisionata apprende una funzione da attributi a classi usando esempi etichettati; un classificatore lineare usa uno score affine.",
+          "scopo_vantaggio": "Lo score e una soglia permettono una decisione interpretabile nello spazio delle feature.",
+          "esempio": "Con score `w @ x + b`, la biblioteca predice classe positiva se lo score è almeno zero e negativa altrimenti."
+        },
+        "spiegazione": "Prerequisiti: introduzione all’apprendimento; prodotto scalare NumPy utile. **Fonte e limiti:** lezione originale basata su documentazione libera, non sulle slide del prof. Calderara, non pubbliche [F12]. Il tema è nel programma [F1].\n\n## Feature, etichetta e score\n\nNel supervisionato ogni riga del train associa un vettore di attributi `x` a un’etichetta `y`. Per due classi possiamo usare `-1` e `+1`. Un modello lineare calcola **score = w @ x + b**, dove `w` è il vettore dei pesi e `b` il bias o intercetta. Con la convenzione dell’esempio, score maggiore o uguale a zero significa classe positiva; sotto zero significa negativa. La frontiera `w @ x + b = 0` è una retta in due dimensioni e un iperpiano in generale.\n\n```mermaid\nflowchart LR\n  D[\"Esempi etichettati\"] --> A[\"Apprendimento dei pesi\"]\n  A --> S[\"Score lineare\"]\n  S --> C[\"Soglia e classe\"]\n  C --> V[\"Confronto sul test\"]\n```\n\n## Perceptron: un aggiornamento alla volta\n\nInizializza `w` e `b`; per ciascun esempio calcola il **margine** `y * (w @ x + b)`. Se il margine è minore o uguale a zero, con tasso `eta` positivo aggiorna `w = w + eta * y * x` e `b = b + eta * y`. Altrimenti, in questa variante, non modifichi i parametri. Ripeti i passaggi sul train. Per dati non linearmente separabili il metodo non garantisce una soluzione senza errori; la convenzione per il caso di score zero va dichiarata.\n\n## Confronto con la regressione logistica\n\nLa **regressione logistica** è un altro classificatore: nel caso binario applica la sigmoide allo score per ottenere un valore tra zero e uno, poi usa una soglia. Si addestra con un criterio diverso dal semplice aggiornamento del perceptron. Il valore prodotto non è automaticamente ben calibrato. Il nome non la rende una regressione di un target numerico continuo.\n\n## Valutazione e limiti\n\nLa **matrice di confusione** confronta classe vera sulle righe e prevista sulle colonne; l’accuratezza divide i corretti per tutti gli esempi. Valuta su un test separato e considera la distribuzione delle classi: un’accuratezza elevata può nascondere errori sulla classe rara. I piccoli dati fittizi qui servono a seguire i calcoli, non a stimare prestazioni reali.",
+        "analogia": {
+          "testo": "È come tracciare una linea su una mappa di libri e decidere da quale lato si trova un nuovo punto.",
+          "limite": "La linea dipende dalle feature e dai dati di addestramento; libri reali possono non essere separabili da una sola retta."
+        },
+        "worked_example": {
+          "titolo": "Addestrare un piccolo perceptron",
+          "problema": "Addestra un perceptron su quattro esempi fittizi e classifica due libri distinti nel test.",
+          "passi": [
+            "Usa etichette -1 e +1, pesi e bias iniziali nulli.",
+            "Aggiorna pesi e bias quando il margine è non positivo.",
+            "Calcola gli score sui soli esempi di test e confronta le classi previste."
+          ],
+          "soluzione": "```python\nimport numpy as np\n\nX_train = np.array([[0., 0.], [0., 1.], [2., 0.], [2., 1.]])\ny_train = np.array([-1, -1, 1, 1])\nw = np.zeros(2)\nb = 0.0\neta = 1.0\nfor _ in range(6):  # numero di passaggi scelto solo per questo esempio\n    for x, y in zip(X_train, y_train):\n        if y * (x @ w + b) <= 0:\n            w = w + eta * y * x\n            b = b + eta * y\nX_test = np.array([[0., 3.], [3., 0.]])\ny_test = np.array([-1, 1])\nscore = X_test @ w + b\nprevisto = np.where(score >= 0, 1, -1)\naccuratezza = np.mean(previsto == y_test)\nprint(w, b)                   # [2. 0.] -1.0\nprint(score, previsto)        # [-1.  5.] [-1  1]\nprint(accuratezza)            # 1.0, solo per questi dati fittizi\n```\nPesi `[2, 0]`, bias `-1`; le due classi del test sono `[-1, 1]`.",
+          "perche_funziona": "Gli aggiornamenti aumentano lo score con segno corretto sugli esempi con margine non positivo; il test non partecipa agli aggiornamenti."
+        },
+        "completion_problem": {
+          "titolo": "Aggiorna il perceptron",
+          "testo": "Per w = [1, -1], b = 0, x = [1, 2], y = +1 ed eta = 1, completa l’aggiornamento.",
+          "passi_mancanti": [
+            "Calcola score e margine dell’esempio.",
+            "Se il margine è non positivo, aggiorna entrambi i parametri."
+          ],
+          "soluzione": "Score e margine sono -1; `w` diventa `[2, 1]` e `b` diventa `1`."
+        },
+        "esercizio_autonomo": {
+          "titolo": "Classifica con una soglia",
+          "testo": "Usa w = [1, -1], b = -2 e x = [2, 1]. Quale classe dà la soglia a zero?",
+          "suggerimento": "Calcola prima `w @ x + b` e poi applica la convenzione dello score.",
+          "soluzione_attesa": "Lo score è `2 - 1 - 2 = -1`; la predizione è la classe negativa."
+        },
+        "errori_trappole": [
+          {
+            "errore": "Dire che la regressione logistica predice necessariamente un valore continuo come target.",
+            "perche_sbagliato": "Nel caso discusso usa probabilità e soglia per classificare.",
+            "distrattore": "Una pagina HTML è un cluster."
+          },
+          {
+            "errore": "Usare il test per aggiornare i pesi del perceptron.",
+            "perche_sbagliato": "Il test non sarebbe più indipendente e la valutazione sarebbe distorta.",
+            "distrattore": "Un cookie è un peso del modello."
+          }
+        ],
+        "richiamo_attivo": {
+          "domande": [
+            {
+              "domanda": "Qual è lo score lineare? A) Un indirizzo URI; B) `w @ x + b`; C) `w + x + b` sempre.",
+              "risposta": "B) Il prodotto scalare dei pesi per le feature, più il bias."
+            },
+            {
+              "domanda": "Con la convenzione adottata, uno score negativo indica: A) Classe positiva; B) Un errore DNS; C) Classe negativa.",
+              "risposta": "C) La soglia a zero assegna la classe negativa allo score sotto zero."
+            },
+            {
+              "domanda": "Quando si aggiorna il perceptron mostrato? A) Margine non positivo; B) A ogni richiesta HTTP; C) Sempre.",
+              "risposta": "A) L’aggiornamento avviene quando `y * score` non è positivo."
+            },
+            {
+              "domanda": "La regressione logistica binaria usa: A) Solo cluster; B) Sigmoide e soglia; C) Cascata CSS.",
+              "risposta": "B) Converte lo score tramite sigmoide e può applicare una soglia."
+            },
+            {
+              "domanda": "Quale dato deve restare fuori dagli aggiornamenti? A) Bias; B) Train; C) Test.",
+              "risposta": "C) Il test va tenuto separato per valutare la generalizzazione."
+            }
+          ],
+          "spiega_con_parole_tue": "Spiega con parole tue come un perceptron usa attributi, margine e aggiornamenti per tracciare una frontiera.",
+          "collegamenti_interleaving": [
+            {
+              "nodo": "ia-introduzione-apprendimento",
+              "collegamento": "Le etichette, la separazione train/test e l’overfitting sono le basi della classificazione."
+            },
+            {
+              "nodo": "ia-python-numpy-lab",
+              "collegamento": "Il prodotto scalare NumPy calcola lo score a partire da vettori di feature e pesi."
+            }
+          ]
+        },
+        "riepilogo": "La classificazione usa esempi con etichetta.\nLo score lineare è `w @ x + b`; una soglia assegna la classe.\nIl perceptron aggiorna pesi e bias sul margine non positivo.\nLa regressione logistica è un classificatore probabilistico.\nIl test separato misura la generalizzazione, non allena il modello.",
+        "flashcard": {
+          "fronte": "Come aggiorna il perceptron un esempio con margine non positivo?",
+          "retro": "Aggiunge `eta * y * x` ai pesi e `eta * y` al bias, con eta positivo."
+        },
+        "checklist": {
+          "so_fare": [
+            "Calcolare lo score e un aggiornamento di pesi e bias",
+            "Confrontare classi vere e previste"
+          ],
+          "so_dire": [
+            "Descrivere la frontiera lineare",
+            "Distinguere perceptron e regressione logistica"
+          ]
+        }
+      }
     }
   ]
 }

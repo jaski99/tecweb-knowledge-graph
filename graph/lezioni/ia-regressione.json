@@ -1,0 +1,102 @@
+{
+  "perche_ti_serve": "Gruppo A: la regressione è nel programma IA [F1]; non è indicato un punteggio per singolo argomento.",
+  "scenario_fil_rouge": "La biblioteca online desidera stimare una quantità numerica associata a un libro fittizio a partire da una sua caratteristica. I dati sono inventati per studiare il metodo, non descrivono utenti reali.",
+  "definizione_esame": {
+    "definizione": "La regressione supervisionata apprende una funzione che associa feature a un target numerico; un modello lineare usa una combinazione affine delle feature.",
+    "scopo_vantaggio": "Consente di stimare valori continui e valutare l’errore delle previsioni su dati separati.",
+    "esempio": "Con una feature `x`, la previsione può essere `intercetta + coefficiente * x`, stimando i parametri dai libri del train."
+  },
+  "spiegazione": "Prerequisiti: modello supervisionato lineare; array NumPy utili. **Fonte e limiti:** testo ed esempi originali basati su fonti libere, non sulle slide del prof. Calderara, non pubbliche [F12]. La regressione è nel programma [F1].\n\n## Un numero, non una classe\n\nNella **regressione** il target è numerico: per esempio una quantità associata ai prestiti. La previsione di un modello lineare con una feature è `y_pred = b + w * x`; con più feature è `b + w @ x`. Il termine `b` è l’intercetta, `w` raccoglie i coefficienti. Il modello è lineare nei coefficienti; la presenza dell’intercetta non lo rende una classificazione.\n\n## Minimi quadrati\n\nSul train scegli i coefficienti che minimizzano la **somma dei quadrati dei residui**, dove un residuo è la differenza tra target osservato e valore previsto. La matrice di progetto include una colonna di uno quando si vuole stimare l’intercetta. `np.linalg.lstsq` calcola una soluzione ai minimi quadrati senza chiedere di invertire esplicitamente la matrice; anche quando le colonne non sono indipendenti la soluzione può non essere unica. Un fit perfetto sul train non prova che il modello predica bene dati nuovi.\n\n```mermaid\nflowchart LR\n  X[\"Feature e target di train\"] --> F[\"Minimi quadrati\"]\n  F --> W[\"Intercetta e coefficienti\"]\n  W --> P[\"Previsioni sul test\"]\n  P --> E[\"Errore quadratico medio\"]\n```\n\n## MSE e generalizzazione\n\nPer `n` esempi, l’**MSE** è `somma((y_vero - y_pred)²) / n`. È sempre non negativo; vale zero se tutte le previsioni valutate coincidono con i target. Poiché l’errore viene elevato al quadrato, errori grandi incidono molto e l’unità di misura è quella del target al quadrato. Una soglia o una percentuale di MSE «buona» non è universale: dipende dal problema.\n\nPrima separa train e test; scegli eventuali trasformazioni e iperparametri senza usare il test finale. Il modello lineare può essere inadeguato o in overfitting se troppo complesso rispetto ai dati. Le previsioni fuori dall’intervallo osservato sono **estrapolazioni** e richiedono cautela. Nell’esempio seguente i numeri sono fittizi e servono solo a rendere controllabile il calcolo.",
+  "analogia": {
+    "testo": "È come appoggiare un righello vicino a punti disegnati e scegliere la retta che riduce gli scarti quadratici dai punti osservati.",
+    "limite": "Una retta stimata non garantisce che la relazione rimanga valida per dati nuovi o lontani dai punti osservati."
+  },
+  "worked_example": {
+    "titolo": "Retta e MSE su un test separato",
+    "problema": "Stima la retta da tre esempi fittizi e calcola l’errore quadratico medio su due nuovi esempi.",
+    "passi": [
+      "Costruisci la matrice del train con colonna di uno e feature.",
+      "Stima intercetta e coefficiente con `lstsq`.",
+      "Predici il test e fai la media dei quadrati degli errori."
+    ],
+    "soluzione": "```python\nimport numpy as np\n\nx_train = np.array([0., 1., 2.])\ny_train = np.array([1., 3., 5.])\nX_train = np.column_stack((np.ones_like(x_train), x_train))\ncoefficienti = np.linalg.lstsq(X_train, y_train, rcond=None)[0]\nx_test = np.array([3., 4.])\ny_test = np.array([7., 10.])\nX_test = np.column_stack((np.ones_like(x_test), x_test))\nprevisto = X_test @ coefficienti\nmse = np.mean((y_test - previsto) ** 2)\nprint(coefficienti)  # circa [1. 2.]: intercetta, pendenza\nprint(previsto)      # circa [7. 9.]\nprint(mse)           # circa 0.5\n```\nLa retta stimata è circa `1 + 2x`, le previsioni `[7, 9]` e l’MSE del test `0,5`.",
+    "perche_funziona": "La colonna di uno permette di stimare l’intercetta; il test non influisce sui coefficienti calcolati dal train."
+  },
+  "completion_problem": {
+    "titolo": "Calcola l’MSE",
+    "testo": "Su due libri fittizi i target sono [2, 4] e le previsioni [1, 5]. Completa il calcolo.",
+    "passi_mancanti": [
+      "Calcola i due errori e i rispettivi quadrati.",
+      "Fai la media dei due quadrati."
+    ],
+    "soluzione": "Gli errori `y_vero - y_pred` sono `[1, -1]`; i quadrati sono `[1, 1]` e l’MSE è `1`."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Usa una retta stimata",
+    "testo": "Una retta fittizia passa esattamente per (1, 3) e (2, 5). Trova la previsione per x = 3.",
+    "suggerimento": "Calcola prima pendenza e intercetta della retta.",
+    "soluzione_attesa": "La pendenza è `2`, l’intercetta `1`; per `x = 3` la previsione è `7`."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Confondere l’MSE con la media degli errori con segno.",
+      "perche_sbagliato": "L’MSE eleva al quadrato ogni errore prima di calcolare la media; gli errori opposti non si cancellano.",
+      "distrattore": "Un header HTTP è un residuo."
+    },
+    {
+      "errore": "Valutare la generalizzazione sugli stessi dati usati per stimare la retta.",
+      "perche_sbagliato": "Gli errori di train non sono una valutazione indipendente su dati nuovi.",
+      "distrattore": "Un selettore CSS è una pendenza."
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quale target usa la regressione? A) Un URL; B) Solo etichetta di classe; C) Numerico.",
+        "risposta": "C) La regressione cerca di predire un target numerico."
+      },
+      {
+        "domanda": "Cosa minimizzano i minimi quadrati ordinari sul train? A) Somma degli scarti quadratici; B) Numero di classi; C) Porte di rete.",
+        "risposta": "A) Minimizzano la somma dei quadrati dei residui del train."
+      },
+      {
+        "domanda": "Qual è il ruolo della colonna di uno nell’esempio? A) Definire CSS; B) Stimare l’intercetta; C) Ordinare il test.",
+        "risposta": "B) Il coefficiente di quella colonna rappresenta l’intercetta."
+      },
+      {
+        "domanda": "L’MSE può essere negativo? A) Sì; B) Solo con cookie; C) No.",
+        "risposta": "C) È una media di quadrati, quindi non può essere negativo."
+      },
+      {
+        "domanda": "Quando una previsione è un’estrapolazione? A) Fuori dall’intervallo osservato; B) Quando cambia il DNS; C) Solo sul train.",
+        "risposta": "A) Si tratta di estrapolazione quando si predice fuori dall’intervallo osservato."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega con parole tue perché una retta perfetta sul train può avere errore diverso su altri libri.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "ia-supervisionato-classificazione-lineare",
+        "collegamento": "Regressione e classificazione lineare usano score affini ma target e decisioni diversi."
+      },
+      {
+        "nodo": "ia-python-numpy-lab",
+        "collegamento": "Il prodotto matriciale e la media NumPy realizzano previsioni e MSE."
+      }
+    ]
+  },
+  "riepilogo": "La regressione prevede un target numerico.\nIl modello lineare combina feature, pesi e intercetta.\nI minimi quadrati minimizzano gli scarti quadratici nel train.\nL’MSE è la media dei quadrati degli errori.\nIl test e le estrapolazioni vanno interpretati con cautela.",
+  "flashcard": {
+    "fronte": "Come si calcola l’MSE?",
+    "retro": "Si eleva al quadrato ogni differenza fra target e previsione, quindi si fa la media dei quadrati."
+  },
+  "checklist": {
+    "so_fare": [
+      "Stimare una retta e calcolare l’MSE su un test",
+      "Riconoscere un’estrapolazione"
+    ],
+    "so_dire": [
+      "Distinguere residuo e quadrato del residuo",
+      "Spiegare perché un buon fit sul train non basta"
+    ]
+  }
+}

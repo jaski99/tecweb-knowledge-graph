@@ -1,0 +1,106 @@
+{
+  "perche_ti_serve": "Gruppo A: l’apprendimento è nel programma IA [F1]; non è indicato un punteggio per singolo argomento.",
+  "scenario_fil_rouge": "La biblioteca online vorrebbe prevedere se un libro sarà preso in prestito, partendo da un piccolo archivio fittizio. Prima di proporre un modello decide quali dati raccogliere e come valutarlo su libri mai usati per addestrarlo.",
+  "definizione_esame": {
+    "definizione": "L’apprendimento automatico costruisce, a partire dai dati, un modello capace di formulare previsioni o individuare strutture.",
+    "scopo_vantaggio": "L’obiettivo è generalizzare a dati nuovi, misurando l’errore senza confondere apprendimento e valutazione.",
+    "esempio": "Con attributi dei libri e prestiti precedenti si impara a prevedere un’etichetta; senza etichette si possono cercare gruppi."
+  },
+  "spiegazione": "Prerequisiti: nessuno. **Fonte e limiti:** contenuti ed esempi originali basati su documentazione libera, non sulle slide del prof. Calderara, non pubbliche [F12]. Il programma è indicato da [F1].\n\n## Dal problema ai dati\n\nUn sistema di IA può impiegare regole fissate a mano oppure **apprendere** dai dati. Nel machine learning scegliamo una rappresentazione, una famiglia di modelli e un criterio con cui adattare i parametri. Una riga descrive un esempio; le colonne sono **attributi** o feature. La quantità da prevedere è il target. Le registrazioni della biblioteca usate qui sono piccoli dati fittizi, non prove ufficiali.\n\n## Due modi di apprendere\n\nNel **supervisionato** a ogni esempio di addestramento è associata una risposta: un’etichetta per classificare oppure un valore numerico per la regressione. Nel **non supervisionato** si cerca struttura in dati senza target, per esempio gruppi di libri simili. Un cluster non è automaticamente una categoria corretta o una preferenza reale del lettore.\n\n```mermaid\nflowchart LR\n  D[\"Dati disponibili\"] --> S[\"Separazione dei dati\"]\n  S --> T[\"Addestramento\"]\n  T --> M[\"Modello\"]\n  M --> V[\"Valutazione su test\"]\n```\n\n## Generalizzazione e overfitting\n\nDividi i dati prima delle trasformazioni: usa il **train** per apprendere anche medie e parametri di preprocessing, la **validazione** per scegliere modello e impostazioni, e il **test** tenuto da parte per la valutazione finale. Applica al test le trasformazioni già apprese sul train. Usare il test per scegliere una trasformazione è **data leakage** e rende la stima ottimistica. In dati temporali la divisione deve rispettare l’ordine degli eventi.\n\nUn modello in **overfitting** si adatta troppo al train, anche al rumore, e può comportarsi peggio su dati nuovi. Più complessità non garantisce più generalizzazione. Confrontare train e validazione e limitare la complessità sono possibili rimedi, non garanzie.\n\n## Valutare una classificazione\n\nL’**accuratezza** è il numero di predizioni corrette diviso il numero totale di esempi valutati. La **matrice di confusione** conta gli incroci tra classi vere, sulle righe, e classi previste, sulle colonne. L’accuratezza da sola può nascondere errori importanti se una classe è rara: guarda anche le singole celle e considera metriche coerenti con il problema.",
+  "analogia": {
+    "testo": "È come imparare a riconoscere libri in biblioteca dagli esempi già catalogati e poi verificarsi su nuovi libri, non su quelli già studiati.",
+    "limite": "Il modello non capisce necessariamente il significato dei libri: calcola a partire dagli attributi disponibili."
+  },
+  "worked_example": {
+    "titolo": "Valutare previsioni su un test fittizio",
+    "problema": "La biblioteca confronta etichette vere e previsioni già ottenute su libri di test mai usati nell’addestramento.",
+    "passi": [
+      "Contare i casi per ciascuna coppia di classe vera e prevista.",
+      "Disporre le classi vere sulle righe e quelle previste sulle colonne.",
+      "Calcolare la frazione di predizioni uguali alle etichette vere."
+    ],
+    "soluzione": "```python\nimport numpy as np\n\nvero = np.array([1, 0, 1, 0])\nprevisto = np.array([1, 0, 0, 1])\nmatrice = np.zeros((2, 2), dtype=int)\nnp.add.at(matrice, (vero, previsto), 1)  # righe vere, colonne previste\naccuratezza = np.mean(vero == previsto)\nprint(matrice)       # [[1 1], [1 1]]\nprint(accuratezza)   # 0.5\n```\nLa diagonale contiene due casi corretti su quattro; la matrice è `[[1, 1], [1, 1]]`.",
+    "perche_funziona": "Ogni coppia incrementa una cella della matrice; la diagonale conta i casi in cui classe vera e prevista coincidono."
+  },
+  "completion_problem": {
+    "titolo": "Completa la matrice",
+    "testo": "Su tre libri fittizi vero = [1, 1, 0] e previsto = [1, 0, 0]. Usa righe vere e colonne previste.",
+    "passi_mancanti": [
+      "Completa le due righe della matrice di confusione.",
+      "Conta le predizioni corrette e dividi per i tre esempi."
+    ],
+    "soluzione": "Matrice `[[1, 0], [1, 1]]`; due previsioni sono corrette, quindi l’accuratezza è 2/3."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Valuta un nuovo test",
+    "testo": "Con vero = [0, 0, 1, 1] e previsto = [0, 1, 1, 1], trova matrice e accuratezza.",
+    "suggerimento": "Conta prima le coppie con classe vera 0, poi quelle con classe vera 1.",
+    "soluzione_attesa": "La matrice è `[[1, 1], [0, 2]]` e l’accuratezza è 3/4: tre previsioni corrette su quattro."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Calcolare la media di normalizzazione su train e test insieme.",
+      "perche_sbagliato": "Il test influenzerebbe un parametro appreso: è leakage.",
+      "distrattore": "Il server HTTP cambia porta."
+    },
+    {
+      "errore": "Considerare l’accuratezza perfetta sul train una prova di generalizzazione.",
+      "perche_sbagliato": "Il modello può aver memorizzato rumore e peggiorare su dati nuovi.",
+      "distrattore": "Il colore CSS determina la classe."
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quali dati hanno un target noto nel supervisionato? A) Il train etichettato; B) Un foglio CSS; C) Solo il cluster.",
+        "risposta": "A) Il train etichettato associa attributi e target per apprendere."
+      },
+      {
+        "domanda": "Quale insieme va tenuto per la valutazione finale? A) Train; B) Test; C) Staging Git.",
+        "risposta": "B) Il test resta separato dalle scelte di addestramento e modello."
+      },
+      {
+        "domanda": "Che cosa descrive l’overfitting? A) Un cookie; B) Più memoria RAM; C) Eccessivo adattamento al train.",
+        "risposta": "C) Il modello può seguire anche il rumore e generalizzare male."
+      },
+      {
+        "domanda": "Con le righe vere, che cosa rappresenta una cella della matrice? A) Un confronto di classi; B) Un peso CSS; C) Una porta TCP.",
+        "risposta": "A) Conta i casi con quella classe vera e quella prevista."
+      },
+      {
+        "domanda": "Che cos’è l’accuratezza? A) Tempo di rete; B) Frazione di predizioni corrette; C) Numero di feature.",
+        "risposta": "B) È il numero di predizioni corrette diviso il totale valutato."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega con parole tue perché una biblioteca deve separare train e test anche prima di calcolare le medie.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "json-formato-dati",
+        "collegamento": "Dati JSON possono rappresentare le osservazioni prima di convertirle in feature numeriche."
+      },
+      {
+        "nodo": "ia-supervisionato-classificazione-lineare",
+        "collegamento": "La classificazione supervisionata usa etichette e si valuta con la matrice di confusione."
+      },
+      {
+        "nodo": "ia-clustering-non-supervisionato",
+        "collegamento": "Il clustering cerca gruppi senza usare un target di addestramento."
+      }
+    ]
+  },
+  "riepilogo": "Il machine learning apprende modelli dai dati.\nIl supervisionato usa target; il non supervisionato cerca strutture.\nTrain, validazione e test hanno ruoli distinti.\nL’overfitting può peggiorare le prestazioni su dati nuovi.\nAccuratezza e matrice di confusione descrivono errori diversi.",
+  "flashcard": {
+    "fronte": "Perché il test non deve contribuire al preprocessing?",
+    "retro": "Per evitare leakage: i parametri della trasformazione si apprendono sul train e si applicano anche al test."
+  },
+  "checklist": {
+    "so_fare": [
+      "Calcolare accuratezza e matrice con righe vere e colonne previste",
+      "Riconoscere un leakage nella preparazione dei dati"
+    ],
+    "so_dire": [
+      "Distinguere apprendimento supervisionato e non supervisionato",
+      "Spiegare generalizzazione e overfitting"
+    ]
+  }
+}

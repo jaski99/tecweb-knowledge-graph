@@ -24,8 +24,8 @@ Ordine topologico dei nodi (ogni prerequisito prima del nodo che lo usa); a pari
 | 4 | Back-end e strumenti | 5 | 0 | 0 | 5 | 4 h 00 min |
 | 5 | Web semantico ed evoluzione | 3 | 2 | 1 | 0 | 2 h 25 min |
 | 6 | Tesina | 5 | 0 | 0 | 5 | 6 h 30 min |
-| 7 | Modulo IA (apprendimento automatico, per la lode) | 0 | 0 | 0 | 0 | 0 min |
-| **Totale** | | 40 | **21** | **8** | **11** | **31 h 30 min** |
+| 7 | Modulo IA (apprendimento automatico, per la lode) | 8 | 8 | 0 | 0 | 6 h 40 min |
+| **Totale** | | 48 | **29** | **8** | **11** | **38 h 10 min** |
 
 ## Sessione 1 (1 h 35 min)
 
@@ -97,23 +97,40 @@ Ordine topologico dei nodi (ogni prerequisito prima del nodo che lo usa); a pari
 
 ## Sessione 14 (1 h 50 min)
 
-30. [ ] **Rate limiting e sicurezza delle API** (`rate-limiting-sicurezza`) — area 2, gruppo B, concetto, priorità MEDIA, 40 min. Prerequisiti: api-design-best-practice
-31. [ ] **Canvas API: disegno 2D in HTML** (`canvas-api`) — area 3, gruppo B, abilita, priorità MEDIA, 40 min. Prerequisiti: —
-32. [ ] **DHTML: Dynamic HTML** (`dhtml-dynamic-html`) — area 3, gruppo B, concetto, priorità MEDIA, 30 min. Prerequisiti: dom-virtual-dom
+30. [ ] **IA: introduzione all’apprendimento automatico** (`ia-introduzione-apprendimento`) — area 7, gruppo A, concetto, priorità ALTA, 50 min. Prerequisiti: —
+31. [ ] **IA: laboratorio Python e NumPy** (`ia-python-numpy-lab`) — area 7, gruppo A, abilita, priorità ALTA, 60 min. Prerequisiti: —
 
-## Sessione 15 (2 h 05 min)
+## Sessione 15 (1 h 40 min)
 
-33. [ ] **Eventi: locali vs remoti** (`eventi-locali-vs-remoti`) — area 3, gruppo B, concetto, priorità MEDIA, 30 min. Prerequisiti: —
-34. [ ] **Motore JavaScript: parser, AST, profiler, JIT** (`motore-js-parser-ast-jit`) — area 3, gruppo B, concetto, priorità MEDIA, 35 min. Prerequisiti: —
-35. [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0** (`web-1-0-2-0-3-0-4-0`) — area 3, gruppo B, concetto, priorità MEDIA, 30 min. Prerequisiti: —
-36. [ ] **JSON: formato dati per il Web** (`json-formato-dati`) — area 4, gruppo C, concetto, priorità MEDIA, 30 min. Prerequisiti: —
+32. [ ] **IA: clustering e apprendimento non supervisionato** (`ia-clustering-non-supervisionato`) — area 7, gruppo A, concetto, priorità ALTA, 50 min. Prerequisiti: ia-introduzione-apprendimento, ia-python-numpy-lab
+33. [ ] **IA: riduzione della dimensionalità e PCA** (`ia-riduzione-dimensionalita`) — area 7, gruppo A, concetto, priorità ALTA, 50 min. Prerequisiti: ia-introduzione-apprendimento, ia-python-numpy-lab
 
-## Sessione 16 (1 h 30 min)
+## Sessione 16 (1 h 45 min)
 
-37. [ ] **AJAX: Asynchronous JavaScript and XML** (`ajax-fetch-xhr`) — area 5, gruppo B, abilita, priorità MEDIA, 45 min. Prerequisiti: javascript-fetch-async-await
-38. [ ] **Quiz e form: domande a scelta multipla e raccolta risposte** (`quiz-form`) — area 6, gruppo C, abilita, priorità MEDIA, 45 min. Prerequisiti: html-form-accessibilita, javascript-fetch-async-await
+34. [ ] **IA: supervisionato e classificazione lineare** (`ia-supervisionato-classificazione-lineare`) — area 7, gruppo A, concetto, priorità ALTA, 55 min. Prerequisiti: ia-introduzione-apprendimento, ia-python-numpy-lab
+35. [ ] **IA: apprendimento statistico e bayesiano** (`ia-bayes-apprendimento-statistico`) — area 7, gruppo A, concetto, priorità ALTA, 50 min. Prerequisiti: ia-supervisionato-classificazione-lineare
 
-## Sessione 17 (1 h 20 min)
+## Sessione 17 (2 h 05 min)
 
-39. [ ] **Tesina: Esercitazione guidata e modello presentazione** (`tesina-esercitazione-guidata`) — area 6, gruppo C, tipo_esercizio, priorità MEDIA, 60 min. Prerequisiti: —
-40. [ ] **Tag <span>: uso e scopi** (`span-tag-uso`) — area 3, gruppo B, concetto, priorità BASSA, 20 min. Prerequisiti: —
+36. [ ] **IA: regressione lineare e minimi quadrati** (`ia-regressione`) — area 7, gruppo A, concetto, priorità ALTA, 50 min. Prerequisiti: ia-supervisionato-classificazione-lineare, ia-python-numpy-lab
+37. [ ] **IA: quiz, laboratorio e lode dell’esame integrato** (`ia-esame-quiz-lab-lode`) — area 7, gruppo A, tipo_esercizio, priorità ALTA, 35 min. Prerequisiti: ia-supervisionato-classificazione-lineare, ia-clustering-non-supervisionato, ia-regressione, ia-bayes-apprendimento-statistico, ia-riduzione-dimensionalita
+38. [ ] **Rate limiting e sicurezza delle API** (`rate-limiting-sicurezza`) — area 2, gruppo B, concetto, priorità MEDIA, 40 min. Prerequisiti: api-design-best-practice
+
+## Sessione 18 (2 h 15 min)
+
+39. [ ] **Canvas API: disegno 2D in HTML** (`canvas-api`) — area 3, gruppo B, abilita, priorità MEDIA, 40 min. Prerequisiti: —
+40. [ ] **DHTML: Dynamic HTML** (`dhtml-dynamic-html`) — area 3, gruppo B, concetto, priorità MEDIA, 30 min. Prerequisiti: dom-virtual-dom
+41. [ ] **Eventi: locali vs remoti** (`eventi-locali-vs-remoti`) — area 3, gruppo B, concetto, priorità MEDIA, 30 min. Prerequisiti: —
+42. [ ] **Motore JavaScript: parser, AST, profiler, JIT** (`motore-js-parser-ast-jit`) — area 3, gruppo B, concetto, priorità MEDIA, 35 min. Prerequisiti: —
+
+## Sessione 19 (1 h 45 min)
+
+43. [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0** (`web-1-0-2-0-3-0-4-0`) — area 3, gruppo B, concetto, priorità MEDIA, 30 min. Prerequisiti: —
+44. [ ] **JSON: formato dati per il Web** (`json-formato-dati`) — area 4, gruppo C, concetto, priorità MEDIA, 30 min. Prerequisiti: —
+45. [ ] **AJAX: Asynchronous JavaScript and XML** (`ajax-fetch-xhr`) — area 5, gruppo B, abilita, priorità MEDIA, 45 min. Prerequisiti: javascript-fetch-async-await
+
+## Sessione 20 (2 h 05 min)
+
+46. [ ] **Quiz e form: domande a scelta multipla e raccolta risposte** (`quiz-form`) — area 6, gruppo C, abilita, priorità MEDIA, 45 min. Prerequisiti: html-form-accessibilita, javascript-fetch-async-await
+47. [ ] **Tesina: Esercitazione guidata e modello presentazione** (`tesina-esercitazione-guidata`) — area 6, gruppo C, tipo_esercizio, priorità MEDIA, 60 min. Prerequisiti: —
+48. [ ] **Tag <span>: uso e scopi** (`span-tag-uso`) — area 3, gruppo B, concetto, priorità BASSA, 20 min. Prerequisiti: —

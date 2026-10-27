@@ -1,0 +1,102 @@
+{
+  "perche_ti_serve": "Gruppo A: la classificazione lineare è nel programma IA [F1]; non è indicato un punteggio per argomento.",
+  "scenario_fil_rouge": "La biblioteca online dispone di esempi fittizi di libri con due attributi e un’etichetta. Vuole distinguere i libri per cui è previsto un prestito da quelli per cui non lo è, senza riusare i libri di test per allenarsi.",
+  "definizione_esame": {
+    "definizione": "La classificazione supervisionata apprende una funzione da attributi a classi usando esempi etichettati; un classificatore lineare usa uno score affine.",
+    "scopo_vantaggio": "Lo score e una soglia permettono una decisione interpretabile nello spazio delle feature.",
+    "esempio": "Con score `w @ x + b`, la biblioteca predice classe positiva se lo score è almeno zero e negativa altrimenti."
+  },
+  "spiegazione": "Prerequisiti: introduzione all’apprendimento; prodotto scalare NumPy utile. **Fonte e limiti:** lezione originale basata su documentazione libera, non sulle slide del prof. Calderara, non pubbliche [F12]. Il tema è nel programma [F1].\n\n## Feature, etichetta e score\n\nNel supervisionato ogni riga del train associa un vettore di attributi `x` a un’etichetta `y`. Per due classi possiamo usare `-1` e `+1`. Un modello lineare calcola **score = w @ x + b**, dove `w` è il vettore dei pesi e `b` il bias o intercetta. Con la convenzione dell’esempio, score maggiore o uguale a zero significa classe positiva; sotto zero significa negativa. La frontiera `w @ x + b = 0` è una retta in due dimensioni e un iperpiano in generale.\n\n```mermaid\nflowchart LR\n  D[\"Esempi etichettati\"] --> A[\"Apprendimento dei pesi\"]\n  A --> S[\"Score lineare\"]\n  S --> C[\"Soglia e classe\"]\n  C --> V[\"Confronto sul test\"]\n```\n\n## Perceptron: un aggiornamento alla volta\n\nInizializza `w` e `b`; per ciascun esempio calcola il **margine** `y * (w @ x + b)`. Se il margine è minore o uguale a zero, con tasso `eta` positivo aggiorna `w = w + eta * y * x` e `b = b + eta * y`. Altrimenti, in questa variante, non modifichi i parametri. Ripeti i passaggi sul train. Per dati non linearmente separabili il metodo non garantisce una soluzione senza errori; la convenzione per il caso di score zero va dichiarata.\n\n## Confronto con la regressione logistica\n\nLa **regressione logistica** è un altro classificatore: nel caso binario applica la sigmoide allo score per ottenere un valore tra zero e uno, poi usa una soglia. Si addestra con un criterio diverso dal semplice aggiornamento del perceptron. Il valore prodotto non è automaticamente ben calibrato. Il nome non la rende una regressione di un target numerico continuo.\n\n## Valutazione e limiti\n\nLa **matrice di confusione** confronta classe vera sulle righe e prevista sulle colonne; l’accuratezza divide i corretti per tutti gli esempi. Valuta su un test separato e considera la distribuzione delle classi: un’accuratezza elevata può nascondere errori sulla classe rara. I piccoli dati fittizi qui servono a seguire i calcoli, non a stimare prestazioni reali.",
+  "analogia": {
+    "testo": "È come tracciare una linea su una mappa di libri e decidere da quale lato si trova un nuovo punto.",
+    "limite": "La linea dipende dalle feature e dai dati di addestramento; libri reali possono non essere separabili da una sola retta."
+  },
+  "worked_example": {
+    "titolo": "Addestrare un piccolo perceptron",
+    "problema": "Addestra un perceptron su quattro esempi fittizi e classifica due libri distinti nel test.",
+    "passi": [
+      "Usa etichette -1 e +1, pesi e bias iniziali nulli.",
+      "Aggiorna pesi e bias quando il margine è non positivo.",
+      "Calcola gli score sui soli esempi di test e confronta le classi previste."
+    ],
+    "soluzione": "```python\nimport numpy as np\n\nX_train = np.array([[0., 0.], [0., 1.], [2., 0.], [2., 1.]])\ny_train = np.array([-1, -1, 1, 1])\nw = np.zeros(2)\nb = 0.0\neta = 1.0\nfor _ in range(6):  # numero di passaggi scelto solo per questo esempio\n    for x, y in zip(X_train, y_train):\n        if y * (x @ w + b) <= 0:\n            w = w + eta * y * x\n            b = b + eta * y\nX_test = np.array([[0., 3.], [3., 0.]])\ny_test = np.array([-1, 1])\nscore = X_test @ w + b\nprevisto = np.where(score >= 0, 1, -1)\naccuratezza = np.mean(previsto == y_test)\nprint(w, b)                   # [2. 0.] -1.0\nprint(score, previsto)        # [-1.  5.] [-1  1]\nprint(accuratezza)            # 1.0, solo per questi dati fittizi\n```\nPesi `[2, 0]`, bias `-1`; le due classi del test sono `[-1, 1]`.",
+    "perche_funziona": "Gli aggiornamenti aumentano lo score con segno corretto sugli esempi con margine non positivo; il test non partecipa agli aggiornamenti."
+  },
+  "completion_problem": {
+    "titolo": "Aggiorna il perceptron",
+    "testo": "Per w = [1, -1], b = 0, x = [1, 2], y = +1 ed eta = 1, completa l’aggiornamento.",
+    "passi_mancanti": [
+      "Calcola score e margine dell’esempio.",
+      "Se il margine è non positivo, aggiorna entrambi i parametri."
+    ],
+    "soluzione": "Score e margine sono -1; `w` diventa `[2, 1]` e `b` diventa `1`."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Classifica con una soglia",
+    "testo": "Usa w = [1, -1], b = -2 e x = [2, 1]. Quale classe dà la soglia a zero?",
+    "suggerimento": "Calcola prima `w @ x + b` e poi applica la convenzione dello score.",
+    "soluzione_attesa": "Lo score è `2 - 1 - 2 = -1`; la predizione è la classe negativa."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Dire che la regressione logistica predice necessariamente un valore continuo come target.",
+      "perche_sbagliato": "Nel caso discusso usa probabilità e soglia per classificare.",
+      "distrattore": "Una pagina HTML è un cluster."
+    },
+    {
+      "errore": "Usare il test per aggiornare i pesi del perceptron.",
+      "perche_sbagliato": "Il test non sarebbe più indipendente e la valutazione sarebbe distorta.",
+      "distrattore": "Un cookie è un peso del modello."
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Qual è lo score lineare? A) Un indirizzo URI; B) `w @ x + b`; C) `w + x + b` sempre.",
+        "risposta": "B) Il prodotto scalare dei pesi per le feature, più il bias."
+      },
+      {
+        "domanda": "Con la convenzione adottata, uno score negativo indica: A) Classe positiva; B) Un errore DNS; C) Classe negativa.",
+        "risposta": "C) La soglia a zero assegna la classe negativa allo score sotto zero."
+      },
+      {
+        "domanda": "Quando si aggiorna il perceptron mostrato? A) Margine non positivo; B) A ogni richiesta HTTP; C) Sempre.",
+        "risposta": "A) L’aggiornamento avviene quando `y * score` non è positivo."
+      },
+      {
+        "domanda": "La regressione logistica binaria usa: A) Solo cluster; B) Sigmoide e soglia; C) Cascata CSS.",
+        "risposta": "B) Converte lo score tramite sigmoide e può applicare una soglia."
+      },
+      {
+        "domanda": "Quale dato deve restare fuori dagli aggiornamenti? A) Bias; B) Train; C) Test.",
+        "risposta": "C) Il test va tenuto separato per valutare la generalizzazione."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega con parole tue come un perceptron usa attributi, margine e aggiornamenti per tracciare una frontiera.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "ia-introduzione-apprendimento",
+        "collegamento": "Le etichette, la separazione train/test e l’overfitting sono le basi della classificazione."
+      },
+      {
+        "nodo": "ia-python-numpy-lab",
+        "collegamento": "Il prodotto scalare NumPy calcola lo score a partire da vettori di feature e pesi."
+      }
+    ]
+  },
+  "riepilogo": "La classificazione usa esempi con etichetta.\nLo score lineare è `w @ x + b`; una soglia assegna la classe.\nIl perceptron aggiorna pesi e bias sul margine non positivo.\nLa regressione logistica è un classificatore probabilistico.\nIl test separato misura la generalizzazione, non allena il modello.",
+  "flashcard": {
+    "fronte": "Come aggiorna il perceptron un esempio con margine non positivo?",
+    "retro": "Aggiunge `eta * y * x` ai pesi e `eta * y` al bias, con eta positivo."
+  },
+  "checklist": {
+    "so_fare": [
+      "Calcolare lo score e un aggiornamento di pesi e bias",
+      "Confrontare classi vere e previste"
+    ],
+    "so_dire": [
+      "Descrivere la frontiera lineare",
+      "Distinguere perceptron e regressione logistica"
+    ]
+  }
+}
