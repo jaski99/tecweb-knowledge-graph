@@ -22,7 +22,7 @@
     "tempo_studio_min": 45,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Argomento ricorrente nelle prove."
+      "motivazione": "HTML5 è nel programma [F1]; form e accessibilità sono applicazioni utili, non voci esplicitate singolarmente."
     },
     "risorse": [
       {
@@ -81,7 +81,7 @@
     "tempo_studio_min": 40,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Domanda ricorrente."
+      "motivazione": "CSS è nel programma [F1]; il box model è un fondamento tecnico per applicarlo."
     },
     "risorse": [
       {
@@ -136,7 +136,7 @@
     "tempo_studio_min": 50,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Fondamentale per CSS."
+      "motivazione": "CSS è nel programma [F1]; cascata ed ereditarietà chiariscono il comportamento degli stili."
     },
     "risorse": [
       {
@@ -196,7 +196,7 @@
     "tempo_studio_min": 60,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo A. Argomento chiave per front-end moderno."
+      "motivazione": "DOM e Virtual DOM aiutano a comprendere JavaScript e React, entrambi previsti da [F1]; non sono voci elencate singolarmente."
     },
     "risorse": [
       {
@@ -232,7 +232,7 @@
     "id": "javascript-fetch-async-await",
     "title": "JavaScript moderno: fetch, async/await",
     "area": 3,
-    "gruppo": "C",
+    "gruppo": "A",
     "tipo": "abilita",
     "sapere": "fetch() è l'API moderna per le richieste HTTP asincrone: restituisce subito una Promise che si risolve con l'oggetto Response, il cui corpo si legge con un secondo passaggio asincrono (per esempio response.json()). La Promise diventa rejected per gli errori nel completare la richiesta (per esempio di rete), non per gli stati HTTP di errore come 404: va quindi controllato response.ok. Le Promise hanno stati pending, fulfilled e rejected; async/await permette di attenderle scrivendo in sequenza, con try/catch per gli errori e senza bloccare il thread principale.",
     "saper_fare": [
@@ -251,7 +251,7 @@
     "tempo_studio_min": 50,
     "priorita": {
       "livello": "alta",
-      "motivazione": "Gruppo C (punti ciechi). Argomento pratico fondamentale."
+      "motivazione": "JavaScript e AJAX sono nel programma [F1]; fetch e async/await sono strumenti pratici per usarli."
     },
     "risorse": [
       {
@@ -293,7 +293,7 @@
     "id": "dhtml-dynamic-html",
     "title": "DHTML: Dynamic HTML",
     "area": 3,
-    "gruppo": "B",
+    "gruppo": "C",
     "tipo": "concetto",
     "sapere": "DHTML (Dynamic HTML) è il termine storico per l'uso combinato di HTML, CSS e JavaScript che manipola il DOM in risposta agli eventi, rendendo la pagina dinamica e interattiva lato client (mostrare e nascondere, rollover, aggiornamenti locali) senza ricaricarla. Non è un linguaggio né uno standard separato, e di per sé non scambia dati nuovi con il server: quello è il passo ulteriore di AJAX.",
     "saper_fare": [
@@ -317,8 +317,8 @@
     ],
     "tempo_studio_min": 30,
     "priorita": {
-      "livello": "media",
-      "motivazione": "Gruppo B. Importante ma meno centrale."
+      "livello": "bassa",
+      "motivazione": "DHTML non è elencato nel programma 2026/27 [F1]; resta un approfondimento opzionale."
     },
     "risorse": [
       {
@@ -349,7 +349,7 @@
     "id": "canvas-api",
     "title": "Canvas API: disegno 2D in HTML",
     "area": 3,
-    "gruppo": "B",
+    "gruppo": "C",
     "tipo": "abilita",
     "sapere": "L'elemento <canvas> e la Canvas API permettono di disegnare grafica 2D raster (una bitmap) tramite JavaScript. Il canvas in pagina è vuoto finché non si ottiene il contesto di disegno con getContext('2d') e si usano i suoi metodi (fillRect, strokeRect, beginPath, arc, fill, stroke) e il suo stato (fillStyle, strokeStyle). Gli attributi width/height definiscono la risoluzione della bitmap, il CSS la dimensione visualizzata. Il modello è immediato: non restano oggetti forma, quindi per animare si cancella e si ridisegna, tipicamente con requestAnimationFrame.",
     "saper_fare": [
@@ -367,8 +367,8 @@
     ],
     "tempo_studio_min": 40,
     "priorita": {
-      "livello": "media",
-      "motivazione": "Gruppo B. Argomento specifico."
+      "livello": "bassa",
+      "motivazione": "Canvas non è elencato nel programma 2026/27 [F1]; resta un approfondimento opzionale di HTML5."
     },
     "risorse": [
       {
@@ -400,7 +400,7 @@
     "id": "span-tag-uso",
     "title": "Tag <span>: uso e scopi",
     "area": 3,
-    "gruppo": "B",
+    "gruppo": "C",
     "tipo": "concetto",
     "sapere": "Il tag <span> è il contenitore generico inline per il contenuto testuale (phrasing content): non rappresenta nulla di per sé e ha solo gli attributi globali. Serve ad agganciare a un frammento in linea stili (classi), attributi condivisi (per esempio lang) o riferimenti per JavaScript, senza interrompere la riga e solo quando nessun elemento semantico (strong, em, mark, code) è quello appropriato. Il suo corrispettivo generico a blocco è il <div>.",
     "saper_fare": [
@@ -419,7 +419,7 @@
     "tempo_studio_min": 20,
     "priorita": {
       "livello": "bassa",
-      "motivazione": "Gruppo B. Argomento specifico e meno centrale."
+      "motivazione": "Il tag span non è elencato come voce nel programma 2026/27 [F1]; è un dettaglio opzionale di HTML."
     },
     "risorse": [
       {
@@ -451,7 +451,7 @@
     "id": "motore-js-parser-ast-jit",
     "title": "Motore JavaScript: parser, AST, profiler, JIT",
     "area": 3,
-    "gruppo": "B",
+    "gruppo": "C",
     "tipo": "concetto",
     "sapere": "I motori JavaScript moderni (per esempio V8, usato in Chrome e Node.js) eseguono il codice con una pipeline adattiva: il parser analizza il sorgente e costruisce l'AST (Abstract Syntax Tree); un interprete (Ignition in V8) genera ed esegue bytecode per partire subito; un profiler raccoglie feedback sulle parti eseguite di frequente e sui tipi osservati; un compilatore JIT (TurboFan in V8) traduce le parti calde in codice macchina ottimizzato durante l'esecuzione, con deottimizzazione se le assunzioni sui tipi cadono.",
     "saper_fare": [
@@ -469,8 +469,8 @@
     ],
     "tempo_studio_min": 35,
     "priorita": {
-      "livello": "media",
-      "motivazione": "Gruppo B. Argomento tecnico avanzato."
+      "livello": "bassa",
+      "motivazione": "Parser, AST e JIT non sono elencati nel programma 2026/27 [F1]; sono un approfondimento opzionale."
     },
     "risorse": [
       {
@@ -521,7 +521,7 @@
     "tempo_studio_min": 30,
     "priorita": {
       "livello": "media",
-      "motivazione": "Gruppo B. Argomento importante per applicazioni real-time."
+      "motivazione": "Contesto utile per lo sviluppo event-driven previsto da [F1]; la distinzione locale/remoto non è elencata separatamente."
     },
     "risorse": [
       {
@@ -577,7 +577,7 @@
     "tempo_studio_min": 30,
     "priorita": {
       "livello": "media",
-      "motivazione": "Gruppo B. Argomento culturale/tecnologico."
+      "motivazione": "Contesto storico: [F1] prevede cenni storici, ma non la tassonomia Web 1.0–4.0."
     },
     "risorse": [
       {

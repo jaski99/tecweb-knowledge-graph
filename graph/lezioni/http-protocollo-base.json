@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti (Gruppo A): fondamentale per lo scritto.",
+  "perche_ti_serve": "Gruppo A: HTTP è esplicitamente nel programma [F1]; padroneggiare richieste e risposte serve a progettare applicazioni Web.",
   "scenario_fil_rouge": "La biblioteca digitale deve mostrare il catalogo dal browser: prima invia una richiesta al server, poi riceve una risposta con i dati del libro. Lo stesso scambio si ripete quando si cerca, si apre una scheda o si invia un ordine.",
   "definizione_esame": {
     "definizione": "HTTP è un protocollo applicativo stateless che definisce la semantica di richieste e risposte tra client e server.",

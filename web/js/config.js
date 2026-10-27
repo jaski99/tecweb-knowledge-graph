@@ -15,8 +15,11 @@ export const STORAGE_KEYS = {
   done: 'ids-kg:completati:v1',
   review: 'ids-kg:ripasso:v1',
   last: 'ids-kg:ultima-lezione:v1',
+  studyStates: 'ids-kg:stati-studio:v1',
+  examDate: 'ids-kg:data-esame:v1',
+  dailyBudget: 'ids-kg:budget-oggi:v1',
 };
-export const AREA_COLORS = ['#1e40af', '#b45309', '#047857', '#6b21a8', '#b91c1c', '#0e7490'];
+export const AREA_COLORS = ['#1e40af', '#b45309', '#047857', '#6b21a8', '#b91c1c', '#0e7490', '#9d174d'];
 export const TIPO_LABEL = { concetto: 'Concetto', abilita: 'Abilità', tipo_esercizio: "Tipo d'esercizio" };
 export const TIPO_SHAPE = { concetto: 'ellipse', abilita: 'round-rectangle', tipo_esercizio: 'diamond' };
 export const TIPO_ICON = { concetto: '●', abilita: '▬', tipo_esercizio: '◆' };

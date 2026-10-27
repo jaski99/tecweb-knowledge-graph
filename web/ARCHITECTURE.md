@@ -1,67 +1,97 @@
 # Architettura della web app
 
-App statica, senza bundler. `index.html` carica `js/main.js` come modulo ES. I testi visibili sono in italiano. I contenuti non stanno qui: arrivano da `graph.json` (copia di `graph/graph.json` prodotta da `build.sh`).
+L'app è statica, in italiano, senza backend né bundler. `index.html` carica
+`js/main.js` come composition root; i contenuti arrivano da `graph.json`, copia
+creata con `sh web/build.sh` a partire da `graph/graph.json`. Aree e nodi sono
+letti dai dati, non da conteggi fissati nel codice.
 
 ## Strati
 
-| cartella | ruolo |
-|---|---|
-| `js/core/` | funzioni pure: ordine topologico, filtri, ricerca, percorso dei prerequisiti, progresso, tema, stato, storage |
-| `js/ui/` | viste. Ricevono il contenitore, il grafo e le callback. Non leggono `localStorage` e non si chiamano tra loro |
-| `js/data.js` | fetch e validazione leggera |
-| `js/main.js` | composition root: unico posto che collega dati, stato e viste |
-| `modules/registry.js` | viste di navigazione aggiunte da altri moduli |
+- `js/core/`: logica pura di grafo, filtri, stato, padronanza, sessione e
+  backup. Le funzioni che necessitano di storage lo ricevono come dipendenza.
+- `js/ui/`: presentazione e callback; i controlli condivisi sono separati dalle
+  viste. `js/main.js` collega dati, storage, viste e registro.
+- `modules/ripasso/`: mazzo, date, SM-2, persistenza e vista. I risultati del
+  simulatore appartengono a X6: l'unica API letta da X5 è `leggiEsiti(storage)`
+  in `modules/simulatore/esiti.js`. Finché il file manca, la build lo segnala
+  e il caricamento opzionale non impedisce l'uso dell'app. Non si interpreta
+  la struttura interna della banca quiz. La banca opzionale è caricata in
+  parallelo al grafo: se non risponde, non trattiene le lezioni e il
+  simulatore può ripiegare sugli esercizi del grafo.
+- `modules/avvia.js` e `modules/registry.js`: navigazione delle viste aggiuntive
+  per hash (`#/ripasso`, `#/simulatore`). Le lezioni usano `#/lezione/<id>`;
+  `?sezione=richiamo` all'interno dell'hash apre direttamente il richiamo.
 
-Non ci sono variabili globali di applicazione. `navigation` è l'istanza del registro esportata dal modulo, così un altro file può registrarsi senza ricevere l'oggetto da `main`. Lo stato di studio e il tema passano da storage iniettato (`localStorage` in produzione, un doppio in memoria nei test).
+## Studio e ripasso
 
-## Flusso
+`ids-kg:completati:v1` resta compatibile con le vecchie spunte. La mappa
+`ids-kg:stati-studio:v1` migra tali spunte e aggiunge «in corso» e «so già»;
+quest'ultimo soddisfa i prerequisiti per i suggerimenti ma non viene marcato
+come lezione completata. La modalità guidata evidenzia i nodi suggeriti: non
+blocca mai l'apertura delle lezioni.
 
-1. `loadGraph` prova gli URL del meta `kg-graph-url` (o `?graph=`).
-2. `createState` tiene filtri, nodi completati e nodo selezionato. Le viste si aggiornano in `subscribe`.
-3. L'hash `#/lezione/<id>` apre il lettore a tutta pagina. `#/percorso` torna al percorso sulla lezione corrente. Esc chiude la lezione o il pannello dettagli.
+`mastery.js` deriva cinque livelli dai segnali manuali, dalle carte SM-2 e
+dagli esiti X6; le soglie sono spiegate nella vista Progresso e non costituiscono
+un voto né una previsione d'esame. Un errore può abbassare il livello. La
+sessione giornaliera usa gli stessi dati, l'ordine topologico, la data facoltativa
+e le stime presenti nei nodi. Il tempo scelto è indicativo: non si assume una
+durata delle carte.
 
-## Registro delle viste
+La chiave storica `ids.ripasso.v1` conserva carte, scadenze e limite di nuove
+carte, globale per giorno e persistente fra filtri e riaperture. Le scadute
+non sono limitate; a parità di scadenza/priorità la coda alterna aree e nodi.
+Il retro delle checklist è il punto originale specifico, non un testo generato.
+Previsione e carte con almeno tre errori sono informative: nessuna sospensione
+è automatica.
 
-Gli id `grafo`, `percorso` e `ripasso` sono già nel markup: registrarli di nuovo non crea una seconda scheda. Un id nuovo diventa una scheda in più, anche se la registrazione arriva dopo l'avvio.
+## Grafo, lettore e accessibilità
 
-```js
-import { navigation } from '../modules/registry.js';
+Cytoscape e dagre sono isolati in `graph-view.js`. All'apertura la scala
+privilegia etichette leggibili; «Adatta» mostra la mappa intera. Frecce e Invio
+seguono gli archi e aprono le lezioni, con annuncio della selezione. L'elenco
+è disponibile anche su desktop; legenda, profondità e filtri sono controllabili
+da tastiera. Area, tipo, stato e padronanza hanno anche etichette testuali.
 
-navigation.register({
-  id: 'simulatore',          // kebab-case, univoco
-  title: 'Simulatore',       // etichetta visibile
-  mount(panel, ctx) {
-    // ctx.graph, ctx.getState(), ctx.subscribe(fn), ctx.openLesson(id),
-    // ctx.select(id), ctx.toggleDone(id, on), ctx.h, ctx.clear
-    return {
-      update(vm) {}, // vm.visible (Set), vm.done (Set), vm.selected (id | null)
-      resize() {},
-    };
-  },
-});
-```
+`lesson-view.js` compone la lezione. `markdown.js` usa marked, DOMPurify e
+highlight.js locali; i diagrammi mermaid hanno cornice e zoom interni, e sono
+ridisegnati al cambio tema. L'indice non cambia l'hash del router. Il tema
+`ids-kg:tema:v1` è applicato prima del CSS; i token sono verificati per il
+contrasto AA nei test.
 
-Perché il modulo venga eseguito va importato da `js/main.js` (basta l'import, la registrazione è un effetto del modulo). `simulatore*` e `ripasso*` non stanno in questo ramo: li aggiunge un altro intervento, usando questo registro.
+## Dati e funzionamento offline
 
-## Lettore
+Il pannello «I tuoi dati» esporta un JSON versionato con le chiavi `ids-kg:*`
+e i prefissi storici del ripasso e del simulatore. L'import valida il file
+prima di scrivere, chiede conferma e tenta il ripristino se una scrittura
+fallisce. Sono sovrascritte solo le chiavi presenti nel backup. Il mazzo Anki
+TSV contiene fronte, retro e tag di area/nodo/gruppo. Non c'è sincronizzazione:
+i dati restano sul dispositivo salvo esportazione esplicita.
 
-`lesson-view.js` compone la pagina. Il markdown passa da `markdown.js` (marked + DOMPurify + highlight.js). I blocchi di codice ricevono lingua e copia da `code-block.js`. I diagrammi mermaid stanno in una cornice (`diagram.js`) con zoom interno; al cambio tema il sorgente, tenuto in `data-src`, viene ridisegnato. L'indice (`toc.js`) non usa l'hash: un `#sezione` chiuderebbe la lezione, perché l'hash è il router.
+`web/vendor/` contiene le distribuzioni fissate e relative licenze. La build
+copia grafo e quiz e genera `precache.js` (non versionato) con un hash dei
+contenuti e l'inventario dei file, inclusi i chunk mermaid e gli eventuali moduli
+X6. `sw.js` installa atomicamente la nuova cache, elimina solo le vecchie cache
+del proprio scope e usa cache-first per le risorse locali; se la cache non è
+disponibile o la quota è piena, una risposta di rete valida resta utilizzabile.
+Il manifest usa
+percorsi relativi, quindi funziona anche in una sottocartella GitHub Pages.
 
-## Grafo
+L'uso offline richiede una prima visita online completata e un contesto sicuro
+(HTTPS, oppure localhost per sviluppo). Il messaggio di rete non promette la
+presenza di contenuti che non siano stati precedentemente salvati. La cache
+non sostituisce il backup dei progressi.
 
-Cytoscape resta dietro `graph-view.js`. Colore = area, dimensione = priorità, clic = chiusura dei prerequisiti (`prereq-path.js`). La minimappa (`minimap.js`) riceve l'istanza Cytoscape dal composition root: non la cerca sul `window`.
-
-## Tema
-
-`data-theme` su `<html>`. Uno script in testa legge `ids-kg:tema:v1` prima del CSS, la stessa chiave di `THEME_STORAGE_KEY`. Senza scelta salvata si segue `prefers-color-scheme`. I token in `css/style.css` sono controllati da `tests/theme.test.js` (contrasto AA).
-
-## Test
+## Verifica
 
 ```bash
-cd web && node --test tests/
+python scripts/kg.py build && python scripts/gen_docs.py build && sh web/build.sh
+python scripts/kg.py check
+npm test --prefix web
 pytest -q
-# e2e, se Playwright è installato (serve rete per i CDN):
-python -m pytest web/tests/test_e2e_lesson.py web/tests/test_e2e_screens.py -q
 ```
 
-Gli screenshot in `docs/screens/` sono prodotti da `test_e2e_screens.py` (390×844 e 1440×900: home, grafo, lezione, percorso).
+I test Playwright coprono telefono 390×844, desktop 1440×900, tastiera,
+interleaving, migrazione, backup, offline, banca quiz lenta e assenza di
+overflow/errori JS. Sono incluse prove con nodi sintetici in area 7 e con un
+grafo più grande.
+Richiedono Playwright e Chromium installati; le dipendenze runtime sono locali.

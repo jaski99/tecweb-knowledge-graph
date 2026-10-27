@@ -1,0 +1,102 @@
+{
+  "perche_ti_serve": "Gruppo A: clustering e non supervisionato sono nel programma IA [F1]; nessun punteggio per nodo è indicato.",
+  "scenario_fil_rouge": "La biblioteca online non possiede etichette di gradimento attendibili, ma descrive libri fittizi con due attributi numerici. Vorrebbe esplorare gruppi di libri simili senza fingere di conoscere già le categorie.",
+  "definizione_esame": {
+    "definizione": "Il clustering è una famiglia di metodi non supervisionati che raggruppano osservazioni secondo un criterio di somiglianza.",
+    "scopo_vantaggio": "Aiuta a esplorare strutture nei dati senza richiedere una classe nota per ogni esempio.",
+    "esempio": "K-means assegna i libri al centro più vicino e sposta ciascun centro sulla media dei libri assegnati."
+  },
+  "spiegazione": "Prerequisiti: introduzione all’apprendimento; array e broadcasting sono utili. **Fonte e limiti:** testo ed esempi originali basati su documentazione libera, non sulle slide del prof. Calderara, non pubbliche [F12]. Il clustering è indicato in [F1].\n\n## Gruppi senza etichette\n\nNel non supervisionato osserviamo le feature senza un target di classe da imparare. Il **clustering** propone una suddivisione in gruppi relativamente simili secondo una distanza e un algoritmo scelti. Non esiste automaticamente un significato umano per un numero di cluster: la biblioteca deve interpretare i gruppi nel contesto e non chiamarli etichette vere.\n\n## K-means: il ciclo essenziale\n\nScegli `k`, il numero di gruppi, e una posizione iniziale per ogni **centroide**. Calcola la distanza quadratica da ogni punto a ogni centro; assegna il punto al centro più vicino. Poi aggiorna ogni centroide con la media dei punti assegnati. Ripeti assegnazione e aggiornamento finché i centroidi non cambiano più entro una tolleranza o fino a un limite scelto. Il centroide è una media: non deve coincidere con un libro presente.\n\n```mermaid\nflowchart LR\n  I[\"Inizializza centroidi\"] --> A[\"Assegna il centro più vicino\"]\n  A --> M[\"Aggiorna le medie\"]\n  M --> C[\"Verifica arresto\"]\n  C --> R[\"Gruppi risultanti\"]\n```\n\nNel diagramma il controllo rappresenta la ripetizione descritta nel testo quando l’arresto non è soddisfatto. L’**inerzia** è la somma delle distanze quadratiche dei punti dal centro del proprio gruppo. K-means cerca di ridurla, ma inizializzazioni diverse possono portare a soluzioni locali differenti; il risultato non è garantito globalmente ottimo.\n\n## Scelte e cautele\n\nIl numero `k` è una scelta del modello, non una verità trovata automaticamente. La scala delle feature influenza le distanze: se appropriato, apprendi la trasformazione sui dati disponibili per l’addestramento e applicala coerentemente ai nuovi dati. K-means favorisce gruppi compatti secondo la distanza euclidea e può trattare male gruppi di forma irregolare o con forte presenza di valori estremi. Se un gruppo diventa vuoto, occorre gestirlo esplicitamente; l’esempio svolto usa dati per cui non accade.",
+  "analogia": {
+    "testo": "È come distribuire libri su tavoli in base a quanto sono vicini a un segnaposto, poi spostare il segnaposto al centro dei libri sul tavolo.",
+    "limite": "La somiglianza numerica dipende da feature e scala; il tavolo non dimostra che i lettori considerino quei libri equivalenti."
+  },
+  "worked_example": {
+    "titolo": "K-means su quattro libri fittizi",
+    "problema": "Raggruppa quattro punti con due centroidi iniziali fissati e calcola centroidi e inerzia.",
+    "passi": [
+      "Calcola le distanze quadratiche da ogni libro ai centroidi.",
+      "Assegna ogni libro al centro più vicino e aggiorna le medie.",
+      "Ripeti fino alla stabilità, poi ricalcola etichette e inerzia."
+    ],
+    "soluzione": "```python\nimport numpy as np\n\nX = np.array([[1., 1.], [1., 3.], [8., 8.], [10., 8.]])\ncentri = np.array([[1., 1.], [10., 8.]])\nfor _ in range(10):  # limite prudenziale per il solo esempio\n    dist2 = ((X[:, None, :] - centri[None, :, :]) ** 2).sum(axis=2)\n    gruppi = np.argmin(dist2, axis=1)\n    if np.any(np.bincount(gruppi, minlength=len(centri)) == 0):\n        raise ValueError('Cluster vuoto: reinizializzare il centro')\n    nuovi = np.array([X[gruppi == k].mean(axis=0) for k in range(len(centri))])\n    if np.allclose(nuovi, centri):\n        break\n    centri = nuovi\ngruppi = np.argmin(((X[:, None, :] - centri[None, :, :]) ** 2).sum(axis=2), axis=1)\ninerzia = ((X - centri[gruppi]) ** 2).sum()\nprint(gruppi)       # [0 0 1 1]\nprint(centri)       # [[1. 2.], [9. 8.]]\nprint(inerzia)      # 4.0\n```\nI gruppi sono `[0, 0, 1, 1]`, i centroidi `[[1, 2], [9, 8]]` e l’inerzia è `4`.",
+    "perche_funziona": "Il broadcasting confronta ogni punto con ogni centroide; le medie minimizzano la somma degli scarti quadratici per assegnazioni fissate."
+  },
+  "completion_problem": {
+    "titolo": "Aggiorna due centroidi",
+    "testo": "Con punti [0, 2, 8, 10] e centroidi iniziali 0 e 10, completa un ciclo di k-means.",
+    "passi_mancanti": [
+      "Assegna ogni punto al centroide più vicino.",
+      "Calcola la media dei punti di ciascun gruppo."
+    ],
+    "soluzione": "I gruppi sono `[0, 2]` e `[8, 10]`; i nuovi centroidi sono `1` e `9`."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Un altro ciclo di assegnazione",
+    "testo": "Con punti [1, 3, 9] e centroidi iniziali 1 e 9, determina gruppi e centroidi dopo un aggiornamento.",
+    "suggerimento": "Associa ciascun punto al più vicino, poi calcola le medie.",
+    "soluzione_attesa": "I gruppi sono `[1, 3]` e `[9]`; i centroidi aggiornati sono `2` e `9`."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Interpretare gli indici dei cluster come etichette vere.",
+      "perche_sbagliato": "Gli indici identificano gruppi prodotti dall’algoritmo; non contengono da soli un significato umano.",
+      "distrattore": "Un codice di stato HTTP è un centroide."
+    },
+    {
+      "errore": "Pensare che k-means trovi sempre il minimo globale.",
+      "perche_sbagliato": "L’inizializzazione e la geometria dei dati possono portare a soluzioni locali diverse.",
+      "distrattore": "Una classe CSS è una distanza euclidea."
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Quale informazione non serve come target al clustering? A) Distanza; B) Etichette di classe; C) Feature.",
+        "risposta": "B) Il clustering non richiede target di classe noti per l’addestramento."
+      },
+      {
+        "domanda": "Come si aggiorna un centroide k-means? A) Con un header; B) A caso ogni volta; C) Con la media dei punti assegnati.",
+        "risposta": "C) Si calcola la media delle coordinate dei punti nel gruppo."
+      },
+      {
+        "domanda": "Che cosa misura l’inerzia? A) Somma di distanze quadratiche dai centroidi; B) Larghezza CSS; C) Numero di etichette vere.",
+        "risposta": "A) È la somma degli scarti quadratici dai rispettivi centroidi."
+      },
+      {
+        "domanda": "La scala delle feature può cambiare i cluster? A) No; B) Sì; C) Solo se il server è spento.",
+        "risposta": "B) La scala influenza le distanze e quindi le assegnazioni."
+      },
+      {
+        "domanda": "K-means garantisce sempre il minimo globale? A) Solo con HTTP; B) Sì; C) No.",
+        "risposta": "C) Può convergere a soluzioni locali che dipendono dall’inizializzazione."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega con parole tue perché gruppi di libri trovati da k-means non equivalgono a preferenze note dei lettori.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "ia-introduzione-apprendimento",
+        "collegamento": "Il clustering applica l’idea di apprendimento non supervisionato ai dati della biblioteca."
+      },
+      {
+        "nodo": "ia-python-numpy-lab",
+        "collegamento": "Il broadcasting permette di calcolare insieme le distanze tra punti e centroidi."
+      }
+    ]
+  },
+  "riepilogo": "Il clustering cerca gruppi senza target di classe.\nK-means alterna assegnazione al centro vicino e media dei punti.\nL’inerzia somma distanze quadratiche entro i gruppi.\nScelta di k, scala e inizializzazione influenzano il risultato.\nUn gruppo scoperto non è una classe vera garantita.",
+  "flashcard": {
+    "fronte": "Quali due passi alterna k-means?",
+    "retro": "Assegna i punti al centroide più vicino e aggiorna ogni centroide con la media dei punti assegnati."
+  },
+  "checklist": {
+    "so_fare": [
+      "Calcolare assegnazioni e nuovi centroidi",
+      "Calcolare l’inerzia su dati semplici"
+    ],
+    "so_dire": [
+      "Distinguere cluster e classe etichettata",
+      "Spiegare gli effetti di scala e inizializzazione"
+    ]
+  }
+}

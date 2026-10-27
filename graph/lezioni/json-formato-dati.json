@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Gruppo C: tema previsto dal syllabus/materiale disponibile; non è documentato un punteggio specifico per questo singolo nodo.",
+  "perche_ti_serve": "Gruppo A: JSON è esplicitamente nel programma [F1] e permette lo scambio di dati tra client e servizi.",
   "scenario_fil_rouge": "La biblioteca restituisce un risultato di ricerca al browser e riceve una prenotazione dall’utente. JSON descrive gli oggetti scambiati, mentre HTTP trasporta il messaggio e Flask li converte tra dati Python e testo JSON.",
   "definizione_esame": {
     "definizione": "JSON (JavaScript Object Notation) è un formato testuale indipendente dal linguaggio per rappresentare valori strutturati: oggetti, array, stringhe, numeri, booleani e null.",

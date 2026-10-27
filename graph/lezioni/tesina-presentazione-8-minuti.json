@@ -1,31 +1,31 @@
 {
-  "perche_ti_serve": "Competenza di comunicazione tecnica per il Gruppo C, sulla base della traccia di presentazione fornita dall’utente; i dettagli ufficiali vanno confermati.",
-  "scenario_fil_rouge": "Hai realizzato un catalogo di libri per una piccola biblioteca. In otto minuti devi aiutare il pubblico a capire quale problema risolve, come sono divise le responsabilità, quale scelta tecnica hai implementato e come verificarne il funzionamento, senza trasformare le slide in un manuale.",
+  "perche_ti_serve": "Gruppo A: [F1] prevede un PowerPoint di massimo 8 minuti e la discussione di scelte progettuali e codice.",
+  "scenario_fil_rouge": "Hai realizzato un catalogo di libri per una piccola biblioteca. In massimo 8 minuti devi aiutare il pubblico a capire quale problema risolve, come sono divise le responsabilità, quale scelta tecnica hai implementato e come verificarne il funzionamento, senza trasformare le slide in un manuale.",
   "definizione_esame": {
     "definizione": "Una presentazione tecnica comunica problema, soluzione, evidenze di implementazione e risultato in una sequenza comprensibile.",
     "scopo_vantaggio": "Una struttura temporizzata aiuta a selezionare i dettagli e lascia spazio a una dimostrazione verificabile.",
-    "esempio": "Nel modello proposto, quattro slide coprono problema, architettura, codice e demo con tempi 1+2+3+2 minuti."
+    "esempio": "Una possibile traccia organizza problema, architettura, codice e demo; il PowerPoint deve rispettare il limite massimo di 8 minuti [F1]."
   },
-  "spiegazione": "## Parti da ciò che vuoi far capire\nLa presentazione non è un elenco di tecnologie: racconta il passaggio da un problema a una soluzione osservabile. Per il catalogo, il problema potrebbe essere la difficoltà di trovare e aggiornare schede cartacee; il risultato dimostrabile è una sequenza concreta di operazioni CRUD. Evita di attribuire alla traccia un valore ufficiale che non è documentato.\n\n### Quattro slide, una funzione ciascuna\nLa scansione suggerita nel materiale utente è **1 + 2 + 3 + 2 minuti**, per un totale di otto. Slide 1: problema, destinatari e obiettivo. Slide 2: architettura e flusso dei dati. Slide 3: un esempio di codice scelto per mostrare una decisione. Slide 4: demo dal vivo o schermate preparate. I tempi sono una traccia di prova, non una regola universale.\n\n```mermaid\nflowchart LR\n  S1[Problema e obiettivi: 1 min] --> S2[Architettura: 2 min]\n  S2 --> S3[Codice: 3 min] --> S4[Demo o schermate: 2 min]\n```\n\n### Architettura raccontata con un flusso\nMostra il browser che invia una richiesta HTTP a Flask; il server valida e interagisce con SQLite, poi restituisce una risposta. Spiega quali componenti sono livelli logici, quali dati attraversano il confine e dove risiede la responsabilità di una regola. Non serve elencare ogni file del repository.\n\n### Codice: una decisione, non un inventario\nScegli una rotta rappresentativa, per esempio la creazione di una risorsa. Evidenzia il metodo, la validazione, l’accesso ai dati e lo status di risposta. Se mostri `fetch`, spiega che `response.ok` va controllato: un 404 è comunque una risposta HTTP e non causa automaticamente il rigetto della Promise. Proteggi il tempo: un blocco breve e leggibile vale più di una schermata piena.\n\n### Demo robusta\nPrepara una sequenza con dati già disponibili, avvia il progetto prima di presentare e prova il percorso completo. Se la rete, il server o il proiettore non funzionano, usa schermate o una registrazione locale come alternativa. Una schermata deve essere autentica e coerente con la versione del progetto; descrivi ciò che mostra, senza presentare un mockup come prova di esecuzione.\n\n### Prova e revisione\nCronometra ad alta voce e annota il tempo per slide. Se sfori, rimuovi dettagli secondari invece di accelerare la spiegazione. Verifica che ogni affermazione sia dimostrabile dal codice o dalla demo. Prepara una frase di transizione tra slide e una chiusura che riassuma utilità e limite principale.",
+  "spiegazione": "### Cosa dice il programma e cosa propone l’esempio\nLa tesina è individuale, richiede circa tre settimane e usa tecnologie a libera scelta. La presentazione è un PowerPoint di massimo 8 minuti; è prevista anche la discussione delle scelte progettuali e del codice [F1]. Flask, SQLite e il CRUD qui sono una possibile scelta didattica, non un obbligo del programma.\n\n## Parti da ciò che vuoi far capire\nLa presentazione non è un elenco di tecnologie: racconta il passaggio da un problema a una soluzione osservabile. Per il catalogo, il problema potrebbe essere la difficoltà di trovare e aggiornare schede cartacee; il risultato dimostrabile è una sequenza concreta di operazioni CRUD. Evita di attribuire alla traccia un valore ufficiale che non è documentato.\n\n### Una possibile scaletta, non un obbligo\n**IPOTESI didattica:** quattro slide potrebbero coprire problema e obiettivo, architettura, codice e demo; il numero di slide non è un requisito ufficiale verificato. Scegli e cronometra la scaletta in modo da restare entro il limite massimo di 8 minuti [F1].\n\n```mermaid\nflowchart LR\n  S1[Problema e obiettivi] --> S2[Architettura]\n  S2 --> S3[Codice] --> S4[Demo o schermate]\n```\n\n### Architettura raccontata con un flusso\nMostra il browser che invia una richiesta HTTP a Flask; il server valida e interagisce con SQLite, poi restituisce una risposta. Spiega quali componenti sono livelli logici, quali dati attraversano il confine e dove risiede la responsabilità di una regola. Non serve elencare ogni file del repository.\n\n### Codice: una decisione, non un inventario\nScegli una rotta rappresentativa, per esempio la creazione di una risorsa. Evidenzia il metodo, la validazione, l’accesso ai dati e lo status di risposta. Se mostri `fetch`, spiega che `response.ok` va controllato: un 404 è comunque una risposta HTTP e non causa automaticamente il rigetto della Promise. Proteggi il tempo: un blocco breve e leggibile vale più di una schermata piena.\n\n### Demo robusta\nPrepara una sequenza con dati già disponibili, avvia il progetto prima di presentare e prova il percorso completo. Se la rete, il server o il proiettore non funzionano, usa schermate o una registrazione locale come alternativa. Una schermata deve essere autentica e coerente con la versione del progetto; descrivi ciò che mostra, senza presentare un mockup come prova di esecuzione.\n\n### Prova e revisione\nCronometra ad alta voce e annota il tempo per slide. Se sfori, rimuovi dettagli secondari invece di accelerare la spiegazione. Verifica che ogni affermazione sia dimostrabile dal codice o dalla demo. Prepara una frase di transizione tra slide e una chiusura che riassuma utilità e limite principale.",
   "analogia": {
     "testo": "Una presentazione tecnica è come una visita guidata: scegli un percorso breve, mostri i punti più importanti e accompagni il pubblico senza lasciarlo davanti a una mappa illeggibile.",
     "limite": "A differenza di una visita, il pubblico potrebbe già conoscere parte dei dettagli e una demo può dipendere da componenti tecniche."
   },
   "worked_example": {
     "titolo": "Costruire la scaletta del catalogo",
-    "problema": "Presentare un progetto Flask CRUD in otto minuti mantenendo un collegamento chiaro tra bisogno, architettura, codice e risultato.",
+    "problema": "Presentare un esempio di progetto Flask CRUD in massimo 8 minuti, collegando bisogno, architettura, codice e risultato.",
     "passi": [
       "Scrivere in una frase il problema e l’obiettivo osservabile.",
       "Disegnare il flusso browser → Flask → SQLite e associare una responsabilità a ogni livello.",
-      "Selezionare una rotta e una scelta tecnica da spiegare in tre minuti.",
+      "Selezionare una rotta e una scelta tecnica da spiegare in modo comprensibile.",
       "Provare il percorso CRUD e preparare un’alternativa alla demo dal vivo."
     ],
-    "soluzione": "Quattro slide: problema (1), architettura (2), codice (3), demo/schermate (2 minuti). La traccia deriva dal materiale utente.",
-    "perche_funziona": "Ogni parte risponde a una domanda diversa e la somma dei tempi esplicita il vincolo di otto minuti."
+    "soluzione": "Una possibile scaletta segue problema, architettura, codice e demo o schermate. Il numero di slide è una scelta, non un requisito verificato; la presentazione PowerPoint dura al massimo 8 minuti [F1].",
+    "perche_funziona": "Ogni parte risponde a una domanda diversa; cronometrare la prova aiuta a rispettare il limite massimo indicato in [F1]."
   },
   "completion_problem": {
     "titolo": "Completare il filo narrativo",
-    "testo": "La slide 2 mostra il browser e Flask. Completa la spiegazione indicando dove risiedono i dati e quale flusso mostrerai nella demo.",
+    "testo": "Una slide di esempio mostra il browser e Flask. Completa la spiegazione indicando dove risiedono i dati e quale flusso mostrerai nella demo.",
     "passi_mancanti": [
       "Aggiungere il livello di persistenza e la responsabilità di Flask.",
       "Collegare la demo a una specifica operazione CRUD e al suo esito visibile."
@@ -34,9 +34,9 @@
   },
   "esercizio_autonomo": {
     "titolo": "Prova cronometrata",
-    "testo": "Prepara una scaletta personale di quattro slide per il tuo progetto e presentala in otto minuti senza leggere le slide.",
+    "testo": "Prepara una scaletta personale per il tuo progetto e prova il PowerPoint entro il massimo di 8 minuti, senza leggere le slide [F1].",
     "suggerimento": "Scrivi per ogni slide messaggio chiave, evidenza visiva, transizione e tempo previsto.",
-    "soluzione_attesa": "Problema e obiettivo, architettura con flusso dati, esempio di codice motivato, demo ripetibile o schermate. Cronometra la prova e semplifica le parti che superano la traccia 1+2+3+2."
+    "soluzione_attesa": "Problema e obiettivo, architettura con flusso dati, esempio di codice motivato, demo ripetibile o schermate. Cronometra la prova e semplifica le parti secondarie se superi il limite."
   },
   "errori_trappole": [
     {
@@ -45,8 +45,8 @@
       "distrattore": "Il colore del mantello"
     },
     {
-      "errore": "Presentare i tempi proposti come valutazione ufficiale",
-      "perche_sbagliato": "La scansione 1+2+3+2 compare nel materiale utente ma non è stata verificata come regola ufficiale.",
+      "errore": "Presentare il numero di slide o la ripartizione dei tempi come requisito ufficiale",
+      "perche_sbagliato": "Il programma [F1] indica PowerPoint di massimo 8 minuti; non specifica il numero di slide né una ripartizione interna dei tempi.",
       "distrattore": "L’orbita di Giove"
     },
     {
@@ -71,8 +71,8 @@
         "risposta": "Per mantenere la dimostrazione comprensibile se l’esecuzione dal vivo non è disponibile."
       },
       {
-        "domanda": "Come si usa la traccia dei tempi?",
-        "risposta": "Come pianificazione e prova suggerita dal materiale utente, non come criterio ufficiale accertato."
+        "domanda": "Che cosa è verificato sulla durata e sul numero di slide?",
+        "risposta": "Il PowerPoint dura al massimo 8 minuti [F1]; il numero di slide non è specificato nella fonte."
       }
     ],
     "spiega_con_parole_tue": "Racconta il tuo progetto in quattro passaggi, motivando cosa hai escluso per rispettare il tempo.",
@@ -91,10 +91,10 @@
       }
     ]
   },
-  "riepilogo": "La presentazione racconta un problema e una soluzione dimostrabile.\nLa traccia utente propone quattro slide: problema, architettura, codice e demo.\nLa ripartizione 1+2+3+2 minuti è un suggerimento, non un dato ufficiale.\nSeleziona una decisione tecnica e una demo breve, ripetibile e verificabile.\nCronometra la prova e prepara schermate alternative alla demo dal vivo.",
+  "riepilogo": "Il PowerPoint della tesina dura al massimo 8 minuti [F1].\nUna possibile scaletta collega problema, architettura, codice e demo.\nIl numero di slide non è un requisito verificato.\nSeleziona una decisione tecnica e una demo ripetibile.\nCronometra la prova e prepara un’alternativa alla demo dal vivo.",
   "flashcard": {
-    "fronte": "Qual è il filo narrativo delle quattro slide?",
-    "retro": "Problema e obiettivi → architettura e flusso dati → codice significativo → demo o schermate; la traccia di tempo proposta è 1+2+3+2 minuti."
+    "fronte": "Quali contenuti può seguire la presentazione della tesina?",
+    "retro": "Una possibile traccia: problema → architettura → codice → demo. PowerPoint di massimo 8 minuti [F1]; nessun numero di slide è specificato."
   },
   "checklist": {
     "so_fare": [

@@ -1,12 +1,13 @@
 // Pannello dettagli del nodo selezionato.
 import { h, clear } from './dom.js';
-import { areaBadge, tipoBadge, prioBadge } from './badges.js';
+import { areaBadge, tipoBadge, prioBadge, masteryBadge } from './badges.js';
+import { studyStatusSelect } from './study-status.js';
 import { successors } from '../core/topo.js';
 import { prerequisitePath } from '../core/prereq-path.js';
 import { formatMinuti } from '../core/progress.js';
 import { hasLesson } from '../core/lesson.js';
 
-export function createDetailsView(root, graph, { onSelect, onToggleDone, onClose, onOpenLesson }) {
+export function createDetailsView(root, graph, { onSelect, onToggleDone, onClose, onOpenLesson, onSetStatus }) {
   const link = (id) => {
     const n = graph.byId.get(id);
     return h('button', { type: 'button', class: 'link', onclick: () => onSelect(id) }, n ? n.title : id);
@@ -18,7 +19,8 @@ export function createDetailsView(root, graph, { onSelect, onToggleDone, onClose
   };
 
   return {
-    render(id, done) {
+    render(id, done, mastery = new Map(), statiStudio = {}) {
+      const active = root.contains(root.ownerDocument.activeElement) ? root.ownerDocument.activeElement.id : '';
       clear(root);
       const n = id && graph.byId.get(id);
       root.hidden = !n;
@@ -28,9 +30,10 @@ export function createDetailsView(root, graph, { onSelect, onToggleDone, onClose
         h('div', { class: 'det-head' },
           h('h2', { id: 'det-title', tabindex: '-1' }, n.title),
           h('button', { type: 'button', class: 'icon', 'aria-label': 'Chiudi dettagli', onclick: onClose }, '✕')),
-        h('p', { class: 'badges' }, areaBadge(n, graph.aree), tipoBadge(n), prioBadge(n), h('span', { class: 'badge' }, '⏱ ' + formatMinuti(n.tempo_studio_min))),
+        h('p', { class: 'badges' }, areaBadge(n, graph.aree), tipoBadge(n), prioBadge(n), masteryBadge(mastery.get(n.id)), h('span', { class: 'badge' }, '⏱ ' + formatMinuti(n.tempo_studio_min))),
         h('button', { type: 'button', class: 'btn primary open-lesson', onclick: () => onOpenLesson(n.id) }, hasLesson(n) ? '📖 Apri la lezione completa' : '📖 Apri la lezione (in preparazione)'),
         h('label', { class: 'check big' }, h('input', { type: 'checkbox', checked: done.has(n.id), onchange: (e) => onToggleDone(n.id, e.target.checked) }), ' Completato'),
+        onSetStatus ? studyStatusSelect(n, statiStudio[n.id], onSetStatus, 'detail-status') : null,
         section('Sapere', h('p', {}, n.sapere)),
         section('Saper fare', h('ul', {}, n.saper_fare.map((s) => h('li', {}, s)))),
         section('Prerequisiti', upstreamNote(graph.nodi, n.id), n.prerequisiti.length
@@ -47,7 +50,7 @@ export function createDetailsView(root, graph, { onSelect, onToggleDone, onClose
           h('li', {}, graph.testi[r.libro] || r.libro, r.capitolo_o_sezione ? h('span', { class: 'muted' }, ' — ' + r.capitolo_o_sezione) : null)))) : null,
         section('Risorse gratuite', h('ul', {}, n.risorse.map((r) => h('li', {}, h('a', { href: r.url, target: '_blank', rel: 'noopener noreferrer' }, r.titolo))))),
       );
+      if (active && active.startsWith('detail-status-')) root.querySelector('select')?.focus({ preventScroll: true });
     },
-    focus() { root.querySelector('#det-title')?.focus(); },
   };
 }

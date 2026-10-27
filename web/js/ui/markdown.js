@@ -1,6 +1,6 @@
 // Render markdown sicuro: marked (GFM) + DOMPurify + highlight.js; blocchi ```mermaid -> <pre class="mermaid">.
-// Le librerie arrivano da CDN come globali; se mancano si degrada a testo semplice.
-const MERMAID_URL = 'https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs';
+// Le librerie sono locali; se mancano si degrada a testo semplice.
+const MERMAID_URL = '../../vendor/mermaid/mermaid.esm.min.mjs';
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 

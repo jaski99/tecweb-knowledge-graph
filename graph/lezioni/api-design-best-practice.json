@@ -1,5 +1,5 @@
 {
-  "perche_ti_serve": "Negli esami passati tra gli argomenti ricorrenti di REST e API (Gruppo A): fondamentale per lo scritto.",
+  "perche_ti_serve": "Gruppo A: progettare API coerenti aiuta a creare e fruire servizi RESTful previsti dal programma [F1].",
   "scenario_fil_rouge": "La biblioteca espone catalogo, libri e recensioni a browser e app. Un contratto API coerente permette a client diversi di creare, cercare e aggiornare risorse senza conoscere il database o il codice interno.",
   "definizione_esame": {
     "definizione": "Il design di un'API definisce risorse, operazioni, rappresentazioni, codici e regole d'uso in modo coerente e documentato.",

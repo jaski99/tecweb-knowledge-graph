@@ -5,8 +5,12 @@ export const lessonHash = (id) => PREFIX + encodeURIComponent(id);
 
 export function parseRoute(hash) {
   if (typeof hash !== 'string' || !hash.startsWith(PREFIX)) return null;
-  const id = decodeURIComponent(hash.slice(PREFIX.length));
-  return id ? { view: 'lezione', id } : null;
+  const [encoded, query = ''] = hash.slice(PREFIX.length).split('?');
+  let id;
+  try { id = decodeURIComponent(encoded); } catch { return null; }
+  if (!id) return null;
+  const sezione = new URLSearchParams(query).get('sezione');
+  return sezione === 'richiamo' ? { view: 'lezione', id, sezione } : { view: 'lezione', id };
 }
 
 /** Precedente/successivo secondo l'ordine del percorso (topologico). */

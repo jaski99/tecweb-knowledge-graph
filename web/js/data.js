@@ -8,21 +8,29 @@ async function readJson(url, fetchFn) {
   return response.json();
 }
 
-export async function loadGraph(urls, fetchFn = fetch, quizUrls = null) {
+async function readOptionalQuiz(urls, fetchFn) {
+  for (const url of urls || []) {
+    try { return await readJson(url, fetchFn); }
+    catch { /* banca non ancora pubblicata o rete indisponibile */ }
+  }
+  return null;
+}
+
+/** Con deferQuiz le lezioni non aspettano una banca quiz lenta o irraggiungibile. */
+export async function loadGraph(urls, fetchFn = fetch, quizUrls = null, { deferQuiz = false } = {}) {
   const tried = [];
   for (const url of urls) {
     let graph;
     try { graph = await readJson(url, fetchFn); }
     catch (e) { tried.push(`${url}: ${e.message}`); continue; }
-
-    // La banca quiz è un artefatto indipendente prodotto da W4. 404, JSON non ancora
-    // pubblicato e indisponibilità di rete non devono impedire lo studio del grafo.
-    const candidates = quizUrls || [];
-    for (const quizUrl of candidates) {
-      try { graph.quiz = await readJson(quizUrl, fetchFn); break; }
-      catch { /* banca assente: percorso e lezioni rimangono utilizzabili */ }
-    }
-    return prepare(graph);
+    const prepared = prepare(graph);
+    const quizPronto = readOptionalQuiz(quizUrls, fetchFn).then((quiz) => {
+      if (quiz !== null) prepared.quiz = quiz;
+      return quiz;
+    });
+    if (deferQuiz) prepared.quizPronto = quizPronto;
+    else await quizPronto;
+    return prepared;
   }
   throw new Error('Impossibile caricare graph.json (' + tried.join('; ') + ')');
 }

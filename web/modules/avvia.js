@@ -50,6 +50,7 @@ export function avviaModuli(ctx) {
   const content = h('div', { class: 'module-content' });
   root.replaceChildren(header, nav, content);
   let current = null;
+  let generation = 0;
   let destroy = () => {};
   return {
     mostra(hash) {
@@ -57,7 +58,7 @@ export function avviaModuli(ctx) {
       const view = id ? getAll().find((entry) => entry.id === id) : null;
       if (!view) {
         if (current) {
-          destroy(); destroy = () => {}; current = null;
+          generation += 1; destroy(); destroy = () => {}; current = null;
           content.replaceChildren(); root.hidden = true;
         }
         return false;
@@ -66,15 +67,28 @@ export function avviaModuli(ctx) {
       if (current === id) return true;
       destroy();
       current = id;
-      content.replaceChildren();
-      const teardown = view.render(content, {
-        graph: ctx.graph,
-        storage: ctx.storage,
-        document: doc,
-        now: ctx.now,
-        confirm: ctx.confirm,
-      });
-      destroy = typeof teardown === 'function' ? teardown : () => {};
+      const token = ++generation;
+      let mounted = false;
+      const mount = () => {
+        if (mounted || current !== id || token !== generation) return;
+        mounted = true;
+        content.replaceChildren();
+        const teardown = view.render(content, {
+          graph: ctx.graph,
+          storage: ctx.storage,
+          document: doc,
+          now: ctx.now,
+          confirm: ctx.confirm,
+          onDataChange: ctx.onDataChange,
+        });
+        destroy = typeof teardown === 'function' ? teardown : () => {};
+      };
+      if (id === 'simulatore' && ctx.graph.quizPronto) {
+        content.replaceChildren(h('p', { role: 'status' }, 'Caricamento della banca quiz… Se non risponde, useremo gli esercizi del grafo.'));
+        const fallback = setTimeout(mount, 2500);
+        destroy = () => clearTimeout(fallback);
+        ctx.graph.quizPronto.then(() => { clearTimeout(fallback); mount(); }, () => { clearTimeout(fallback); mount(); });
+      } else mount();
       return true;
     },
   };

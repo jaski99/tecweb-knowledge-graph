@@ -1,37 +1,41 @@
-# Piano di lavoro Arena (divide et impera) — Tecnologie Web
+# Piano Arena — Tecnologie Web e IA
 
-Repo: https://github.com/jaski99/tecweb-knowledge-graph (main = integrato, Pages da main via .github/workflows/pages.yml)
-Obiettivo: sito di studio italiano (knowledge graph + web app statica) per l'esame Tecnologie Web UNIMORE, mira 30 e lode.
-Materiale utente: docs/MATERIALE_UTENTE.md (unica fonte sull'esame; nessun PDF delle prove). Il resto va cercato sul web (programma ufficiale UNIMORE se identificabile, MDN, RFC IETF, W3C, doc Flask, Git) e dichiarato in docs/SYLLABUS.md insieme a cio' che NON si trova. Mai inventare fatti attribuiti alla docente, numeri o URL: ogni risorsa verificata con scripts/check_urls.py (HTTP 200).
+Il piano operativo vincolante del round 2, inclusi contratti, scope dettagliati e ordine di merge, è [IMPROVEMENT_PLAN.md](IMPROVEMENT_PLAN.md). Questo documento ne è una guida sintetica, non una variante.
 
-## Fasi
-1. FASE 1 (chat PRINCIPALE, ramo main): ripulire lo scaffold ereditato da Ingegneria del Software (graph/, docs/, web/ testi, test, README) sostituendo terminologia IdS con Tecnologie Web; scrivere docs/SYLLABUS.md, aggiornare docs/CONTRACTS.md e schema/node.schema.json se serve, creare graph/meta.json (aree 1-6 sotto) e l'ELENCO DEI NODI con id stabili e prerequisiti in docs/NODES.md (aree, id, titolo, gruppo A/B/C, prerequisiti hard/soft senza cicli, ramo assegnato). Far passare tutti i test (anche con 0-1 nodi seed) e fare push su main. Poi fermarsi e riportare.
-2. FASE 2 (worker in parallelo, un ramo ciascuno, scope esclusivo): vedi tabella.
-3. FASE 3 (chat principale): merge, test, deploy Pages, QA screenshot mobile 390x844 e desktop 1440x900 in docs/screens/.
+## Obiettivo e fonti
 
-## Aree
-1 Fondamenti rete e HTTP (stateless/stateful, TCP/IP, HTTP 1/1.1/2/3, QUIC, multiplexing, cookie e sessioni, URI/URL/URN)
-2 Architetture (3-tier orizzontale/verticale, REST: PATCH vs PUT, codici 404, API, rate limiting/sicurezza)
-3 Front-end (HTML/form, CSS origini/box model/ereditarieta', DOM e Virtual DOM, DHTML, canvas, span, JS moderno fetch/async-await, motore JS parser/AST/profiler/JIT, eventi locali vs remoti)
-4 Back-end e strumenti (Flask rotte/jsonify, SQLite/JSON, Git branch/merge/pull request)
-5 Web semantico ed evoluzione (RDF, OWL, SPARQL, Web 1.0-4.0, AJAX)
-6 Tesina (progetto Flask + front-end CRUD, presentazione 8 minuti con 4 slide, domande di revisione codice, esercitazione guidata + modello presentazione)
-Nodo "Modulo IA" SOLO se il corso lo prevede (verificare); altrimenti segnalarlo in SYLLABUS.md come ipotesi.
+Il sito aiuta a studiare l'integrato **INF-37 2026/27**, Ingegneria Informatica (MO), nella scheda per la **coorte 2024/25**: Tecnologie Web, prof.ssa Laura Po, e modulo IA, prof. Simone Calderara [F1], [F3], [F8]. Chi segue il manifesto delle nuove immatricolazioni deve verificare la propria coorte [F7]. Il [syllabus](SYLLABUS.md) distingue fatti, ipotesi e informazioni non trovate; il [materiale utente](MATERIALE_UTENTE.md) è conservato con la sua nota di contesto, non è l'unica fonte.
 
-## Worker Fase 2
-| id | ramo | scope esclusivo |
-|----|------|-----------------|
-| W1 | feat/contenuti-1-2 | graph/parts/area-1.json, area-2.json (+ lezioni) |
-| W2 | feat/contenuti-3 | graph/parts/area-3.json |
-| W3 | feat/contenuti-4-5 | graph/parts/area-4.json, area-5.json |
-| W4 | feat/contenuti-6-quiz | graph/parts/area-6.json, banca quiz/abbinamenti (con distrattori fuori contesto) e flashcard in graph/ |
-| W5 | feat/webapp | web/ (grafo, percorso, progresso, filtri, ricerca, tema, lettore lezioni, simulatore esame 2h, ripasso SM-2), testi UI italiani |
+A/B/C sono priorità didattiche rispetto a [F1]: A = esplicito o indispensabile, B = contesto utile, C = opzionale/non elencato. Non sono frequenze accertate di domande. Le sette aree e le lezioni in arrivo sono elencate in [NODES.md](NODES.md); l'area 7 è il modulo IA ufficiale, non un'ipotesi su LLM.
 
-## Contenuto di ogni nodo (lezione completa e autosufficiente)
-intuizione, spiegazione estesa con esempi di codice/diagrammi mermaid corretti, analogia, collegamenti a conoscenze precedenti, esempi svolti con passi, errori comuni (incluse trappole negli abbinamenti), domande di autoverifica con risposta, riepilogo, prerequisiti hard/soft senza cicli, priorita' d'esame motivata sui gruppi A/B/C, tempo di studio, risorse gratuite verificate.
+## Worker del round 2
 
-## Qualita'
-SOLID, moduli piccoli e coesi, basso accoppiamento, aperto/chiuso, test per ogni modulo (pytest, node --test, Playwright), nomi coerenti, niente codice morto. Tutti i test verdi prima di ogni push. Testi in italiano.
+| Worker | Responsabilità | Confini principali |
+|---|---|---|
+| X1 | Programma, priorità e contratti | Documenti, metadati, priorità dei nodi esistenti e relativi test. |
+| X2 | Nuove lezioni TW | Nuovi part `area-2-r2.json`, `area-3-r2.json`, `area-4-r2.json`, lezioni e test assegnati. |
+| X3 | Modulo IA | Nuovo part `area-7.json`, lezioni IA e test assegnati. |
+| X4 | Revisione dei contenuti esistenti | Lezioni dei 40 nodi esistenti e relativi test. |
+| X5 | Web app | `web/` e workflow assegnati, escluse le parti del simulatore riservate a X6. |
+| X6 | Quiz e simulatore | Banca, schema, documentazione, simulatore e relativi test; fase b dopo X2 e X3. |
 
-## Consegna di ogni chat
-Codice + test + push sul proprio ramo + riepilogo breve (cosa fatto, come testare, limiti).
+Per i percorsi esatti e il contratto degli esiti consultare [IMPROVEMENT_PLAN.md](IMPROVEMENT_PLAN.md#2-worker-scope-esclusivo-ramo). Gli ID nuovi sono definitivi; i nuovi part evitano collisioni, mentre gli archi da nodi esistenti a nodi nuovi sono compito dell'integrazione.
+
+## Consegna e integrazione
+
+Ogni worker usa soltanto il proprio ramo di sessione `arena/*` e i file assegnati; il coordinatore gestisce PR e merge. L'ordine è **X1 → X4 → X2 → X3 → X6 fase a → X5 → X6 fase b → integrazione**. I file generati `graph/graph.json`, `docs/PIANO_STUDIO.md` e `docs/CHECKLIST_RIPASSO.md` si rigenerano, non si risolvono a mano; il coordinatore li rigenera in integrazione.
+
+```bash
+python scripts/kg.py build && python scripts/gen_docs.py build && sh web/build.sh
+python scripts/kg.py check
+npm test --prefix web
+pytest -q  # con Playwright e Chromium installati: nessun test saltato
+python scripts/check_urls.py  # controllo online delle risorse del grafo
+```
+
+Qualità: moduli piccoli e coesi, basso accoppiamento, interfacce chiare, test per ogni modulo, italiano corretto, risorse verificabili e nessuna attribuzione non documentata a docenti o prove. Un controllo HTTP non sostituisce la lettura della fonte.
+
+[F1]: <https://unimore.coursecatalogue.cineca.it/corsi/2024/10296/insegnamenti/2026/27352/2022/10000?annoOrdinamento=2022>
+[F3]: <https://unimore.coursecatalogue.cineca.it/corsi/2024/10296/insegnamenti/10001>
+[F7]: <https://www.ingmo.unimore.it/sites/dip02/files/2026-06/Laurea%20Ingegneria%20Informatica%20a.a.%202026_2027.pdf>
+[F8]: <https://moodle.unimore.it/course/info.php?id=22244>
