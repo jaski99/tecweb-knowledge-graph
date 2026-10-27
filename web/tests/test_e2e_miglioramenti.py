@@ -78,7 +78,7 @@ def test_area7_elenco_stati_piano_e_lezioni_sempre_accessibili(browser, base_url
     assert "serve per la lode" in page.locator("#graph-mobile-list").inner_text()
     page.locator("#graph-legend summary").click()
     page.locator('[data-legend="aree"][data-value="7"]').click()
-    assert page.locator("#graph-mobile-list .graph-mobile-item").count() == 1
+    assert page.locator("#graph-mobile-list .graph-mobile-item").count() == sum(1 for n in graph["nodi"] if n["area"] == 7)
     assert "Nodo IA di prova" in page.locator("#graph-mobile-list").inner_text()
     page.locator('[data-legend="aree"][data-value="7"]').click()
 
