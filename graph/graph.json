@@ -3,9 +3,9 @@
   "corso": {
     "nome": "Tecnologie Web",
     "ateneo": "UNIMORE - Dipartimento di Ingegneria \"Enzo Ferrari\"",
-    "docente": "Non specificato (da confermare)",
-    "fonte_programma": "https://www.ingmo.unimore.it/sites/dip02/files/2026-06/Laurea%20Ingegneria%20Informatica%20a.a.%202026_2027.pdf",
-    "nota": "Programma ricostruito in base a: ARENA_PLAN.md (6 aree), MATERIALE_UTENTE.md (gruppi A/B/C), fonti autorevoli (RFC, W3C, MDN, Flask, Git). Vedi docs/SYLLABUS.md per dettagli."
+    "docente": "Laura Po (modulo TW); Simone Calderara (titolare INF-37, modulo IA)",
+    "fonte_programma": "https://unimore.coursecatalogue.cineca.it/corsi/2024/10296/insegnamenti/2026/27352/2022/10000?annoOrdinamento=2022",
+    "nota": "Modulo Tecnologie Web (6 CFU, 54 ore) dell’integrato INF-37 (12 CFU, 108 ore), Ingegneria Informatica (MO), offerta 2026/27 per la coorte 2024/25 [F1], [F3], [F8]. Il raccordo con il manifesto della nuova coorte è da verificare [F7]; vedi docs/SYLLABUS.md."
   },
   "aree": [
     {
@@ -50,67 +50,67 @@
     "SKLEARN": "scikit-learn User Guide - scikit-learn developers, guida gratuita ai metodi di apprendimento automatico",
     "REACT": "React Documentation (react.dev) - Meta Open Source, documentazione ufficiale gratuita"
   },
-  "nota_esame": "Priorità motivate dal materiale utente: Gruppo A (iper-riciclati, ~65% scritto): stateless/stateful, DOM/Virtual DOM, HTTP 1/1.1/2/3, cookie/sessioni, Web Semantico, architettura 3-tier, CSS, REST. Gruppo B (varianti, ~20%): canvas, DHTML, motore JS, eventi, rate limiting, Web 1.0-4.0, span. Gruppo C (punti ciechi, ~15%): Flask, Git, JS moderno. Formato esame: IPOTESI basata su prove passate - scritto 2h (23 pt) + tesina (10 pt). Da confermare con programma ufficiale.",
+  "nota_esame": "Secondo [F1], TW prevede scritto 0–23 senza appunti né altro materiale e tesina individuale 0–10: circa tre settimane, tecnologie a libera scelta, PowerPoint di massimo 8 minuti e discussione di scelte e codice; nessuna prova intermedia. IA prevede quiz chiusi in trentesimi e laboratorio ON/OFF. Il voto integrato è una media ponderata arrotondata per eccesso; la lode richiede 30 in entrambi i moduli e lode in almeno uno [F1]. IPOTESI non confermate: 2 ore di scritto, 4 slide e percentuali di ricorrenza. Gruppi: A = programma o base indispensabile; B = contesto utile; C = opzionale/non elencato [F1].",
   "trappole": [
     {
+      "tema": "Scritto TW e appunti",
+      "fonte": "[F1] (modalità TW)",
+      "trappola": "Prepararsi supponendo di poter consultare appunti durante lo scritto.",
+      "risposta": "Lo scritto TW comprende domande aperte, chiuse ed esercizi per realizzare un’applicazione Web; non sono consentiti appunti o altro materiale [F1]."
+    },
+    {
+      "tema": "Tesina e tecnologie",
+      "fonte": "[F1] (modalità TW)",
+      "trappola": "Pensare che la tesina debba usare obbligatoriamente Flask e SQLite.",
+      "risposta": "La tesina è individuale, richiede circa tre settimane e usa tecnologie a libera scelta; la frase ufficiale sulle tecnologie è tronca [F1]. Flask e SQLite sono esempi di esercizio."
+    },
+    {
+      "tema": "Durata e presentazione",
+      "fonte": "[F1]; ipotesi del materiale utente",
+      "trappola": "IPOTESI non confermate: considerare 2 ore di scritto e 4 slide come regole ufficiali.",
+      "risposta": "IPOTESI: 2 ore e 4 slide non risultano confermate. [F1] indica un PowerPoint di massimo 8 minuti e la discussione di scelte progettuali e codice."
+    },
+    {
+      "tema": "Modulo IA e lode",
+      "fonte": "[F1] (modalità IA e voto finale)",
+      "trappola": "Considerare l’IA opzionale o credere che basti il solo voto TW per la lode integrata.",
+      "risposta": "IA prevede quiz chiusi in trentesimi e laboratorio ON/OFF. La lode finale richiede 30 in entrambi i moduli e lode in almeno uno [F1]."
+    },
+    {
+      "tema": "Media del corso integrato",
+      "fonte": "[F1] (voto finale)",
+      "trappola": "Attribuire senza fonte una formula di conversione alla somma dei punteggi TW.",
+      "risposta": "Il voto integrato è la media ponderata dei voti dei moduli arrotondata per eccesso; 30 e lode conta come 30 nella media [F1]. La conversione dei punteggi TW non è specificata."
+    },
+    {
       "tema": "HTTP/2 e HTTP/3",
-      "fonte": "Gruppo A (materiale utente)",
-      "trappola": "Dire che HTTP/1.1 supporta multiplexing.",
-      "risposta": "HTTP/1.1 NON supporta multiplexing; il multiplexing è introdotto in HTTP/2. HTTP/3 usa QUIC su UDP (non TCP)."
+      "fonte": "[F1] (fondamenti Web)",
+      "trappola": "Attribuire HTTP/3 e QUIC al programma ufficiale perché sono presenti nel grafo.",
+      "risposta": "[F1] elenca HTTP e HTTP/2; HTTP/3 e QUIC sono approfondimenti non elencati, non prova del contenuto ufficiale."
     },
     {
-      "tema": "PATCH vs PUT",
-      "fonte": "Gruppo A (REST)",
-      "trappola": "Usare PUT per aggiornamenti parziali.",
-      "risposta": "PATCH è per aggiornamenti parziali; PUT sostituisce l'intera risorsa. Esempio: PATCH /users/1 per aggiornare solo l'email, PUT /users/1 per sostituire tutto l'utente."
+      "tema": "REST: PATCH e PUT",
+      "fonte": "[F1] (servizi RESTful); approfondimento RFC 9110 e RFC 5789",
+      "trappola": "Confondere la sostituzione con una modifica parziale.",
+      "risposta": "PUT richiede la sostituzione dello stato della risorsa target secondo la rappresentazione inviata; PATCH applica modifiche secondo il formato della patch."
     },
     {
-      "tema": "URI vs URL vs URN",
-      "fonte": "Gruppo A",
-      "trappola": "Dire che URL e URI sono la stessa cosa.",
-      "risposta": "URI (Uniform Resource Identifier) è la categoria generale; URL (Uniform Resource Locator) è un URI che specifica anche il meccanismo di accesso (es. https://); URN (Uniform Resource Name) identifica una risorsa in modo univoco e persistente senza posizione (es. urn:isbn:0451450523)."
+      "tema": "HTTP e stato applicativo",
+      "fonte": "[F1] (HTTP); approfondimento RFC 9110",
+      "trappola": "Pensare che HTTP stateless vieti sessioni lato server.",
+      "risposta": "Stateless descrive la semantica delle richieste HTTP: l’applicazione può comunque mantenere uno stato e collegarlo al client con un identificatore di sessione."
     },
     {
-      "tema": "Box model CSS",
-      "fonte": "Gruppo A",
-      "trappola": "Includere color o script nel box model.",
-      "risposta": "Box model CSS: content, padding, border, margin. Non include proprietà come color, background, o script."
+      "tema": "React e JavaScript",
+      "fonte": "[F1] (sviluppo front-end)",
+      "trappola": "Considerare React non previsto o attribuire ogni dettaglio dell’implementazione al programma.",
+      "risposta": "React, JavaScript, AJAX e JSON sono elencati da [F1]; le tecniche specifiche delle lezioni sono approfondimenti e non un elenco di domande ufficiali."
     },
     {
-      "tema": "Ereditarietà CSS",
-      "fonte": "Gruppo A",
-      "trappola": "Dire che tutte le proprietà CSS sono ereditabili.",
-      "risposta": "Non tutte le proprietà sono ereditabili: margin, padding, border del box model NON si ereditano; font-family, color SÌ."
-    },
-    {
-      "tema": "Multiplexing HTTP",
-      "fonte": "Gruppo A",
-      "trappola": "Dire che HTTP/1.0 o 1.1 supportano multiplexing.",
-      "risposta": "Multiplexing è supportato SOLO da HTTP/2 e HTTP/3 (QUIC). HTTP/1.0 e 1.1 usano connessioni seriali."
-    },
-    {
-      "tema": "HTTP/3 e QUIC",
-      "fonte": "Gruppo A",
-      "trappola": "Dire che HTTP/3 usa TCP.",
-      "risposta": "HTTP/3 usa QUIC (Quick UDP Internet Connections) su UDP, NON TCP. QUIC integra TLS 1.3."
-    },
-    {
-      "tema": "Stateful vs Stateless",
-      "fonte": "Gruppo A",
-      "trappola": "Dire che HTTP è stateful.",
-      "risposta": "HTTP è stateless per design; lo stato (sessioni) viene gestito tramite cookie, token, o altri meccanismi esterni al protocollo."
-    },
-    {
-      "tema": "Virtual DOM",
-      "fonte": "Gruppo A",
-      "trappola": "Confondere DOM con Virtual DOM.",
-      "risposta": "DOM è l'albero degli elementi del browser; Virtual DOM è una rappresentazione in memoria usata da framework (React, Vue) per ottimizzare gli aggiornamenti."
-    },
-    {
-      "tema": "Eventi locali vs remoti",
-      "fonte": "Gruppo B",
-      "trappola": "Non sapere la differenza.",
-      "risposta": "Eventi locali: generati e gestiti nel browser (es. click, scroll); Eventi remoti: originati da azioni sul server (es. WebSocket, Server-Sent Events)."
+      "tema": "Git e collaborazione",
+      "fonte": "[F1] (Git)",
+      "trappola": "Confondere una pull request con il comando git pull.",
+      "risposta": "[F1] prevede branch, merge e pull request; una pull request propone modifiche su una piattaforma, mentre git pull recupera e integra aggiornamenti."
     }
   ],
   "nodi": [
@@ -143,7 +143,7 @@
       "tempo_studio_min": 35,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "I codici di stato aiutano a progettare e utilizzare servizi HTTP/RESTful [F1]; la lista dei codici è approfondimento tecnico."
       },
       "risorse": [
         {
@@ -302,7 +302,7 @@
       "tempo_studio_min": 50,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "La gestione dello stato è utile nella progettazione di applicazioni Web [F1]; cookie e sessioni non sono voci esplicite del syllabus."
       },
       "risorse": [
         {
@@ -461,7 +461,7 @@
       "tempo_studio_min": 60,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "Il confronto chiarisce HTTP e HTTP/2, esplicitamente nel programma [F1]; HTTP/3 è approfondimento non elencato."
       },
       "risorse": [
         {
@@ -610,7 +610,7 @@
       "tempo_studio_min": 60,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "HTTP è esplicitamente nei fondamenti Web del programma [F1]."
       },
       "risorse": [
         {
@@ -777,7 +777,7 @@
       "tempo_studio_min": 45,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "La distinzione è una base utile per comprendere HTTP e lo stato delle applicazioni Web [F1]; non è una voce esplicita del syllabus."
       },
       "risorse": [
         {
@@ -911,7 +911,7 @@
       "id": "multiplexing-http-2-3",
       "title": "Multiplexing: HTTP/2 vs HTTP/3",
       "area": 1,
-      "gruppo": "A",
+      "gruppo": "B",
       "tipo": "abilita",
       "sapere": "HTTP/1.1 può fare pipelining ma mantiene l’ordine delle risposte e non multiplexa stream indipendenti. HTTP/2 interlaccia stream su una connessione TCP, ma la perdita TCP può bloccare la consegna di tutti gli stream. HTTP/3 usa stream QUIC su UDP, con consegna ordinata per stream; la congestione resta condivisa sulla connessione.",
       "saper_fare": [
@@ -935,8 +935,8 @@
       ],
       "tempo_studio_min": 30,
       "priorita": {
-        "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "livello": "media",
+        "motivazione": "Approfondimento sul multiplexing: [F1] cita HTTP/2, non HTTP/3."
       },
       "risorse": [
         {
@@ -1066,7 +1066,7 @@
       "id": "quic-protocollo",
       "title": "QUIC: protocollo di trasporto per HTTP/3",
       "area": 1,
-      "gruppo": "A",
+      "gruppo": "B",
       "tipo": "concetto",
       "sapere": "QUIC è un protocollo di trasporto sicuro e multiplexato che usa UDP come veicolo. Fornisce stream, controllo di flusso, recupero delle perdite e controllo della congestione, integrando TLS 1.3; HTTP/3 mappa su QUIC. 0-RTT è possibile in condizioni di ripresa, non è garantito e comporta rischi di replay.",
       "saper_fare": [
@@ -1090,8 +1090,8 @@
       ],
       "tempo_studio_min": 30,
       "priorita": {
-        "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "livello": "media",
+        "motivazione": "QUIC approfondisce HTTP/3, non elencato in [F1], che cita invece HTTP/2."
       },
       "risorse": [
         {
@@ -1246,7 +1246,7 @@
       "tempo_studio_min": 30,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "Distinguere contenuti statici e dinamici sostiene la progettazione delle applicazioni Web [F1]; è una distinzione didattica."
       },
       "risorse": [
         {
@@ -1394,7 +1394,7 @@
       "tempo_studio_min": 40,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "Contesto tecnico utile per comprendere i protocolli Web [F1]; lo stack TCP/IP non è elencato come voce autonoma."
       },
       "risorse": [
         {
@@ -1548,7 +1548,7 @@
       "tempo_studio_min": 40,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "URI è esplicitamente nel programma [F1]; URL e URN aiutano a distinguerne gli usi."
       },
       "risorse": [
         {
@@ -1716,7 +1716,7 @@
       "tempo_studio_min": 50,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "La progettazione di API è una competenza di supporto ai servizi RESTful previsti da [F1]."
       },
       "risorse": [
         {
@@ -1879,7 +1879,7 @@
       "tempo_studio_min": 45,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "La 3-tier è un esempio di sistema multi-livello, esplicitamente previsto da [F1]."
       },
       "risorse": [
         {
@@ -2034,7 +2034,7 @@
       "tempo_studio_min": 30,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "Il 404 è un caso utile per progettare e usare servizi HTTP/RESTful [F1]; non è nominato come voce autonoma."
       },
       "risorse": [
         {
@@ -2200,7 +2200,7 @@
       "tempo_studio_min": 40,
       "priorita": {
         "livello": "media",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo B come argomento di variante; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "Sicurezza e rate limiting sono approfondimenti utili per i servizi Web, non voci esplicite di [F1]."
       },
       "risorse": [
         {
@@ -2364,7 +2364,7 @@
       "tempo_studio_min": 40,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "I metodi HTTP sono strumenti per comprendere i servizi RESTful previsti da [F1]; i singoli metodi sono approfondimenti tecnici."
       },
       "risorse": [
         {
@@ -2533,7 +2533,7 @@
       "tempo_studio_min": 60,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Il materiale dell’utente colloca il nodo nel Gruppo A tra gli argomenti ricorrenti; non assegna un punteggio specifico a questo nodo."
+        "motivazione": "Creazione e fruizione di servizi RESTful sono esplicitamente previste dal programma [F1]."
       },
       "risorse": [
         {
@@ -2675,7 +2675,7 @@
       "id": "canvas-api",
       "title": "Canvas API: disegno 2D in HTML",
       "area": 3,
-      "gruppo": "B",
+      "gruppo": "C",
       "tipo": "abilita",
       "sapere": "L'elemento <canvas> e la Canvas API permettono di disegnare grafica 2D raster (una bitmap) tramite JavaScript. Il canvas in pagina è vuoto finché non si ottiene il contesto di disegno con getContext('2d') e si usano i suoi metodi (fillRect, strokeRect, beginPath, arc, fill, stroke) e il suo stato (fillStyle, strokeStyle). Gli attributi width/height definiscono la risoluzione della bitmap, il CSS la dimensione visualizzata. Il modello è immediato: non restano oggetti forma, quindi per animare si cancella e si ridisegna, tipicamente con requestAnimationFrame.",
       "saper_fare": [
@@ -2693,8 +2693,8 @@
       ],
       "tempo_studio_min": 40,
       "priorita": {
-        "livello": "media",
-        "motivazione": "Gruppo B. Argomento specifico."
+        "livello": "bassa",
+        "motivazione": "Canvas non è elencato nel programma 2026/27 [F1]; resta un approfondimento opzionale di HTML5."
       },
       "risorse": [
         {
@@ -2869,7 +2869,7 @@
       "tempo_studio_min": 40,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo A. Domanda ricorrente."
+        "motivazione": "CSS è nel programma [F1]; il box model è un fondamento tecnico per applicarlo."
       },
       "risorse": [
         {
@@ -3047,7 +3047,7 @@
       "tempo_studio_min": 50,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo A. Fondamentale per CSS."
+        "motivazione": "CSS è nel programma [F1]; cascata ed ereditarietà chiariscono il comportamento degli stili."
       },
       "risorse": [
         {
@@ -3205,7 +3205,7 @@
       "id": "dhtml-dynamic-html",
       "title": "DHTML: Dynamic HTML",
       "area": 3,
-      "gruppo": "B",
+      "gruppo": "C",
       "tipo": "concetto",
       "sapere": "DHTML (Dynamic HTML) è il termine storico per l'uso combinato di HTML, CSS e JavaScript che manipola il DOM in risposta agli eventi, rendendo la pagina dinamica e interattiva lato client (mostrare e nascondere, rollover, aggiornamenti locali) senza ricaricarla. Non è un linguaggio né uno standard separato, e di per sé non scambia dati nuovi con il server: quello è il passo ulteriore di AJAX.",
       "saper_fare": [
@@ -3229,8 +3229,8 @@
       ],
       "tempo_studio_min": 30,
       "priorita": {
-        "livello": "media",
-        "motivazione": "Gruppo B. Importante ma meno centrale."
+        "livello": "bassa",
+        "motivazione": "DHTML non è elencato nel programma 2026/27 [F1]; resta un approfondimento opzionale."
       },
       "risorse": [
         {
@@ -3403,7 +3403,7 @@
       "tempo_studio_min": 60,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo A. Argomento chiave per front-end moderno."
+        "motivazione": "DOM e Virtual DOM aiutano a comprendere JavaScript e React, entrambi previsti da [F1]; non sono voci elencate singolarmente."
       },
       "risorse": [
         {
@@ -3582,7 +3582,7 @@
       "tempo_studio_min": 30,
       "priorita": {
         "livello": "media",
-        "motivazione": "Gruppo B. Argomento importante per applicazioni real-time."
+        "motivazione": "Contesto utile per lo sviluppo event-driven previsto da [F1]; la distinzione locale/remoto non è elencata separatamente."
       },
       "risorse": [
         {
@@ -3762,7 +3762,7 @@
       "tempo_studio_min": 45,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo A. Argomento ricorrente nelle prove."
+        "motivazione": "HTML5 è nel programma [F1]; form e accessibilità sono applicazioni utili, non voci esplicitate singolarmente."
       },
       "risorse": [
         {
@@ -3927,7 +3927,7 @@
       "id": "javascript-fetch-async-await",
       "title": "JavaScript moderno: fetch, async/await",
       "area": 3,
-      "gruppo": "C",
+      "gruppo": "A",
       "tipo": "abilita",
       "sapere": "fetch() è l'API moderna per le richieste HTTP asincrone: restituisce subito una Promise che si risolve con l'oggetto Response, il cui corpo si legge con un secondo passaggio asincrono (per esempio response.json()). La Promise diventa rejected per gli errori nel completare la richiesta (per esempio di rete), non per gli stati HTTP di errore come 404: va quindi controllato response.ok. Le Promise hanno stati pending, fulfilled e rejected; async/await permette di attenderle scrivendo in sequenza, con try/catch per gli errori e senza bloccare il thread principale.",
       "saper_fare": [
@@ -3946,7 +3946,7 @@
       "tempo_studio_min": 50,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo C (punti ciechi). Argomento pratico fondamentale."
+        "motivazione": "JavaScript e AJAX sono nel programma [F1]; fetch e async/await sono strumenti pratici per usarli."
       },
       "risorse": [
         {
@@ -4113,7 +4113,7 @@
       "id": "motore-js-parser-ast-jit",
       "title": "Motore JavaScript: parser, AST, profiler, JIT",
       "area": 3,
-      "gruppo": "B",
+      "gruppo": "C",
       "tipo": "concetto",
       "sapere": "I motori JavaScript moderni (per esempio V8, usato in Chrome e Node.js) eseguono il codice con una pipeline adattiva: il parser analizza il sorgente e costruisce l'AST (Abstract Syntax Tree); un interprete (Ignition in V8) genera ed esegue bytecode per partire subito; un profiler raccoglie feedback sulle parti eseguite di frequente e sui tipi osservati; un compilatore JIT (TurboFan in V8) traduce le parti calde in codice macchina ottimizzato durante l'esecuzione, con deottimizzazione se le assunzioni sui tipi cadono.",
       "saper_fare": [
@@ -4131,8 +4131,8 @@
       ],
       "tempo_studio_min": 35,
       "priorita": {
-        "livello": "media",
-        "motivazione": "Gruppo B. Argomento tecnico avanzato."
+        "livello": "bassa",
+        "motivazione": "Parser, AST e JIT non sono elencati nel programma 2026/27 [F1]; sono un approfondimento opzionale."
       },
       "risorse": [
         {
@@ -4282,7 +4282,7 @@
       "id": "span-tag-uso",
       "title": "Tag <span>: uso e scopi",
       "area": 3,
-      "gruppo": "B",
+      "gruppo": "C",
       "tipo": "concetto",
       "sapere": "Il tag <span> è il contenitore generico inline per il contenuto testuale (phrasing content): non rappresenta nulla di per sé e ha solo gli attributi globali. Serve ad agganciare a un frammento in linea stili (classi), attributi condivisi (per esempio lang) o riferimenti per JavaScript, senza interrompere la riga e solo quando nessun elemento semantico (strong, em, mark, code) è quello appropriato. Il suo corrispettivo generico a blocco è il <div>.",
       "saper_fare": [
@@ -4301,7 +4301,7 @@
       "tempo_studio_min": 20,
       "priorita": {
         "livello": "bassa",
-        "motivazione": "Gruppo B. Argomento specifico e meno centrale."
+        "motivazione": "Il tag span non è elencato come voce nel programma 2026/27 [F1]; è un dettaglio opzionale di HTML."
       },
       "risorse": [
         {
@@ -4476,7 +4476,7 @@
       "tempo_studio_min": 30,
       "priorita": {
         "livello": "media",
-        "motivazione": "Gruppo B. Argomento culturale/tecnologico."
+        "motivazione": "Contesto storico: [F1] prevede cenni storici, ma non la tassonomia Web 1.0–4.0."
       },
       "risorse": [
         {
@@ -4630,7 +4630,7 @@
       "id": "flask-request-response",
       "title": "Flask: request e response",
       "area": 4,
-      "gruppo": "C",
+      "gruppo": "A",
       "tipo": "abilita",
       "sapere": "In Flask, l'oggetto request (da flask import request) contiene i dati della richiesta: args (query string), form (dati POST form), json (body JSON), headers, method, cookies. L'oggetto response può essere personalizzato: status code, headers, body. make_response() permette di creare risposte personalizzate.",
       "saper_fare": [
@@ -4655,7 +4655,7 @@
       "tempo_studio_min": 50,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo C; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+        "motivazione": "Flask e servizi RESTful sono esplicitamente previsti da [F1]; richieste e risposte sono competenze applicative."
       },
       "risorse": [
         {
@@ -4789,7 +4789,7 @@
       "id": "flask-rotte-jsonify",
       "title": "Flask: rotte e jsonify",
       "area": 4,
-      "gruppo": "C",
+      "gruppo": "A",
       "tipo": "abilita",
       "sapere": "Flask è un micro-framework Python per lo sviluppo web. Le rotte sono definite con @app.route('percorso') e gestiscono richieste HTTP. jsonify() converte dati Python (dict, list) in JSON per la risposta. Le rotte possono specificare i metodi HTTP consentiti (methods=['GET', 'POST', ...]).",
       "saper_fare": [
@@ -4808,7 +4808,7 @@
       "tempo_studio_min": 60,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo C; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+        "motivazione": "Python e Flask sono previsti da [F1] per la creazione e fruizione di servizi RESTful; rotte e jsonify sono esempi applicativi."
       },
       "risorse": [
         {
@@ -4942,7 +4942,7 @@
       "id": "git-comandi-base",
       "title": "Git: comandi base",
       "area": 4,
-      "gruppo": "C",
+      "gruppo": "A",
       "tipo": "abilita",
       "sapere": "Git è un sistema di versionamento distribuito. Comandi base: init (inizializza repo), add (aggiungi file allo staging), commit (salva cambiamenti localmente), status (stato), log (storia), branch (gestione rami), checkout (cambia ramo), merge (unisci rami), push/pull (sincronizzazione con remote), clone (copia repo).",
       "saper_fare": [
@@ -4966,7 +4966,7 @@
       "tempo_studio_min": 50,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo C; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+        "motivazione": "Git e il lavoro collaborativo con branch, merge e pull request sono elencati in [F1]."
       },
       "risorse": [
         {
@@ -5105,7 +5105,7 @@
       "id": "json-formato-dati",
       "title": "JSON: formato dati per il Web",
       "area": 4,
-      "gruppo": "C",
+      "gruppo": "A",
       "tipo": "concetto",
       "sapere": "JSON (JavaScript Object Notation) è un formato di scambio dati leggibile da umani e macchine. Sintassi: chiavi/valori in coppie, separati da :, oggetti tra {}, array tra []. Tipi di dati: string, number, boolean, null, object, array. In Python: json.dumps() (Python → JSON), json.loads() (JSON → Python). In JavaScript: JSON.stringify(), JSON.parse().",
       "saper_fare": [
@@ -5123,8 +5123,8 @@
       ],
       "tempo_studio_min": 30,
       "priorita": {
-        "livello": "media",
-        "motivazione": "Gruppo C nel grafo e argomento di supporto al syllabus; priorità media senza attribuire un peso d’esame non documentato."
+        "livello": "alta",
+        "motivazione": "JSON è elencato esplicitamente tra le tecnologie front-end in [F1]."
       },
       "risorse": [
         {
@@ -5258,7 +5258,7 @@
       "id": "sqlite-crud",
       "title": "SQLite: operazioni CRUD",
       "area": 4,
-      "gruppo": "C",
+      "gruppo": "B",
       "tipo": "abilita",
       "sapere": "SQLite è un database SQL embedded, leggero, senza server. Le operazioni CRUD: Create (INSERT), Read (SELECT), Update (UPDATE), Delete (DELETE). In Python si usa tramite il modulo sqlite3: connect(), cursor(), execute(), commit(), close(). Per progetti Flask, Flask-SQLAlchemy offre un'interfaccia ORM.",
       "saper_fare": [
@@ -5276,8 +5276,8 @@
       ],
       "tempo_studio_min": 50,
       "priorita": {
-        "livello": "alta",
-        "motivazione": "Gruppo C; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+        "livello": "media",
+        "motivazione": "Prerequisito e contesto utili per un progetto Web; [F1] non impone SQLite e lascia libera la scelta delle tecnologie della tesina."
       },
       "risorse": [
         {
@@ -5411,7 +5411,7 @@
       "id": "ajax-fetch-xhr",
       "title": "AJAX: Asynchronous JavaScript and XML",
       "area": 5,
-      "gruppo": "B",
+      "gruppo": "A",
       "tipo": "abilita",
       "sapere": "AJAX permette di fare richieste HTTP asincrone senza ricaricare la pagina. Tecnologie: XMLHttpRequest (XHR, legacy), fetch() API (moderna), e librerie come Axios. JSON è il formato dati più comune (non XML come suggerisce il nome). Passaggi: 1) Crea richiesta, 2) Invia, 3) Aspetta risposta, 4) Elabora dati, 5) Aggiorna DOM.",
       "saper_fare": [
@@ -5435,8 +5435,8 @@
       ],
       "tempo_studio_min": 45,
       "priorita": {
-        "livello": "media",
-        "motivazione": "Gruppo B; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+        "livello": "alta",
+        "motivazione": "AJAX è elencato esplicitamente tra le tecnologie front-end in [F1]; fetch e XHR sono modalità tecniche di approfondimento."
       },
       "risorse": [
         {
@@ -5570,7 +5570,7 @@
       "id": "sparql-query-esempi",
       "title": "SPARQL: esempi di query",
       "area": 5,
-      "gruppo": "A",
+      "gruppo": "C",
       "tipo": "abilita",
       "sapere": "SPARQL è il linguaggio standard di query per grafi RDF. Le query abbinano triple pattern e possono selezionare soluzioni, verificare esistenza o costruire grafi.",
       "saper_fare": [
@@ -5594,8 +5594,8 @@
       ],
       "tempo_studio_min": 40,
       "priorita": {
-        "livello": "alta",
-        "motivazione": "Gruppo A; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+        "livello": "bassa",
+        "motivazione": "SPARQL non è elencato nel programma 2026/27 [F1]; è un approfondimento opzionale."
       },
       "risorse": [
         {
@@ -5729,7 +5729,7 @@
       "id": "web-semantico-rdf-owl",
       "title": "Web Semantico: RDF, OWL, SPARQL",
       "area": 5,
-      "gruppo": "A",
+      "gruppo": "C",
       "tipo": "concetto",
       "sapere": "RDF rappresenta dati come triple e grafo; OWL esprime ontologie con semantica formale; SPARQL interroga grafi RDF. Il Web Semantico mira a rendere i dati collegabili e interpretabili da software secondo vocabolari espliciti.",
       "saper_fare": [
@@ -5747,8 +5747,8 @@
       ],
       "tempo_studio_min": 60,
       "priorita": {
-        "livello": "alta",
-        "motivazione": "Gruppo A; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+        "livello": "bassa",
+        "motivazione": "RDF, OWL e Web semantico non sono elencati nel programma 2026/27 [F1]; sono opzionali."
       },
       "risorse": [
         {
@@ -5892,7 +5892,7 @@
       "id": "quiz-form",
       "title": "Quiz e form: domande a scelta multipla e raccolta risposte",
       "area": 6,
-      "gruppo": "C",
+      "gruppo": "B",
       "tipo": "abilita",
       "sapere": "Un quiz a scelta multipla usa controlli HTML per raccogliere una risposta e JavaScript per confrontarla con una chiave, calcolare un esito e comunicarlo. Il markup deve associare domande e opzioni in modo accessibile; il feedback va esposto anche alle tecnologie assistive e non deve basarsi solo sul colore.",
       "saper_fare": [
@@ -5922,7 +5922,7 @@
       "tempo_studio_min": 45,
       "priorita": {
         "livello": "media",
-        "motivazione": "Gruppo C: competenza utile per costruire quiz di ripasso, coerente con il programma ricostruito; non è un formato ufficiale accertato."
+        "motivazione": "Costruire un form per quiz è uno strumento di ripasso; [F1] indica domande chiuse, non un formato di quiz form per TW."
       },
       "risorse": [
         {
@@ -6060,7 +6060,7 @@
       "id": "tesina-domande-revisione-codice",
       "title": "Tesina: Domande di revisione codice",
       "area": 6,
-      "gruppo": "C",
+      "gruppo": "A",
       "tipo": "tipo_esercizio",
       "sapere": "Una revisione del codice richiede di motivare il flusso tra interfaccia, endpoint Flask e persistenza. Occorre distinguere i metodi HTTP, la gestione dello stato applicativo, le chiamate asincrone, la validazione e gli errori. Le domande qui sono esercizi di preparazione ricavati dai temi indicati nel materiale utente, non una lista ufficiale di quesiti.",
       "saper_fare": [
@@ -6090,7 +6090,7 @@
       "tempo_studio_min": 45,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo C: preparazione pratica alla tesina secondo il materiale utente; il formato e i criteri ufficiali non sono confermati."
+        "motivazione": "Per la tesina, valutata 0–10 punti, [F1] prevede la discussione delle scelte progettuali e del codice."
       },
       "risorse": [
         {
@@ -6230,7 +6230,7 @@
       "id": "tesina-esercitazione-guidata",
       "title": "Tesina: Esercitazione guidata e modello presentazione",
       "area": 6,
-      "gruppo": "C",
+      "gruppo": "A",
       "tipo": "tipo_esercizio",
       "sapere": "L’esercitazione guida dalla scelta di una risorsa piccola e verificabile fino a una demo e a una presentazione. Il modello è una traccia riutilizzabile, non una prescrizione del docente: specifica requisiti, dati, endpoint, interfaccia, test manuali e narrazione tecnica.",
       "saper_fare": [
@@ -6248,8 +6248,8 @@
       ],
       "tempo_studio_min": 60,
       "priorita": {
-        "livello": "media",
-        "motivazione": "Gruppo C: preparazione pratica alla tesina secondo il materiale utente; il formato e i criteri ufficiali non sono confermati."
+        "livello": "alta",
+        "motivazione": "Esercitazione di preparazione alla tesina individuale valutata 0–10 punti [F1]; non è una traccia ufficiale."
       },
       "risorse": [
         {
@@ -6383,9 +6383,9 @@
     },
     {
       "id": "tesina-presentazione-8-minuti",
-      "title": "Tesina: Presentazione di 8 minuti con 4 slide",
+      "title": "Tesina: presentazione PowerPoint (max 8 minuti)",
       "area": 6,
-      "gruppo": "C",
+      "gruppo": "A",
       "tipo": "abilita",
       "sapere": "Il materiale utente propone una presentazione della tesina di 8 minuti organizzata in 4 slide: problema e obiettivi, architettura, codice significativo, dimostrazione. La scansione temporale suggerita è 1 + 2 + 3 + 2 minuti; va trattata come traccia di preparazione, non come regola ufficiale verificata.",
       "saper_fare": [
@@ -6410,7 +6410,7 @@
       "tempo_studio_min": 60,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo C: preparazione pratica alla tesina secondo il materiale utente; il formato e i criteri ufficiali non sono confermati."
+        "motivazione": "La tesina vale 0–10 punti e prevede una presentazione PowerPoint di massimo 8 minuti [F1]."
       },
       "risorse": [
         {
@@ -6546,7 +6546,7 @@
       "id": "tesina-progetto-flask-crud",
       "title": "Tesina: Progetto Flask + CRUD",
       "area": 6,
-      "gruppo": "C",
+      "gruppo": "A",
       "tipo": "abilita",
       "sapere": "Un progetto CRUD espone operazioni di creazione, lettura, aggiornamento ed eliminazione di una risorsa attraverso un’interfaccia web. Un backend Flask valida le richieste e dialoga con SQLite o con un archivio JSON; il front-end HTML/CSS/JavaScript invia richieste HTTP e mostra gli esiti. La scelta di PUT o PATCH dipende dalla semantica di aggiornamento implementata.",
       "saper_fare": [
@@ -6581,7 +6581,7 @@
       "tempo_studio_min": 180,
       "priorita": {
         "livello": "alta",
-        "motivazione": "Gruppo C: preparazione pratica alla tesina secondo il materiale utente; il formato e i criteri ufficiali non sono confermati."
+        "motivazione": "La tesina individuale vale 0–10 punti [F1]; Flask e CRUD sono uno scenario di esercizio, non tecnologie obbligatorie."
       },
       "risorse": [
         {

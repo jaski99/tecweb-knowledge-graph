@@ -42,20 +42,6 @@
 **Retro**: Il browser conserva/invia il cookie. La sessione è stato applicativo, spesso sul server, raggiunto tramite un identificatore nel cookie.
 
 
-### Multiplexing: HTTP/2 vs HTTP/3
-
-**Fronte**: Dove compare il multiplexing in HTTP/2 e HTTP/3?
-
-**Retro**: HTTP/2: stream/frame multipli sopra TCP, con HOL da perdita TCP. HTTP/3: stream QUIC sopra UDP, con consegna indipendente tra stream.
-
-
-### QUIC: protocollo di trasporto per HTTP/3
-
-**Fronte**: Che cosa aggiunge QUIC a UDP per HTTP/3?
-
-**Retro**: Stream multiplexati, affidabilità e controllo del flusso/congestione, recupero delle perdite e TLS 1.3 integrato; UDP resta il veicolo dei datagrammi.
-
-
 ### Contenuto statico vs dinamico: differenze fondamentali
 
 **Fronte**: Statico vs dinamico: qual è il criterio corretto?
@@ -168,25 +154,67 @@
 **Retro**: Git è un sistema distribuito di controllo versione; un branch è un riferimento mobile a una linea di sviluppo, merge integra storie di commit e una pull request è una proposta di revisione e integrazione offerta da una piattaforma. I branch isolano il lavoro e i commit ne registrano la storia; revisione e integrazione esplicita riducono il rischio di introdurre modifiche non controllate. Si crea `feat/ricerca`, si pubblica con push e si propone una pull request da quel ramo verso `main`.
 
 
+### JSON: formato dati per il Web
+
+**Fronte**: JSON: formato dati per il Web: qual è la definizione, lo scopo e un esempio?
+
+**Retro**: JSON (JavaScript Object Notation) è un formato testuale indipendente dal linguaggio per rappresentare valori strutturati: oggetti, array, stringhe, numeri, booleani e null. Un formato condiviso rende interoperabile lo scambio di dati tra client e server; parser e serializer convertono tra testo JSON e strutture native. La stringa `{"titolo":"Il Web","disponibile":true}` rappresenta un oggetto con due membri JSON.
+
+
+### AJAX: Asynchronous JavaScript and XML
+
+**Fronte**: AJAX: richieste asincrone con Fetch e XHR: qual è la definizione, lo scopo e un esempio?
+
+**Retro**: AJAX è un insieme di tecniche per scambiare dati in modo asincrono con il server e aggiornare parti della pagina; oggi si usano spesso Fetch e JSON, anche se il nome conserva XML. Le richieste asincrone migliorano la continuità dell’interfaccia e riducono i ricaricamenti completi; non rendono la rete istantanea né eliminano gli errori HTTP. Un gestore invoca `fetch("/api/libri")`, controlla lo status, legge il JSON e aggiorna un elemento della pagina.
+
+
+### Tesina: Esercitazione guidata e modello presentazione
+
+**Fronte**: Qual è la sequenza di lavoro proposta per la tesina?
+
+**Retro**: Requisito e modello dati → endpoint e test → interfaccia → CRUD e casi d’errore → demo e presentazione.
+
+
+### Multiplexing: HTTP/2 vs HTTP/3
+
+**Fronte**: Dove compare il multiplexing in HTTP/2 e HTTP/3?
+
+**Retro**: HTTP/2: stream/frame multipli sopra TCP, con HOL da perdita TCP. HTTP/3: stream QUIC sopra UDP, con consegna indipendente tra stream.
+
+
+### QUIC: protocollo di trasporto per HTTP/3
+
+**Fronte**: Che cosa aggiunge QUIC a UDP per HTTP/3?
+
+**Retro**: Stream multiplexati, affidabilità e controllo del flusso/congestione, recupero delle perdite e TLS 1.3 integrato; UDP resta il veicolo dei datagrammi.
+
+
+### Rate limiting e sicurezza delle API
+
+**Fronte**: 429, CORS e autenticazione: che cosa controllano?
+
+**Retro**: 429 segnala una policy di frequenza superata; CORS disciplina la lettura cross-origin nei browser; autenticazione identifica il client. L'autorizzazione e gli altri controlli restano responsabilità dell'API.
+
+
+### Eventi: locali vs remoti
+
+**Fronte**: Eventi locali contro remoti: criterio e quattro meccanismi per i remoti?
+
+**Retro**: Criterio: dove nasce l'evento. Locali nel browser (click, input, submit) con addEventListener. Remoti dal server: polling (richieste periodiche), long polling (risposta trattenuta), SSE (flusso solo server verso client), WebSocket (persistente bidirezionale).
+
+
+### Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0
+
+**Fronte**: Web 1.0, 2.0, 3.0, 4.0: l'idea chiave di ciascuna fase?
+
+**Retro**: 1.0 leggo: documenti statici, sola lettura. 2.0 scrivo: partecipazione e contenuti degli utenti. 3.0 significo: web semantico, dati riusabili (RDF). 4.0 seguo: ubiquo e intelligente, tra dispositivi connessi e assistenza personalizzata.
+
+
 ### SQLite: operazioni CRUD
 
 **Fronte**: SQLite: operazioni CRUD: qual è la definizione, lo scopo e un esempio?
 
 **Retro**: SQLite è un motore relazionale incorporabile che memorizza dati in un file senza richiedere un server database separato; CRUD indica Create, Read, Update e Delete. SQL consente operazioni dichiarative sui dati; le transazioni rendono controllabili le modifiche e i parametri separano i valori dalla query. Una connessione Python a SQLite inserisce un libro con INSERT, lo legge con SELECT, lo aggiorna con UPDATE e lo elimina con DELETE.
-
-
-### Web Semantico: RDF, OWL, SPARQL
-
-**Fronte**: Web Semantico: RDF, OWL, SPARQL: qual è la definizione, lo scopo e un esempio?
-
-**Retro**: Il Web Semantico organizza dati del Web in forma interpretabile e collegabile; RDF modella affermazioni come triple, OWL esprime ontologie con semantica formale e SPARQL interroga grafi RDF. Identificatori e vocabolari condivisi facilitano integrazione e ragionamento sui dati oltre la semplice visualizzazione di pagine. RDF afferma che un libro ha un autore; OWL dichiara la classe Libro e SPARQL seleziona i libri pubblicati dopo il 2020.
-
-
-### SPARQL: esempi di query
-
-**Fronte**: SPARQL: esempi di query: qual è la definizione, lo scopo e un esempio?
-
-**Retro**: SPARQL è il linguaggio di query per grafi RDF, basato su corrispondenza di pattern; può produrre soluzioni tabellari o grafi RDF a seconda della forma della query. Le query permettono di estrarre, verificare o trasformare informazioni in triple, senza codificare manualmente ogni relazione. Una SELECT trova libri e autori con `?libro ex:haAutore ?autore` e restituisce i valori associati alle variabili.
 
 
 ### Tesina: Progetto Flask + CRUD
@@ -203,18 +231,18 @@
 **Retro**: Percorri gesto, richiesta, metodo e payload, validazione server, persistenza, status e aggiornamento della UI; esplicita errori e limiti.
 
 
-### Tesina: Presentazione di 8 minuti con 4 slide
+### Tesina: presentazione PowerPoint (max 8 minuti)
 
 **Fronte**: Qual è il filo narrativo delle quattro slide?
 
 **Retro**: Problema e obiettivi → architettura e flusso dati → codice significativo → demo o schermate; la traccia di tempo proposta è 1+2+3+2 minuti.
 
 
-### Rate limiting e sicurezza delle API
+### Quiz e form: domande a scelta multipla e raccolta risposte
 
-**Fronte**: 429, CORS e autenticazione: che cosa controllano?
+**Fronte**: Come strutturare e valutare un quiz accessibile?
 
-**Retro**: 429 segnala una policy di frequenza superata; CORS disciplina la lettura cross-origin nei browser; autenticazione identifica il client. L'autorizzazione e gli altri controlli restano responsabilità dell'API.
+**Retro**: Raggruppa le opzioni con fieldset/legend, associa label e radio con name condiviso, gestisci il caso vuoto e comunica feedback testuale in un’area live.
 
 
 ### Canvas API: disegno 2D in HTML
@@ -231,13 +259,6 @@
 **Retro**: DHTML = HTML, CSS e JavaScript sul DOM per pagine interattive lato client con ciò che è già nel browser. AJAX aggiunge richieste asincrone di dati nuovi al server senza ricaricare la pagina.
 
 
-### Eventi: locali vs remoti
-
-**Fronte**: Eventi locali contro remoti: criterio e quattro meccanismi per i remoti?
-
-**Retro**: Criterio: dove nasce l'evento. Locali nel browser (click, input, submit) con addEventListener. Remoti dal server: polling (richieste periodiche), long polling (risposta trattenuta), SSE (flusso solo server verso client), WebSocket (persistente bidirezionale).
-
-
 ### Motore JavaScript: parser, AST, profiler, JIT
 
 **Fronte**: Pipeline di un motore JS: fasi in ordine e nomi V8?
@@ -245,46 +266,25 @@
 **Retro**: Parser (costruisce l'AST), interprete Ignition (bytecode eseguito subito), profiler/feedback (parti calde e tipi osservati), compilatore JIT TurboFan (codice macchina per le parti calde), con deottimizzazione se le assunzioni cadono.
 
 
-### Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0
-
-**Fronte**: Web 1.0, 2.0, 3.0, 4.0: l'idea chiave di ciascuna fase?
-
-**Retro**: 1.0 leggo: documenti statici, sola lettura. 2.0 scrivo: partecipazione e contenuti degli utenti. 3.0 significo: web semantico, dati riusabili (RDF). 4.0 seguo: ubiquo e intelligente, tra dispositivi connessi e assistenza personalizzata.
-
-
-### JSON: formato dati per il Web
-
-**Fronte**: JSON: formato dati per il Web: qual è la definizione, lo scopo e un esempio?
-
-**Retro**: JSON (JavaScript Object Notation) è un formato testuale indipendente dal linguaggio per rappresentare valori strutturati: oggetti, array, stringhe, numeri, booleani e null. Un formato condiviso rende interoperabile lo scambio di dati tra client e server; parser e serializer convertono tra testo JSON e strutture native. La stringa `{"titolo":"Il Web","disponibile":true}` rappresenta un oggetto con due membri JSON.
-
-
-### AJAX: Asynchronous JavaScript and XML
-
-**Fronte**: AJAX: richieste asincrone con Fetch e XHR: qual è la definizione, lo scopo e un esempio?
-
-**Retro**: AJAX è un insieme di tecniche per scambiare dati in modo asincrono con il server e aggiornare parti della pagina; oggi si usano spesso Fetch e JSON, anche se il nome conserva XML. Le richieste asincrone migliorano la continuità dell’interfaccia e riducono i ricaricamenti completi; non rendono la rete istantanea né eliminano gli errori HTTP. Un gestore invoca `fetch("/api/libri")`, controlla lo status, legge il JSON e aggiorna un elemento della pagina.
-
-
-### Quiz e form: domande a scelta multipla e raccolta risposte
-
-**Fronte**: Come strutturare e valutare un quiz accessibile?
-
-**Retro**: Raggruppa le opzioni con fieldset/legend, associa label e radio con name condiviso, gestisci il caso vuoto e comunica feedback testuale in un’area live.
-
-
-### Tesina: Esercitazione guidata e modello presentazione
-
-**Fronte**: Qual è la sequenza di lavoro proposta per la tesina?
-
-**Retro**: Requisito e modello dati → endpoint e test → interfaccia → CRUD e casi d’errore → demo e presentazione.
-
-
 ### Tag <span>: uso e scopi
 
 **Fronte**: Span contro div: livello, contenuto e riga?
 
 **Retro**: Span: inline, resta nella riga, contiene testo e inline (phrasing content). Div: block, occupa una riga propria, contiene interi blocchi (flow content). Entrambi generici, senza significato proprio.
+
+
+### Web Semantico: RDF, OWL, SPARQL
+
+**Fronte**: Web Semantico: RDF, OWL, SPARQL: qual è la definizione, lo scopo e un esempio?
+
+**Retro**: Il Web Semantico organizza dati del Web in forma interpretabile e collegabile; RDF modella affermazioni come triple, OWL esprime ontologie con semantica formale e SPARQL interroga grafi RDF. Identificatori e vocabolari condivisi facilitano integrazione e ragionamento sui dati oltre la semplice visualizzazione di pagine. RDF afferma che un libro ha un autore; OWL dichiara la classe Libro e SPARQL seleziona i libri pubblicati dopo il 2020.
+
+
+### SPARQL: esempi di query
+
+**Fronte**: SPARQL: esempi di query: qual è la definizione, lo scopo e un esempio?
+
+**Retro**: SPARQL è il linguaggio di query per grafi RDF, basato su corrispondenza di pattern; può produrre soluzioni tabellari o grafi RDF a seconda della forma della query. Le query permettono di estrarre, verificare o trasformare informazioni in triple, senza codificare manualmente ogni relazione. Una SELECT trova libri e autori con `?libro ex:haAutore ?autore` e restituisce i valori associati alle variabili.
 
 
 ## Checklist per area
@@ -329,20 +329,6 @@
 - [ ] HttpOnly limita la lettura tramite Document.cookie
 - [ ] SameSite aiuta a ridurre alcuni invii cross-site, ma non è una difesa completa
 
-### Multiplexing: HTTP/2 vs HTTP/3 (priorità ALTA, gruppo A)
-
-- [ ] HTTP/1.1: pipelining con risposte ordinate, non multiplexing
-- [ ] HTTP/2: multiplexing su TCP, TCP HOL resta
-- [ ] HTTP/3: stream QUIC su UDP, consegna indipendente tra stream
-- [ ] QUIC gestisce affidabilità; UDP da solo non la fornisce
-
-### QUIC: protocollo di trasporto per HTTP/3 (priorità ALTA, gruppo A)
-
-- [ ] QUIC è un protocollo sopra UDP, non un sinonimo di UDP
-- [ ] HTTP/3 usa QUIC; i pacchetti sono instradati da IP
-- [ ] Stream QUIC: consegna ordinata per stream
-- [ ] TLS 1.3 integrato; 0-RTT condizionale e soggetto a replay
-
 ### Contenuto statico vs dinamico: differenze fondamentali (priorità ALTA, gruppo A)
 
 - [ ] Statico/dinamico riguarda il processo di generazione
@@ -364,6 +350,20 @@
 - [ ] URL indica localizzazione o modalità di accesso
 - [ ] URN nomina in uno spazio di nomi, non garantisce risoluzione
 - [ ] Il frammento è interpretato dal client nelle richieste HTTP ordinarie
+
+### Multiplexing: HTTP/2 vs HTTP/3 (priorità MEDIA, gruppo B)
+
+- [ ] HTTP/1.1: pipelining con risposte ordinate, non multiplexing
+- [ ] HTTP/2: multiplexing su TCP, TCP HOL resta
+- [ ] HTTP/3: stream QUIC su UDP, consegna indipendente tra stream
+- [ ] QUIC gestisce affidabilità; UDP da solo non la fornisce
+
+### QUIC: protocollo di trasporto per HTTP/3 (priorità MEDIA, gruppo B)
+
+- [ ] QUIC è un protocollo sopra UDP, non un sinonimo di UDP
+- [ ] HTTP/3 usa QUIC; i pacchetti sono instradati da IP
+- [ ] Stream QUIC: consegna ordinata per stream
+- [ ] TLS 1.3 integrato; 0-RTT condizionale e soggetto a replay
 
 
 ## Area 2. Architetture
@@ -445,28 +445,13 @@
 - [ ] Label per ogni controllo (for/id o wrapping): il placeholder non la sostituisce
 - [ ] Validazione nel browser per il feedback; il server rivalida sempre
 
-### JavaScript moderno: fetch, async/await (priorità ALTA, gruppo C)
+### JavaScript moderno: fetch, async/await (priorità ALTA, gruppo A)
 
 - [ ] Doppio await: prima la Response, poi il corpo con response.json()
 - [ ] fetch è rejected per errori di rete, non per 404 o 500: controllare response.ok
 - [ ] Promise: pending, fulfilled, rejected; settled = conclusa in uno dei due modi
 - [ ] async restituisce sempre una Promise; await sospende solo quella funzione
 - [ ] POST JSON: method, Content-Type: application/json, body con JSON.stringify
-
-### Canvas API: disegno 2D in HTML (priorità MEDIA, gruppo B)
-
-- [ ] <canvas>: bitmap disegnata via script; contenuto interno come riserva (fallback)
-- [ ] getContext('2d') restituisce il contesto con stato e metodi di disegno
-- [ ] Percorsi: beginPath, arc, lineTo, poi fill o stroke; angoli in radianti
-- [ ] Attributi width/height = risoluzione; CSS width/height = dimensione in pagina
-- [ ] Animazione: clearRect e ridisegno coordinati da requestAnimationFrame
-
-### DHTML: Dynamic HTML (priorità MEDIA, gruppo B)
-
-- [ ] DHTML = HTML + CSS + JavaScript sul DOM, non un linguaggio nuovo
-- [ ] Dinamicità lato client: eventi, classi che cambiano, contenuti mostrati e nascosti
-- [ ] Solo presentazione al passaggio del mouse: spesso basta il CSS :hover
-- [ ] DHTML contro AJAX: AJAX aggiunge richieste asincrone di dati al server
 
 ### Eventi: locali vs remoti (priorità MEDIA, gruppo B)
 
@@ -476,14 +461,6 @@
 - [ ] SSE: EventSource, solo server verso client, riconnessione automatica
 - [ ] WebSocket: handshake HTTP, poi canale persistente bidirezionale
 
-### Motore JavaScript: parser, AST, profiler, JIT (priorità MEDIA, gruppo B)
-
-- [ ] Pipeline: parser e AST, bytecode interpretato, profiler/feedback, JIT, deottimizzazione
-- [ ] AST: albero della struttura del programma, distinto da bytecode e codice macchina
-- [ ] JIT Just-In-Time: compila durante l'esecuzione solo le parti calde
-- [ ] In V8: Ignition è l'interprete del bytecode, TurboFan il compilatore ottimizzante
-- [ ] Il motore implementa il linguaggio; il DOM lo fornisce il browser, non il motore
-
 ### Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0 (priorità MEDIA, gruppo B)
 
 - [ ] Etichette descrittive di tendenze, non versioni rilasciate: le fasi convivono
@@ -491,7 +468,30 @@
 - [ ] 3.0 significo: web semantico e dati riusabili (RDF); 4.0 seguo: ubiquo e intelligente
 - [ ] Negli abbinamenti scarta i distrattori fuori contesto (per esempio LAN)
 
-### Tag <span>: uso e scopi (priorità BASSA, gruppo B)
+### Canvas API: disegno 2D in HTML (priorità BASSA, gruppo C)
+
+- [ ] <canvas>: bitmap disegnata via script; contenuto interno come riserva (fallback)
+- [ ] getContext('2d') restituisce il contesto con stato e metodi di disegno
+- [ ] Percorsi: beginPath, arc, lineTo, poi fill o stroke; angoli in radianti
+- [ ] Attributi width/height = risoluzione; CSS width/height = dimensione in pagina
+- [ ] Animazione: clearRect e ridisegno coordinati da requestAnimationFrame
+
+### DHTML: Dynamic HTML (priorità BASSA, gruppo C)
+
+- [ ] DHTML = HTML + CSS + JavaScript sul DOM, non un linguaggio nuovo
+- [ ] Dinamicità lato client: eventi, classi che cambiano, contenuti mostrati e nascosti
+- [ ] Solo presentazione al passaggio del mouse: spesso basta il CSS :hover
+- [ ] DHTML contro AJAX: AJAX aggiunge richieste asincrone di dati al server
+
+### Motore JavaScript: parser, AST, profiler, JIT (priorità BASSA, gruppo C)
+
+- [ ] Pipeline: parser e AST, bytecode interpretato, profiler/feedback, JIT, deottimizzazione
+- [ ] AST: albero della struttura del programma, distinto da bytecode e codice macchina
+- [ ] JIT Just-In-Time: compila durante l'esecuzione solo le parti calde
+- [ ] In V8: Ignition è l'interprete del bytecode, TurboFan il compilatore ottimizzante
+- [ ] Il motore implementa il linguaggio; il DOM lo fornisce il browser, non il motore
+
+### Tag <span>: uso e scopi (priorità BASSA, gruppo C)
 
 - [ ] <span>: inline, resta in riga, contiene solo phrasing content
 - [ ] Usi: stile su un frammento, attributo lang, aggancio per JavaScript
@@ -502,94 +502,94 @@
 
 ## Area 4. Back-end e strumenti
 
-### Flask: rotte e jsonify (priorità ALTA, gruppo C)
+### Flask: rotte e jsonify (priorità ALTA, gruppo A)
 
 - [ ] @app.route/@app.get associa URL e metodi a una vista
 - [ ] I parametri dinamici sono passati alla funzione secondo il converter
 - [ ] jsonify restituisce JSON; status HTTP distingue successo ed errore
 
-### Flask: request e response (priorità ALTA, gruppo C)
+### Flask: request e response (priorità ALTA, gruppo A)
 
 - [ ] request.args: query string; request.form: campi form; get_json: body JSON
 - [ ] Validare tipo, presenza e vincoli prima di usare l’input
 - [ ] Response: status, header e corpo; 400 input errato, 404 risorsa assente
 
-### Git: comandi base (priorità ALTA, gruppo C)
+### Git: comandi base (priorità ALTA, gruppo A)
 
 - [ ] branch/switch: creare e cambiare linea di sviluppo
 - [ ] merge integra nel branch corrente; gestire conflitti con status/add
 - [ ] push pubblica; pull aggiorna; pull request è una funzione della piattaforma
 
-### SQLite: operazioni CRUD (priorità ALTA, gruppo C)
-
-- [ ] CRUD: INSERT, SELECT, UPDATE, DELETE
-- [ ] Usare placeholder ? e parametri per i valori SQL
-- [ ] Confermare la transazione e chiudere la connessione
-
-### JSON: formato dati per il Web (priorità MEDIA, gruppo C)
+### JSON: formato dati per il Web (priorità ALTA, gruppo A)
 
 - [ ] JSON: oggetti, array, stringhe, numeri, booleani e null
 - [ ] Python: dumps/loads per stringa, dump/load per file
 - [ ] Validare i dati dopo il parsing; JSON non è un database
 
+### SQLite: operazioni CRUD (priorità MEDIA, gruppo B)
+
+- [ ] CRUD: INSERT, SELECT, UPDATE, DELETE
+- [ ] Usare placeholder ? e parametri per i valori SQL
+- [ ] Confermare la transazione e chiudere la connessione
+
 
 ## Area 5. Web semantico ed evoluzione
 
-### Web Semantico: RDF, OWL, SPARQL (priorità ALTA, gruppo A)
-
-- [ ] RDF: triple soggetto-predicato-oggetto e grafi
-- [ ] OWL: classi, proprietà e assiomi con semantica formale
-- [ ] SPARQL: query dei grafi RDF
-
-### SPARQL: esempi di query (priorità ALTA, gruppo A)
-
-- [ ] SELECT produce soluzioni; ASK verifica esistenza; CONSTRUCT crea un grafo
-- [ ] Le variabili uguali collegano pattern; FILTER restringe i risultati
-- [ ] ORDER BY rende esplicito l’ordinamento
-
-### AJAX: Asynchronous JavaScript and XML (priorità MEDIA, gruppo B)
+### AJAX: Asynchronous JavaScript and XML (priorità ALTA, gruppo A)
 
 - [ ] Fetch è Promise-based; XHR usa eventi/callback
 - [ ] Controllare response.ok: 4xx/5xx non rifiutano fetch automaticamente
 - [ ] Leggere il body e aggiornare il DOM in modo sicuro
 
+### Web Semantico: RDF, OWL, SPARQL (priorità BASSA, gruppo C)
+
+- [ ] RDF: triple soggetto-predicato-oggetto e grafi
+- [ ] OWL: classi, proprietà e assiomi con semantica formale
+- [ ] SPARQL: query dei grafi RDF
+
+### SPARQL: esempi di query (priorità BASSA, gruppo C)
+
+- [ ] SELECT produce soluzioni; ASK verifica esistenza; CONSTRUCT crea un grafo
+- [ ] Le variabili uguali collegano pattern; FILTER restringe i risultati
+- [ ] ORDER BY rende esplicito l’ordinamento
+
 
 ## Area 6. Tesina
 
-### Tesina: Progetto Flask + CRUD (priorità ALTA, gruppo C)
+### Tesina: Esercitazione guidata e modello presentazione (priorità ALTA, gruppo A)
+
+- [ ] Scegli tema adatto
+- [ ] Progetta database
+- [ ] Implementa endpoint
+- [ ] Testa con Postman/curl
+
+### Tesina: Progetto Flask + CRUD (priorità ALTA, gruppo A)
 
 - [ ] Backend: Flask + rotte RESTful
 - [ ] Front-end: HTML/CSS/JS + fetch
 - [ ] Database: SQLite o JSON
 - [ ] CRUD: Create, Read, Update, Delete
 
-### Tesina: Domande di revisione codice (priorità ALTA, gruppo C)
+### Tesina: Domande di revisione codice (priorità ALTA, gruppo A)
 
 - [ ] Metodi HTTP: GET, POST, PUT, PATCH, DELETE
 - [ ] Stato: client-side vs server-side
 - [ ] Chiamate asincrone: fetch, async/await
 - [ ] Error handling: try/catch, status code
 
-### Tesina: Presentazione di 8 minuti con 4 slide (priorità ALTA, gruppo C)
+### Tesina: presentazione PowerPoint (max 8 minuti) (priorità ALTA, gruppo A)
 
 - [ ] 8 minuti totali
 - [ ] 4 slide: obiettivi, architettura, codice, demo
 - [ ] Tempi: 1 + 2 + 3 + 2 minuti
 - [ ] Demo dal vivo o screen
 
-### Quiz e form: domande a scelta multipla e raccolta risposte (priorità MEDIA, gruppo C)
+### Quiz e form: domande a scelta multipla e raccolta risposte (priorità MEDIA, gruppo B)
 
 - [ ] Quiz: domande + opzioni + risposta corretta
 - [ ] Form: input radio/checkbox per risposte
 - [ ] JavaScript: logica valutazione
 - [ ] Feedback: immediato per ogni domanda
-
-### Tesina: Esercitazione guidata e modello presentazione (priorità MEDIA, gruppo C)
-
-- [ ] Scegli tema adatto
-- [ ] Progetta database
-- [ ] Implementa endpoint
-- [ ] Testa con Postman/curl
 
 
 ## Trappole d'esame
@@ -609,12 +609,6 @@
 - [ ] **Cookie e sessioni: gestione dello stato in HTTP**: Confondere cookie e sessione → Il cookie è memorizzato/inviato dal browser; la sessione è un contesto applicativo che può essere conservato sul server.
 - [ ] **Cookie e sessioni: gestione dello stato in HTTP**: Dire che HttpOnly impedisce qualsiasi XSS → Impedisce la lettura tramite Document.cookie ma non blocca uno script malevolo dal compiere azioni nella pagina.
 - [ ] **Cookie e sessioni: gestione dello stato in HTTP**: Dire che Secure cifra il cookie → Secure limita l'invio a connessioni sicure; la cifratura in transito è fornita da TLS in HTTPS.
-- [ ] **Multiplexing: HTTP/2 vs HTTP/3**: Confondere connessione persistente con multiplexing → Una connessione HTTP/1.1 può restare aperta senza gestire stream indipendenti intercalati.
-- [ ] **Multiplexing: HTTP/2 vs HTTP/3**: Dire che HTTP/2 non soffre mai di HOL → La perdita su TCP blocca il flusso ordinato sottostante e quindi la consegna agli stream.
-- [ ] **Multiplexing: HTTP/2 vs HTTP/3**: Attribuire l'affidabilità a UDP → UDP trasporta datagrammi; QUIC implementa affidabilità, flusso e recupero delle perdite sopra UDP.
-- [ ] **QUIC: protocollo di trasporto per HTTP/3**: Trattare QUIC come un alias di UDP → QUIC è un protocollo con affidabilità, stream e sicurezza che usa UDP come veicolo.
-- [ ] **QUIC: protocollo di trasporto per HTTP/3**: Attribuire a UDP la cifratura TLS → La protezione crittografica è integrata da QUIC con TLS 1.3, non dal protocollo UDP.
-- [ ] **QUIC: protocollo di trasporto per HTTP/3**: Promettere sempre 0-RTT → L'invio anticipato dipende da una ripresa e comporta rischi di replay; non è garantito per ogni connessione.
 - [ ] **Contenuto statico vs dinamico: differenze fondamentali**: Dire che statico significa identico per sempre → Un file può essere sostituito o variato nel tempo; statico descrive la strategia di generazione, non l'immutabilità assoluta.
 - [ ] **Contenuto statico vs dinamico: differenze fondamentali**: Dire che le risposte dinamiche non possono essere memorizzate → Possono essere cacheabili se freschezza e ambito di riuso sono corretti per quella risposta.
 - [ ] **Contenuto statico vs dinamico: differenze fondamentali**: Classificare una pagina solo dall'estensione HTML → HTML può essere un file statico o il risultato di un template generato dal server.
@@ -673,27 +667,49 @@
 - [ ] **Git: comandi base**: Dire che `git pull` crea una pull request. → `git pull` aggiorna il repository locale; una PR è una richiesta gestita dalla piattaforma di hosting.
 - [ ] **Git: comandi base**: Eseguire merge mentre si è sul branch sorgente pensando di integrare main nel branch destinazione. → Il merge integra il branch nominato nel branch corrente; va prima selezionata la destinazione.
 - [ ] **Git: comandi base**: Credere che un push equivalga a un merge. → Push pubblica commit sul remote; non integra da solo il branch in main.
+- [ ] **JSON: formato dati per il Web**: Scrivere `True`, `False` e `None` come token JSON. → La sintassi JSON usa `true`, `false` e `null`; i token Python non sono validi in JSON.
+- [ ] **JSON: formato dati per il Web**: Aggiungere commenti o virgole finali a un documento JSON. → Non fanno parte della grammatica JSON standard e causano errori di parsing.
+- [ ] **JSON: formato dati per il Web**: Pensare che JSON valido significhi dati sicuri o corretti. → JSON garantisce la sintassi, non schema applicativo, autorizzazione o sicurezza.
+- [ ] **AJAX: Asynchronous JavaScript and XML**: Dire che AJAX deve ricevere XML. → XML è nel nome storico; la tecnica può usare JSON o altri formati.
+- [ ] **AJAX: Asynchronous JavaScript and XML**: Credere che fetch rifiuti automaticamente la Promise con status 404. → Una risposta HTTP 404 normalmente risolve la Promise; si deve controllare `response.ok` o `status`.
+- [ ] **AJAX: Asynchronous JavaScript and XML**: Inserire titoli ricevuti con `innerHTML` senza sanificazione. → Testo remoto può contenere markup non attendibile; `textContent` lo tratta come testo.
+- [ ] **Tesina: Esercitazione guidata e modello presentazione**: Implementare tutte le funzioni prima di provarne una → Gli errori precoci si accumulano e diventano più difficili da isolare.
+- [ ] **Tesina: Esercitazione guidata e modello presentazione**: Copiare il modello di slide senza adattarlo al progetto → Il racconto deve corrispondere a componenti e comportamenti realmente presenti.
+- [ ] **Tesina: Esercitazione guidata e modello presentazione**: Considerare una demo riuscita come test completo → La demo mostra un percorso; non verifica automaticamente input invalidi e fallimenti.
+- [ ] **Multiplexing: HTTP/2 vs HTTP/3**: Confondere connessione persistente con multiplexing → Una connessione HTTP/1.1 può restare aperta senza gestire stream indipendenti intercalati.
+- [ ] **Multiplexing: HTTP/2 vs HTTP/3**: Dire che HTTP/2 non soffre mai di HOL → La perdita su TCP blocca il flusso ordinato sottostante e quindi la consegna agli stream.
+- [ ] **Multiplexing: HTTP/2 vs HTTP/3**: Attribuire l'affidabilità a UDP → UDP trasporta datagrammi; QUIC implementa affidabilità, flusso e recupero delle perdite sopra UDP.
+- [ ] **QUIC: protocollo di trasporto per HTTP/3**: Trattare QUIC come un alias di UDP → QUIC è un protocollo con affidabilità, stream e sicurezza che usa UDP come veicolo.
+- [ ] **QUIC: protocollo di trasporto per HTTP/3**: Attribuire a UDP la cifratura TLS → La protezione crittografica è integrata da QUIC con TLS 1.3, non dal protocollo UDP.
+- [ ] **QUIC: protocollo di trasporto per HTTP/3**: Promettere sempre 0-RTT → L'invio anticipato dipende da una ripresa e comporta rischi di replay; non è garantito per ogni connessione.
+- [ ] **Rate limiting e sicurezza delle API**: Dire che il rate limiting ferma ogni DDoS → Limita richieste secondo una policy, ma un attacco distribuito richiede ulteriori difese di rete e disponibilità.
+- [ ] **Rate limiting e sicurezza delle API**: Usare CORS come sistema di autenticazione → CORS è applicato dai browser per l'accesso cross-origin; non dimostra l'identità del client e non blocca client non-browser.
+- [ ] **Rate limiting e sicurezza delle API**: Contare solo in memoria su ogni istanza → Un client può distribuire il traffico tra processi e aggirare contatori separati; il servizio deve coordinare lo stato del limite.
+- [ ] **Eventi: locali vs remoti**: Classificare il click come evento remoto perché la pagina arriva da un server → Il criterio è l'origine dell'evento, non quella della pagina: il click nasce dall'interazione dell'utente nel browser ed è gestito localmente dai listener. Remoto è ciò che nasce fuori dal client e deve viaggiare sulla rete.
+- [ ] **Eventi: locali vs remoti**: Descrivere i Server-Sent Events come canale bidirezionale → SSE è un flusso unidirezionale dal server al client (EventSource, formato text/event-stream): la pagina non può inviare messaggi su quel canale. Per la bidirezionalità continua serve WebSocket, oppure normali richieste separate dal client.
+- [ ] **Eventi: locali vs remoti**: Presentare il polling come aggiornamento in tempo reale senza costi → Il polling interroga a intervalli: tra un controllo e l'altro le novità aspettano, e molti controlli tornano a vuoto consumando richieste. È semplice, ma né istantaneo né gratuito.
+- [ ] **Eventi: locali vs remoti**: Confondere preventDefault e stopPropagation → preventDefault annulla l'azione predefinita del browser (per esempio l'invio del form); stopPropagation interrompe la propagazione dell'evento ad altri nodi. Scambiarli lascia partire invii indesiderati o non ferma i listener degli antenati.
+- [ ] **Eventi: locali vs remoti**: Pensare che con HTTP ordinario il server possa avvisare la pagina quando vuole → Nel modello richiesta-risposta di HTTP è il client a iniziare: il server non apre conversazioni. Per questo servono polling, long polling, oppure canali persistenti come SSE e WebSocket (questo dopo un handshake iniziale via HTTP).
+- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Trattare Web 1.0, 2.0, 3.0, 4.0 come versioni ufficiali rilasciate in date precise → Sono etichette descrittive di tendenze, con confini sfumati e fasi che convivono: nessun organismo le rilascia e le datazioni sono solo indicative. Le domande si risolvono con le caratteristiche, non con gli anni.
+- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Attribuire i contenuti generati dagli utenti al Web 1.0 → Il Web 1.0 è di sola lettura: pochi autori, pagine statiche uguali per tutti. Partecipazione, profili e contenuti degli utenti sono la firma del Web 2.0.
+- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Rispondere sul Web 3.0 con significati diversi dal web semantico del materiale del corso → Nel materiale di studio del corso (SYLLABUS e MATERIALE_UTENTE) il 3.0 è il Web semantico: dati condivisi e riusabili tra applicazioni con formati comuni come RDF e significato elaborabile dalle macchine. È in quel quadro che vanno date le risposte.
+- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Far entrare negli abbinamenti opzioni fuori contesto come LAN o fasi di installazione → Sono i distrattori segnalati dal materiale di studio: termini di reti locali o di sistemi operativi non sono generazioni del Web. Un'opzione che non riguarda contenuti, interazione, dati o servizi web va scartata immediatamente.
+- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Credere che una nuova generazione elimini del tutto le precedenti → Le fasi si sovrappongono: oggi convivono pagine statiche, applicazioni partecipative e dati semantici. Descrivono modelli d'uso prevalenti in un periodo, non sostituzioni complete.
 - [ ] **SQLite: operazioni CRUD**: Inserire input utente concatenandolo nella query. → Il dato può essere interpretato come SQL; i placeholder separano codice e valore.
 - [ ] **SQLite: operazioni CRUD**: Dimenticare WHERE in UPDATE o DELETE. → La query potrebbe modificare o cancellare tutte le righe della tabella.
 - [ ] **SQLite: operazioni CRUD**: Pensare che `with conn` chiuda automaticamente la connessione. → Il context manager gestisce la transazione; la connessione resta da chiudere esplicitamente.
-- [ ] **Web Semantico: RDF, OWL, SPARQL**: Dire che RDF è un linguaggio di query. → RDF è un modello di rappresentazione; il linguaggio di query dei grafi RDF è SPARQL.
-- [ ] **Web Semantico: RDF, OWL, SPARQL**: Dire che OWL è soltanto sinonimo di RDF. → OWL è un linguaggio ontologico con semantica formale nell’ecosistema RDF; i ruoli sono distinti.
-- [ ] **Web Semantico: RDF, OWL, SPARQL**: Pensare che un reasoner deduca qualsiasi significato umano implicito. → Il reasoner segue assiomi formali e semantica del linguaggio, non conoscenza informale non modellata.
-- [ ] **SPARQL: esempi di query**: Dimenticare che variabili uguali collegano triple. → Variabili con lo stesso nome sono la condizione di join; variabili diverse non impongono uguaglianza.
-- [ ] **SPARQL: esempi di query**: Affermare che i risultati sono sempre ordinati. → L’ordine non è garantito senza una clausola `ORDER BY`.
-- [ ] **SPARQL: esempi di query**: Usare SELECT quando la domanda richiede solo vero/falso. → ASK restituisce un booleano di esistenza; SELECT genera soluzioni tabellari.
 - [ ] **Tesina: Progetto Flask + CRUD**: Inviare al database direttamente i valori del form → Il client è sotto il controllo dell’utente: i dati vanno validati sul server.
 - [ ] **Tesina: Progetto Flask + CRUD**: Usare PUT come sinonimo automatico di aggiornamento parziale → PUT sostituisce la rappresentazione secondo il contratto; PATCH serve agli aggiornamenti parziali.
 - [ ] **Tesina: Progetto Flask + CRUD**: Restituire un corpo insieme a 204 → 204 indica che la risposta non contiene contenuto; usa un altro status se invii una rappresentazione.
 - [ ] **Tesina: Domande di revisione codice**: Dire che fetch lancia un errore per ogni status 4xx → Una risposta 404 è una risposta HTTP; occorre controllare response.ok o status.
 - [ ] **Tesina: Domande di revisione codice**: Definire PUT e PATCH equivalenti → PUT sostituisce la rappresentazione secondo il contratto, PATCH applica una modifica parziale.
 - [ ] **Tesina: Domande di revisione codice**: Dire che il cookie conserva automaticamente lo stato nel server → Il cookie è trasmesso dal browser; il server deve definire e gestire il meccanismo di sessione.
-- [ ] **Tesina: Presentazione di 8 minuti con 4 slide**: Riempire ogni slide di codice → Il testo fitto distrae dall’argomento e non aiuta a capire una scelta.
-- [ ] **Tesina: Presentazione di 8 minuti con 4 slide**: Presentare i tempi proposti come valutazione ufficiale → La scansione 1+2+3+2 compare nel materiale utente ma non è stata verificata come regola ufficiale.
-- [ ] **Tesina: Presentazione di 8 minuti con 4 slide**: Affidarsi a una demo mai provata → Un guasto interrompe il discorso e impedisce di verificare il flusso.
-- [ ] **Rate limiting e sicurezza delle API**: Dire che il rate limiting ferma ogni DDoS → Limita richieste secondo una policy, ma un attacco distribuito richiede ulteriori difese di rete e disponibilità.
-- [ ] **Rate limiting e sicurezza delle API**: Usare CORS come sistema di autenticazione → CORS è applicato dai browser per l'accesso cross-origin; non dimostra l'identità del client e non blocca client non-browser.
-- [ ] **Rate limiting e sicurezza delle API**: Contare solo in memoria su ogni istanza → Un client può distribuire il traffico tra processi e aggirare contatori separati; il servizio deve coordinare lo stato del limite.
+- [ ] **Tesina: presentazione PowerPoint (max 8 minuti)**: Riempire ogni slide di codice → Il testo fitto distrae dall’argomento e non aiuta a capire una scelta.
+- [ ] **Tesina: presentazione PowerPoint (max 8 minuti)**: Presentare i tempi proposti come valutazione ufficiale → La scansione 1+2+3+2 compare nel materiale utente ma non è stata verificata come regola ufficiale.
+- [ ] **Tesina: presentazione PowerPoint (max 8 minuti)**: Affidarsi a una demo mai provata → Un guasto interrompe il discorso e impedisce di verificare il flusso.
+- [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Affidarsi al solo colore per il feedback → Il significato deve essere comunicato anche con testo, perché il colore da solo non è sufficiente.
+- [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Usare name diversi per ogni radio della stessa domanda → Si perderebbe il comportamento di selezione esclusiva nativo del gruppo.
+- [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Trattare il submit vuoto come risposta errata → La mancata scelta è un caso distinto e può richiedere un messaggio di completamento.
 - [ ] **Canvas API: disegno 2D in HTML**: Disegnare sull'elemento canvas senza ottenere il contesto → L'elemento è solo l'area: i metodi di disegno stanno sul contesto restituito da getContext('2d'). Chiamare fillRect sull'elemento è un errore, perché quel metodo sull'elemento non esiste.
 - [ ] **Canvas API: disegno 2D in HTML**: Confondere attributi width/height del canvas con le omonime proprietà CSS → Gli attributi definiscono la risoluzione della bitmap (predefiniti 300 per 150), il CSS la dimensione di visualizzazione. Se differiscono, la bitmap viene scalata e appare sfocata o deformata.
 - [ ] **Canvas API: disegno 2D in HTML**: Trattare le forme disegnate come oggetti cliccabili e spostabili → Il modello è immediato: restano solo i pixel, non oggetti forma. Per spostare qualcosa si cancella e si ridisegna; per intercettare un click su una forma si calcolano le coordinate a mano.
@@ -703,35 +719,19 @@
 - [ ] **DHTML: Dynamic HTML**: Affermare che con DHTML la pagina ottiene dati aggiornati dal server senza ricaricarsi → Quello è il contributo di AJAX (richieste asincrone di dati). Il DHTML da solo trasforma ciò che è già arrivato nel browser: struttura, stili e contenuti locali.
 - [ ] **DHTML: Dynamic HTML**: Credere che ogni effetto dinamico richieda JavaScript, compreso un rollover → Effetti di sola presentazione legati a stati come il passaggio del mouse si esprimono in CSS con :hover. JavaScript serve quando l'effetto dipende da una logica o da uno stato da elaborare.
 - [ ] **DHTML: Dynamic HTML**: Negli abbinamenti, associare DHTML a opzioni fuori dal contesto web → È la trappola segnalata nel materiale di studio: opzioni come reti locali o installazione di sistemi operativi sono distrattori fuori contesto. DHTML coinvolge solo HTML, CSS, JavaScript e DOM nel browser.
-- [ ] **Eventi: locali vs remoti**: Classificare il click come evento remoto perché la pagina arriva da un server → Il criterio è l'origine dell'evento, non quella della pagina: il click nasce dall'interazione dell'utente nel browser ed è gestito localmente dai listener. Remoto è ciò che nasce fuori dal client e deve viaggiare sulla rete.
-- [ ] **Eventi: locali vs remoti**: Descrivere i Server-Sent Events come canale bidirezionale → SSE è un flusso unidirezionale dal server al client (EventSource, formato text/event-stream): la pagina non può inviare messaggi su quel canale. Per la bidirezionalità continua serve WebSocket, oppure normali richieste separate dal client.
-- [ ] **Eventi: locali vs remoti**: Presentare il polling come aggiornamento in tempo reale senza costi → Il polling interroga a intervalli: tra un controllo e l'altro le novità aspettano, e molti controlli tornano a vuoto consumando richieste. È semplice, ma né istantaneo né gratuito.
-- [ ] **Eventi: locali vs remoti**: Confondere preventDefault e stopPropagation → preventDefault annulla l'azione predefinita del browser (per esempio l'invio del form); stopPropagation interrompe la propagazione dell'evento ad altri nodi. Scambiarli lascia partire invii indesiderati o non ferma i listener degli antenati.
-- [ ] **Eventi: locali vs remoti**: Pensare che con HTTP ordinario il server possa avvisare la pagina quando vuole → Nel modello richiesta-risposta di HTTP è il client a iniziare: il server non apre conversazioni. Per questo servono polling, long polling, oppure canali persistenti come SSE e WebSocket (questo dopo un handshake iniziale via HTTP).
 - [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Dire che il parser esegue il codice JavaScript → Il parser analizza il testo sorgente e costruisce l'AST, segnalando gli errori di sintassi. L'esecuzione comincia dopo, con l'interprete che gira sul bytecode generato a partire dall'AST.
 - [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Confondere l'AST con il codice macchina o con il bytecode → L'AST è la rappresentazione ad albero della struttura del programma, ancora indipendente dalla macchina. Il bytecode è una rappresentazione compatta eseguita dall'interprete; il codice macchina è il prodotto finale del JIT per le parti calde.
 - [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Pensare che il JIT compili tutto il programma prima di iniziare a eseguirlo → Just-In-Time significa durante l'esecuzione e in modo selettivo: si comincia interpretando il bytecode e si compila in codice macchina solo ciò che il profiler segnala come caldo. Compilare tutto prima è la strategia AOT, diversa.
 - [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Attribuire il DOM al motore JavaScript → Il motore implementa il linguaggio ECMAScript; il DOM lo fornisce il browser che ospita il motore, come precisa la documentazione ufficiale di V8. In Node.js, infatti, document non esiste.
 - [ ] **Motore JavaScript: parser, AST, profiler, JIT**: Credere che una volta ottimizzato, il codice resti tale per sempre → Le ottimizzazioni JIT sono speculative, basate sui tipi osservati dal feedback: se arriva un valore di tipo diverso, il motore deottimizza e torna al bytecode per mantenere il risultato corretto.
-- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Trattare Web 1.0, 2.0, 3.0, 4.0 come versioni ufficiali rilasciate in date precise → Sono etichette descrittive di tendenze, con confini sfumati e fasi che convivono: nessun organismo le rilascia e le datazioni sono solo indicative. Le domande si risolvono con le caratteristiche, non con gli anni.
-- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Attribuire i contenuti generati dagli utenti al Web 1.0 → Il Web 1.0 è di sola lettura: pochi autori, pagine statiche uguali per tutti. Partecipazione, profili e contenuti degli utenti sono la firma del Web 2.0.
-- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Rispondere sul Web 3.0 con significati diversi dal web semantico del materiale del corso → Nel materiale di studio del corso (SYLLABUS e MATERIALE_UTENTE) il 3.0 è il Web semantico: dati condivisi e riusabili tra applicazioni con formati comuni come RDF e significato elaborabile dalle macchine. È in quel quadro che vanno date le risposte.
-- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Far entrare negli abbinamenti opzioni fuori contesto come LAN o fasi di installazione → Sono i distrattori segnalati dal materiale di studio: termini di reti locali o di sistemi operativi non sono generazioni del Web. Un'opzione che non riguarda contenuti, interazione, dati o servizi web va scartata immediatamente.
-- [ ] **Evoluzione del Web: 1.0 → 2.0 → 3.0 → 4.0**: Credere che una nuova generazione elimini del tutto le precedenti → Le fasi si sovrappongono: oggi convivono pagine statiche, applicazioni partecipative e dati semantici. Descrivono modelli d'uso prevalenti in un periodo, non sostituzioni complete.
-- [ ] **JSON: formato dati per il Web**: Scrivere `True`, `False` e `None` come token JSON. → La sintassi JSON usa `true`, `false` e `null`; i token Python non sono validi in JSON.
-- [ ] **JSON: formato dati per il Web**: Aggiungere commenti o virgole finali a un documento JSON. → Non fanno parte della grammatica JSON standard e causano errori di parsing.
-- [ ] **JSON: formato dati per il Web**: Pensare che JSON valido significhi dati sicuri o corretti. → JSON garantisce la sintassi, non schema applicativo, autorizzazione o sicurezza.
-- [ ] **AJAX: Asynchronous JavaScript and XML**: Dire che AJAX deve ricevere XML. → XML è nel nome storico; la tecnica può usare JSON o altri formati.
-- [ ] **AJAX: Asynchronous JavaScript and XML**: Credere che fetch rifiuti automaticamente la Promise con status 404. → Una risposta HTTP 404 normalmente risolve la Promise; si deve controllare `response.ok` o `status`.
-- [ ] **AJAX: Asynchronous JavaScript and XML**: Inserire titoli ricevuti con `innerHTML` senza sanificazione. → Testo remoto può contenere markup non attendibile; `textContent` lo tratta come testo.
-- [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Affidarsi al solo colore per il feedback → Il significato deve essere comunicato anche con testo, perché il colore da solo non è sufficiente.
-- [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Usare name diversi per ogni radio della stessa domanda → Si perderebbe il comportamento di selezione esclusiva nativo del gruppo.
-- [ ] **Quiz e form: domande a scelta multipla e raccolta risposte**: Trattare il submit vuoto come risposta errata → La mancata scelta è un caso distinto e può richiedere un messaggio di completamento.
-- [ ] **Tesina: Esercitazione guidata e modello presentazione**: Implementare tutte le funzioni prima di provarne una → Gli errori precoci si accumulano e diventano più difficili da isolare.
-- [ ] **Tesina: Esercitazione guidata e modello presentazione**: Copiare il modello di slide senza adattarlo al progetto → Il racconto deve corrispondere a componenti e comportamenti realmente presenti.
-- [ ] **Tesina: Esercitazione guidata e modello presentazione**: Considerare una demo riuscita come test completo → La demo mostra un percorso; non verifica automaticamente input invalidi e fallimenti.
 - [ ] **Tag <span>: uso e scopi**: Dire che lo span introduce un'interruzione di riga come il div → Lo span è inline: resta nel flusso del testo senza andare a capo. Il div è il contenitore generico a blocco e forza una riga propria. Confondere i due livelli è la trappola centrale negli abbinamenti su questo tag.
 - [ ] **Tag <span>: uso e scopi**: Usare lo span per rendere un testo importante o enfatizzato → Importanza ed enfasi sono significati, e hanno i loro elementi: strong ed em. Lo span non rappresenta nulla: con uno stile lo fai solo sembrare importante per chi vede, senza dirlo a chi usa tecnologie assistive.
 - [ ] **Tag <span>: uso e scopi**: Costruire pulsanti con span cliccabili invece di button o a → Lo span non è focalizzabile, non risponde alla tastiera come un controllo e non espone un ruolo adeguato. Un'azione vuole un button, un collegamento vuole un a con href.
 - [ ] **Tag <span>: uso e scopi**: Aspettarsi che uno span rispetti width ed height senza cambiare display → Come elemento inline non sostituito, lo span ignora width, height e margini verticali ai fini del layout. Per dimensionarlo occorre display: inline-block o block.
 - [ ] **Tag <span>: uso e scopi**: Mettere blocchi come div o paragrafi dentro uno span → Il modello di contenuto dello span è il phrasing content (testo ed elementi inline). Contenuti a blocco dentro uno span sono markup non valido e producono comportamenti imprevedibili.
+- [ ] **Web Semantico: RDF, OWL, SPARQL**: Dire che RDF è un linguaggio di query. → RDF è un modello di rappresentazione; il linguaggio di query dei grafi RDF è SPARQL.
+- [ ] **Web Semantico: RDF, OWL, SPARQL**: Dire che OWL è soltanto sinonimo di RDF. → OWL è un linguaggio ontologico con semantica formale nell’ecosistema RDF; i ruoli sono distinti.
+- [ ] **Web Semantico: RDF, OWL, SPARQL**: Pensare che un reasoner deduca qualsiasi significato umano implicito. → Il reasoner segue assiomi formali e semantica del linguaggio, non conoscenza informale non modellata.
+- [ ] **SPARQL: esempi di query**: Dimenticare che variabili uguali collegano triple. → Variabili con lo stesso nome sono la condizione di join; variabili diverse non impongono uguaglianza.
+- [ ] **SPARQL: esempi di query**: Affermare che i risultati sono sempre ordinati. → L’ordine non è garantito senza una clausola `ORDER BY`.
+- [ ] **SPARQL: esempi di query**: Usare SELECT quando la domanda richiede solo vero/falso. → ASK restituisce un booleano di esistenza; SELECT genera soluzioni tabellari.
