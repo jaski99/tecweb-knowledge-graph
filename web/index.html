@@ -8,6 +8,8 @@
   <meta name="kg-quiz-url" content="quiz.json ../graph/quiz.json">
   <title>Tecnologie Web — Knowledge graph di studio (UNIMORE)</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#1d4ed8">
   <script>
     try {
       let tema = localStorage.getItem('ids-kg:tema:v1');
@@ -16,13 +18,14 @@
     } catch (_) { document.documentElement.dataset.theme = 'light'; }
   </script>
   <link rel="stylesheet" href="css/style.css">
-  <script defer src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
-  <script defer src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
-  <script defer src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/styles/github.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/highlight.min.js"></script>
+  <script defer src="vendor/cytoscape.min.js"></script>
+  <script defer src="vendor/dagre.min.js"></script>
+  <script defer src="vendor/cytoscape-dagre.js"></script>
+  <link rel="stylesheet" href="vendor/highlight-github.min.css">
+  <script defer src="vendor/marked.min.js"></script>
+  <script defer src="vendor/purify.min.js"></script>
+  <script defer src="vendor/highlight.min.js"></script>
+  <script src="precache.js"></script>
   <script type="module" src="js/main.js"></script>
 </head>
 <body>
@@ -34,6 +37,8 @@
     </div>
     <p id="course" class="muted"></p>
     <details class="note"><summary>Come sono state decise le priorità</summary><p id="exam-note"></p></details>
+    <p id="offline-status" class="offline-status" role="status" hidden></p>
+    <details id="backup-panel" class="data-panel"></details>
     <nav id="module-nav" class="module-nav" aria-label="Strumenti di studio"></nav>
   </header>
   <div class="layout">
@@ -44,6 +49,7 @@
     <main id="main">
       <p id="status" role="status">Caricamento…</p>
       <div id="resume" class="resume" aria-label="Riprendi lo studio" hidden></div>
+      <section id="today" class="today" aria-label="Sessione di oggi"></section>
       <div class="tablist" role="tablist" aria-label="Viste del knowledge graph">
         <button role="tab" id="tab-grafo" data-tab="grafo" aria-controls="view-grafo" aria-selected="true">Grafo</button>
         <button role="tab" id="tab-percorso" data-tab="percorso" aria-controls="view-percorso" aria-selected="false" tabindex="-1">Percorso</button>
@@ -52,13 +58,19 @@
       <section id="view-grafo" role="tabpanel" aria-labelledby="tab-grafo">
         <div class="graph-layout">
           <div>
+            <div class="graph-controls">
+              <button id="graph-list-toggle" class="btn" type="button" aria-expanded="false" aria-controls="graph-mobile-list">Vista elenco del grafo</button>
+              <p class="muted">Frecce: segui prerequisiti e successori · Invio: apri · +/−: zoom · Adatta: mappa completa.</p>
+            </div>
+            <details id="graph-legend" class="legend"></details>
+            <p id="graph-announcement" class="sr-only" aria-live="polite"></p>
             <div class="graph-wrap">
               <div class="graph-tools" aria-label="Controlli del grafo">
                 <button id="zoom-in" class="btn" type="button" aria-label="Ingrandisci">+</button>
                 <button id="zoom-out" class="btn" type="button" aria-label="Riduci">−</button>
                 <button id="zoom-fit" class="btn" type="button">Adatta</button>
               </div>
-              <div id="cy" role="img" tabindex="0" aria-label="Grafo interattivo; usa le frecce per spostarti e Invio per aprire una lezione."></div>
+              <div id="cy" role="group" tabindex="0" aria-label="Grafo interattivo; usa le frecce per seguire gli archi e Invio per aprire una lezione."></div>
               <canvas id="minimap" class="minimap" aria-label="Minimappa del grafo"></canvas>
             </div>
             <div id="graph-mobile-list" class="graph-mobile-list"></div>
@@ -68,7 +80,11 @@
       </section>
       <section id="view-percorso" role="tabpanel" aria-labelledby="tab-percorso" hidden>
         <h2>Percorso di studio</h2>
-        <p class="muted">Ordine topologico: i prerequisiti precedono i concetti che li richiedono. Puoi spuntare ciò che hai studiato.</p>
+        <p class="muted">Ordine topologico: i prerequisiti precedono i concetti che li richiedono. Le lezioni restano sempre accessibili.</p>
+        <fieldset class="path-mode"><legend>Modalità del percorso</legend>
+          <label class="chip"><input type="radio" name="path-mode" value="libera" checked> Esplora liberamente</label>
+          <label class="chip"><input type="radio" name="path-mode" value="guidata"> Percorso guidato (suggerimenti)</label>
+        </fieldset>
         <div id="path"></div>
       </section>
       <section id="view-ripasso" role="tabpanel" aria-labelledby="tab-ripasso" hidden>

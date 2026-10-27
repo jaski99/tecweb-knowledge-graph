@@ -10,3 +10,4 @@ else
   printf '{"quiz":[]}\n' > "$ROOT/web/quiz.json"
 fi
 echo "copiato graph/graph.json -> web/graph.json"
+python3 "$ROOT/web/scripts/genera_precache.py"

@@ -48,18 +48,22 @@ export function padronanzaPerArea(carte, stati, aree) {
   });
 }
 
-/**
- * Giorni di studio consecutivi fino a oggi. Se oggi non si è ancora studiato,
- * la serie di ieri resta valida (si rompe solo saltando un giorno intero).
- */
-export function serieDiStudio(giorni, oggi) {
-  if (!isIsoDay(oggi)) throw new TypeError(`Data ISO non valida: ${oggi}`);
-  const fatti = new Set((giorni || []).filter(isIsoDay));
-  let cursor = fatti.has(oggi) ? oggi : addDaysIso(oggi, -1);
-  let serie = 0;
-  while (fatti.has(cursor)) {
-    serie += 1;
-    cursor = addDaysIso(cursor, -1);
+/** Previsione dei prossimi sette giorni, oggi incluso; gli arretrati contano oggi. */
+export function previsioneSettimana(carte, stati, oggi) {
+  if (!isIsoDay(oggi)) throw new TypeError('Data non valida');
+  const giorni = Array.from({ length: 7 }, (_, i) => ({ giorno: addDaysIso(oggi, i), dovute: 0 }));
+  for (const c of carte || []) {
+    const s = stati?.[c.id];
+    if (!s || !s.revisioni) continue;
+    const giorno = !s.scadenza || s.scadenza <= oggi ? oggi : s.scadenza;
+    const riga = giorni.find((g) => g.giorno === giorno);
+    if (riga) riga.dovute++;
   }
-  return serie;
+  return giorni;
+}
+
+/** Non si sospende nulla automaticamente: si segnalano le carte con tre errori o più. */
+export function carteSanguisuga(carte, stati, soglia = 3) {
+  return (carte || []).filter((c) => (stati?.[c.id]?.errori || 0) >= soglia)
+    .slice().sort((a, b) => stati[b.id].errori - stati[a.id].errori || a.id.localeCompare(b.id));
 }

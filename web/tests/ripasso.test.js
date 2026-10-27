@@ -6,7 +6,7 @@ import {
   applicaVoto, formatIntervallo, intervalloPrevisto, isScaduta, normalizzaStato, nuovoStato, EF_MIN, QUALITA,
 } from '../modules/ripasso/sm2.js';
 import { costruisciMazzo, codaStudio, filtraCarte, prossimaScadenza } from '../modules/ripasso/mazzo.js';
-import { padronanzaPerArea, riepilogoCarte, serieDiStudio, statoCarta } from '../modules/ripasso/statistiche.js';
+import { padronanzaPerArea, riepilogoCarte, statoCarta } from '../modules/ripasso/statistiche.js';
 import { cancellaStato, conRevisione, leggiStato, salvaStato, statoVuoto, CHIAVE_STORAGE } from '../modules/ripasso/store.js';
 
 const graph = JSON.parse(readFileSync(new URL('../../graph/graph.json', import.meta.url), 'utf8'));
@@ -115,9 +115,9 @@ test('mazzo: carte da autoverifica e checklist, vuoti e nodi senza id saltati', 
     { title: 'senza id' },
     null,
   ]);
-  assert.deepEqual(mazzo.map((c) => c.id), ['a#domanda-0', 'a#checklist-0', 'b#checklist-0']);
+  assert.deepEqual(mazzo.map((c) => c.id), ['a#domanda-0', 'a#checklist-0', 'b#checklist-0', 'c#checklist-0']);
   assert.deepEqual([mazzo[0].domanda, mazzo[0].risposta, mazzo[0].tipo], ['D1?', 'R1', 'domanda']);
-  assert.equal(mazzo[1].risposta, 'Sapere a'); // la checklist mostra il `sapere`, mai testo inventato
+  assert.equal(mazzo[1].risposta, 'Punto uno'); // riferimento specifico originale
   assert.deepEqual([mazzo[2].area, mazzo[2].priorita, mazzo[2].nodoTitolo], [2, 'alta', 'Titolo b']);
   assert.deepEqual(costruisciMazzo(undefined), []);
 });
@@ -155,9 +155,9 @@ test('mazzo: sul grafo reale ogni carta viene dai campi dichiarati e gli id sono
     ...(n.lezione?.domande_autoverifica || []),
     ...(n.lezione?.richiamo_attivo?.domande || []),
   ].filter((d) => d.domanda?.trim() && d.risposta?.trim())).length;
-  const atteseFlashcard = graph.nodi.filter((n) => n.lezione?.flashcard?.fronte?.trim() && n.lezione?.flashcard?.retro?.trim()).length;
+  const atteseFlashcard = graph.nodi.flatMap((n) => Array.isArray(n.lezione?.flashcard) ? n.lezione.flashcard : [n.lezione?.flashcard]).filter((f) => f?.fronte?.trim() && f?.retro?.trim()).length;
   const atteseChecklist = graph.nodi.flatMap((n) => (n.checklist_ripasso || [])
-    .filter((p) => typeof p === 'string' && p.trim() && n.sapere?.trim())).length;
+    .filter((p) => typeof p === 'string' && p.trim())).length;
   assert.equal(mazzo.length, atteseDomande + atteseFlashcard + atteseChecklist);
   assert.ok(mazzo.length > 0);
   assert.equal(new Set(mazzo.map((c) => c.id)).size, mazzo.length);
@@ -168,8 +168,8 @@ test('mazzo: sul grafo reale ogni carta viene dai campi dichiarati e gli id sono
     if (c.tipo === 'domanda') {
       const domande = [...(n.lezione.domande_autoverifica || []), ...(n.lezione.richiamo_attivo?.domande || [])];
       assert.equal(c.risposta, domande[c.indice].risposta.trim(), c.id);
-    } else if (c.tipo === 'flashcard') assert.equal(c.risposta, n.lezione.flashcard.retro.trim(), c.id);
-    else assert.equal(c.risposta, n.sapere.trim(), c.id);
+    } else if (c.tipo === 'flashcard') { const f = Array.isArray(n.lezione.flashcard) ? n.lezione.flashcard[c.indice] : n.lezione.flashcard; assert.equal(c.risposta, f.retro.trim(), c.id); }
+    else assert.equal(c.risposta, n.checklist_ripasso[c.indice].trim(), c.id);
   }
   assert.ok(codaStudio(mazzo, {}, OGGI).every((c, i, arr) => i === 0 || arr[0].priorita === 'alta'));
 });
@@ -195,15 +195,6 @@ test('statistiche: padronanza per area, aree senza carte a 0%', () => {
   assert.deepEqual(padronanzaPerArea(carte, stati, graph.aree).slice(0, 3).map((r) => [r.area, r.totale, r.percentuale]),
     [[1, 2, 50], [2, 1, 0], [3, 0, 0]]);
   assert.equal(padronanzaPerArea(carte, stati, [])[0].titolo, 'Area 1');
-});
-
-test('statistiche: serie di giorni, ieri tiene viva la serie, un buco la rompe', () => {
-  assert.equal(serieDiStudio([], '2026-03-10'), 0);
-  assert.equal(serieDiStudio(['2026-03-08', '2026-03-09', '2026-03-10'], '2026-03-10'), 3);
-  assert.equal(serieDiStudio(['2026-03-08', '2026-03-09'], '2026-03-10'), 2);
-  assert.equal(serieDiStudio(['2026-03-08'], '2026-03-10'), 0);
-  assert.equal(serieDiStudio(['2026-03-10', '2026-03-10', 'boh', '2026-03-09'], '2026-03-10'), 2);
-  assert.equal(serieDiStudio(['2024-02-28', '2024-02-29', '2024-03-01'], '2024-03-01'), 3);
 });
 
 // ---------- store ----------

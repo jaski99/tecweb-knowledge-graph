@@ -27,10 +27,19 @@ jobs:
         run: pip install -r requirements.txt playwright
       - name: Installa Chromium per Playwright
         run: python -m playwright install --with-deps chromium
+      - name: Rigenera dati, documenti e precache
+        run: python scripts/kg.py build && python scripts/gen_docs.py build && sh web/build.sh
       - name: Controlla knowledge graph
         run: python scripts/kg.py check
       - name: Test dei moduli JavaScript
-        run: npm test --prefix web
+        shell: bash
+        run: |
+          set -o pipefail
+          npm test --prefix web | tee /tmp/node-output.txt
+          if grep -Eq '^# skipped [1-9][0-9]*$' /tmp/node-output.txt; then
+            echo "::error::Node ha saltato test: in CI sono richiesti zero test saltati"
+            exit 1
+          fi
       - name: Test Python ed e2e Playwright
         shell: bash
         run: |

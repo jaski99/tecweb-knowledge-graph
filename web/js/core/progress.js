@@ -20,3 +20,10 @@ export function formatMinuti(min) {
   const h = Math.floor(min / 60), m = min % 60;
   return h ? `${h} h${m ? ` ${m} min` : ''}` : `${m} min`;
 }
+
+/** Conteggio indicativo dei nodi padroneggiati in un gruppo, non un voto. */
+export function masteryProgress(nodes, mastery, gruppo = 'A') {
+  const selezionati = nodes.filter((n) => n.gruppo === gruppo);
+  const padroneggiati = selezionati.filter((n) => mastery.get(n.id) === 'padroneggiato').length;
+  return { totale: selezionati.length, padroneggiati, percentuale: selezionati.length ? Math.round(100 * padroneggiati / selezionati.length) : 0 };
+}

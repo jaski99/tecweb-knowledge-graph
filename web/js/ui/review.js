@@ -12,7 +12,7 @@ export function createReviewView(root, graph, reviewStore, { onSelect }) {
       if (!ids.length) { root.append(h('p', { class: 'muted' }, 'Nessun punto di ripasso per i filtri attuali.')); return; }
       const traps = graph.trappole || [];
       root.append(
-        traps.length ? h('section', { class: 'review traps' }, h('h3', {}, '⚠ Trappole note dalle prove d\u2019esame'),
+        traps.length ? h('section', { class: 'review traps' }, h('h3', {}, '⚠ Trappole di ripasso'),
           h('ul', {}, traps.map((t, i) => h('li', {}, h('label', { class: 'check' },
             h('input', { type: 'checkbox', checked: reviewStore.has(`trappola#${i}`), onchange: (e) => reviewStore.toggle(`trappola#${i}`, e.target.checked) }), ' ',
             h('span', {}, h('strong', {}, t.tema), h('span', { class: 'muted' }, ` (${t.fonte})`), h('br'), 'Trappola: ', t.trappola, h('br'), '→ ', t.risposta)))))) : null,

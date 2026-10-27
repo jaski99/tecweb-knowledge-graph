@@ -3,11 +3,13 @@
 // questa vista non legge mai globali. Il CSS è caricato qui, così l'aggancio in
 // avvia.js resta una sola riga di register come per gli altri moduli.
 import { clear, h } from '../dom.js';
+import { mazzoAnkiTSV } from '../../js/core/backup.js';
+import { scaricaFile } from '../../js/ui/download.js';
 import { formatGiornoIt, toIsoDay } from './giorni.js';
 import { costruisciMazzo, codaStudio, filtraCarte, PRIORITA, prossimaScadenza } from './mazzo.js';
 import { applicaVoto, formatIntervallo, intervalloPrevisto, VOTI } from './sm2.js';
-import { padronanzaPerArea, riepilogoCarte, serieDiStudio, statoCarta } from './statistiche.js';
-import { cancellaStato, conRevisione, leggiStato, salvaStato, statoVuoto } from './store.js';
+import { carteSanguisuga, padronanzaPerArea, previsioneSettimana, riepilogoCarte, statoCarta } from './statistiche.js';
+import { cancellaStato, conRevisione, leggiStato, LIMITE_NUOVE_MAX, nuoveDisponibili, salvaStato, statoVuoto } from './store.js';
 
 const CSS_HREF = 'modules/ripasso/style.css';
 const ETICHETTE_VOTO = { ancora: 'Ancora', difficile: 'Difficile', bene: 'Bene', facile: 'Facile' };
@@ -47,10 +49,10 @@ export function createRipassoView() {
       let rivelata = false;
       let visteSessione = 0;
 
-      const persist = () => { saveOk = salvaStato(storage, dati); };
+      const persist = () => { saveOk = salvaStato(storage, dati); ctx.onDataChange?.(); };
       const carteFiltrate = () => filtraCarte(mazzo, dati.filtri);
       const ricostruisciCoda = () => {
-        coda = codaStudio(carteFiltrate(), dati.carte, oggi());
+        coda = codaStudio(carteFiltrate(), dati.carte, oggi(), { maxNuove: nuoveDisponibili(dati, oggi()) });
         pos = 0;
         rivelata = false;
       };
@@ -102,12 +104,13 @@ export function createRipassoView() {
         if (!ask('Azzerare i progressi del ripasso salvati in questo browser? Le carte torneranno tutte nuove.')) return;
         cancellaStato(storage);
         dati = statoVuoto();
+        ctx.onDataChange?.();
         visteSessione = 0;
         ricostruisciCoda();
         draw('#ripasso-titolo');
       }
 
-      function intestazione(riepilogo, serie) {
+      function intestazione(riepilogo, giorniRegistrati) {
         const stat = (id, valore, etichetta) => h('div', { class: 'rip-stat' },
           h('p', { class: 'rip-stat-valore', id }, valore),
           h('p', { class: 'rip-stat-etichetta' }, etichetta));
@@ -123,8 +126,8 @@ export function createRipassoView() {
           h('section', { class: 'rip-stats', 'aria-label': 'Riepilogo del mazzo' },
             stat('ripasso-dovute', String(riepilogo.dovute), 'carte dovute oggi'),
             stat('ripasso-nuove', String(riepilogo.nuove), 'carte nuove'),
-            stat('ripasso-serie', String(serie), serie === 1 ? 'giorno di serie' : 'giorni di serie'),
-            stat('ripasso-padronanza', `${riepilogo.percentualePadronanza}%`, 'padronanza del mazzo')),
+            stat('ripasso-serie', String(giorniRegistrati), giorniRegistrati === 1 ? 'giorno di studio registrato' : 'giorni di studio registrati'),
+            stat('ripasso-padronanza', `${riepilogo.percentualePadronanza}%`, 'carte consolidate')),
         ];
       }
 
@@ -151,7 +154,16 @@ export function createRipassoView() {
               id: 'ripasso-filtro-priorita',
               onchange: (e) => cambiaFiltri({ ...dati.filtri, priorita: e.target.value === '' ? null : e.target.value }),
             }, opzioniPriorita)),
-          h('p', { class: 'muted rip-filtri-nota' }, `${carteFiltrate().length} carte nel filtro · ${mazzo.length} in tutto il mazzo`));
+          h('label', {}, 'Carte nuove al giorno',
+            h('input', { id: 'ripasso-limite', type: 'number', min: 0, max: LIMITE_NUOVE_MAX, value: dati.limiteNuove,
+              onchange: (e) => {
+                const v = Number(e.target.value);
+                if (!Number.isInteger(v) || v < 0 || v > LIMITE_NUOVE_MAX || e.target.value === '') { e.target.value = dati.limiteNuove; return; }
+                dati = { ...dati, limiteNuove: v }; persist(); ricostruisciCoda(); draw('#ripasso-limite');
+              },
+            })),
+          h('p', { class: 'muted rip-filtri-nota' }, `${carteFiltrate().length} carte nel filtro · ${mazzo.length} in tutto il mazzo. `
+            + `Nuove disponibili oggi: ${nuoveDisponibili(dati, oggi())}. Il limite è globale e non limita le carte già scadute.`));
       }
 
       function sezioneCarta() {
@@ -174,21 +186,21 @@ export function createRipassoView() {
           tipo,
           stato?.revisioni ? `Ultimo intervallo: ${formatIntervallo(stato.intervallo)}` : null,
         ].filter(Boolean);
-        const eDomanda = carta.tipo === 'domanda';
+        const eChecklist = carta.tipo === 'checklist';
 
         return h('section', { class: 'rip-carta', id: 'ripasso-carta', 'aria-label': 'Flashcard corrente' },
           h('p', { class: 'rip-sessione muted', id: 'ripasso-sessione', role: 'status' },
             `Carta ${pos + 1} di ${coda.length} in questa sessione · ${visteSessione} già ripassate`),
           h('p', { class: 'rip-meta' }, meta.map((m) => h('span', { class: 'rip-chip' }, m))),
           h('h2', { class: 'rip-nodo' }, carta.nodoTitolo),
-          h('p', { class: 'rip-tipo muted' }, eDomanda
-            ? 'Domanda di autoverifica — rispondi a voce o per iscritto, poi mostra la risposta.'
-            : 'Punto di checklist — prova a spiegarlo, poi mostra il riferimento del nodo.'),
+          h('p', { class: 'rip-tipo muted' }, eChecklist
+            ? 'Completa il punto di checklist, poi confrontalo con il testo originale.'
+            : 'Rispondi a voce o per iscritto, poi mostra la risposta.'),
           h('div', { class: 'rip-domanda', id: 'ripasso-domanda', tabindex: '-1' }, carta.domanda),
           rivelata
             ? [
               h('div', { class: 'rip-risposta', id: 'ripasso-risposta', tabindex: '-1' },
-                h('h3', {}, eDomanda ? 'Risposta' : 'Riferimento dal nodo (campo «sapere»)'),
+                h('h3', {}, eChecklist ? 'Punto originale della checklist' : 'Risposta'),
                 h('div', { class: 'rip-risposta-testo' }, carta.risposta)),
               h('p', { class: 'muted' }, 'Come è andata? Il voto decide tra quanto rivedrai questa carta.'),
               votiPossibili(carta),
@@ -206,10 +218,10 @@ export function createRipassoView() {
       function sezioneCompletata() {
         const prossima = prossimaScadenza(carteFiltrate(), dati.carte, oggi());
         return h('section', { class: 'rip-carta rip-fatto', id: 'ripasso-fatto', role: 'status' },
-          h('h2', {}, visteSessione > 0 ? 'Sessione completata 🎉' : 'Niente da ripassare oggi'),
+          h('h2', {}, visteSessione > 0 ? 'Sessione completata' : 'Niente da ripassare oggi'),
           h('p', {}, visteSessione > 0
             ? `Hai ripassato ${visteSessione} ${visteSessione === 1 ? 'carta' : 'carte'} in questa sessione.`
-            : 'Per i filtri scelti non ci sono carte scadute o nuove.'),
+            : 'Per i filtri scelti non ci sono carte scadute o nuove disponibili entro il limite di oggi.'),
           prossima ? h('p', { class: 'muted' }, `Prossima scadenza nel filtro: ${formatGiornoIt(prossima)}.`) : null,
           h('p', { class: 'rip-azioni' },
             h('button', {
@@ -232,15 +244,34 @@ export function createRipassoView() {
               h('span', { class: 'rip-area-valore' }, `${r.percentuale}% (${r.padroneggiate}/${r.totale})`)))));
       }
 
+      function sezioneIgiene(giorno) {
+        const previsione = previsioneSettimana(mazzo, dati.carte, giorno);
+        const sanguisughe = carteSanguisuga(mazzo, dati.carte);
+        return h('section', { class: 'rip-igiene', 'aria-label': 'Carico del ripasso' },
+          h('h2', {}, 'Prossimi 7 giorni'),
+          h('p', { class: 'muted' }, 'Solo carte già viste, scadenze attuali e arretrati inclusi oggi; le nuove revisioni cambieranno la previsione.'),
+          h('ul', { class: 'rip-previsione' }, previsione.map((p) => h('li', {},
+            h('strong', {}, formatGiornoIt(p.giorno)), `: ${p.dovute} ${p.dovute === 1 ? 'carta' : 'carte'}`))),
+          h('h3', {}, 'Carte da rivedere con attenzione'),
+          h('p', { class: 'muted' }, 'Sono segnalate dopo almeno 3 valutazioni «Ancora». Non vengono sospese automaticamente.'),
+          sanguisughe.length ? h('ul', { class: 'rip-sanguisughe' }, sanguisughe.map((c) => h('li', {},
+            h('strong', {}, c.nodoTitolo), ` — ${c.domanda} (${dati.carte[c.id].errori} errori) · `,
+            h('a', { href: hashLezione(c.nodoId) }, 'Apri la lezione'), ' · ',
+            h('a', { href: `${hashLezione(c.nodoId)}?sezione=richiamo` }, 'Spiega con parole tue'))))
+            : h('p', { class: 'muted' }, 'Nessuna carta segnalata.'));
+      }
+
       function pagina() {
         const giorno = oggi();
         const riepilogo = riepilogoCarte(mazzo, dati.carte, giorno);
-        const serie = serieDiStudio(dati.giorni, giorno);
+        const giorniRegistrati = dati.giorni.length;
         return h('div', {},
-          ...intestazione(riepilogo, serie),
+          ...intestazione(riepilogo, giorniRegistrati),
           sezioneFiltri(),
           sezioneCarta(),
           sezioneAree(),
+          sezioneIgiene(giorno),
+          h('p', {}, h('button', { type: 'button', class: 'btn', id: 'anki-export', onclick: () => scaricaFile(doc, 'tecweb-anki.tsv', mazzoAnkiTSV(mazzo), 'text/tab-separated-values;charset=utf-8') }, 'Scarica il mazzo per Anki (TSV)')),
           h('p', { class: 'rip-reset' },
             h('button', { type: 'button', class: 'btn', id: 'ripasso-azzera', onclick: azzera },
               'Azzera i progressi del ripasso')));

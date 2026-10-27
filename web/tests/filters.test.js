@@ -15,3 +15,9 @@ test('ricerca testo, senza accenti e multi-parola', () => {
   assert.deepEqual(ids({ q: 'fare b' }), ['b']);
 });
 test('filtri combinati (AND)', () => assert.deepEqual(ids({ aree: new Set([1]), q: 'c' }), ['c']));
+
+
+test('da studiare esclude sia i completati sia quelli indicati come già noti', () => {
+  const f = { ...emptyFilters(), stato: 'aperti' };
+  assert.deepEqual(applyFilters(nodi(), f, new Set(['a']), new Map(), { b: 'so-gia', c: 'in-corso' }).map((n) => n.id).sort(), ['c', 'd']);
+});
