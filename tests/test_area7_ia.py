@@ -18,12 +18,13 @@ import numpy as np
 import pytest
 from jsonschema import Draft202012Validator
 
-from kg import build, load_lessons, load_parts, load_schema, topo_order
+from kg import build, edges, load_lessons, load_parts, load_schema, topo_order
 
 
 ROOT = Path(__file__).resolve().parent.parent
 INTRO = "ia-introduzione-apprendimento"
 LAB = "ia-python-numpy-lab"
+PYTHON_BASE = "python-base-web"
 CLASS = "ia-supervisionato-classificazione-lineare"
 BAYES = "ia-bayes-apprendimento-statistico"
 CLUSTER = "ia-clustering-non-supervisionato"
@@ -31,16 +32,55 @@ REGRESSION = "ia-regressione"
 PCA = "ia-riduzione-dimensionalita"
 EXAM = "ia-esame-quiz-lab-lode"
 
-# Contratto dei prerequisiti della tabella 1.2, inclusa la forza di ogni arco.
+# Tabella 1.2 e integrazione I-2: prerequisiti e forza di ogni arco.
 CONTRACT = {
     INTRO: ("concetto", {}),
-    LAB: ("abilita", {}),
+    LAB: ("abilita", {PYTHON_BASE: "soft"}),
     CLASS: ("concetto", {INTRO: "hard", LAB: "soft"}),
     BAYES: ("concetto", {CLASS: "hard"}),
     CLUSTER: ("concetto", {INTRO: "hard", LAB: "soft"}),
     REGRESSION: ("concetto", {CLASS: "hard", LAB: "soft"}),
     PCA: ("concetto", {INTRO: "hard", LAB: "soft"}),
     EXAM: ("tipo_esercizio", {CLASS: "hard", CLUSTER: "hard", REGRESSION: "soft", BAYES: "soft", PCA: "soft"}),
+}
+# Chiave di correzione indipendente dalle lettere: protegge anche da opzioni
+# spostate senza aggiornare la risposta. Le alternative errate restano vicine
+# all'argomento, ma non rappresentano l'opzione corretta.
+CORRECT_CHOICES = {
+    INTRO: (
+        "Il train etichettato", "Test", "Un adattamento eccessivo al train, anche al rumore",
+        "I casi con una data coppia di classi vera e predetta", "La frazione delle predizioni corrette",
+    ),
+    LAB: (
+        "Le dimensioni degli assi", "`x @ w`", "Le righe, ottenendo una media per colonna",
+        "Sono uguali o una vale uno", "Il numero di osservazioni",
+    ),
+    CLASS: (
+        "`w @ x + b`", "Classe negativa", "Quando il margine è non positivo",
+        "Sigmoide e soglia", "Test",
+    ),
+    BAYES: (
+        "La probabilità della classe prima di osservare le feature",
+        "La likelihood dell’osservazione data la classe", "Indipendenza delle feature condizionata alla classe",
+        "A normalizzare le probabilità posteriori", "Possono essere mal calibrate",
+    ),
+    CLUSTER: (
+        "Raggruppa osservazioni senza target di classe", "Con la media dei punti assegnati al gruppo",
+        "La somma delle distanze quadratiche dai centroidi assegnati", "Sì, perché la scala modifica le distanze",
+        "No, può fermarsi in una soluzione locale",
+    ),
+    REGRESSION: (
+        "Una quantità numerica", "La somma degli scarti quadratici", "A stimare l’intercetta",
+        "No, perché è una media di quadrati", "Quando la feature è fuori dall’intervallo osservato nel train",
+    ),
+    PCA: (
+        "No, usa la variabilità delle feature", "La media appresa sul train", "Sono ortogonali", "No",
+        "No, le componenti scartate possono contenere informazione",
+    ),
+    EXAM: (
+        "Quiz a domande chiuse", "Idoneità ON/OFF", "Con un voto in trentesimi determinato dai quiz",
+        "Per eccesso", "30 in entrambi i moduli e lode in almeno uno",
+    ),
 }
 LESSON_FIELDS = {
     "perche_ti_serve", "scenario_fil_rouge", "definizione_esame", "spiegazione",
@@ -66,6 +106,8 @@ EDGE = re.compile(rf"^\s*({NODE_LINE})\s+-->\s+({NODE_LINE})\s*$")
 NODE = re.compile(r'^([A-Za-z][A-Za-z0-9]*)(?:\["([^"\n<>]+)"\])?$')
 FENCE = re.compile(r"^```([^\n]*)\n(.*?)^```\s*$", re.MULTILINE | re.DOTALL)
 ACCENTS = re.compile(r"\b(?:perche|piu|gia|puo|cosi)\b|\be'(?=\s|$)", re.IGNORECASE)
+CHOICES = re.compile(r"^(.+?) A\) (.+?); B\) (.+?); C\) (.+?)\.$")
+OFF_TOPIC = re.compile(r"\b(?:CSS|cookies?|HTTP|TCP|DNS|URLs?|URIs?|header|server|browser|porte?\s+di\s+rete|staging\s+Git)\b", re.IGNORECASE)
 
 
 @pytest.fixture(scope="module")
@@ -143,6 +185,16 @@ def test_prerequisiti_esistenti_e_grafo_aciclico(area_nodes):
         for pre in node["prerequisiti"]:
             assert pre["id"] in ids
             assert position[pre["id"]] < position[node["id"]]
+
+
+def test_base_python_precede_il_laboratorio_come_prerequisito_soft(area_nodes, lessons):
+    # Nel grafo gli archi partono dal prerequisito e arrivano al nodo dipendente.
+    graph_edges = edges(build()["nodi"])
+    assert (PYTHON_BASE, LAB) in graph_edges
+    assert (LAB, PYTHON_BASE) not in graph_edges
+    assert area_nodes[LAB]["prerequisiti"][0]["forza"] == "soft"
+    assert PYTHON_BASE in lessons[LAB]["spiegazione"]
+    assert PYTHON_BASE in {link["nodo"] for link in lessons[LAB]["richiamo_attivo"]["collegamenti_interleaving"]}
 
 
 @pytest.mark.parametrize("node_id", CONTRACT)
@@ -249,15 +301,34 @@ def test_tutte_le_fonti_tecniche_sono_rappresentate(area_nodes):
 def test_cinque_domande_chiuse_e_flashcard_distinta(node_id, lessons):
     lesson = lessons[node_id]
     questions = lesson["richiamo_attivo"]["domande"]
-    assert len(questions) == 5
+    assert len(questions) == len(CORRECT_CHOICES[node_id]) == 5
     assert {item["risposta"][0] for item in questions} == {"A", "B", "C"}
-    for item in questions:
-        for letter in ("A", "B", "C"):
-            assert f"{letter})" in item["domanda"]
+    for item, expected in zip(questions, CORRECT_CHOICES[node_id]):
+        match = CHOICES.fullmatch(item["domanda"])
+        assert match, item["domanda"]
+        options = dict(zip("ABC", match.groups()[1:]))
+        assert len({option.casefold() for option in options.values()}) == 3
         assert re.match(r"^[ABC]\) .{9,}", item["risposta"])
+        correct = item["risposta"][0]
+        assert options[correct] == expected
+        # La pertinenza semantica richiede revisione didattica; questo controllo
+        # impedisce il ritorno dei precedenti distrattori Web fuori contesto.
+        assert all(not OFF_TOPIC.search(option) for key, option in options.items() if key != correct)
     card = lesson["flashcard"]
     assert len(card["fronte"]) >= 5 and len(card["retro"]) >= 5
     assert card["fronte"] not in {question["domanda"] for question in questions}
+
+
+def test_contrasti_nei_richiami_e_fonti_per_le_regole_esame(lessons):
+    regression = lessons[REGRESSION]["richiamo_attivo"]["domande"]
+    assert "MAE" in regression[1]["domanda"] and "quadratici" in regression[1]["domanda"]
+    assert "MSE" in regression[3]["domanda"]
+    intro = lessons[INTRO]["richiamo_attivo"]["domande"][2]
+    assert "overfitting" in intro["domanda"] and "underfitting" in intro["risposta"]
+    linear = lessons[CLASS]["richiamo_attivo"]["domande"][3]
+    assert "centroide" in linear["domanda"] and "componenti principali" in linear["domanda"]
+    assert "clustering" in linear["risposta"] and "PCA" in linear["risposta"]
+    assert all("[F1]" in item["risposta"] for item in lessons[EXAM]["richiamo_attivo"]["domande"])
 
 
 def test_almeno_sei_carte_distinte_nel_mazzo_reale(area_nodes, lessons):
@@ -279,6 +350,8 @@ def test_almeno_sei_carte_distinte_nel_mazzo_reale(area_nodes, lessons):
         assert len({c["id"] for c in selected}) == len(selected)
         assert len({c["domanda"] for c in selected}) == len(selected)
         assert all(c["domanda"].strip() and c["risposta"].strip() for c in selected)
+        question_cards = {c["domanda"]: c["risposta"] for c in selected if c["tipo"] == "domanda"}
+        assert question_cards == {q["domanda"]: q["risposta"] for q in lessons[node_id]["richiamo_attivo"]["domande"]}
 
 
 @pytest.mark.parametrize("node_id", [INTRO, LAB, CLASS, BAYES, CLUSTER, REGRESSION, PCA])

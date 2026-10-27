@@ -176,3 +176,32 @@ def test_sensori_indica_permessi_contesto_sicuro_e_alternativa():
     text = json.dumps(_lesson("sensori-mobile-web"), ensure_ascii=False).casefold()
     for word in ("geolocation", "permess", "contesto sicuro", "manuale"):
         assert word in text
+
+
+def _frasi_prosa(spiegazione):
+    """Estrae frasi di prosa, ignorando codice, diagrammi e tabelle Markdown."""
+    senza_blocchi = re.sub(r"^```.*?^```\s*", "", spiegazione, flags=re.S | re.M)
+    righe_prosa = [
+        riga for riga in senza_blocchi.splitlines()
+        if not riga.startswith("#") and not riga.startswith("|")
+    ]
+    testo = re.sub(r"\s+", " ", " ".join(righe_prosa)).strip()
+    return [
+        frase.casefold()
+        for frase in re.split(r"(?<=[.!?])\s+", testo)
+        if len(frase.strip()) >= 40
+    ]
+
+
+def test_spiegazioni_x2_non_ripetono_frasi_generiche():
+    """Le spiegazioni devono avere prosa specifica del nodo, non template condivisi."""
+    proprietari = {}
+    for node_id in sorted(EXPECTED):
+        for frase in _frasi_prosa(_lesson(node_id)["spiegazione"]):
+            proprietari.setdefault(frase, set()).add(node_id)
+    duplicate = {
+        frase: sorted(node_ids)
+        for frase, node_ids in proprietari.items()
+        if len(node_ids) > 1
+    }
+    assert not duplicate, f"Frasi di prosa ripetute tra lezioni X2: {duplicate}"

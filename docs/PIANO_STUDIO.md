@@ -99,7 +99,7 @@ Ordine topologico dei nodi (ogni prerequisito prima del nodo che lo usa); a pari
 
 ## Sessione 14 (1 h 50 min)
 
-32. [ ] **IA: laboratorio Python e NumPy** (`ia-python-numpy-lab`) — area 7, gruppo A, abilita, priorità ALTA, 60 min. Prerequisiti: —
+32. [ ] **IA: laboratorio Python e NumPy** (`ia-python-numpy-lab`) — area 7, gruppo A, abilita, priorità ALTA, 60 min. Prerequisiti: python-base-web
 33. [ ] **IA: clustering e apprendimento non supervisionato** (`ia-clustering-non-supervisionato`) — area 7, gruppo A, concetto, priorità ALTA, 50 min. Prerequisiti: ia-introduzione-apprendimento, ia-python-numpy-lab
 
 ## Sessione 15 (1 h 45 min)
