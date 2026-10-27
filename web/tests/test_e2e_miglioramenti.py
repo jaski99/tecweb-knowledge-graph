@@ -63,7 +63,7 @@ def test_area7_elenco_stati_piano_e_lezioni_sempre_accessibili(browser, base_url
     graph = graph_con_area_ia()
     old_id = graph["nodi"][0]["id"]
     context = browser.new_context(viewport=VIEWPORTS[viewport], is_mobile=viewport == "mobile", has_touch=viewport == "mobile", service_workers="block")
-    context.add_init_script(f"localStorage.setItem('ids-kg:completati:v1', {json.dumps(json.dumps([old_id]))});")
+    context.add_init_script(f"localStorage.setItem('tecweb.moduloIA', '1'); localStorage.setItem('ids-kg:completati:v1', {json.dumps(json.dumps([old_id]))});")
     page = context.new_page()
     errors = controlli(page)
     page.route("**/graph.json", lambda route: route.fulfill(status=200, content_type="application/json", body=json.dumps(graph, ensure_ascii=False)))
@@ -284,6 +284,7 @@ def test_grafo_cresce_senza_assunzioni_sul_numero_di_nodi(browser, base_url):
         node.update(id=f"ia-prova-{i}", title=f"Nodo IA aggiuntivo {i}", prerequisiti=[])
         graph["nodi"].append(node)
     context = browser.new_context(viewport=VIEWPORTS["desktop"], service_workers="block")
+    context.add_init_script("localStorage.setItem('tecweb.moduloIA', '1');")
     page = context.new_page()
     errors = controlli(page)
     page.route("**/graph.json", lambda r: r.fulfill(status=200, content_type="application/json", body=json.dumps(graph, ensure_ascii=False)))

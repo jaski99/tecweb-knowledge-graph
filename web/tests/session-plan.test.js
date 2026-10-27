@@ -20,6 +20,14 @@ test('sessione guidata: prerequisiti morbidi, data e tempi calcolati', () => {
   assert.throws(() => pianoOggi({ ...base, oggi: 'oggi' }));
 });
 
+test('il piano non sottrae alla quota le carte dei moduli inattivi', () => {
+  const datiRipasso = { ...statoVuoto(), limiteNuove: 2, nuovePerGiorno: { '2026-10-27': ['ia-base#domanda-0'] } };
+  const p = pianoOggi({ ...base, datiRipasso });
+  assert.equal(p.nuove, 2);
+  assert.equal(p.prossimo.id, 'a');
+  assert.ok(p.spirale.every((c) => c.area !== 7));
+});
+
 test('richiamo a spirale alterna aree e mai nodi adiacenti', () => {
   const p = pianoOggi({ ...base, budget: 90, statiStudio: { a: 'completato', b: 'completato', c: 'in-corso' } });
   assert.equal(p.spirale.length, 3);

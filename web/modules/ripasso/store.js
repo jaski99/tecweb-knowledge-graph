@@ -79,8 +79,30 @@ export function conRevisione(dati, cartaId, statoCarta, oggi) {
   return { ...base, carte: { ...base.carte, [cartaId]: statoCarta }, giorni, nuovePerGiorno };
 }
 
-/** Limite giornaliero globale, condiviso fra filtri e riaperture della vista. */
-export function nuoveDisponibili(dati, oggi) {
+/** Il limite è condiviso fra filtri, ma conta solo le carte dei moduli attivi. */
+export function nuoveDisponibili(dati, oggi, carteAttive = null) {
   const base = normalizzaDati(dati);
-  return Math.max(0, base.limiteNuove - (base.nuovePerGiorno[oggi] || []).length);
+  const idsAttivi = carteAttive === null ? null : new Set(carteAttive.map((c) => c.id));
+  const introdotte = (base.nuovePerGiorno[oggi] || []).filter((id) => !idsAttivi || idsAttivi.has(id));
+  return Math.max(0, base.limiteNuove - introdotte.length);
+}
+
+/** I vecchi giorni non sono attribuibili a un modulo: non mostrare un totale misto. */
+export function giorniContabili(dati, nodiInattivi = new Set()) {
+  const base = normalizzaDati(dati);
+  const ids = [...Object.keys(base.carte), ...Object.values(base.nuovePerGiorno).flat()];
+  return ids.some((id) => nodiInattivi.has(id.split('#')[0])) ? null : base.giorni.length;
+}
+
+/** Conserva gli stati degli altri nodi quando si azzera il mazzo attivo. */
+export function azzeraNodiAttivi(dati, nodiAttivi) {
+  const base = normalizzaDati(dati);
+  const ids = new Set(nodiAttivi.map((n) => n.id));
+  const inattiva = (id) => !ids.has(id.split('#')[0]);
+  const carte = Object.fromEntries(Object.entries(base.carte).filter(([id]) => inattiva(id)));
+  const nuovePerGiorno = Object.fromEntries(Object.entries(base.nuovePerGiorno)
+    .map(([giorno, elenco]) => [giorno, elenco.filter(inattiva)]).filter(([, elenco]) => elenco.length));
+  // I vecchi giorni non distinguono i moduli: conservarli evita di cancellare la cronologia nascosta.
+  const giorni = Object.keys(carte).length || Object.keys(nuovePerGiorno).length ? base.giorni : [];
+  return { ...statoVuoto(), carte, giorni, nuovePerGiorno };
 }

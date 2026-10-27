@@ -1,5 +1,6 @@
 import { h, clear } from './dom.js';
 import { creaBackup, importaBackup, validaBackup } from '../core/backup.js';
+import { isModuloIAAttivo, setModuloIA } from '../core/modulo-ia.js';
 import { scaricaFile } from './download.js';
 
 export function createBackupView(root, { storage, getEsitiReader, confirm, reload }) {
@@ -7,6 +8,13 @@ export function createBackupView(root, { storage, getEsitiReader, confirm, reloa
   const draw = () => {
     clear(root).append(h('summary', {}, 'I tuoi dati'),
       h('p', { class: 'muted' }, 'I dati restano nel browser. Il backup contiene progresso, ripasso, checklist, preferenze e, se disponibili, esiti e simulatore.'),
+      h('label', { class: 'check' }, h('input', {
+        id: 'modulo-ia-toggle', type: 'checkbox', checked: isModuloIAAttivo(storage),
+        onchange: (e) => {
+          if (setModuloIA(e.target.checked, storage)) reload();
+          else { status = 'Il browser non permette di salvare la preferenza.'; draw(); }
+        },
+      }), 'Modulo IA (secondo semestre)'),
       h('div', { class: 'data-actions' },
         h('button', { type: 'button', class: 'btn', id: 'backup-export', onclick: () => {
           try {

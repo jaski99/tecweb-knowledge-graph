@@ -65,7 +65,7 @@ def test_ripasso_domanda_risposta_voto_filtri_e_lezione(browser, base_url, vp):
     nuove_iniziali = int(page.inner_text("#ripasso-nuove"))
     assert nuove_iniziali > 0
     assert page.inner_text("#ripasso-serie") == "0"
-    assert page.locator(".rip-area").count() == len(GRAPH["aree"])
+    assert page.locator(".rip-area").count() == sum(1 for area in GRAPH["aree"] if area["id"] != 7)
 
     # La risposta non esiste finché non si preme "Mostra risposta".
     assert page.locator("#ripasso-domanda").inner_text().strip()

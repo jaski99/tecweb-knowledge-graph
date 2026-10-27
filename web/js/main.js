@@ -1,6 +1,8 @@
-// Composition root: collega dati, stato e viste; nessuna lezione è bloccata.
+// Composition root: collega dati, stato e viste del modulo attivo.
 import { graphUrls, quizUrls, STORAGE_KEYS } from './config.js';
 import { loadGraph } from './data.js';
+import { grafoAttivo } from './core/grafo-attivo.js';
+import { CHIAVE_MODULO_IA, setModuloIA } from './core/modulo-ia.js';
 import { createState } from './core/state.js';
 import { createSetStore } from './core/store.js';
 import { createStudyStore } from './core/study-state.js';
@@ -33,9 +35,14 @@ const $ = (s) => document.querySelector(s);
 
 async function main() {
   avviaPWA({ win: window, nav: navigator, status: $('#offline-status') });
-  let graph;
-  try { graph = await loadGraph(graphUrls(), fetch, quizUrls(), { deferQuiz: true }); }
+  let completo;
+  try { completo = await loadGraph(graphUrls(), fetch, quizUrls(), { deferQuiz: true }); }
   catch (e) { $('#status').textContent = e.message; $('#status').classList.add('error'); return; }
+  const graph = grafoAttivo(completo, localStorage);
+  // Mantieni sincronizzate anche le altre schede aperte sulla stessa origine.
+  addEventListener('storage', (e) => {
+    if (e.key === null || (e.key === CHIAVE_MODULO_IA && e.oldValue !== e.newValue)) location.reload();
+  });
   $('#status').textContent = '';
   $('#exam-note').textContent = graph.nota_esame || '';
   $('#course').textContent = [graph.corso?.nome, graph.corso?.docente].filter(Boolean).join(' — ');
@@ -61,7 +68,8 @@ async function main() {
   const details = createDetailsView($('#details'), graph, { onSelect: select, onToggleDone: toggleDone, onSetStatus: setStatus,
     onClose: () => state.set({ selected: null }), onOpenLesson: openLesson });
   const lesson = createLessonView($('#lesson'), graph, { onOpen: openLesson, onClose: () => { location.hash = '#/percorso'; },
-    onToggleDone: toggleDone, onDataChange: dataChanged, storage: localStorage, onToggleTheme: () => theme.toggle() });
+    onToggleDone: toggleDone, onDataChange: dataChanged, storage: localStorage, onToggleTheme: () => theme.toggle(),
+    onActivateIA: () => { if (!setModuloIA(true, localStorage)) return false; location.reload(); return true; } });
   const views = [
     createGraphView($('#cy'), graph, { onSelect: select, onOpen: openLesson }),
     createPathView($('#path'), graph, { onSelect: select, onToggleDone: toggleDone, onSetStatus: setStatus, onOpenLesson: openLesson }),
@@ -120,7 +128,9 @@ async function main() {
   createBackupView($('#backup-panel'), { storage: localStorage, getEsitiReader: () => leggiEsiti,
     confirm: (msg) => window.confirm(msg), reload: () => location.reload() });
   initTabs(document, (name) => { if (name === 'grafo') graphView.resize(); });
-  const moduli = avviaModuli({ document, graph, storage: localStorage, toggleTheme: () => theme.toggle(), onDataChange: dataChanged });
+  // Il simulatore mantiene il contratto con il grafo completo; X6 gestisce la stessa preferenza.
+  const moduli = avviaModuli({ document, graph: completo, grafoAttivo: graph, storage: localStorage,
+    toggleTheme: () => theme.toggle(), onDataChange: dataChanged });
   syncThemeButtons(document, theme.get());
 
   const render = (s) => {
@@ -154,7 +164,8 @@ async function main() {
     document.body.classList.toggle('lesson-mode', Boolean(r));
     $('#lesson').hidden = !r;
     if (r) {
-      saveLast(r.id); state.set({ selected: r.id });
+      if (graph.byId.has(r.id)) { saveLast(r.id); state.set({ selected: r.id }); }
+      else state.set({ selected: null });
       const drawn = lesson.render(r.id, state.get().done, satisfied(state.get()));
       scrollTo(0, 0); lesson.focus();
       if (r.sezione === 'richiamo') $('#sec-richiamo')?.scrollIntoView({ block: 'start' });
