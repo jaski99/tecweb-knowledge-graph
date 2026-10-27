@@ -99,10 +99,8 @@ def test_opzioni_spiegate_e_posizioni_variate():
         if item["tipo"] != "scelta_multipla":
             continue
         errate = [o for o in item["opzioni"] if o["id"] != item["risposta_corretta"]]
-        if NODE_BY_ID[item["nodo_id"]]["worker"] == "X3":
-            assert all(o.get("tipo") == "plausibile" for o in errate)
-        else:
-            assert {o.get("tipo") for o in errate} >= {"plausibile", "fuori_contesto"}
+        # Scelte multiple: solo distrattori plausibili; i fuori contesto restano negli abbinamenti.
+        assert all(o.get("tipo") == "plausibile" for o in errate), item["id"]
         positions.add(next(i for i, o in enumerate(item["opzioni"]) if o["id"] == item["risposta_corretta"]))
         assert all(len(o["spiegazione"]) >= 10 for o in item["opzioni"])
     assert len(positions) >= 3
@@ -178,3 +176,29 @@ def test_q2_q5_collegano_i_nodi_specifici_integrati():
     assert pairs["Git"] == "git-workflow-collaborativo"
     q5 = next(item for item in QUIZ["elementi"] if item["id"].startswith("q5-"))
     assert q5["nodo_id"] == "sviluppo-event-driven"
+
+
+def test_scelte_multiple_almeno_quattro_opzioni_distinte():
+    for item in QUIZ["elementi"]:
+        if item["tipo"] != "scelta_multipla":
+            continue
+        testi = [o["testo"].strip().lower() for o in item["opzioni"]]
+        assert len(testi) >= 4, item["id"]
+        assert len(set(testi)) == len(testi), item["id"]
+        spiegazioni = [o["spiegazione"] for o in item["opzioni"] if o["id"] != item["risposta_corretta"]]
+        assert not any("concetto estraneo" in s for s in spiegazioni), item["id"]
+
+
+def test_schema_rifiuta_scelta_multipla_con_tre_opzioni():
+    invalid = copy.deepcopy(QUIZ)
+    item = next(i for i in invalid["elementi"] if i["tipo"] == "scelta_multipla")
+    item["opzioni"] = item["opzioni"][:3]
+    if item["risposta_corretta"] not in {o["id"] for o in item["opzioni"]}:
+        item["risposta_corretta"] = item["opzioni"][0]["id"]
+    assert not Draft202012Validator(SCHEMA).is_valid(invalid)
+
+
+def test_abbinamenti_conservano_la_trappola_fuori_contesto():
+    abbinamenti = [i for i in QUIZ["elementi"] if i["tipo"] == "abbinamento" and i["area"] != 7]
+    assert abbinamenti
+    assert all(any(d["tipo"] == "fuori_contesto" for d in i["distrattori"]) for i in abbinamenti)

@@ -1,6 +1,11 @@
 import { h } from '../dom.js';
 import { correggi } from './correzione.js';
 
+/** Riquadro richiudibile per impostazioni avanzate, chiuso di default. */
+export function opzioniAvanzate(...children) {
+  return h('details', { class: 'sim-avanzate', id: 'sim-avanzate' }, h('summary', {}, 'Opzioni avanzate'), ...children);
+}
+
 export function controlliRisposta(item, risposta, cambia, disabled = false) {
   const attrs = { disabled };
   const group = h('fieldset', attrs, h('legend', {}, item.nodoTitolo || item.id));

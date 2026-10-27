@@ -25,9 +25,9 @@
         },
         {
           "id": "c",
-          "testo": "UML, Composite, JUnit, Maven",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "URI, HTTP/3, QUIC, Flask, Git, React",
+          "tipo": "plausibile",
+          "spiegazione": "[F1] cita HTTP/2, non HTTP/3 né QUIC: basta una voce estranea per rendere errato l’insieme."
         },
         {
           "id": "d",
@@ -57,14 +57,20 @@
         },
         {
           "id": "b",
-          "testo": "La compilazione di un diagramma UML",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Che la risorsa ../catalogo esista già sul server",
+          "tipo": "plausibile",
+          "spiegazione": "La risoluzione di un riferimento relativo è un’operazione sulle stringhe (RFC 3986, §5): avviene senza contattare il server."
         },
         {
           "id": "c",
           "testo": "Un URI di base rispetto al quale risolverlo",
           "spiegazione": "Un riferimento relativo si risolve rispetto a una base: non è necessariamente un errore di sintassi."
+        },
+        {
+          "id": "d",
+          "testo": "Il solo nome di dominio del server",
+          "tipo": "plausibile",
+          "spiegazione": "Il dominio non basta: .. risale di un segmento del percorso dell’URI di base, quindi serve l’URI di base completo."
         }
       ],
       "risposta_corretta": "c",
@@ -82,9 +88,9 @@
       "opzioni": [
         {
           "id": "a",
-          "testo": "Eseguire il merge di un ramo Git",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Inviare dati da elaborare, per esempio per creare una nuova risorsa",
+          "tipo": "plausibile",
+          "spiegazione": "Descrive l’uso tipico di POST; GET recupera una rappresentazione ed è un metodo safe."
         },
         {
           "id": "b",
@@ -96,6 +102,12 @@
           "testo": "Richiedere sempre la cancellazione della risorsa",
           "tipo": "plausibile",
           "spiegazione": "La cancellazione è associata al metodo DELETE, non GET."
+        },
+        {
+          "id": "d",
+          "testo": "Sostituire completamente lo stato della risorsa con quello inviato",
+          "tipo": "plausibile",
+          "spiegazione": "Questa è la semantica di PUT, non di GET."
         }
       ],
       "risposta_corretta": "b",
@@ -124,9 +136,15 @@
         },
         {
           "id": "c",
-          "testo": "Il voto dipende da un diagramma Composite",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Sostituisce TCP con QUIC su UDP",
+          "tipo": "plausibile",
+          "spiegazione": "Questo vale per HTTP/3; HTTP/2 viaggia su TCP."
+        },
+        {
+          "id": "d",
+          "testo": "Cambia la semantica di metodi e codici di stato di HTTP/1.1",
+          "tipo": "plausibile",
+          "spiegazione": "HTTP/2 mantiene la stessa semantica (metodi, codici, header): cambia il modo in cui i messaggi viaggiano sulla connessione."
         }
       ],
       "risposta_corretta": "a",
@@ -150,14 +168,20 @@
         },
         {
           "id": "b",
-          "testo": "Solo se si usa PowerPoint",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Sì, a meno di usare connessioni persistenti (keep-alive)",
+          "tipo": "plausibile",
+          "spiegazione": "Keep-alive riusa la connessione TCP ma non crea stato applicativo: il carrello si gestisce con cookie e sessioni."
         },
         {
           "id": "c",
           "testo": "No: l’applicazione può gestire stato tramite sessioni e cookie",
           "spiegazione": "Stateless descrive la semantica del protocollo, non vieta lo stato dell’applicazione."
+        },
+        {
+          "id": "d",
+          "testo": "No, perché HTTP/1.1 ha reso il protocollo stateful",
+          "tipo": "plausibile",
+          "spiegazione": "Anche HTTP/1.1 resta stateless; i cookie (RFC 6265) aggiungono stato a livello applicativo."
         }
       ],
       "risposta_corretta": "c",
@@ -175,9 +199,9 @@
       "opzioni": [
         {
           "id": "a",
-          "testo": "git branch",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "403",
+          "tipo": "plausibile",
+          "spiegazione": "403 Forbidden: la richiesta è compresa ma rifiutata; non indica una risorsa assente."
         },
         {
           "id": "b",
@@ -189,6 +213,12 @@
           "testo": "200",
           "tipo": "plausibile",
           "spiegazione": "200 appartiene ai codici di successo, non descrive una risorsa assente."
+        },
+        {
+          "id": "d",
+          "testo": "410",
+          "tipo": "plausibile",
+          "spiegazione": "410 Gone indica una risorsa nota come rimossa definitivamente; 404 non dice se l’assenza è permanente."
         }
       ],
       "risposta_corretta": "b",
@@ -211,15 +241,21 @@
         },
         {
           "id": "b",
-          "testo": "Tre copie identiche del foglio CSS",
+          "testo": "Modello, vista e controller del pattern MVC",
           "tipo": "plausibile",
-          "spiegazione": "Tre copie del CSS non definiscono responsabilità architetturali distinte."
+          "spiegazione": "MVC organizza il codice dell’applicazione: non coincide con i tre livelli presentazione, logica applicativa e dati."
         },
         {
           "id": "c",
-          "testo": "Tre passaggi di installazione del sistema operativo",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "HTML, CSS e JavaScript",
+          "tipo": "plausibile",
+          "spiegazione": "Sono i linguaggi del solo livello di presentazione lato client, non tre livelli architetturali."
+        },
+        {
+          "id": "d",
+          "testo": "Rete fisica, trasporto e applicazione dello stack TCP/IP",
+          "tipo": "plausibile",
+          "spiegazione": "Confonde i livelli dello stack di rete con i livelli (tier) software dell’applicazione."
         }
       ],
       "risposta_corretta": "a",
@@ -243,14 +279,20 @@
         },
         {
           "id": "b",
-          "testo": "Nel manuale di installazione del sistema operativo",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "In una sessione lato server che il server consulta a ogni richiesta",
+          "tipo": "plausibile",
+          "spiegazione": "Con il vincolo stateless di REST lo stato della sessione resta sul client: ogni richiesta porta con sé ciò che serve per capirla."
         },
         {
           "id": "c",
           "testo": "Nella richiesta stessa",
           "spiegazione": "Il server deve poter interpretare la richiesta senza dipendere da una conversazione precedente conservata come contesto."
+        },
+        {
+          "id": "d",
+          "testo": "Nella connessione TCP aperta, che il server ricorda",
+          "tipo": "plausibile",
+          "spiegazione": "La connessione è un dettaglio di trasporto: anche se viene riusata, il server non deve dipendere da un contesto memorizzato tra le richieste."
         }
       ],
       "risposta_corretta": "c",
@@ -268,9 +310,9 @@
       "opzioni": [
         {
           "id": "a",
-          "testo": "SMTP",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "POST",
+          "tipo": "plausibile",
+          "spiegazione": "POST chiede alla risorsa di elaborare il contenuto secondo la propria semantica (spesso crea una risorsa con URI scelto dal server); non sostituisce lo stato alla destinazione."
         },
         {
           "id": "b",
@@ -282,6 +324,12 @@
           "testo": "PATCH significa sempre sostituzione completa",
           "tipo": "plausibile",
           "spiegazione": "PATCH non equivale per definizione a sostituzione completa."
+        },
+        {
+          "id": "d",
+          "testo": "GET con i nuovi dati nella query string",
+          "tipo": "plausibile",
+          "spiegazione": "GET è safe e serve a recuperare: usarlo per scrivere ne viola la semantica."
         }
       ],
       "risposta_corretta": "b",
@@ -310,9 +358,15 @@
         },
         {
           "id": "c",
-          "testo": "Trasforma una LAN in una versione del Web",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "DELETE è safe: non modifica lo stato del server",
+          "tipo": "plausibile",
+          "spiegazione": "DELETE modifica lo stato, quindi non è safe. Idempotente non vuol dire safe: GET e HEAD sono safe, PUT e DELETE sono idempotenti."
+        },
+        {
+          "id": "d",
+          "testo": "Anche POST è idempotente, perché si può ripetere",
+          "tipo": "plausibile",
+          "spiegazione": "POST non è idempotente per definizione: ripeterlo può creare più risorse."
         }
       ],
       "risposta_corretta": "a",
@@ -336,14 +390,20 @@
         },
         {
           "id": "b",
-          "testo": "Usare JUnit come protocollo di trasporto",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Mettere il verbo nell’URI, per esempio /api/getLibri e /api/deleteLibro",
+          "tipo": "plausibile",
+          "spiegazione": "In un’API orientata a risorse l’URI nomina la risorsa e l’azione la esprime il metodo HTTP."
         },
         {
           "id": "c",
           "testo": "URI per risorse e metodi HTTP coerenti con le operazioni",
           "spiegazione": "Separare risorse e semantica dei metodi rende il contratto dell’interfaccia comprensibile."
+        },
+        {
+          "id": "d",
+          "testo": "Rispondere sempre 200 e indicare l’errore solo nel corpo",
+          "tipo": "plausibile",
+          "spiegazione": "I codici di stato (400, 404, 201…) fanno parte del contratto: nasconderli dietro 200 rende l’API meno chiara."
         }
       ],
       "risposta_corretta": "c",
@@ -361,9 +421,9 @@
       "opzioni": [
         {
           "id": "a",
-          "testo": "Un sensore mobile è un pattern UML Composite",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Mashup reagisce agli eventi dei sensori; event-driven combina dati di più servizi",
+          "tipo": "plausibile",
+          "spiegazione": "Inverte le due definizioni: è il mashup a combinare sorgenti, mentre event-driven organizza il flusso intorno agli eventi."
         },
         {
           "id": "b",
@@ -372,9 +432,15 @@
         },
         {
           "id": "c",
-          "testo": "Mashup ed event-driven sono entrambi sinonimi di foglio CSS statico",
+          "testo": "Sono sinonimi: entrambi indicano pagine che si aggiornano con AJAX",
           "tipo": "plausibile",
-          "spiegazione": "CSS descrive la presentazione, non definisce né la composizione di servizi né il flusso a eventi."
+          "spiegazione": "AJAX può servire in entrambi i casi, ma il mashup riguarda la composizione di sorgenti e l’event-driven il flusso guidato dagli eventi."
+        },
+        {
+          "id": "d",
+          "testo": "Un mashup è un singolo servizio che non usa API esterne",
+          "tipo": "plausibile",
+          "spiegazione": "Un mashup combina per definizione dati o servizi di più sorgenti, spesso tramite API."
         }
       ],
       "risposta_corretta": "b",
@@ -403,9 +469,15 @@
         },
         {
           "id": "c",
-          "testo": "Un commit Git senza messaggio",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Un attributo title sul controllo, al posto della label",
+          "tipo": "plausibile",
+          "spiegazione": "title dà al più un suggerimento a comparsa, non un’etichetta visibile e persistente; non sostituisce la label associata."
+        },
+        {
+          "id": "d",
+          "testo": "Un testo vicino al campo dentro uno span, senza collegamento",
+          "tipo": "plausibile",
+          "spiegazione": "La vicinanza visiva non crea un’associazione: il controllo resta senza un nome accessibile esplicito."
         }
       ],
       "risposta_corretta": "a",
@@ -423,20 +495,26 @@
       "opzioni": [
         {
           "id": "a",
-          "testo": "Un div con testo solo nel colore di sfondo",
+          "testo": "Un div con un titolo in grassetto sopra i radio",
           "tipo": "plausibile",
-          "spiegazione": "Un contenitore puramente visivo non fornisce la stessa semantica di gruppo."
+          "spiegazione": "Un contenitore puramente visivo non comunica il gruppo né la sua etichetta alle tecnologie assistive."
         },
         {
           "id": "b",
-          "testo": "Un sistema operativo per ogni radio button",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "fieldset e legend, ma un name diverso per ogni radio",
+          "tipo": "plausibile",
+          "spiegazione": "Con name diversi i radio non formano un gruppo esclusivo: si possono selezionare tutti."
         },
         {
           "id": "c",
           "testo": "fieldset e legend, con lo stesso name per le alternative",
           "spiegazione": "fieldset e legend descrivono il gruppo; il name condiviso rende le scelte alternative."
+        },
+        {
+          "id": "d",
+          "testo": "Checkbox con lo stesso id",
+          "tipo": "plausibile",
+          "spiegazione": "id deve essere unico nel documento e i checkbox ammettono scelte multiple: non realizzano alternative esclusive."
         }
       ],
       "risposta_corretta": "c",
@@ -454,9 +532,9 @@
       "opzioni": [
         {
           "id": "a",
-          "testo": "La lunghezza di una chiave RSA",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Anche il margin orizzontale",
+          "tipo": "plausibile",
+          "spiegazione": "Il margin sta fuori dal bordo: incide sullo spazio occupato, non sulla dimensione del border box."
         },
         {
           "id": "b",
@@ -465,9 +543,15 @@
         },
         {
           "id": "c",
-          "testo": "Solo il colore del testo",
+          "testo": "Solo i bordi, non il padding",
           "tipo": "plausibile",
-          "spiegazione": "Il colore non modifica la geometria del box."
+          "spiegazione": "Con content-box anche il padding si somma a width."
+        },
+        {
+          "id": "d",
+          "testo": "Nulla: con content-box width include già padding e bordi",
+          "tipo": "plausibile",
+          "spiegazione": "Questo è il comportamento di box-sizing: border-box, non di content-box."
         }
       ],
       "risposta_corretta": "b",
@@ -496,9 +580,15 @@
         },
         {
           "id": "c",
-          "testo": "CSS determina il branching Git",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Nessuna proprietà è ereditata: serve sempre inherit",
+          "tipo": "plausibile",
+          "spiegazione": "color e font-family, per esempio, ereditano già; inherit serve a forzare l’ereditarietà delle proprietà che non ereditano."
+        },
+        {
+          "id": "d",
+          "testo": "Il valore ereditato prevale su qualsiasi regola applicata direttamente all’elemento",
+          "tipo": "plausibile",
+          "spiegazione": "Il valore ereditato vale solo se nessuna dichiarazione della cascata imposta la proprietà sull’elemento: una regola diretta lo sostituisce."
         }
       ],
       "risposta_corretta": "a",
@@ -522,14 +612,20 @@
         },
         {
           "id": "b",
-          "testo": "Una presentazione PowerPoint",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Un oggetto Response già completo, con il corpo letto",
+          "tipo": "plausibile",
+          "spiegazione": "La Response arriva quando la Promise si risolve; il corpo va poi letto con metodi asincroni come response.json()."
         },
         {
           "id": "c",
           "testo": "Una Promise",
           "spiegazione": "fetch restituisce una Promise; anche la lettura JSON del corpo è asincrona."
+        },
+        {
+          "id": "d",
+          "testo": "undefined, finché il server non risponde",
+          "tipo": "plausibile",
+          "spiegazione": "fetch restituisce subito una Promise: non c’è un valore undefined da sostituire più tardi."
         }
       ],
       "risposta_corretta": "c",
@@ -547,9 +643,9 @@
       "opzioni": [
         {
           "id": "a",
-          "testo": "Dipende dal tipo di carta A3",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Sì, ma solo se il server risponde con un corpo vuoto",
+          "tipo": "plausibile",
+          "spiegazione": "Il corpo non conta: fetch rigetta per errori di rete o richieste annullate, non per i codici HTTP."
         },
         {
           "id": "b",
@@ -561,6 +657,12 @@
           "testo": "Sì: tutti gli errori HTTP rigettano automaticamente fetch",
           "tipo": "plausibile",
           "spiegazione": "Il rigetto non è automatico per uno status HTTP non di successo."
+        },
+        {
+          "id": "d",
+          "testo": "No, e response.ok vale true anche per 404",
+          "tipo": "plausibile",
+          "spiegazione": "response.ok è true solo per status da 200 a 299: con 404 vale false."
         }
       ],
       "risposta_corretta": "b",
@@ -589,9 +691,15 @@
         },
         {
           "id": "c",
-          "testo": "SELECT * FROM sistema_operativo",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "{nome: \"Ada\", attivo: true}",
+          "tipo": "plausibile",
+          "spiegazione": "In JSON le chiavi sono stringhe tra doppi apici: questa è la sintassi di un oggetto letterale JavaScript."
+        },
+        {
+          "id": "d",
+          "testo": "{\"nome\": \"Ada\", \"attivo\": true,}",
+          "tipo": "plausibile",
+          "spiegazione": "JSON non ammette la virgola dopo l’ultimo membro."
         }
       ],
       "risposta_corretta": "a",
@@ -615,14 +723,20 @@
         },
         {
           "id": "b",
-          "testo": "git merge",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "request.get_json",
+          "tipo": "plausibile",
+          "spiegazione": "request.get_json legge il JSON del corpo della richiesta in arrivo: non costruisce la risposta."
         },
         {
           "id": "c",
           "testo": "jsonify",
           "spiegazione": "jsonify serializza dati in una risposta JSON con tipo di contenuto appropriato."
+        },
+        {
+          "id": "d",
+          "testo": "redirect",
+          "tipo": "plausibile",
+          "spiegazione": "redirect produce una risposta di reindirizzamento (codice 3xx) verso un altro URL, non un corpo JSON."
         }
       ],
       "risposta_corretta": "c",
@@ -640,9 +754,9 @@
       "opzioni": [
         {
           "id": "a",
-          "testo": "Nel file del manifesto PWA del sistema operativo",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "request.form",
+          "tipo": "plausibile",
+          "spiegazione": "request.form contiene i campi di un form inviato nel corpo della richiesta, non la query string."
         },
         {
           "id": "b",
@@ -654,6 +768,12 @@
           "testo": "request.args contiene soltanto file caricati",
           "tipo": "plausibile",
           "spiegazione": "I file caricati sono esposti da request.files, non da request.args."
+        },
+        {
+          "id": "d",
+          "testo": "request.get_json()",
+          "tipo": "plausibile",
+          "spiegazione": "request.get_json() legge il corpo JSON; i parametri dopo ? nell’URL stanno in request.args."
         }
       ],
       "risposta_corretta": "b",
@@ -682,9 +802,15 @@
         },
         {
           "id": "c",
-          "testo": "Compila il diagramma UML",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Crea subito un commit con un messaggio predefinito",
+          "tipo": "plausibile",
+          "spiegazione": "git add prepara soltanto l’indice (staging area); il commit si crea con git commit."
+        },
+        {
+          "id": "d",
+          "testo": "Scarica le modifiche dal repository remoto",
+          "tipo": "plausibile",
+          "spiegazione": "Questo lo fanno git fetch e git pull; git add lavora solo in locale."
         }
       ],
       "risposta_corretta": "a",
@@ -708,14 +834,20 @@
         },
         {
           "id": "b",
-          "testo": "Convertire SMTP in CSS",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Scaricare un ramo remoto nel repository locale, come git pull",
+          "tipo": "plausibile",
+          "spiegazione": "Confonde la pull request, funzione della piattaforma (per esempio GitHub), con il comando git pull."
         },
         {
           "id": "c",
           "testo": "Proporre e discutere l’integrazione di modifiche tra rami",
           "spiegazione": "La pull request propone un’integrazione, rendendo possibili confronto e revisione del codice."
+        },
+        {
+          "id": "d",
+          "testo": "Creare un nuovo ramo a partire da main",
+          "tipo": "plausibile",
+          "spiegazione": "Si fa con git branch o git switch -c; la pull request propone di integrare un ramo esistente in un altro."
         }
       ],
       "risposta_corretta": "c",
@@ -733,9 +865,9 @@
       "opzioni": [
         {
           "id": "a",
-          "testo": "Configurare il kernel del sistema operativo",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Eseguire il codice JavaScript sul server al posto del browser",
+          "tipo": "plausibile",
+          "spiegazione": "In AJAX è il JavaScript nel browser a inviare richieste asincrone; il server risponde con dati."
         },
         {
           "id": "b",
@@ -747,6 +879,12 @@
           "testo": "Richiedere obbligatoriamente una navigazione completa per ogni dato",
           "tipo": "plausibile",
           "spiegazione": "La ricarica completa non è un requisito di AJAX, anzi è ciò che spesso evita."
+        },
+        {
+          "id": "d",
+          "testo": "Tenere aperto un canale bidirezionale permanente in cui il server invia dati quando vuole",
+          "tipo": "plausibile",
+          "spiegazione": "Questo descrive WebSocket; AJAX si basa su richieste HTTP avviate dal client."
         }
       ],
       "risposta_corretta": "b",
@@ -775,9 +913,15 @@
         },
         {
           "id": "c",
-          "testo": "Solo quando viene eseguito un pattern Composite",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "No, ma solo JSON: XMLHttpRequest non gestisce più XML",
+          "tipo": "plausibile",
+          "spiegazione": "XMLHttpRequest gestisce ancora XML (responseXML): il formato è una scelta dell’applicazione."
+        },
+        {
+          "id": "d",
+          "testo": "Sì, a meno di usare jQuery",
+          "tipo": "plausibile",
+          "spiegazione": "Le librerie non cambiano i vincoli: anche fetch e XMLHttpRequest nativi scambiano JSON."
         }
       ],
       "risposta_corretta": "a",
@@ -801,14 +945,20 @@
         },
         {
           "id": "b",
-          "testo": "Installando un nuovo sistema operativo",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Ricaricando l’intera pagina con location.reload()",
+          "tipo": "plausibile",
+          "spiegazione": "Annulla il vantaggio di AJAX e perde lo stato della pagina: basta aggiornare il nodo."
         },
         {
           "id": "c",
           "testo": "Assegnando il testo a textContent",
           "spiegazione": "textContent tratta il dato come testo senza interpretarlo come markup."
+        },
+        {
+          "id": "d",
+          "testo": "Con document.write() dopo il caricamento della pagina",
+          "tipo": "plausibile",
+          "spiegazione": "Dopo il caricamento document.write() riapre e sovrascrive l’intero documento, e interpreta il testo come markup."
         }
       ],
       "risposta_corretta": "c",
@@ -826,9 +976,9 @@
       "opzioni": [
         {
           "id": "a",
-          "testo": "Cambiare il diagramma di deployment UML",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Rendere sincrona la richiesta, bloccando la pagina",
+          "tipo": "plausibile",
+          "spiegazione": "Una richiesta sincrona blocca l’interfaccia ed è deprecata nel thread principale: non è una soluzione."
         },
         {
           "id": "b",
@@ -840,6 +990,12 @@
           "testo": "Assumere che le risposte arrivino sempre nell’ordine di invio",
           "tipo": "plausibile",
           "spiegazione": "La rete e il server possono completare le richieste in ordine diverso dall’invio."
+        },
+        {
+          "id": "d",
+          "testo": "Aggiungere un setTimeout fisso prima di aggiornare la vista",
+          "tipo": "plausibile",
+          "spiegazione": "Un ritardo fisso non garantisce l’ordine, perché la latenza varia: serve un controllo sull’identità della richiesta."
         }
       ],
       "risposta_corretta": "b",
@@ -868,9 +1024,15 @@
         },
         {
           "id": "c",
-          "testo": "È obbligatorio usare UML Composite al posto del codice",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Sì: è obbligatorio usare React per il front-end",
+          "tipo": "plausibile",
+          "spiegazione": "React è nel programma [F1], ma per la tesina [F1] indica tecnologie a libera scelta."
+        },
+        {
+          "id": "d",
+          "testo": "No, ma è vietato usare Flask",
+          "tipo": "plausibile",
+          "spiegazione": "In [F1] non risulta alcun divieto: Flask è una scelta possibile ed è anche nel programma."
         }
       ],
       "risposta_corretta": "a",
@@ -894,14 +1056,20 @@
         },
         {
           "id": "b",
-          "testo": "Carta A3 obbligatoria per diagrammi UML",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Presentazione di massimo 15 minuti",
+          "tipo": "plausibile",
+          "spiegazione": "[F1] indica un massimo di 8 minuti, non 15."
         },
         {
           "id": "c",
           "testo": "PowerPoint di massimo 8 minuti",
           "spiegazione": "[F1] specifica massimo 8 minuti; un numero obbligatorio di slide non è stato trovato."
+        },
+        {
+          "id": "d",
+          "testo": "Nessuna presentazione: basta consegnare il codice",
+          "tipo": "plausibile",
+          "spiegazione": "[F1] prevede una presentazione PowerPoint di massimo 8 minuti e la discussione del progetto."
         }
       ],
       "risposta_corretta": "c",
@@ -919,9 +1087,9 @@
       "opzioni": [
         {
           "id": "a",
-          "testo": "Un esame di installazione del sistema operativo",
-          "tipo": "fuori_contesto",
-          "spiegazione": "Questa opzione riguarda un concetto estraneo alla richiesta, non il meccanismo Web descritto."
+          "testo": "Una prova intermedia scritta sul progetto",
+          "tipo": "plausibile",
+          "spiegazione": "[F1] dichiara che non sono previste prove intermedie."
         },
         {
           "id": "b",
@@ -930,9 +1098,15 @@
         },
         {
           "id": "c",
-          "testo": "Solo la lettura del titolo, senza conoscere il codice",
+          "testo": "Solo una demo dell’interfaccia, senza parlare del codice",
           "tipo": "plausibile",
-          "spiegazione": "Conoscere il solo titolo non prepara alla discussione prevista."
+          "spiegazione": "[F1] richiede di discutere anche le scelte progettuali e il codice, non solo di mostrare l’interfaccia."
+        },
+        {
+          "id": "d",
+          "testo": "Una relazione scritta di lunghezza minima prefissata",
+          "tipo": "plausibile",
+          "spiegazione": "In [F1] non risulta una relazione obbligatoria di lunghezza fissata: è richiesta la discussione di scelte progettuali e codice."
         }
       ],
       "risposta_corretta": "b",
@@ -1394,10 +1568,16 @@
           "id": "b"
         },
         {
-          "testo": "Risolvere il timeout cambiando la priorità della cascata CSS",
-          "spiegazione": "La cascata CSS regola lo stile: non risolve un guasto di un servizio remoto.",
-          "tipo": "fuori_contesto",
-          "id": "c"
+          "id": "c",
+          "testo": "Ritentare all’infinito il servizio esterno senza mostrare nulla finché non risponde",
+          "tipo": "plausibile",
+          "spiegazione": "Blocca anche la parte che funziona: servono timeout, tentativi limitati e una degradazione controllata."
+        },
+        {
+          "id": "d",
+          "testo": "Copiare una volta per tutte i dati di disponibilità nel catalogo locale e non chiamare più il servizio",
+          "tipo": "plausibile",
+          "spiegazione": "La disponibilità cambia nel tempo: dati copiati una volta diventano obsoleti e nessuno li segnala come tali."
         }
       ],
       "risposta_corretta": "a",
@@ -1420,15 +1600,21 @@
           "id": "a"
         },
         {
-          "testo": "Quando git add prepara il foglio di stile",
-          "spiegazione": "Lo staging Git non informa sull’esito della prenotazione HTTP.",
-          "tipo": "fuori_contesto",
-          "id": "b"
+          "id": "b",
+          "testo": "Quando la Promise di fetch si risolve, anche se lo status è 500",
+          "tipo": "plausibile",
+          "spiegazione": "La Promise si risolve anche con 4xx e 5xx: prima di confermare va controllato response.ok."
         },
         {
           "testo": "Dopo aver ricevuto e controllato una risposta di successo dal servizio",
           "spiegazione": "Il click esprime un’intenzione; la conferma dipende dall’esito remoto. L’handler può intanto mostrare uno stato di attesa.",
           "id": "c"
+        },
+        {
+          "id": "d",
+          "testo": "Dopo un setTimeout pari al tempo medio di risposta",
+          "tipo": "plausibile",
+          "spiegazione": "Il tempo medio non dice nulla sull’esito della singola richiesta: la conferma dipende dalla risposta."
         }
       ],
       "risposta_corretta": "c",
@@ -1445,10 +1631,10 @@
       "domanda": "Quale struttura esprime meglio un catalogo con schede di libri autonome?",
       "opzioni": [
         {
-          "testo": "Una rotta HTTP PATCH usata come elemento di intestazione",
-          "spiegazione": "Un metodo HTTP non è un elemento semantico HTML.",
-          "tipo": "fuori_contesto",
-          "id": "a"
+          "id": "a",
+          "testo": "Un div con classe .card per ogni scheda, senza altri elementi",
+          "tipo": "plausibile",
+          "spiegazione": "div non ha semantica: le classi servono allo stile e non dicono che la scheda è un contenuto autonomo."
         },
         {
           "testo": "Un main per il contenuto dominante, con article per ciascuna scheda autonoma",
@@ -1460,6 +1646,12 @@
           "spiegazione": "main non è un generico contenitore di colonne e la semantica non si sceglie in base allo stile predefinito.",
           "tipo": "plausibile",
           "id": "c"
+        },
+        {
+          "id": "d",
+          "testo": "Una section per ogni scheda e un article come contenitore dell’intero catalogo",
+          "tipo": "plausibile",
+          "spiegazione": "Inverte i ruoli: article è l’unità autonoma (la singola scheda); section raggruppa contenuto tematico."
         }
       ],
       "risposta_corretta": "b",
@@ -1487,10 +1679,16 @@
           "id": "b"
         },
         {
-          "testo": "Inviare un codice HTTP 204 al compilatore Git",
-          "spiegazione": "Codici HTTP e Git non sono il meccanismo con cui React aggiorna lo stato del componente.",
-          "tipo": "fuori_contesto",
-          "id": "c"
+          "id": "c",
+          "testo": "Modificare direttamente il DOM con document.getElementById",
+          "tipo": "plausibile",
+          "spiegazione": "Aggirare React fa divergere DOM e stato: al render successivo React può sovrascrivere la modifica."
+        },
+        {
+          "id": "d",
+          "testo": "Salvare il contatore in una variabile let locale alla funzione del componente",
+          "tipo": "plausibile",
+          "spiegazione": "Una variabile locale si reinizializza a ogni render e la sua modifica non provoca un nuovo render: serve useState."
         }
       ],
       "risposta_corretta": "a",
@@ -1513,15 +1711,21 @@
           "id": "a"
         },
         {
-          "testo": "Cambiare il box model CSS per calcolare la latitudine",
-          "spiegazione": "Il box model descrive dimensioni e spazi dei box, non misure geografiche del dispositivo.",
-          "tipo": "fuori_contesto",
-          "id": "b"
+          "id": "b",
+          "testo": "Richiedere il permesso in un ciclo finché l’utente accetta",
+          "tipo": "plausibile",
+          "spiegazione": "Dopo un rifiuto il browser di norma non ripropone la richiesta: il ciclo produce solo errori e non rispetta la scelta dell’utente."
         },
         {
           "testo": "Offrire la scelta manuale della sede e spiegare che la posizione non è disponibile",
           "spiegazione": "Supporto, consenso e precisione non sono garantiti. Un percorso manuale preserva la funzione senza costringere a concedere il permesso.",
           "id": "c"
+        },
+        {
+          "id": "d",
+          "testo": "Usare l’indirizzo IP come posizione precisa garantita",
+          "tipo": "plausibile",
+          "spiegazione": "La posizione ricavata dall’IP è approssimativa e non garantita: non sostituisce la scelta dell’utente."
         }
       ],
       "risposta_corretta": "c",
@@ -1538,10 +1742,10 @@
       "domanda": "Una funzione Python riceve dati Web come dizionario. Che cosa va verificato prima di usare dati[\"titolo\"]?",
       "opzioni": [
         {
-          "testo": "Che una media query delimiti il blocco Python",
-          "spiegazione": "Le media query appartengono al CSS; in Python i blocchi sono delimitati dall’indentazione.",
-          "tipo": "fuori_contesto",
-          "id": "a"
+          "id": "a",
+          "testo": "Che il dizionario sia ordinato alfabeticamente per chiave",
+          "tipo": "plausibile",
+          "spiegazione": "L’ordine delle chiavi non influisce sull’accesso per chiave: conta che la chiave esista."
         },
         {
           "testo": "Che la chiave esista e che il valore abbia tipo e contenuto attesi",
@@ -1553,6 +1757,12 @@
           "spiegazione": "Il tipo dizionario non garantisce né chiavi né tipi dei valori; un accesso a una chiave assente può sollevare KeyError.",
           "tipo": "plausibile",
           "id": "c"
+        },
+        {
+          "id": "d",
+          "testo": "Niente: dati[\"titolo\"] restituisce None se la chiave manca",
+          "tipo": "plausibile",
+          "spiegazione": "È dati.get(\"titolo\") a restituire None; l’accesso con le parentesi quadre solleva KeyError."
         }
       ],
       "risposta_corretta": "b",
@@ -1580,10 +1790,16 @@
           "id": "b"
         },
         {
-          "testo": "SMTP come metodo di routing Flask per restituire il JSON",
-          "spiegazione": "SMTP è un protocollo di posta, non un metodo HTTP per una risorsa REST.",
-          "tipo": "fuori_contesto",
-          "id": "c"
+          "id": "c",
+          "testo": "Un 302 verso la home, con il libro in una pagina HTML",
+          "tipo": "plausibile",
+          "spiegazione": "Un client di un’API JSON si aspetta l’esito della creazione: 201 con il JSON della risorsa è esplicito, un redirect no."
+        },
+        {
+          "id": "d",
+          "testo": "204 No Content, con il libro creato nel corpo",
+          "tipo": "plausibile",
+          "spiegazione": "204 indica proprio l’assenza di corpo: non può trasportare il libro creato."
         }
       ],
       "risposta_corretta": "a",
@@ -1606,15 +1822,21 @@
           "id": "a"
         },
         {
-          "testo": "Aspettare che un sensore mobile elimini i marcatori di conflitto",
-          "spiegazione": "Le API dei sensori non risolvono i conflitti della storia Git.",
-          "tipo": "fuori_contesto",
-          "id": "b"
+          "id": "b",
+          "testo": "Cancellare il repository locale e clonarlo di nuovo",
+          "tipo": "plausibile",
+          "spiegazione": "Elimina il lavoro locale non pubblicato e non risolve il conflitto, che si ripresenterà al merge successivo."
         },
         {
           "testo": "Capire entrambe le modifiche, risolvere il contenuto, eseguire test e registrare la risoluzione",
           "spiegazione": "Git segnala il conflitto ma non conosce l’intenzione corretta. La risoluzione richiede una decisione verificata, non una scelta automatica arbitraria.",
           "id": "c"
+        },
+        {
+          "id": "d",
+          "testo": "Fare il commit lasciando i marcatori <<<<<<< e >>>>>>> nei file",
+          "tipo": "plausibile",
+          "spiegazione": "I marcatori finirebbero nel codice e lo romperebbero: vanno rimossi risolvendo il contenuto prima di git add e commit."
         }
       ],
       "risposta_corretta": "c",

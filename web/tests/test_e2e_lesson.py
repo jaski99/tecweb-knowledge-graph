@@ -135,3 +135,31 @@ def test_flusso_studio_segna_e_prossima_e_riprendi(browser, base_url, vp):
     assert page.evaluate("document.documentElement.scrollWidth - innerWidth") <= 1
     assert not errors
     ctx.close()
+
+
+@pytest.mark.parametrize("vp", list(VIEWPORTS))
+def test_frecce_lezione_con_testo_visibile_e_aria_label(browser, base_url, vp):
+    order = GRAPH["nodi"]
+    nid = next(n["id"] for n in order[1:] if n["area"] != 7 and "lezione" in n)
+    ctx = browser.new_context(viewport=VIEWPORTS[vp])
+    page = ctx.new_page()
+    page.goto(base_url + f"#/lezione/{nid}")
+    page.wait_for_selector("#lesson-title")
+    for where in ("top", "bottom"):
+        for cls, parola, breve in (("nav-prev", "Precedente", "Prec."), ("nav-next", "Successivo", "Succ.")):
+            btn = page.locator(f".ls-nav.{where} .{cls}")
+            if btn.is_disabled():
+                continue
+            visibile = btn.inner_text().strip()
+            atteso = breve if (where == "top" and vp == "mobile") else parola
+            assert atteso in visibile, (where, cls, visibile)
+            assert btn.get_attribute("aria-label").startswith(parola + ": ")
+            if where == "bottom":
+                assert btn.locator(".nav-title").inner_text().strip(), "manca il titolo breve"
+    assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
+    # La barra in alto resta su una sola riga anche con le etichette testuali.
+    assert page.locator(".ls-top").bounding_box()["height"] <= 72
+    # Indice e titolo del primo blocco usano la stessa etichetta.
+    assert page.locator("#sec-intuizione > h2").inner_text().endswith("Perché ti serve")
+    assert "Perché esiste" not in page.inner_text("body")
+    ctx.close()

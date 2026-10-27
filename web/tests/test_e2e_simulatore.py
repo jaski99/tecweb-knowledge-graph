@@ -28,6 +28,13 @@ class Quiet(SimpleHTTPRequestHandler):
         pass
 
 
+def imposta_seed(page, seed):
+    """Il seed sta nelle opzioni avanzate, chiuse di default: le apre e lo imposta."""
+    if not page.locator("#sim-avanzate").evaluate("d => d.open"):
+        page.click("#sim-avanzate > summary")
+    page.fill("#sim-seed", str(seed))
+
+
 @pytest.fixture(scope="module")
 def base_url():
     subprocess.run(["sh", str(WEB / "build.sh")], check=True, capture_output=True)
@@ -55,7 +62,7 @@ def apri(browser, base_url, viewport, modalita="simulazione", seed="1"):
     assert "ipotesi" in page.locator(".sim").inner_text().lower()
     page.select_option("#sim-modalita", modalita)
     page.fill("#sim-durata", "10")
-    page.fill("#sim-seed", seed)
+    imposta_seed(page, seed)
     page.click("#sim-inizia")
     page.wait_for_selector(".sim-q")
     return context, page, errors
@@ -281,7 +288,7 @@ def test_stato_vuoto_tre_simulazioni_solo_tw(browser, base_url, viewport):
     tw = [i for i in BANK if i["area"] != 7 and not i["nodo_id"].startswith("ia-")]
     for seed in [1, 2, 3]:
         assert f"{len(tw)} quesiti della banca disponibili" in page.locator(".sim").inner_text()
-        page.fill("#sim-seed", str(seed))
+        imposta_seed(page, str(seed))
         page.click("#sim-inizia")
         page.wait_for_selector(".sim-q")
         sessione = assert_solo_tw(page)
@@ -359,5 +366,26 @@ def test_cambio_chiave_nella_stessa_pagina_aggiorna_il_perimetro(browser, base_u
     page.wait_for_selector("#sim-report")
     assert "Area 7" not in page.locator(".sim").inner_text()
     assert all(not e["nodo_id"].startswith("ia-") for e in page.evaluate("JSON.parse(localStorage.getItem('ids-kg:esiti-quiz:v1'))"))
+    assert not errors, errors
+    context.close()
+
+
+@pytest.mark.parametrize("viewport", VIEWPORTS)
+def test_seed_in_opzioni_avanzate_chiuse_di_default(browser, base_url, viewport):
+    context = browser.new_context(viewport=VIEWPORTS[viewport])
+    page = context.new_page()
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    page.goto(base_url + "#/simulatore")
+    page.wait_for_selector("#sim-inizia")
+    avanzate = page.locator("#sim-avanzate")
+    assert avanzate.evaluate("d => d.tagName") == "DETAILS"
+    assert not avanzate.evaluate("d => d.open")
+    assert not page.locator("#sim-seed").is_visible()
+    assert page.locator("#sim-avanzate > summary").inner_text().strip() == "Opzioni avanzate"
+    page.click("#sim-avanzate > summary")
+    assert page.locator("#sim-seed").is_visible()
+    page.click("#sim-avanzate > summary")
+    assert not page.locator("#sim-seed").is_visible()
     assert not errors, errors
     context.close()

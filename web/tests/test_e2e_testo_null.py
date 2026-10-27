@@ -42,6 +42,13 @@ class Quiet(SimpleHTTPRequestHandler):
         pass
 
 
+def imposta_seed(page, seed):
+    """Il seed sta nelle opzioni avanzate, chiuse di default: le apre e lo imposta."""
+    if not page.locator("#sim-avanzate").evaluate("d => d.open"):
+        page.click("#sim-avanzate > summary")
+    page.fill("#sim-seed", str(seed))
+
+
 @pytest.fixture(scope="module")
 def base_url():
     subprocess.run(["sh", str(WEB / "build.sh")], check=True, capture_output=True)
@@ -114,7 +121,7 @@ def test_viste_principali_senza_null_undefined_nan(browser, base_url, viewport, 
         vai(page, base_url, "#/simulatore", "#sim-inizia")
         senza_testo_tecnico(page, "simulatore (impostazioni)")
         page.select_option("#sim-modalita", "allenamento")
-        page.fill("#sim-seed", "1")
+        imposta_seed(page, "1")
         page.click("#sim-inizia")
         page.wait_for_selector(".sim-q")
         senza_testo_tecnico(page, "simulatore (prova)")

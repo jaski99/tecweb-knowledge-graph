@@ -48,3 +48,6 @@
 .sim pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .sim input:focus-visible, .sim select:focus-visible { outline: 3px solid var(--acc); outline-offset: 2px; }
 .sim-feedback { overflow-wrap: anywhere; }
+.sim-avanzate { margin: .6rem 0 1rem; border: 1px solid var(--line); border-radius: 10px; padding: .4rem .8rem; }
+.sim-avanzate > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; }
+.sim-avanzate[open] > summary { margin-bottom: .4rem; }
