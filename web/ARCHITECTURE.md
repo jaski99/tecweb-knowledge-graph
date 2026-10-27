@@ -54,7 +54,11 @@ da tastiera. Area, tipo, stato e padronanza hanno anche etichette testuali.
 
 `lesson-view.js` compone la lezione. `markdown.js` usa marked, DOMPurify e
 highlight.js locali; i diagrammi mermaid hanno cornice e zoom interni, e sono
-ridisegnati al cambio tema. L'indice non cambia l'hash del router. Il tema
+ridisegnati al cambio tema. L'indice non cambia l'hash del router. Le frecce
+precedente/successivo hanno sempre un testo visibile («Prec.»/«Succ.» nella barra
+in alto su telefono, «Precedente»/«Successivo» con titolo breve in fondo) e un
+aria-label con il titolo completo, calcolati in `js/core/lesson-nav-labels.js`.
+Nel simulatore il seed è dentro «Opzioni avanzate», chiuse di default. Il tema
 `ids-kg:tema:v1` è applicato prima del CSS; i token sono verificati per il
 contrasto AA nei test.
 

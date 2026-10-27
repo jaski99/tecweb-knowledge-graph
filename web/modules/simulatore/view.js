@@ -9,7 +9,7 @@ import { etichettaEsito, riepilogoRisposte } from './punteggio.js';
 import { rispostaCompleta, esitiItem, reportAree } from './correzione.js';
 // Il lettore X5 può usare un doppio read-only: richiediamo il writer solo all’uso.
 import * as storicoEsiti from './esiti.js';
-import { controlliRisposta, feedbackItem } from './controlli.js';
+import { controlliRisposta, feedbackItem, opzioniAvanzate } from './controlli.js';
 
 export function createSimulatoreView() {
   return { id: 'simulatore', titolo: 'Quiz e simulatore', render(root, ctx) {
@@ -60,7 +60,9 @@ export function createSimulatoreView() {
         minuti = Math.max(1, Math.min(480, Number(e.target.value) || 120)); e.target.value = minuti;
       } })),
       h('p', {}, '120 minuti / 2 ore è un’ipotesi configurabile: la durata ufficiale non è stata trovata. Nessun voto ufficiale viene calcolato.'),
-      h('label', {}, 'Seed riproducibile ', h('input', { id: 'sim-seed', type: 'number', value: seed, onchange: (e) => { seed = Number(e.target.value) || 0; } })),
+      opzioniAvanzate(
+        h('label', {}, 'Seed riproducibile ', h('input', { id: 'sim-seed', type: 'number', value: seed, onchange: (e) => { seed = Number(e.target.value) || 0; } })),
+        h('p', { class: 'muted' }, 'Lo stesso seed genera la stessa selezione e lo stesso ordine dei quesiti: serve solo per rifare una prova identica.')),
       h('button', { class: 'btn primary', id: 'sim-inizia', type: 'button', onclick: avvia }, 'Inizia la sessione'));
 
     const esercizio = (item, index, correction) => {

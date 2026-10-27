@@ -35,7 +35,7 @@ Non vengono aggiunti URL esterni alla banca.
 ### Q1–Q6 da R3 §3.5.2
 
 - **Q1** `q1-programma`: scelta multipla sull’elenco ufficiale, con distrattori
-  da programmi diversi e fuori contesto.
+  plausibili da programmi diversi o temi non elencati (HTTP/3, QUIC).
 - **Q2** `q2-tecnologia-ruolo`: React, Flask, Git, AJAX. Area principale 4;
   ogni coppia collega il nodo specifico pertinente, anche di altra area:
   `react-componenti-jsx`, `servizi-restful-flask`, `git-workflow-collaborativo`,
@@ -68,12 +68,17 @@ congruenza dei segnaposto e varietà della posizione della risposta corretta.
 
 ### Scelta multipla
 
-`domanda`, `opzioni` (3–6 oggetti `{id, testo, spiegazione?, tipo?}`),
-`risposta_corretta` (ID, **non indice**), `spiegazione`.
+`domanda`, `opzioni` (4–6 oggetti `{id, testo, spiegazione?, tipo?}`; la v1
+storica ne ammette 3), `risposta_corretta` (ID, **non indice**), `spiegazione`.
 `tipo` di un’opzione errata può essere `plausibile` o `fuori_contesto`.
-La banca corrente spiega **ogni opzione**. Le scelte multiple TW hanno sia
-alternative plausibili sia fuori contesto; quelle IA hanno alternative errate
-tutte plausibili di ML (ad esempio priori/posteriori, assi NumPy,
+La banca corrente spiega **ogni opzione** e, in tutte le scelte multiple (TW e IA),
+usa **solo distrattori plausibili**: confusioni tipiche da scartare ragionando,
+come GET/POST/PUT, safe/idempotente, 403/404/410, HTTP/2/HTTP/3, content-box/
+border-box, request.args/request.form, pull request/git pull, AJAX/WebSocket.
+I distrattori **fuori contesto** (la trappola «opzione estranea al Web» descritta
+in `MATERIALE_UTENTE.md`, per esempio «LAN» o «installazione del sistema
+operativo») restano **negli abbinamenti**, dove ogni quesito TW ne ha almeno uno.
+Le alternative IA sono di ML (ad esempio priori/posteriori, assi NumPy,
 classificazione/clustering/regressione, varianza PCA/accuratezza).
 Per v1 il feedback usa come fallback
 la spiegazione generale. Il seed rimescola la presentazione, senza cambiare ID

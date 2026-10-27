@@ -322,9 +322,22 @@ html[data-theme="dark"] .md pre.code .hljs-meta { color: var(--analogy); }
 .ls-finish p { margin: .5rem 0 0; }
 .lesson li, .lesson .ex-sol, .lesson h2, .lesson h3, .lesson summary { scroll-margin-top: 4.5rem; }
 .ls-nav .btn, .ls-top > .btn { white-space: nowrap; }
+/* Navigazione lezione: parola sempre visibile; su telefono in alto la forma breve, in basso anche il titolo. */
+.ls-nav .btn { min-width: 0; }
+.ls-nav .nav-words { display: inline-flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+.ls-nav .nav-next .nav-words { align-items: flex-end; }
+.ls-nav .nav-short { display: none; }
+.ls-nav .nav-title { display: block; max-width: 16rem; font-size: .8rem; font-weight: 400; opacity: .85; overflow: hidden; text-overflow: ellipsis; }
+.ls-nav.bottom .btn { display: inline-flex; align-items: center; gap: .35rem; max-width: 46%; overflow: hidden; }
 @media (max-width: 720px) {
-  .ls-nav.top .hide-sm { display: none; }
+  .ls-nav.top .nav-full { display: none; }
+  .ls-nav.top .nav-short { display: inline; }
   .ls-nav.top .btn { min-width: 44px; }
+  /* Pulsanti compatti: Percorso, tema e Prec./Succ. restano su una riga a 390 px. */
+  .ls-top { gap: .35rem; }
+  .ls-top .btn { padding: .45rem .55rem; font-size: .875rem; }
+  .ls-nav.top { gap: .35rem; }
+  .ls-nav .nav-title { max-width: 100%; }
 }
 
 /* Campi della lezione v4. */
