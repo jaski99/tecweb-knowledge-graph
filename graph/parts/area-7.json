@@ -1,0 +1,504 @@
+[
+  {
+    "id": "ia-introduzione-apprendimento",
+    "title": "IA: introduzione all’apprendimento automatico",
+    "area": 7,
+    "gruppo": "A",
+    "tipo": "concetto",
+    "sapere": "L’apprendimento automatico ricava modelli dai dati. Distingui esempi con etichetta da dati senza etichette, generalizzazione e valutazione su dati separati.",
+    "saper_fare": [
+      "Distinguere attributi, etichette e previsioni",
+      "Separare addestramento, validazione e test",
+      "Leggere accuratezza e matrice di confusione"
+    ],
+    "prerequisiti": [],
+    "esercizi": [
+      {
+        "tipo_esame": "Allenamento originale, non prova ufficiale",
+        "testo": "Su dati di test, le etichette vere sono [1, 0, 1, 0] e le predizioni [1, 0, 0, 1]. Quali sono accuratezza e matrice di confusione?",
+        "soluzione": "Due predizioni su quattro sono corrette: accuratezza 0,5. Con righe vere e colonne predette, la matrice è [[1, 1], [1, 1]]."
+      }
+    ],
+    "tempo_studio_min": 50,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+    },
+    "risorse": [
+      {
+        "titolo": "scikit-learn User Guide",
+        "url": "https://scikit-learn.org/stable/user_guide.html",
+        "verificato": true
+      },
+      {
+        "titolo": "scikit-learn: valutazione dei modelli",
+        "url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+        "verificato": true
+      },
+      {
+        "titolo": "scikit-learn: evitare il data leakage",
+        "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "SKLEARN"
+      }
+    ],
+    "checklist_ripasso": [
+      "Dati etichettati e non etichettati",
+      "Train, validazione, test e leakage",
+      "Accuratezza e righe/colonne della matrice di confusione"
+    ],
+    "worker": "X3"
+  },
+  {
+    "id": "ia-python-numpy-lab",
+    "title": "IA: laboratorio Python e NumPy",
+    "area": 7,
+    "gruppo": "A",
+    "tipo": "abilita",
+    "sapere": "Python e NumPy permettono di rappresentare dati numerici con array, eseguire prodotto scalare e broadcasting e calcolare media e varianza lungo gli assi.",
+    "saper_fare": [
+      "Creare array e leggere shape e assi",
+      "Applicare broadcasting e prodotto scalare",
+      "Calcolare medie e varianze per colonna"
+    ],
+    "prerequisiti": [],
+    "esercizi": [
+      {
+        "tipo_esame": "Allenamento originale, non prova ufficiale",
+        "testo": "Con x = [1, 2] e w = [2, 0.5], calcola il prodotto scalare.",
+        "soluzione": "Moltiplica gli elementi corrispondenti e somma: 1×2 + 2×0,5 = 3."
+      }
+    ],
+    "tempo_studio_min": 60,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+    },
+    "risorse": [
+      {
+        "titolo": "NumPy: quickstart",
+        "url": "https://numpy.org/doc/stable/user/quickstart.html",
+        "verificato": true
+      },
+      {
+        "titolo": "NumPy: regole del broadcasting",
+        "url": "https://numpy.org/doc/stable/user/basics.broadcasting.html",
+        "verificato": true
+      },
+      {
+        "titolo": "Python: tutorial ufficiale",
+        "url": "https://docs.python.org/3/tutorial/",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "NUMPY"
+      },
+      {
+        "libro": "PYTHON"
+      }
+    ],
+    "checklist_ripasso": [
+      "Array, shape e assi",
+      "Prodotto scalare rispetto a prodotto elemento per elemento",
+      "Broadcasting, media e varianza"
+    ],
+    "worker": "X3"
+  },
+  {
+    "id": "ia-supervisionato-classificazione-lineare",
+    "title": "IA: supervisionato e classificazione lineare",
+    "area": 7,
+    "gruppo": "A",
+    "tipo": "concetto",
+    "sapere": "La classificazione supervisionata apprende da coppie attributi-etichetta; un classificatore lineare decide tramite uno score e una soglia. Il perceptron aggiorna pesi e bias sugli errori.",
+    "saper_fare": [
+      "Calcolare score e classe con una soglia",
+      "Applicare un aggiornamento del perceptron",
+      "Valutare predizioni su esempi separati"
+    ],
+    "prerequisiti": [
+      {
+        "id": "ia-introduzione-apprendimento",
+        "forza": "hard",
+        "motivo": "Servono target, train/test e generalizzazione."
+      },
+      {
+        "id": "ia-python-numpy-lab",
+        "forza": "soft",
+        "motivo": "Prodotto scalare e array aiutano a eseguire il classificatore."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "Allenamento originale, non prova ufficiale",
+        "testo": "Con w = [1, -1], b = -2 e x = [2, 1], quale classe restituisce la soglia a zero?",
+        "soluzione": "Lo score è 2 - 1 - 2 = -1, quindi la classe è negativa."
+      }
+    ],
+    "tempo_studio_min": 55,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+    },
+    "risorse": [
+      {
+        "titolo": "scikit-learn: modelli lineari",
+        "url": "https://scikit-learn.org/stable/modules/linear_model.html",
+        "verificato": true
+      },
+      {
+        "titolo": "scikit-learn: metriche",
+        "url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+        "verificato": true
+      },
+      {
+        "titolo": "NumPy: quickstart",
+        "url": "https://numpy.org/doc/stable/user/quickstart.html",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "SKLEARN"
+      },
+      {
+        "libro": "NUMPY"
+      }
+    ],
+    "checklist_ripasso": [
+      "Score lineare e soglia",
+      "Aggiornamento del perceptron",
+      "Train/test e matrice di confusione"
+    ],
+    "worker": "X3"
+  },
+  {
+    "id": "ia-bayes-apprendimento-statistico",
+    "title": "IA: apprendimento statistico e bayesiano",
+    "area": 7,
+    "gruppo": "A",
+    "tipo": "concetto",
+    "sapere": "L’apprendimento statistico modella incertezza e distribuzioni. Bayes combina prior e likelihood; naive Bayes assume indipendenza condizionata delle feature data la classe.",
+    "saper_fare": [
+      "Calcolare un posterior normalizzato",
+      "Distinguere prior e likelihood",
+      "Spiegare l’ipotesi naive"
+    ],
+    "prerequisiti": [
+      {
+        "id": "ia-supervisionato-classificazione-lineare",
+        "forza": "hard",
+        "motivo": "Il problema di classificazione supervisionata introduce feature e classi."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "Allenamento originale, non prova ufficiale",
+        "testo": "Due classi hanno priori uguali e score non normalizzati 0,09 e 0,12. Quali posteriori ottieni?",
+        "soluzione": "La somma è 0,21: i posteriori sono 3/7 e 4/7; la seconda classe ha posterior maggiore."
+      }
+    ],
+    "tempo_studio_min": 50,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+    },
+    "risorse": [
+      {
+        "titolo": "scikit-learn: naive Bayes",
+        "url": "https://scikit-learn.org/stable/modules/naive_bayes.html",
+        "verificato": true
+      },
+      {
+        "titolo": "NumPy: quickstart",
+        "url": "https://numpy.org/doc/stable/user/quickstart.html",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "SKLEARN"
+      },
+      {
+        "libro": "NUMPY"
+      }
+    ],
+    "checklist_ripasso": [
+      "Prior, likelihood, evidenza e posterior",
+      "Indipendenza condizionata delle feature",
+      "Smoothing ed errori di stima"
+    ],
+    "worker": "X3"
+  },
+  {
+    "id": "ia-clustering-non-supervisionato",
+    "title": "IA: clustering e apprendimento non supervisionato",
+    "area": 7,
+    "gruppo": "A",
+    "tipo": "concetto",
+    "sapere": "Il clustering cerca gruppi di osservazioni simili senza etichette. K-means alterna assegnazione ai centroidi e aggiornamento delle medie, minimizzando una somma di distanze quadratiche.",
+    "saper_fare": [
+      "Eseguire assegnazione e aggiornamento dei centroidi",
+      "Interpretare inerzia e limiti di k-means",
+      "Distinguere un cluster da una classe etichettata"
+    ],
+    "prerequisiti": [
+      {
+        "id": "ia-introduzione-apprendimento",
+        "forza": "hard",
+        "motivo": "Serve distinguere dati con target e dati senza target."
+      },
+      {
+        "id": "ia-python-numpy-lab",
+        "forza": "soft",
+        "motivo": "Array e broadcasting semplificano i calcoli delle distanze."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "Allenamento originale, non prova ufficiale",
+        "testo": "Con punti [0, 2, 8, 10] e centroidi iniziali 0 e 10, quali centroidi ottieni dopo una assegnazione e un aggiornamento?",
+        "soluzione": "I gruppi sono [0, 2] e [8, 10]; i centroidi aggiornati sono 1 e 9."
+      }
+    ],
+    "tempo_studio_min": 50,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+    },
+    "risorse": [
+      {
+        "titolo": "scikit-learn: clustering e k-means",
+        "url": "https://scikit-learn.org/stable/modules/clustering.html",
+        "verificato": true
+      },
+      {
+        "titolo": "NumPy: broadcasting",
+        "url": "https://numpy.org/doc/stable/user/basics.broadcasting.html",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "SKLEARN"
+      },
+      {
+        "libro": "NUMPY"
+      }
+    ],
+    "checklist_ripasso": [
+      "Gruppi non supervisionati e scelta di k",
+      "Assegnazione, media e inerzia",
+      "Scala delle feature e inizializzazione"
+    ],
+    "worker": "X3"
+  },
+  {
+    "id": "ia-regressione",
+    "title": "IA: regressione lineare e minimi quadrati",
+    "area": 7,
+    "gruppo": "A",
+    "tipo": "concetto",
+    "sapere": "La regressione predice un target numerico. La regressione lineare ai minimi quadrati stima pesi e intercetta minimizzando gli scarti quadratici; l’MSE valuta l’errore medio quadratico.",
+    "saper_fare": [
+      "Stimare una retta con minimi quadrati",
+      "Calcolare previsioni e MSE su test",
+      "Distinguere regressione da classificazione"
+    ],
+    "prerequisiti": [
+      {
+        "id": "ia-supervisionato-classificazione-lineare",
+        "forza": "hard",
+        "motivo": "I modelli supervisionati lineari introducono pesi, bias e train/test."
+      },
+      {
+        "id": "ia-python-numpy-lab",
+        "forza": "soft",
+        "motivo": "La soluzione numerica usa array e operazioni matriciali."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "Allenamento originale, non prova ufficiale",
+        "testo": "Le previsioni [1, 5] sono confrontate con i target [2, 4]. Qual è l’MSE?",
+        "soluzione": "Gli errori sono -1 e 1; i quadrati sono 1 e 1, quindi l’MSE è 1."
+      }
+    ],
+    "tempo_studio_min": 50,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+    },
+    "risorse": [
+      {
+        "titolo": "scikit-learn: regressione lineare ai minimi quadrati",
+        "url": "https://scikit-learn.org/stable/modules/linear_model.html",
+        "verificato": true
+      },
+      {
+        "titolo": "scikit-learn: metriche di regressione",
+        "url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+        "verificato": true
+      },
+      {
+        "titolo": "NumPy: quickstart",
+        "url": "https://numpy.org/doc/stable/user/quickstart.html",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "SKLEARN"
+      },
+      {
+        "libro": "NUMPY"
+      }
+    ],
+    "checklist_ripasso": [
+      "Target numerico e retta di regressione",
+      "Minimi quadrati e intercetta",
+      "MSE su dati non usati nel fit"
+    ],
+    "worker": "X3"
+  },
+  {
+    "id": "ia-riduzione-dimensionalita",
+    "title": "IA: riduzione della dimensionalità e PCA",
+    "area": 7,
+    "gruppo": "A",
+    "tipo": "concetto",
+    "sapere": "La riduzione della dimensionalità rappresenta i dati con meno componenti. La PCA centra i dati e individua direzioni ortogonali di massima varianza, con possibile perdita di informazione.",
+    "saper_fare": [
+      "Centrare dati usando la media del train",
+      "Proiettare su una componente principale",
+      "Spiegare varianza preservata e limiti della PCA"
+    ],
+    "prerequisiti": [
+      {
+        "id": "ia-introduzione-apprendimento",
+        "forza": "hard",
+        "motivo": "Servono feature, dati e separazione train/test."
+      },
+      {
+        "id": "ia-python-numpy-lab",
+        "forza": "soft",
+        "motivo": "Media per colonna e prodotti matriciali aiutano a calcolare la proiezione."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "Allenamento originale, non prova ufficiale",
+        "testo": "I punti [1, 1], [2, 2], [3, 3] hanno media [2, 2]. Quante componenti principali bastano per ricostruirli esattamente in aritmetica esatta?",
+        "soluzione": "Basta una componente: i punti centrati sono tutti sulla stessa retta."
+      }
+    ],
+    "tempo_studio_min": 50,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+    },
+    "risorse": [
+      {
+        "titolo": "scikit-learn: decomposizione e PCA",
+        "url": "https://scikit-learn.org/stable/modules/decomposition.html",
+        "verificato": true
+      },
+      {
+        "titolo": "scikit-learn: evitare leakage nel preprocessing",
+        "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+        "verificato": true
+      },
+      {
+        "titolo": "NumPy: quickstart",
+        "url": "https://numpy.org/doc/stable/user/quickstart.html",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "SKLEARN"
+      },
+      {
+        "libro": "NUMPY"
+      }
+    ],
+    "checklist_ripasso": [
+      "Centratura con statistiche del train",
+      "Componenti ortogonali e varianza spiegata",
+      "Proiezione, ricostruzione e leakage"
+    ],
+    "worker": "X3"
+  },
+  {
+    "id": "ia-esame-quiz-lab-lode",
+    "title": "IA: quiz, laboratorio e lode dell’esame integrato",
+    "area": 7,
+    "gruppo": "A",
+    "tipo": "tipo_esercizio",
+    "sapere": "La verifica IA prevede quiz chiusi con voto in trentesimi e laboratorio come idoneità ON/OFF [F1]. Il voto integrato è una media ponderata arrotondata per eccesso; la lode ha condizioni specifiche [F1].",
+    "saper_fare": [
+      "Distinguere voto del quiz ed esito del laboratorio",
+      "Applicare le condizioni della lode integrata",
+      "Descrivere la media ponderata e il trattamento della lode"
+    ],
+    "prerequisiti": [
+      {
+        "id": "ia-supervisionato-classificazione-lineare",
+        "forza": "hard",
+        "motivo": "Il quiz riguarda gli argomenti del modulo IA."
+      },
+      {
+        "id": "ia-clustering-non-supervisionato",
+        "forza": "hard",
+        "motivo": "La preparazione include anche apprendimento non supervisionato."
+      },
+      {
+        "id": "ia-regressione",
+        "forza": "soft",
+        "motivo": "La regressione integra il ripasso dei metodi del modulo."
+      },
+      {
+        "id": "ia-bayes-apprendimento-statistico",
+        "forza": "soft",
+        "motivo": "Bayes integra il ripasso dei metodi del modulo."
+      },
+      {
+        "id": "ia-riduzione-dimensionalita",
+        "forza": "soft",
+        "motivo": "La riduzione delle dimensioni completa il ripasso dei metodi."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "Allenamento originale, non prova ufficiale",
+        "testo": "Uno studente ha 30 e lode in IA e 30 in TW. Quali condizioni della lode integrata sono soddisfatte?",
+        "soluzione": "Entrambi i moduli hanno 30 e almeno uno ha la lode: sono soddisfatte le condizioni riportate in [F1]."
+      }
+    ],
+    "tempo_studio_min": 35,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Gruppo A: tema del modulo IA o della sua verifica [F1]. Il tempo indicato è una stima interna di studio, non una durata ufficiale."
+    },
+    "risorse": [
+      {
+        "titolo": "UNIMORE: scheda ufficiale INF-37, programma e verifica [F1]",
+        "url": "https://unimore.coursecatalogue.cineca.it/corsi/2024/10296/insegnamenti/2026/27352/2022/10000?annoOrdinamento=2022",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [],
+    "checklist_ripasso": [
+      "Quiz chiusi in trentesimi e laboratorio ON/OFF [F1]",
+      "Media ponderata arrotondata per eccesso [F1]",
+      "Lode: 30 in entrambi e lode in almeno uno [F1]"
+    ],
+    "worker": "X3"
+  }
+]

@@ -217,6 +217,62 @@
 **Retro**: Requisito e modello dati → endpoint e test → interfaccia → CRUD e casi d’errore → demo e presentazione.
 
 
+### IA: introduzione all’apprendimento automatico
+
+**Fronte**: Perché il test non deve contribuire al preprocessing?
+
+**Retro**: Per evitare leakage: i parametri della trasformazione si apprendono sul train e si applicano anche al test.
+
+
+### IA: laboratorio Python e NumPy
+
+**Fronte**: Come verifichi se un vettore scala le colonne di una matrice?
+
+**Retro**: Confronta la lunghezza del vettore con l’ultima dimensione della matrice e applica le regole di broadcasting.
+
+
+### IA: clustering e apprendimento non supervisionato
+
+**Fronte**: Quali due passi alterna k-means?
+
+**Retro**: Assegna i punti al centroide più vicino e aggiorna ogni centroide con la media dei punti assegnati.
+
+
+### IA: riduzione della dimensionalità e PCA
+
+**Fronte**: Perché il segno della componente principale può cambiare?
+
+**Retro**: Una direzione e la sua opposta descrivono la stessa retta: la proiezione cambia segno, non la geometria.
+
+
+### IA: supervisionato e classificazione lineare
+
+**Fronte**: Come aggiorna il perceptron un esempio con margine non positivo?
+
+**Retro**: Aggiunge `eta * y * x` ai pesi e `eta * y` al bias, con eta positivo.
+
+
+### IA: apprendimento statistico e bayesiano
+
+**Fronte**: Qual è l’ipotesi naive di naive Bayes?
+
+**Retro**: Le feature sono indipendenti tra loro condizionatamente alla classe, non necessariamente in generale.
+
+
+### IA: regressione lineare e minimi quadrati
+
+**Fronte**: Come si calcola l’MSE?
+
+**Retro**: Si eleva al quadrato ogni differenza fra target e previsione, quindi si fa la media dei quadrati.
+
+
+### IA: quiz, laboratorio e lode dell’esame integrato
+
+**Fronte**: Quali condizioni riporta [F1] per la lode finale?
+
+**Retro**: 30 in entrambi i moduli, IA e TW, con la lode in almeno uno dei due.
+
+
 ### Multiplexing: HTTP/2 vs HTTP/3
 
 **Fronte**: Dove compare il multiplexing in HTTP/2 e HTTP/3?
@@ -701,6 +757,57 @@
 - [ ] Feedback: immediato per ogni domanda
 
 
+## Area 7. Modulo IA (apprendimento automatico, per la lode)
+
+### IA: introduzione all’apprendimento automatico (priorità ALTA, gruppo A)
+
+- [ ] Dati etichettati e non etichettati
+- [ ] Train, validazione, test e leakage
+- [ ] Accuratezza e righe/colonne della matrice di confusione
+
+### IA: laboratorio Python e NumPy (priorità ALTA, gruppo A)
+
+- [ ] Array, shape e assi
+- [ ] Prodotto scalare rispetto a prodotto elemento per elemento
+- [ ] Broadcasting, media e varianza
+
+### IA: clustering e apprendimento non supervisionato (priorità ALTA, gruppo A)
+
+- [ ] Gruppi non supervisionati e scelta di k
+- [ ] Assegnazione, media e inerzia
+- [ ] Scala delle feature e inizializzazione
+
+### IA: riduzione della dimensionalità e PCA (priorità ALTA, gruppo A)
+
+- [ ] Centratura con statistiche del train
+- [ ] Componenti ortogonali e varianza spiegata
+- [ ] Proiezione, ricostruzione e leakage
+
+### IA: supervisionato e classificazione lineare (priorità ALTA, gruppo A)
+
+- [ ] Score lineare e soglia
+- [ ] Aggiornamento del perceptron
+- [ ] Train/test e matrice di confusione
+
+### IA: apprendimento statistico e bayesiano (priorità ALTA, gruppo A)
+
+- [ ] Prior, likelihood, evidenza e posterior
+- [ ] Indipendenza condizionata delle feature
+- [ ] Smoothing ed errori di stima
+
+### IA: regressione lineare e minimi quadrati (priorità ALTA, gruppo A)
+
+- [ ] Target numerico e retta di regressione
+- [ ] Minimi quadrati e intercetta
+- [ ] MSE su dati non usati nel fit
+
+### IA: quiz, laboratorio e lode dell’esame integrato (priorità ALTA, gruppo A)
+
+- [ ] Quiz chiusi in trentesimi e laboratorio ON/OFF [F1]
+- [ ] Media ponderata arrotondata per eccesso [F1]
+- [ ] Lode: 30 in entrambi e lode in almeno uno [F1]
+
+
 ## Trappole d'esame
 
 - [ ] **Protocollo HTTP: fondamenta del Web**: Confondere HTTP con il formato HTML → HTTP definisce lo scambio; HTML è uno dei possibili formati della rappresentazione trasferita.
@@ -803,6 +910,23 @@
 - [ ] **Tesina: Esercitazione guidata e modello presentazione**: Implementare tutte le funzioni prima di provarne una → Gli errori precoci si accumulano e diventano più difficili da isolare.
 - [ ] **Tesina: Esercitazione guidata e modello presentazione**: Copiare il modello di slide senza adattarlo al progetto → Il racconto deve corrispondere a componenti e comportamenti realmente presenti.
 - [ ] **Tesina: Esercitazione guidata e modello presentazione**: Considerare una demo riuscita come test completo → La demo mostra un percorso; non verifica automaticamente input invalidi e fallimenti.
+- [ ] **IA: introduzione all’apprendimento automatico**: Calcolare la media di normalizzazione su train e test insieme. → Il test influenzerebbe un parametro appreso: è leakage.
+- [ ] **IA: introduzione all’apprendimento automatico**: Considerare l’accuratezza perfetta sul train una prova di generalizzazione. → Il modello può aver memorizzato rumore e peggiorare su dati nuovi.
+- [ ] **IA: laboratorio Python e NumPy**: Scambiare `*` per il prodotto scalare di due vettori. → `*` è elemento per elemento; `@` somma i prodotti nel caso di vettori.
+- [ ] **IA: laboratorio Python e NumPy**: Assumere che il broadcasting funzioni con qualunque shape. → Dalle dimensioni finali, ogni coppia deve essere uguale oppure una delle due deve valere uno.
+- [ ] **IA: clustering e apprendimento non supervisionato**: Interpretare gli indici dei cluster come etichette vere. → Gli indici identificano gruppi prodotti dall’algoritmo; non contengono da soli un significato umano.
+- [ ] **IA: clustering e apprendimento non supervisionato**: Pensare che k-means trovi sempre il minimo globale. → L’inizializzazione e la geometria dei dati possono portare a soluzioni locali diverse.
+- [ ] **IA: riduzione della dimensionalità e PCA**: Ricalcolare media e componenti sul test prima di valutarlo. → Usare il test nel fit della trasformazione provoca leakage; riusa le quantità apprese sul train.
+- [ ] **IA: riduzione della dimensionalità e PCA**: Dire che la componente di massima varianza è sempre la più predittiva. → La PCA non usa il target: la variabilità maggiore può essere irrilevante per la previsione.
+- [ ] **IA: supervisionato e classificazione lineare**: Dire che la regressione logistica predice necessariamente un valore continuo come target. → Nel caso discusso usa probabilità e soglia per classificare.
+- [ ] **IA: supervisionato e classificazione lineare**: Usare il test per aggiornare i pesi del perceptron. → Il test non sarebbe più indipendente e la valutazione sarebbe distorta.
+- [ ] **IA: apprendimento statistico e bayesiano**: Scambiare `P(classe | feature)` con `P(feature | classe)`. → Posterior e likelihood condizionano su eventi diversi e non coincidono in generale.
+- [ ] **IA: apprendimento statistico e bayesiano**: Sostenere che le feature naive siano sempre indipendenti senza condizioni. → L’ipotesi è indipendenza delle feature una volta fissata la classe.
+- [ ] **IA: regressione lineare e minimi quadrati**: Confondere l’MSE con la media degli errori con segno. → L’MSE eleva al quadrato ogni errore prima di calcolare la media; gli errori opposti non si cancellano.
+- [ ] **IA: regressione lineare e minimi quadrati**: Valutare la generalizzazione sugli stessi dati usati per stimare la retta. → Gli errori di train non sono una valutazione indipendente su dati nuovi.
+- [ ] **IA: quiz, laboratorio e lode dell’esame integrato**: Sommare ON/OFF come se fosse un punteggio numerico. → La scheda descrive il laboratorio come idoneità, mentre il voto IA è determinato dai quiz [F1].
+- [ ] **IA: quiz, laboratorio e lode dell’esame integrato**: Attribuire la lode integrata con 30 in entrambi ma senza lode nei moduli. → La scheda richiede anche la lode in almeno uno dei moduli [F1].
+- [ ] **IA: quiz, laboratorio e lode dell’esame integrato**: Arrotondare la media ponderata all’intero più vicino. → La scheda specifica arrotondamento per eccesso, non arrotondamento al più vicino [F1].
 - [ ] **Multiplexing: HTTP/2 vs HTTP/3**: Confondere connessione persistente con multiplexing → Una connessione HTTP/1.1 può restare aperta senza gestire stream indipendenti intercalati.
 - [ ] **Multiplexing: HTTP/2 vs HTTP/3**: Dire che HTTP/2 non soffre mai di HOL → La perdita su TCP blocca il flusso ordinato sottostante e quindi la consegna agli stream.
 - [ ] **Multiplexing: HTTP/2 vs HTTP/3**: Attribuire l'affidabilità a UDP → UDP trasporta datagrammi; QUIC implementa affidabilità, flusso e recupero delle perdite sopra UDP.

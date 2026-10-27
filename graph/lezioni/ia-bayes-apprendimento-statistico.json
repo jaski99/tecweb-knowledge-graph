@@ -1,0 +1,102 @@
+{
+  "perche_ti_serve": "Gruppo A: apprendimento statistico e bayesiano sono nel programma IA [F1]; nessun punteggio per nodo è indicato.",
+  "scenario_fil_rouge": "La biblioteca online vuole classificare un libro fittizio in base alla presenza di due attributi binari. Le probabilità iniziali e condizionate sono esempi didattici, non dati reali sui lettori.",
+  "definizione_esame": {
+    "definizione": "Il teorema di Bayes aggiorna la probabilità di una classe dopo avere osservato i dati, combinando prior e likelihood.",
+    "scopo_vantaggio": "Permette di esprimere l’incertezza e confrontare classi usando una distribuzione posterior normalizzata.",
+    "esempio": "Naive Bayes combina la probabilità iniziale della classe con le probabilità delle feature, assumendole indipendenti data la classe."
+  },
+  "spiegazione": "Prerequisiti: classificazione supervisionata, feature ed etichette. **Fonte e limiti:** testo ed esempi originali su basi statistiche libere, non dalle slide del prof. Calderara, non pubbliche [F12]; l’argomento è in [F1].\n\n## Ragionare con incertezza\n\nNell’apprendimento statistico si descrivono dati e target con un modello probabilistico, si stimano parametri dagli esempi e si valuta il comportamento su dati separati. Le frequenze campionarie sono stime, non certezze: dataset piccoli o distorti possono produrre stime fragili. Il modello e le sue ipotesi vanno esplicitati.\n\n## Bayes, passo per passo\n\nPer una classe `c` e osservazione `x`, il **prior** `P(c)` è la probabilità della classe prima di osservare `x`; la **likelihood** `P(x | c)` descrive la probabilità dell’osservazione se la classe è `c`. Il **posterior** è `P(c | x) = P(x | c) P(c) / P(x)`. Per classi esaustive e disgiunte, `P(x)` è la somma degli score `P(x | c) P(c)` su tutte le classi; deve essere positivo. Il denominatore normalizza i posteriori affinché sommino a uno.\n\n```mermaid\nflowchart LR\n  P[\"Prior di classe\"] --> S[\"Score non normalizzato\"]\n  L[\"Likelihood delle feature\"] --> S\n  S --> N[\"Normalizzazione\"]\n  N --> Q[\"Posterior e decisione\"]\n```\n\n## Che cosa rende naive il modello\n\nNaive Bayes assume che le feature siano **indipendenti condizionatamente alla classe**, non necessariamente indipendenti in generale. Di conseguenza, la likelihood congiunta si fattorizza nel prodotto delle likelihood delle singole feature. Per un attributo Bernoulli assente, la probabilità usata è `1 - P(presente | c)`. Per scegliere la classe più probabile è sufficiente confrontare gli score, perché il denominatore è comune; per riportare probabilità occorre normalizzare.\n\n## Stime e precauzioni\n\nIn un’applicazione, prior e probabilità condizionate possono essere stimati dal train. Una feature mai osservata in una classe può annullare uno score: lo **smoothing** può evitare probabilità nulle, con una scelta dichiarata. Feature correlate possono violare l’ipotesi naive; buone decisioni di classe non garantiscono probabilità ben calibrate. Valuta il modello su dati non usati per stimare i parametri.",
+  "analogia": {
+    "testo": "È come rivedere la propria stima sulla collocazione di un libro dopo aver letto indizi sull’etichetta e sulla copertina.",
+    "limite": "Le probabilità e l’indipendenza degli indizi sono ipotesi da stimare e verificare; gli indizi reali possono essere correlati."
+  },
+  "worked_example": {
+    "titolo": "Posteriori con feature binarie",
+    "problema": "Per due classi fittizie, combina priori uguali e likelihood di presenza e assenza dei due attributi.",
+    "passi": [
+      "Per ogni classe prendi la likelihood della feature presente e il complemento di quella assente.",
+      "Moltiplica le likelihood per il prior della classe.",
+      "Normalizza gli score e scegli il posterior maggiore."
+    ],
+    "soluzione": "```python\nimport numpy as np\n\npriori = np.array([0.5, 0.5])\np_presenza = np.array([[0.2, 0.1], [0.8, 0.7]])  # righe: classi\nx = np.array([1, 0])  # prima feature presente, seconda assente\nlikelihood = np.where(x == 1, p_presenza, 1 - p_presenza)\nscore = priori * likelihood.prod(axis=1)\nposteriori = score / score.sum()\nclasse = int(np.argmax(posteriori))\nprint(score)        # [0.09 0.12]\nprint(posteriori)   # [3/7, 4/7], circa [0.4286, 0.5714]\nprint(classe)       # 1, la seconda classe\n```\nGli score sono `0,09` e `0,12`; i posteriori sono `3/7` e `4/7`.",
+    "perche_funziona": "Il prodotto è valido sotto l’ipotesi di indipendenza condizionata; la somma degli score è positiva e normalizza le classi."
+  },
+  "completion_problem": {
+    "titolo": "Normalizza gli score",
+    "testo": "Due classi hanno score non normalizzati 0,09 e 0,12. Completa il calcolo dei posteriori.",
+    "passi_mancanti": [
+      "Somma gli score per ottenere l’evidenza.",
+      "Dividi ciascuno score per la stessa somma."
+    ],
+    "soluzione": "La somma è 0,21; i posteriori sono 3/7 e 4/7, quindi prevale la seconda classe."
+  },
+  "esercizio_autonomo": {
+    "titolo": "Riconosci il ruolo della likelihood",
+    "testo": "Se `P(feature | classe)` cresce e il resto rimane invariato, come cambia lo score della classe? Quando aumenta certamente?",
+    "suggerimento": "Lo score moltiplica il prior per tutte le likelihood delle feature.",
+    "soluzione_attesa": "Lo score non diminuisce; aumenta se il prior e il prodotto delle altre likelihood sono positivi. Se uno è zero, resta zero."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Scambiare `P(classe | feature)` con `P(feature | classe)`.",
+      "perche_sbagliato": "Posterior e likelihood condizionano su eventi diversi e non coincidono in generale.",
+      "distrattore": "Un header HTTP è un prior."
+    },
+    {
+      "errore": "Sostenere che le feature naive siano sempre indipendenti senza condizioni.",
+      "perche_sbagliato": "L’ipotesi è indipendenza delle feature una volta fissata la classe.",
+      "distrattore": "Un selettore CSS è una probabilità."
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa rappresenta il prior `P(c)`? A) La probabilità prima dell’osservazione; B) Il posterior; C) Il CSS.",
+        "risposta": "A) È la probabilità della classe prima di osservare la feature."
+      },
+      {
+        "domanda": "Che cos’è `P(x | c)`? A) Un metodo HTTP; B) Likelihood; C) Posterior della classe.",
+        "risposta": "B) È la probabilità dell’osservazione data la classe."
+      },
+      {
+        "domanda": "Quale indipendenza assume naive Bayes? A) Incondizionata sempre; B) Indipendenza dai server; C) Condizionata alla classe.",
+        "risposta": "C) Le feature si assumono indipendenti una volta fissata la classe."
+      },
+      {
+        "domanda": "A che cosa serve il denominatore di Bayes? A) A normalizzare; B) A cambiare porta; C) Ad aggiungere classi.",
+        "risposta": "A) Normalizza gli score affinché i posteriori sommino a uno."
+      },
+      {
+        "domanda": "Quale precauzione riguarda le probabilità predette? A) Sono sempre certe; B) Possono essere mal calibrate; C) Sono cookie.",
+        "risposta": "B) La scelta della classe può funzionare anche quando le probabilità sono mal calibrate."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega con parole tue come prior, likelihood e indipendenza condizionata portano alla decisione su un libro.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "ia-supervisionato-classificazione-lineare",
+        "collegamento": "Entrambi assegnano classi da feature, ma naive Bayes modella probabilità condizionate."
+      },
+      {
+        "nodo": "ia-introduzione-apprendimento",
+        "collegamento": "I parametri statistici si stimano sul train e si valutano su dati separati."
+      }
+    ]
+  },
+  "riepilogo": "Il prior precede l’osservazione; la likelihood descrive l’osservazione data la classe.\nBayes combina e normalizza gli score in posteriori.\nNaive Bayes assume indipendenza delle feature data la classe.\nSmoothing e valutazione aiutano a gestire stime fragili.\nProbabilità stimate e certezza non sono sinonimi.",
+  "flashcard": {
+    "fronte": "Qual è l’ipotesi naive di naive Bayes?",
+    "retro": "Le feature sono indipendenti tra loro condizionatamente alla classe, non necessariamente in generale."
+  },
+  "checklist": {
+    "so_fare": [
+      "Calcolare score e posteriori per due classi",
+      "Individuare un’eventuale probabilità nulla"
+    ],
+    "so_dire": [
+      "Distinguere prior, likelihood ed evidenza",
+      "Spiegare il limite dell’indipendenza condizionata"
+    ]
+  }
+}
