@@ -3,9 +3,9 @@
   "corso": {
     "nome": "Tecnologie Web",
     "ateneo": "UNIMORE - Dipartimento di Ingegneria \"Enzo Ferrari\"",
-    "docente": "Non specificato (da confermare)",
-    "fonte_programma": "https://www.ingmo.unimore.it/sites/dip02/files/2026-06/Laurea%20Ingegneria%20Informatica%20a.a.%202026_2027.pdf",
-    "nota": "Programma ricostruito in base a: ARENA_PLAN.md (6 aree), MATERIALE_UTENTE.md (gruppi A/B/C), fonti autorevoli (RFC, W3C, MDN, Flask, Git). Vedi docs/SYLLABUS.md per dettagli."
+    "docente": "Laura Po (modulo TW); Simone Calderara (titolare INF-37, modulo IA)",
+    "fonte_programma": "https://unimore.coursecatalogue.cineca.it/corsi/2024/10296/insegnamenti/2026/27352/2022/10000?annoOrdinamento=2022",
+    "nota": "Modulo Tecnologie Web (6 CFU, 54 ore) dell’integrato INF-37 (12 CFU, 108 ore), Ingegneria Informatica (MO), offerta 2026/27 per la coorte 2024/25 [F1], [F3], [F8]. Il raccordo con il manifesto della nuova coorte è da verificare [F7]; vedi docs/SYLLABUS.md."
   },
   "aree": [
     {
@@ -50,67 +50,67 @@
     "SKLEARN": "scikit-learn User Guide - scikit-learn developers, guida gratuita ai metodi di apprendimento automatico",
     "REACT": "React Documentation (react.dev) - Meta Open Source, documentazione ufficiale gratuita"
   },
-  "nota_esame": "Priorità motivate dal materiale utente: Gruppo A (iper-riciclati, ~65% scritto): stateless/stateful, DOM/Virtual DOM, HTTP 1/1.1/2/3, cookie/sessioni, Web Semantico, architettura 3-tier, CSS, REST. Gruppo B (varianti, ~20%): canvas, DHTML, motore JS, eventi, rate limiting, Web 1.0-4.0, span. Gruppo C (punti ciechi, ~15%): Flask, Git, JS moderno. Formato esame: IPOTESI basata su prove passate - scritto 2h (23 pt) + tesina (10 pt). Da confermare con programma ufficiale.",
+  "nota_esame": "Secondo [F1], TW prevede scritto 0–23 senza appunti né altro materiale e tesina individuale 0–10: circa tre settimane, tecnologie a libera scelta, PowerPoint di massimo 8 minuti e discussione di scelte e codice; nessuna prova intermedia. IA prevede quiz chiusi in trentesimi e laboratorio ON/OFF. Il voto integrato è una media ponderata arrotondata per eccesso; la lode richiede 30 in entrambi i moduli e lode in almeno uno [F1]. IPOTESI non confermate: 2 ore di scritto, 4 slide e percentuali di ricorrenza. Gruppi: A = programma o base indispensabile; B = contesto utile; C = opzionale/non elencato [F1].",
   "trappole": [
     {
+      "tema": "Scritto TW e appunti",
+      "fonte": "[F1] (modalità TW)",
+      "trappola": "Prepararsi supponendo di poter consultare appunti durante lo scritto.",
+      "risposta": "Lo scritto TW comprende domande aperte, chiuse ed esercizi per realizzare un’applicazione Web; non sono consentiti appunti o altro materiale [F1]."
+    },
+    {
+      "tema": "Tesina e tecnologie",
+      "fonte": "[F1] (modalità TW)",
+      "trappola": "Pensare che la tesina debba usare obbligatoriamente Flask e SQLite.",
+      "risposta": "La tesina è individuale, richiede circa tre settimane e usa tecnologie a libera scelta; la frase ufficiale sulle tecnologie è tronca [F1]. Flask e SQLite sono esempi di esercizio."
+    },
+    {
+      "tema": "Durata e presentazione",
+      "fonte": "[F1]; ipotesi del materiale utente",
+      "trappola": "IPOTESI non confermate: considerare 2 ore di scritto e 4 slide come regole ufficiali.",
+      "risposta": "IPOTESI: 2 ore e 4 slide non risultano confermate. [F1] indica un PowerPoint di massimo 8 minuti e la discussione di scelte progettuali e codice."
+    },
+    {
+      "tema": "Modulo IA e lode",
+      "fonte": "[F1] (modalità IA e voto finale)",
+      "trappola": "Considerare l’IA opzionale o credere che basti il solo voto TW per la lode integrata.",
+      "risposta": "IA prevede quiz chiusi in trentesimi e laboratorio ON/OFF. La lode finale richiede 30 in entrambi i moduli e lode in almeno uno [F1]."
+    },
+    {
+      "tema": "Media del corso integrato",
+      "fonte": "[F1] (voto finale)",
+      "trappola": "Attribuire senza fonte una formula di conversione alla somma dei punteggi TW.",
+      "risposta": "Il voto integrato è la media ponderata dei voti dei moduli arrotondata per eccesso; 30 e lode conta come 30 nella media [F1]. La conversione dei punteggi TW non è specificata."
+    },
+    {
       "tema": "HTTP/2 e HTTP/3",
-      "fonte": "Gruppo A (materiale utente)",
-      "trappola": "Dire che HTTP/1.1 supporta multiplexing.",
-      "risposta": "HTTP/1.1 NON supporta multiplexing; il multiplexing è introdotto in HTTP/2. HTTP/3 usa QUIC su UDP (non TCP)."
+      "fonte": "[F1] (fondamenti Web)",
+      "trappola": "Attribuire HTTP/3 e QUIC al programma ufficiale perché sono presenti nel grafo.",
+      "risposta": "[F1] elenca HTTP e HTTP/2; HTTP/3 e QUIC sono approfondimenti non elencati, non prova del contenuto ufficiale."
     },
     {
-      "tema": "PATCH vs PUT",
-      "fonte": "Gruppo A (REST)",
-      "trappola": "Usare PUT per aggiornamenti parziali.",
-      "risposta": "PATCH è per aggiornamenti parziali; PUT sostituisce l'intera risorsa. Esempio: PATCH /users/1 per aggiornare solo l'email, PUT /users/1 per sostituire tutto l'utente."
+      "tema": "REST: PATCH e PUT",
+      "fonte": "[F1] (servizi RESTful); approfondimento RFC 9110 e RFC 5789",
+      "trappola": "Confondere la sostituzione con una modifica parziale.",
+      "risposta": "PUT richiede la sostituzione dello stato della risorsa target secondo la rappresentazione inviata; PATCH applica modifiche secondo il formato della patch."
     },
     {
-      "tema": "URI vs URL vs URN",
-      "fonte": "Gruppo A",
-      "trappola": "Dire che URL e URI sono la stessa cosa.",
-      "risposta": "URI (Uniform Resource Identifier) è la categoria generale; URL (Uniform Resource Locator) è un URI che specifica anche il meccanismo di accesso (es. https://); URN (Uniform Resource Name) identifica una risorsa in modo univoco e persistente senza posizione (es. urn:isbn:0451450523)."
+      "tema": "HTTP e stato applicativo",
+      "fonte": "[F1] (HTTP); approfondimento RFC 9110",
+      "trappola": "Pensare che HTTP stateless vieti sessioni lato server.",
+      "risposta": "Stateless descrive la semantica delle richieste HTTP: l’applicazione può comunque mantenere uno stato e collegarlo al client con un identificatore di sessione."
     },
     {
-      "tema": "Box model CSS",
-      "fonte": "Gruppo A",
-      "trappola": "Includere color o script nel box model.",
-      "risposta": "Box model CSS: content, padding, border, margin. Non include proprietà come color, background, o script."
+      "tema": "React e JavaScript",
+      "fonte": "[F1] (sviluppo front-end)",
+      "trappola": "Considerare React non previsto o attribuire ogni dettaglio dell’implementazione al programma.",
+      "risposta": "React, JavaScript, AJAX e JSON sono elencati da [F1]; le tecniche specifiche delle lezioni sono approfondimenti e non un elenco di domande ufficiali."
     },
     {
-      "tema": "Ereditarietà CSS",
-      "fonte": "Gruppo A",
-      "trappola": "Dire che tutte le proprietà CSS sono ereditabili.",
-      "risposta": "Non tutte le proprietà sono ereditabili: margin, padding, border del box model NON si ereditano; font-family, color SÌ."
-    },
-    {
-      "tema": "Multiplexing HTTP",
-      "fonte": "Gruppo A",
-      "trappola": "Dire che HTTP/1.0 o 1.1 supportano multiplexing.",
-      "risposta": "Multiplexing è supportato SOLO da HTTP/2 e HTTP/3 (QUIC). HTTP/1.0 e 1.1 usano connessioni seriali."
-    },
-    {
-      "tema": "HTTP/3 e QUIC",
-      "fonte": "Gruppo A",
-      "trappola": "Dire che HTTP/3 usa TCP.",
-      "risposta": "HTTP/3 usa QUIC (Quick UDP Internet Connections) su UDP, NON TCP. QUIC integra TLS 1.3."
-    },
-    {
-      "tema": "Stateful vs Stateless",
-      "fonte": "Gruppo A",
-      "trappola": "Dire che HTTP è stateful.",
-      "risposta": "HTTP è stateless per design; lo stato (sessioni) viene gestito tramite cookie, token, o altri meccanismi esterni al protocollo."
-    },
-    {
-      "tema": "Virtual DOM",
-      "fonte": "Gruppo A",
-      "trappola": "Confondere DOM con Virtual DOM.",
-      "risposta": "DOM è l'albero degli elementi del browser; Virtual DOM è una rappresentazione in memoria usata da framework (React, Vue) per ottimizzare gli aggiornamenti."
-    },
-    {
-      "tema": "Eventi locali vs remoti",
-      "fonte": "Gruppo B",
-      "trappola": "Non sapere la differenza.",
-      "risposta": "Eventi locali: generati e gestiti nel browser (es. click, scroll); Eventi remoti: originati da azioni sul server (es. WebSocket, Server-Sent Events)."
+      "tema": "Git e collaborazione",
+      "fonte": "[F1] (Git)",
+      "trappola": "Confondere una pull request con il comando git pull.",
+      "risposta": "[F1] prevede branch, merge e pull request; una pull request propone modifiche su una piattaforma, mentre git pull recupera e integra aggiornamenti."
     }
   ]
 }

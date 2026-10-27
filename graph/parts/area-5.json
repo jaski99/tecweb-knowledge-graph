@@ -3,7 +3,7 @@
     "id": "web-semantico-rdf-owl",
     "title": "Web Semantico: RDF, OWL, SPARQL",
     "area": 5,
-    "gruppo": "A",
+    "gruppo": "C",
     "tipo": "concetto",
     "sapere": "RDF rappresenta dati come triple e grafo; OWL esprime ontologie con semantica formale; SPARQL interroga grafi RDF. Il Web Semantico mira a rendere i dati collegabili e interpretabili da software secondo vocabolari espliciti.",
     "saper_fare": [
@@ -21,8 +21,8 @@
     ],
     "tempo_studio_min": 60,
     "priorita": {
-      "livello": "alta",
-      "motivazione": "Gruppo A; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+      "livello": "bassa",
+      "motivazione": "RDF, OWL e Web semantico non sono elencati nel programma 2026/27 [F1]; sono opzionali."
     },
     "risorse": [
       {
@@ -62,7 +62,7 @@
     "id": "sparql-query-esempi",
     "title": "SPARQL: esempi di query",
     "area": 5,
-    "gruppo": "A",
+    "gruppo": "C",
     "tipo": "abilita",
     "sapere": "SPARQL è il linguaggio standard di query per grafi RDF. Le query abbinano triple pattern e possono selezionare soluzioni, verificare esistenza o costruire grafi.",
     "saper_fare": [
@@ -86,8 +86,8 @@
     ],
     "tempo_studio_min": 40,
     "priorita": {
-      "livello": "alta",
-      "motivazione": "Gruppo A; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+      "livello": "bassa",
+      "motivazione": "SPARQL non è elencato nel programma 2026/27 [F1]; è un approfondimento opzionale."
     },
     "risorse": [
       {
@@ -117,7 +117,7 @@
     "id": "ajax-fetch-xhr",
     "title": "AJAX: Asynchronous JavaScript and XML",
     "area": 5,
-    "gruppo": "B",
+    "gruppo": "A",
     "tipo": "abilita",
     "sapere": "AJAX permette di fare richieste HTTP asincrone senza ricaricare la pagina. Tecnologie: XMLHttpRequest (XHR, legacy), fetch() API (moderna), e librerie come Axios. JSON è il formato dati più comune (non XML come suggerisce il nome). Passaggi: 1) Crea richiesta, 2) Invia, 3) Aspetta risposta, 4) Elabora dati, 5) Aggiorna DOM.",
     "saper_fare": [
@@ -141,8 +141,8 @@
     ],
     "tempo_studio_min": 45,
     "priorita": {
-      "livello": "media",
-      "motivazione": "Gruppo B; priorità coerente con il materiale utente e il syllabus ricostruito, senza attribuire punteggi specifici al nodo."
+      "livello": "alta",
+      "motivazione": "AJAX è elencato esplicitamente tra le tecnologie front-end in [F1]; fetch e XHR sono modalità tecniche di approfondimento."
     },
     "risorse": [
       {
