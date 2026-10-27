@@ -52,24 +52,24 @@
   "richiamo_attivo": {
     "domande": [
       {
-        "domanda": "Che cosa rappresenta il prior `P(c)`? A) La probabilità prima dell’osservazione; B) Il posterior; C) Il CSS.",
-        "risposta": "A) È la probabilità della classe prima di osservare la feature."
+        "domanda": "Che cosa rappresenta il prior `P(c)`? A) La probabilità della classe prima di osservare le feature; B) La probabilità della classe dopo aver osservato le feature; C) La probabilità delle feature data la classe.",
+        "risposta": "A) È la probabilità iniziale della classe. Dopo l’osservazione si parla di posterior; la probabilità delle feature data la classe è la likelihood."
       },
       {
-        "domanda": "Che cos’è `P(x | c)`? A) Un metodo HTTP; B) Likelihood; C) Posterior della classe.",
-        "risposta": "B) È la probabilità dell’osservazione data la classe."
+        "domanda": "Che cos’è `P(x | c)`? A) Il posterior della classe dato x; B) La likelihood dell’osservazione data la classe; C) Il prior della classe.",
+        "risposta": "B) È la probabilità dell’osservazione data la classe, usata come likelihood. Prior e posterior riguardano invece la probabilità della classe."
       },
       {
-        "domanda": "Quale indipendenza assume naive Bayes? A) Incondizionata sempre; B) Indipendenza dai server; C) Condizionata alla classe.",
-        "risposta": "C) Le feature si assumono indipendenti una volta fissata la classe."
+        "domanda": "Quale indipendenza assume naive Bayes? A) Indipendenza incondizionata delle feature; B) Indipendenza della classe dalle feature; C) Indipendenza delle feature condizionata alla classe.",
+        "risposta": "C) Le feature si assumono indipendenti una volta fissata la classe. Non si richiede che siano indipendenti senza condizionare sulla classe."
       },
       {
-        "domanda": "A che cosa serve il denominatore di Bayes? A) A normalizzare; B) A cambiare porta; C) Ad aggiungere classi.",
-        "risposta": "A) Normalizza gli score affinché i posteriori sommino a uno."
+        "domanda": "A che cosa serve il denominatore nella formula di Bayes? A) A normalizzare le probabilità posteriori; B) A eliminare il prior; C) A rendere indipendenti le feature.",
+        "risposta": "A) Normalizza gli score affinché i posteriori delle classi sommino a uno. Non elimina il prior né impone l’indipendenza delle feature."
       },
       {
-        "domanda": "Quale precauzione riguarda le probabilità predette? A) Sono sempre certe; B) Possono essere mal calibrate; C) Sono cookie.",
-        "risposta": "B) La scelta della classe può funzionare anche quando le probabilità sono mal calibrate."
+        "domanda": "Quale precauzione riguarda le probabilità predette da naive Bayes? A) Sono sempre ben calibrate se la classe è corretta; B) Possono essere mal calibrate; C) Coincidono sempre con le frequenze osservate sul test.",
+        "risposta": "B) La scelta della classe può funzionare anche quando le probabilità sono mal calibrate: non sono garantite né la calibrazione né la coincidenza con le frequenze del test."
       }
     ],
     "spiega_con_parole_tue": "Spiega con parole tue come prior, likelihood e indipendenza condizionata portano alla decisione su un libro.",
