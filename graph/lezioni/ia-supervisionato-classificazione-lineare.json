@@ -52,24 +52,24 @@
   "richiamo_attivo": {
     "domande": [
       {
-        "domanda": "Qual è lo score lineare? A) Un indirizzo URI; B) `w @ x + b`; C) `w + x + b` sempre.",
-        "risposta": "B) Il prodotto scalare dei pesi per le feature, più il bias."
+        "domanda": "Qual è lo score lineare adottato nella lezione? A) `x @ x + b`; B) `w @ x + b`; C) `w @ x - b`.",
+        "risposta": "B) Lo score è il prodotto scalare dei pesi `w` per le feature `x`, più il bias `b`. Le altre espressioni cambiano i vettori o il segno del bias."
       },
       {
-        "domanda": "Con la convenzione adottata, uno score negativo indica: A) Classe positiva; B) Un errore DNS; C) Classe negativa.",
-        "risposta": "C) La soglia a zero assegna la classe negativa allo score sotto zero."
+        "domanda": "Con la soglia a zero adottata nella lezione, uno score negativo indica: A) Classe positiva; B) Caso non classificabile; C) Classe negativa.",
+        "risposta": "C) Uno score sotto zero viene assegnato alla classe negativa secondo la convenzione adottata; non è un caso non classificabile."
       },
       {
-        "domanda": "Quando si aggiorna il perceptron mostrato? A) Margine non positivo; B) A ogni richiesta HTTP; C) Sempre.",
-        "risposta": "A) L’aggiornamento avviene quando `y * score` non è positivo."
+        "domanda": "Quando si aggiorna il perceptron mostrato? A) Quando il margine è non positivo; B) Solo quando una probabilità supera la soglia; C) Sempre, anche con margine positivo.",
+        "risposta": "A) L’aggiornamento avviene quando `y * score` non è positivo. La regola mostrata non richiede probabilità e non aggiorna ogni esempio."
       },
       {
-        "domanda": "La regressione logistica binaria usa: A) Solo cluster; B) Sigmoide e soglia; C) Cascata CSS.",
-        "risposta": "B) Converte lo score tramite sigmoide e può applicare una soglia."
+        "domanda": "Quale meccanismo usa la regressione logistica binaria descritta? A) Assegnazione al centroide più vicino; B) Sigmoide e soglia; C) Proiezione sulle componenti principali.",
+        "risposta": "B) Converte lo score tramite sigmoide e può applicare una soglia. Centroidi e componenti principali rimandano rispettivamente a clustering e PCA."
       },
       {
-        "domanda": "Quale dato deve restare fuori dagli aggiornamenti? A) Bias; B) Train; C) Test.",
-        "risposta": "C) Il test va tenuto separato per valutare la generalizzazione."
+        "domanda": "Quale insieme non si usa né per stimare i parametri né per scegliere il modello finale? A) Train; B) Validazione; C) Test.",
+        "risposta": "C) Il test resta separato per valutare la generalizzazione. Il train stima i parametri e la validazione aiuta a scegliere il modello."
       }
     ],
     "spiega_con_parole_tue": "Spiega con parole tue come un perceptron usa attributi, margine e aggiornamenti per tracciare una frontiera.",

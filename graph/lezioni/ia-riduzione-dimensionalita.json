@@ -52,24 +52,24 @@
   "richiamo_attivo": {
     "domande": [
       {
-        "domanda": "La PCA standard usa le etichette per scegliere le direzioni? A) No; B) Sì; C) Solo se cambia il CSS.",
-        "risposta": "A) È non supervisionata e sceglie direzioni in base alla varianza delle feature."
+        "domanda": "La PCA standard usa le etichette per scegliere le direzioni? A) No, usa la variabilità delle feature; B) Sì, separa direttamente le classi; C) Solo quando si conserva una componente.",
+        "risposta": "A) È non supervisionata e sceglie direzioni in base alla varianza delle feature, non alle etichette, anche quando si conserva una sola componente."
       },
       {
-        "domanda": "Che cosa si sottrae per centrare il test? A) Un URL; B) La media appresa sul train; C) La media del test.",
-        "risposta": "B) Si riusa la media del train per evitare leakage."
+        "domanda": "Che cosa si sottrae per centrare il test con una PCA appresa sul train? A) La media di train e test uniti; B) La media appresa sul train; C) La media calcolata sul test.",
+        "risposta": "B) Si riusa la media del train. Calcolarla includendo il test causerebbe leakage; usare una media diversa sul test cambierebbe la trasformazione."
       },
       {
-        "domanda": "Quale proprietà hanno le componenti principali distinte? A) Sono sempre uguali; B) Sono header; C) Sono ortogonali.",
-        "risposta": "C) Nella PCA standard le direzioni principali sono ortogonali."
+        "domanda": "Quale proprietà hanno le componenti principali distinte? A) Sono sempre parallele; B) Coincidono necessariamente con gli assi originali; C) Sono ortogonali.",
+        "risposta": "C) Nella PCA standard le direzioni principali sono ortogonali. Non devono coincidere con gli assi delle feature originali."
       },
       {
-        "domanda": "La PCA standard scala sempre automaticamente le feature? A) No; B) Solo con HTTP; C) Sì.",
-        "risposta": "A) Centra i dati; un’eventuale standardizzazione è una scelta separata."
+        "domanda": "La PCA standard scala sempre automaticamente le feature a varianza unitaria? A) No; B) Sì, per definizione; C) Solo se le feature sono correlate.",
+        "risposta": "A) La PCA centra i dati; un’eventuale standardizzazione è una scelta separata, indipendentemente dalla correlazione delle feature."
       },
       {
-        "domanda": "Una proiezione con meno componenti conserva sempre tutto? A) Sì; B) No; C) Solo con un cookie.",
-        "risposta": "B) Le componenti scartate possono contenere informazione non ricostruibile."
+        "domanda": "Una proiezione con meno componenti conserva sempre tutte le informazioni? A) Sì, per qualsiasi dataset; B) No, le componenti scartate possono contenere informazione; C) Sì, purché i dati siano centrati.",
+        "risposta": "B) Le componenti scartate possono contenere informazione non ricostruibile. La centratura da sola non garantisce una ricostruzione esatta."
       }
     ],
     "spiega_con_parole_tue": "Spiega con parole tue perché la direzione che conserva più varianza può non essere quella più utile a distinguere i libri.",

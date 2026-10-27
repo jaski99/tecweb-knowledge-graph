@@ -8146,24 +8146,24 @@
         "richiamo_attivo": {
           "domande": [
             {
-              "domanda": "Che cosa rappresenta il prior `P(c)`? A) La probabilità prima dell’osservazione; B) Il posterior; C) Il CSS.",
-              "risposta": "A) È la probabilità della classe prima di osservare la feature."
+              "domanda": "Che cosa rappresenta il prior `P(c)`? A) La probabilità della classe prima di osservare le feature; B) La probabilità della classe dopo aver osservato le feature; C) La probabilità delle feature data la classe.",
+              "risposta": "A) È la probabilità iniziale della classe. Dopo l’osservazione si parla di posterior; la probabilità delle feature data la classe è la likelihood."
             },
             {
-              "domanda": "Che cos’è `P(x | c)`? A) Un metodo HTTP; B) Likelihood; C) Posterior della classe.",
-              "risposta": "B) È la probabilità dell’osservazione data la classe."
+              "domanda": "Che cos’è `P(x | c)`? A) Il posterior della classe dato x; B) La likelihood dell’osservazione data la classe; C) Il prior della classe.",
+              "risposta": "B) È la probabilità dell’osservazione data la classe, usata come likelihood. Prior e posterior riguardano invece la probabilità della classe."
             },
             {
-              "domanda": "Quale indipendenza assume naive Bayes? A) Incondizionata sempre; B) Indipendenza dai server; C) Condizionata alla classe.",
-              "risposta": "C) Le feature si assumono indipendenti una volta fissata la classe."
+              "domanda": "Quale indipendenza assume naive Bayes? A) Indipendenza incondizionata delle feature; B) Indipendenza della classe dalle feature; C) Indipendenza delle feature condizionata alla classe.",
+              "risposta": "C) Le feature si assumono indipendenti una volta fissata la classe. Non si richiede che siano indipendenti senza condizionare sulla classe."
             },
             {
-              "domanda": "A che cosa serve il denominatore di Bayes? A) A normalizzare; B) A cambiare porta; C) Ad aggiungere classi.",
-              "risposta": "A) Normalizza gli score affinché i posteriori sommino a uno."
+              "domanda": "A che cosa serve il denominatore nella formula di Bayes? A) A normalizzare le probabilità posteriori; B) A eliminare il prior; C) A rendere indipendenti le feature.",
+              "risposta": "A) Normalizza gli score affinché i posteriori delle classi sommino a uno. Non elimina il prior né impone l’indipendenza delle feature."
             },
             {
-              "domanda": "Quale precauzione riguarda le probabilità predette? A) Sono sempre certe; B) Possono essere mal calibrate; C) Sono cookie.",
-              "risposta": "B) La scelta della classe può funzionare anche quando le probabilità sono mal calibrate."
+              "domanda": "Quale precauzione riguarda le probabilità predette da naive Bayes? A) Sono sempre ben calibrate se la classe è corretta; B) Possono essere mal calibrate; C) Coincidono sempre con le frequenze osservate sul test.",
+              "risposta": "B) La scelta della classe può funzionare anche quando le probabilità sono mal calibrate: non sono garantite né la calibrazione né la coincidenza con le frequenze del test."
             }
           ],
           "spiega_con_parole_tue": "Spiega con parole tue come prior, likelihood e indipendenza condizionata portano alla decisione su un libro.",
@@ -8311,24 +8311,24 @@
         "richiamo_attivo": {
           "domande": [
             {
-              "domanda": "Quale informazione non serve come target al clustering? A) Distanza; B) Etichette di classe; C) Feature.",
-              "risposta": "B) Il clustering non richiede target di classe noti per l’addestramento."
+              "domanda": "Che cosa distingue il clustering dalla classificazione supervisionata? A) Richiede etichette di classe per apprendere; B) Raggruppa osservazioni senza target di classe; C) Predice necessariamente un target numerico.",
+              "risposta": "B) Il clustering non richiede target di classe noti per apprendere i gruppi. Classificazione e regressione supervisionate apprendono invece da target."
             },
             {
-              "domanda": "Come si aggiorna un centroide k-means? A) Con un header; B) A caso ogni volta; C) Con la media dei punti assegnati.",
-              "risposta": "C) Si calcola la media delle coordinate dei punti nel gruppo."
+              "domanda": "Come si aggiorna un centroide nel k-means standard? A) Con la mediana di ogni coordinata; B) Con la media di tutti i punti, indipendentemente dal gruppo; C) Con la media dei punti assegnati al gruppo.",
+              "risposta": "C) Si calcola la media delle coordinate dei punti assegnati a quel centroide. La mediana è una scelta diversa e la media globale ignora le assegnazioni."
             },
             {
-              "domanda": "Che cosa misura l’inerzia? A) Somma di distanze quadratiche dai centroidi; B) Larghezza CSS; C) Numero di etichette vere.",
-              "risposta": "A) È la somma degli scarti quadratici dai rispettivi centroidi."
+              "domanda": "Che cosa misura l’inerzia del k-means? A) La somma delle distanze quadratiche dai centroidi assegnati; B) La somma delle distanze tra centroidi; C) Il numero totale di cluster.",
+              "risposta": "A) È la somma degli scarti quadratici di ogni punto dal proprio centroide, non la distanza tra centroidi né il numero di gruppi."
             },
             {
-              "domanda": "La scala delle feature può cambiare i cluster? A) No; B) Sì; C) Solo se il server è spento.",
-              "risposta": "B) La scala influenza le distanze e quindi le assegnazioni."
+              "domanda": "La scala delle feature può cambiare i cluster ottenuti con k-means? A) No, la distanza euclidea non dipende mai dalla scala; B) Sì, perché la scala modifica le distanze; C) Solo se cambia il numero di cluster.",
+              "risposta": "B) La scala influenza le distanze e quindi le assegnazioni, anche mantenendo lo stesso numero di cluster."
             },
             {
-              "domanda": "K-means garantisce sempre il minimo globale? A) Solo con HTTP; B) Sì; C) No.",
-              "risposta": "C) Può convergere a soluzioni locali che dipendono dall’inizializzazione."
+              "domanda": "K-means garantisce sempre il minimo globale dell’inerzia? A) Sì, con inizializzazione casuale; B) Sì, perché l’inerzia diminuisce durante gli aggiornamenti; C) No, può fermarsi in una soluzione locale.",
+              "risposta": "C) Può convergere a soluzioni locali che dipendono dall’inizializzazione. La diminuzione dell’inerzia non garantisce il minimo globale."
             }
           ],
           "spiega_con_parole_tue": "Spiega con parole tue perché gruppi di libri trovati da k-means non equivalgono a preferenze note dei lettori.",
@@ -8484,24 +8484,24 @@
         "richiamo_attivo": {
           "domande": [
             {
-              "domanda": "Quale forma ha lo scritto IA? A) Solo prova orale; B) Una regola CSS; C) Quiz a domande chiuse.",
-              "risposta": "C) La scheda descrive uno scritto con domande chiuse in forma di quiz [F1]."
+              "domanda": "Quale forma ha lo scritto IA secondo la scheda del corso? A) Solo prova orale; B) Scritto con sole domande aperte; C) Quiz a domande chiuse.",
+              "risposta": "C) La scheda descrive uno scritto con domande chiuse in forma di quiz [F1], non un orale esclusivo o uno scritto con sole domande aperte."
             },
             {
-              "domanda": "Come viene valutato il laboratorio IA? A) Idoneità ON/OFF; B) Metodo HTTP; C) Punti da sommare al quiz.",
-              "risposta": "A) La prova di laboratorio è descritta come idoneità ON/OFF [F1]."
+              "domanda": "Come viene valutato il laboratorio IA secondo la scheda? A) Idoneità ON/OFF; B) Voto numerico separato dal quiz; C) Punti da sommare al voto del quiz.",
+              "risposta": "A) La prova di laboratorio è descritta come idoneità ON/OFF [F1], non come un voto numerico da sommare al quiz."
             },
             {
-              "domanda": "Quale scala determina il voto IA? A) ON/OFF del quiz; B) Trentesimi dal quiz; C) Porte TCP.",
-              "risposta": "B) Il voto del modulo IA è determinato dai quiz in trentesimi [F1]."
+              "domanda": "Come si determina il voto del modulo IA secondo la scheda? A) Con la sola idoneità ON/OFF; B) Con un voto in trentesimi determinato dai quiz; C) Con un voto assegnato esclusivamente dal laboratorio.",
+              "risposta": "B) Il voto del modulo IA è determinato dai quiz in trentesimi [F1]; il laboratorio è valutato come idoneità ON/OFF."
             },
             {
-              "domanda": "Come si arrotonda la media ponderata integrata? A) Come un URL; B) Sempre per difetto; C) Per eccesso.",
-              "risposta": "C) La scheda prevede l’arrotondamento per eccesso [F1]."
+              "domanda": "Come si arrotonda la media ponderata integrata secondo la scheda? A) All’intero più vicino; B) Sempre per difetto; C) Per eccesso.",
+              "risposta": "C) La scheda prevede l’arrotondamento per eccesso [F1], non sempre per difetto né genericamente all’intero più vicino."
             },
             {
-              "domanda": "Qual è la condizione della lode integrata? A) 30 in entrambi e lode in almeno uno; B) 30 senza lode in entrambi; C) Un cookie.",
-              "risposta": "A) Occorrono 30 in entrambi i moduli e lode in almeno uno [F1]."
+              "domanda": "Quale condizione è richiesta per la lode integrata secondo la scheda? A) 30 in entrambi i moduli e lode in almeno uno; B) 30 in entrambi i moduli senza lode; C) 30 e lode in un modulo senza 30 nell’altro.",
+              "risposta": "A) Occorrono 30 in entrambi i moduli e lode in almeno uno [F1]. Avere due 30 senza lode, o la lode senza 30 nell’altro modulo, non soddisfa questa condizione."
             }
           ],
           "spiega_con_parole_tue": "Spiega con parole tue perché il voto del quiz, l’idoneità del laboratorio e la lode integrata non sono la stessa cosa.",
@@ -8640,24 +8640,24 @@
         "richiamo_attivo": {
           "domande": [
             {
-              "domanda": "Quali dati hanno un target noto nel supervisionato? A) Il train etichettato; B) Un foglio CSS; C) Solo il cluster.",
-              "risposta": "A) Il train etichettato associa attributi e target per apprendere."
+              "domanda": "Nell’addestramento supervisionato, quali dati hanno un target noto? A) Il train etichettato; B) Il test senza etichette; C) I soli gruppi trovati dal clustering.",
+              "risposta": "A) Il train etichettato associa a ogni esempio il suo target. Il clustering può invece operare senza target di classe."
             },
             {
-              "domanda": "Quale insieme va tenuto per la valutazione finale? A) Train; B) Test; C) Staging Git.",
-              "risposta": "B) Il test resta separato dalle scelte di addestramento e modello."
+              "domanda": "Quale insieme va tenuto separato per la valutazione finale? A) Train; B) Test; C) Validazione.",
+              "risposta": "B) Il test resta separato dalla stima dei parametri e dalla scelta del modello. Il train serve ad apprendere e la validazione a confrontare le scelte."
             },
             {
-              "domanda": "Che cosa descrive l’overfitting? A) Un cookie; B) Più memoria RAM; C) Eccessivo adattamento al train.",
-              "risposta": "C) Il modello può seguire anche il rumore e generalizzare male."
+              "domanda": "Che cosa descrive l’overfitting? A) Un modello troppo semplice che non adatta bene il train; B) Il passaggio di informazioni dal test al train; C) Un adattamento eccessivo al train, anche al rumore.",
+              "risposta": "C) L’overfitting può far generalizzare male. Un modello troppo semplice può essere in underfitting; il passaggio di informazioni dal test è leakage."
             },
             {
-              "domanda": "Con le righe vere, che cosa rappresenta una cella della matrice? A) Un confronto di classi; B) Un peso CSS; C) Una porta TCP.",
-              "risposta": "A) Conta i casi con quella classe vera e quella prevista."
+              "domanda": "Con le righe vere e le colonne predette, che cosa conta una cella della matrice di confusione? A) I casi con una data coppia di classi vera e predetta; B) Gli errori quadratici medi; C) Le feature usate dal modello.",
+              "risposta": "A) La cella conta i casi con quella classe vera e quella predetta. Non è né un errore quadratico medio né un conteggio delle feature."
             },
             {
-              "domanda": "Che cos’è l’accuratezza? A) Tempo di rete; B) Frazione di predizioni corrette; C) Numero di feature.",
-              "risposta": "B) È il numero di predizioni corrette diviso il totale valutato."
+              "domanda": "Che cos’è l’accuratezza di una classificazione? A) La media dei quadrati dei residui; B) La frazione delle predizioni corrette; C) Il numero di predizioni della sola classe positiva.",
+              "risposta": "B) È il numero di predizioni corrette diviso il totale valutato. La media dei quadrati è invece una misura di errore per valori numerici."
             }
           ],
           "spiega_con_parole_tue": "Spiega con parole tue perché una biblioteca deve separare train e test anche prima di calcolare le medie.",
@@ -8705,7 +8705,13 @@
         "Applicare broadcasting e prodotto scalare",
         "Calcolare medie e varianze per colonna"
       ],
-      "prerequisiti": [],
+      "prerequisiti": [
+        {
+          "id": "python-base-web",
+          "forza": "soft",
+          "motivo": "Le basi di Python aiutano a comprendere liste, indici e funzioni usati con NumPy."
+        }
+      ],
       "esercizi": [
         {
           "tipo_esame": "Allenamento originale, non prova ufficiale",
@@ -8757,7 +8763,7 @@
           "scopo_vantaggio": "Le operazioni vettoriali e il broadcasting consentono di esprimere trasformazioni compatte, controllando le dimensioni.",
           "esempio": "Una matrice libri-per-attributi si può moltiplicare per un vettore di scale e riassumere con medie per colonna."
         },
-        "spiegazione": "Prerequisiti: nessuno nel grafo; sono utili le basi di Python. **Fonte e limiti:** esempi originali da documentazione Python e NumPy, non dalle slide del prof. Calderara, non pubbliche [F12]; il laboratorio è previsto da [F1].\n\n## Array e forma\n\nIn Python importa NumPy con `import numpy as np`. `np.array` costruisce un **ndarray**: gli elementi hanno un tipo (`dtype`) e la **shape** descrive la lunghezza di ogni asse. Per una matrice `X` con una riga per libro e una colonna per attributo, `X.shape` è `(numero_libri, numero_attributi)`. `X[0]` seleziona la prima riga e `X[:, 1]` la seconda colonna: gli indici partono da zero.\n\n## Elemento per elemento e prodotto scalare\n\nCon array compatibili, `a * b` moltiplica **elemento per elemento**. Per due vettori della stessa lunghezza `a @ b` somma i prodotti corrispondenti, ottenendo uno scalare; per matrici `@` segue invece le regole del prodotto matriciale. Una lista Python non va confusa con un array: le rispettive operazioni non hanno sempre lo stesso significato.\n\n```mermaid\nflowchart LR\n  X[\"Matrice libri e attributi\"] --> C[\"Controllo shape\"]\n  C --> B[\"Broadcasting delle scale\"]\n  B --> R[\"Risultato per elemento\"]\n  X --> M[\"Medie per colonna\"]\n```\n\n## Broadcasting senza indovinare\n\nNumPy confronta le dimensioni da destra: ogni coppia deve essere uguale oppure una deve valere uno; una dimensione mancante si considera uno. Così un vettore di lunghezza pari alle colonne può essere applicato a ogni riga. Se le dimensioni sono incompatibili si ottiene un errore: controlla `shape` prima di eseguire l’operazione. L’espansione è concettuale, non necessariamente una copia dei dati.\n\n## Statistiche lungo gli assi\n\n`X.mean(axis=0)` calcola una media **per colonna**; `axis=1` una per riga. `X.var(axis=0)` usa di default la varianza con divisore pari al numero di osservazioni (`ddof=0`). Con `ddof=1` il divisore diminuisce di uno: serve un numero adeguato di osservazioni. Le due varianti rispondono a esigenze statistiche diverse. Quando la media serve a trasformare i dati di un modello, stimala sul train e riusala sul test per evitare leakage.",
+        "spiegazione": "Prerequisiti: basi di Python consigliate (`python-base-web`, prerequisito soft). **Fonte e limiti:** esempi originali da documentazione Python e NumPy, non dalle slide del prof. Calderara, non pubbliche [F12]; il laboratorio è previsto da [F1].\n\n## Array e forma\n\nIn Python importa NumPy con `import numpy as np`. `np.array` costruisce un **ndarray**: gli elementi hanno un tipo (`dtype`) e la **shape** descrive la lunghezza di ogni asse. Per una matrice `X` con una riga per libro e una colonna per attributo, `X.shape` è `(numero_libri, numero_attributi)`. `X[0]` seleziona la prima riga e `X[:, 1]` la seconda colonna: gli indici partono da zero.\n\n## Elemento per elemento e prodotto scalare\n\nCon array compatibili, `a * b` moltiplica **elemento per elemento**. Per due vettori della stessa lunghezza `a @ b` somma i prodotti corrispondenti, ottenendo uno scalare; per matrici `@` segue invece le regole del prodotto matriciale. Una lista Python non va confusa con un array: le rispettive operazioni non hanno sempre lo stesso significato.\n\n```mermaid\nflowchart LR\n  X[\"Matrice libri e attributi\"] --> C[\"Controllo shape\"]\n  C --> B[\"Broadcasting delle scale\"]\n  B --> R[\"Risultato per elemento\"]\n  X --> M[\"Medie per colonna\"]\n```\n\n## Broadcasting senza indovinare\n\nNumPy confronta le dimensioni da destra: ogni coppia deve essere uguale oppure una deve valere uno; una dimensione mancante si considera uno. Così un vettore di lunghezza pari alle colonne può essere applicato a ogni riga. Se le dimensioni sono incompatibili si ottiene un errore: controlla `shape` prima di eseguire l’operazione. L’espansione è concettuale, non necessariamente una copia dei dati.\n\n## Statistiche lungo gli assi\n\n`X.mean(axis=0)` calcola una media **per colonna**; `axis=1` una per riga. `X.var(axis=0)` usa di default la varianza con divisore pari al numero di osservazioni (`ddof=0`). Con `ddof=1` il divisore diminuisce di uno: serve un numero adeguato di osservazioni. Le due varianti rispondono a esigenze statistiche diverse. Quando la media serve a trasformare i dati di un modello, stimala sul train e riusala sul test per evitare leakage.",
         "analogia": {
           "testo": "La matrice è come una tabella di biblioteca: ogni scaffale virtuale è una colonna e ogni riga contiene i valori di un libro.",
           "limite": "Un array NumPy ha un tipo e dimensioni precise; non tutte le operazioni su tabelle o liste Python si comportano come su un ndarray."
@@ -8803,28 +8809,32 @@
         "richiamo_attivo": {
           "domande": [
             {
-              "domanda": "Che cosa descrive `X.shape`? A) Le etichette di classe; B) Le dimensioni degli assi; C) Il metodo HTTP.",
-              "risposta": "B) La shape riporta la dimensione di ciascun asse."
+              "domanda": "Che cosa descrive `X.shape`? A) Il tipo degli elementi; B) Le dimensioni degli assi; C) I valori contenuti nell’array.",
+              "risposta": "B) La shape riporta la dimensione di ciascun asse. Il tipo degli elementi è descritto da `dtype`, non dalla shape."
             },
             {
-              "domanda": "Quale espressione calcola il prodotto scalare di vettori? A) `x or w`; B) `x * w`; C) `x @ w`.",
-              "risposta": "C) `x @ w` somma i prodotti delle componenti corrispondenti."
+              "domanda": "Per due vettori NumPy compatibili, quale espressione calcola il prodotto scalare? A) `np.sum(x + w)`; B) `x * w`; C) `x @ w`.",
+              "risposta": "C) `x @ w` somma i prodotti delle componenti corrispondenti. `x * w` moltiplica per elemento; `np.sum(x + w)` somma le componenti, non i loro prodotti."
             },
             {
-              "domanda": "Per una matrice, `mean(axis=0)` aggrega: A) Le righe per colonna; B) Le colonne per riga; C) Le richieste HTTP.",
-              "risposta": "A) Il risultato contiene una media per ogni colonna."
+              "domanda": "Per una matrice, `mean(axis=0)` aggrega: A) Le righe, ottenendo una media per colonna; B) Le colonne, ottenendo una media per riga; C) Tutti gli elementi in un unico scalare.",
+              "risposta": "A) Il risultato contiene una media per ogni colonna. `axis=1` produce medie per riga; senza specificare l’asse si aggregano tutti gli elementi."
             },
             {
-              "domanda": "Due dimensioni sono compatibili nel broadcasting se: A) Sono URI; B) Sono uguali o una vale uno; C) Sono sempre diverse.",
-              "risposta": "B) La verifica parte dagli assi finali, da destra verso sinistra."
+              "domanda": "Due dimensioni, confrontate da destra, sono compatibili nel broadcasting quando: A) Sono diverse ed entrambe maggiori di uno; B) Sono uguali o una vale uno; C) Una è multipla dell’altra.",
+              "risposta": "B) Ogni coppia di dimensioni deve essere uguale oppure avere almeno una dimensione pari a uno. Essere multipla non basta; una dimensione mancante è trattata come uno."
             },
             {
-              "domanda": "Quale divisore usa `var` di default? A) Il numero meno uno; B) Un codice HTTP; C) Il numero di osservazioni.",
-              "risposta": "C) Il valore predefinito è `ddof=0`, quindi il divisore è il numero di osservazioni."
+              "domanda": "Quale divisore usa `var` di default? A) Il numero di osservazioni meno uno; B) La radice quadrata del numero di osservazioni; C) Il numero di osservazioni.",
+              "risposta": "C) Il valore predefinito è `ddof=0`, quindi il divisore è il numero di osservazioni. Con `ddof=1` si sottrae uno."
             }
           ],
           "spiega_con_parole_tue": "Spiega con parole tue perché `X * scale` può applicare una scala diversa a ciascuna colonna.",
           "collegamenti_interleaving": [
+            {
+              "nodo": "python-base-web",
+              "collegamento": "Liste, funzioni e indici di Python sono una base utile per comprendere gli array NumPy."
+            },
             {
               "nodo": "json-formato-dati",
               "collegamento": "Le liste in JSON possono diventare array NumPy: shape e dtype vanno poi controllati."
@@ -8977,24 +8987,24 @@
         "richiamo_attivo": {
           "domande": [
             {
-              "domanda": "Quale target usa la regressione? A) Un URL; B) Solo etichetta di classe; C) Numerico.",
-              "risposta": "C) La regressione cerca di predire un target numerico."
+              "domanda": "Quale tipo di target si cerca di stimare nella regressione? A) Un’etichetta nominale; B) Una classe binaria; C) Una quantità numerica.",
+              "risposta": "C) La regressione predice una quantità numerica. Etichette nominali e classi binarie sono invece tipici target di classificazione."
             },
             {
-              "domanda": "Cosa minimizzano i minimi quadrati ordinari sul train? A) Somma degli scarti quadratici; B) Numero di classi; C) Porte di rete.",
-              "risposta": "A) Minimizzano la somma dei quadrati dei residui del train."
+              "domanda": "Cosa minimizzano i minimi quadrati ordinari sul train? A) La somma degli scarti quadratici; B) La media degli scarti assoluti (MAE); C) La somma delle distanze quadratiche dai centroidi.",
+              "risposta": "A) Minimizzano la somma dei quadrati dei residui del train. La MAE usa valori assoluti; le distanze dai centroidi appartengono all’obiettivo del k-means."
             },
             {
-              "domanda": "Qual è il ruolo della colonna di uno nell’esempio? A) Definire CSS; B) Stimare l’intercetta; C) Ordinare il test.",
-              "risposta": "B) Il coefficiente di quella colonna rappresenta l’intercetta."
+              "domanda": "A che cosa serve la colonna di uno nella matrice dell’esempio lineare? A) A normalizzare ogni feature; B) A stimare l’intercetta; C) A sostituire i target osservati.",
+              "risposta": "B) Il coefficiente della colonna di uno rappresenta l’intercetta. Non normalizza le feature e non sostituisce il vettore dei target."
             },
             {
-              "domanda": "L’MSE può essere negativo? A) Sì; B) Solo con cookie; C) No.",
-              "risposta": "C) È una media di quadrati, quindi non può essere negativo."
+              "domanda": "L’MSE può essere negativo? A) Sì, se il modello sovrastima i target; B) Sì, se prevalgono i residui negativi; C) No, perché è una media di quadrati.",
+              "risposta": "C) È una media di quadrati, quindi non può essere negativo: i residui con segni opposti non si compensano nell’MSE."
             },
             {
-              "domanda": "Quando una previsione è un’estrapolazione? A) Fuori dall’intervallo osservato; B) Quando cambia il DNS; C) Solo sul train.",
-              "risposta": "A) Si tratta di estrapolazione quando si predice fuori dall’intervallo osservato."
+              "domanda": "Con una sola feature, quando una previsione è un’estrapolazione? A) Quando la feature è fuori dall’intervallo osservato nel train; B) Quando la feature è dentro l’intervallo del train; C) Quando la previsione è valutata sul test.",
+              "risposta": "A) Si estrapola fuori dall’intervallo dei valori osservati nel train. Essere sul test, da solo, non implica estrapolazione."
             }
           ],
           "spiega_con_parole_tue": "Spiega con parole tue perché una retta perfetta sul train può avere errore diverso su altri libri.",
@@ -9147,24 +9157,24 @@
         "richiamo_attivo": {
           "domande": [
             {
-              "domanda": "La PCA standard usa le etichette per scegliere le direzioni? A) No; B) Sì; C) Solo se cambia il CSS.",
-              "risposta": "A) È non supervisionata e sceglie direzioni in base alla varianza delle feature."
+              "domanda": "La PCA standard usa le etichette per scegliere le direzioni? A) No, usa la variabilità delle feature; B) Sì, separa direttamente le classi; C) Solo quando si conserva una componente.",
+              "risposta": "A) È non supervisionata e sceglie direzioni in base alla varianza delle feature, non alle etichette, anche quando si conserva una sola componente."
             },
             {
-              "domanda": "Che cosa si sottrae per centrare il test? A) Un URL; B) La media appresa sul train; C) La media del test.",
-              "risposta": "B) Si riusa la media del train per evitare leakage."
+              "domanda": "Che cosa si sottrae per centrare il test con una PCA appresa sul train? A) La media di train e test uniti; B) La media appresa sul train; C) La media calcolata sul test.",
+              "risposta": "B) Si riusa la media del train. Calcolarla includendo il test causerebbe leakage; usare una media diversa sul test cambierebbe la trasformazione."
             },
             {
-              "domanda": "Quale proprietà hanno le componenti principali distinte? A) Sono sempre uguali; B) Sono header; C) Sono ortogonali.",
-              "risposta": "C) Nella PCA standard le direzioni principali sono ortogonali."
+              "domanda": "Quale proprietà hanno le componenti principali distinte? A) Sono sempre parallele; B) Coincidono necessariamente con gli assi originali; C) Sono ortogonali.",
+              "risposta": "C) Nella PCA standard le direzioni principali sono ortogonali. Non devono coincidere con gli assi delle feature originali."
             },
             {
-              "domanda": "La PCA standard scala sempre automaticamente le feature? A) No; B) Solo con HTTP; C) Sì.",
-              "risposta": "A) Centra i dati; un’eventuale standardizzazione è una scelta separata."
+              "domanda": "La PCA standard scala sempre automaticamente le feature a varianza unitaria? A) No; B) Sì, per definizione; C) Solo se le feature sono correlate.",
+              "risposta": "A) La PCA centra i dati; un’eventuale standardizzazione è una scelta separata, indipendentemente dalla correlazione delle feature."
             },
             {
-              "domanda": "Una proiezione con meno componenti conserva sempre tutto? A) Sì; B) No; C) Solo con un cookie.",
-              "risposta": "B) Le componenti scartate possono contenere informazione non ricostruibile."
+              "domanda": "Una proiezione con meno componenti conserva sempre tutte le informazioni? A) Sì, per qualsiasi dataset; B) No, le componenti scartate possono contenere informazione; C) Sì, purché i dati siano centrati.",
+              "risposta": "B) Le componenti scartate possono contenere informazione non ricostruibile. La centratura da sola non garantisce una ricostruzione esatta."
             }
           ],
           "spiega_con_parole_tue": "Spiega con parole tue perché la direzione che conserva più varianza può non essere quella più utile a distinguere i libri.",
@@ -9317,24 +9327,24 @@
         "richiamo_attivo": {
           "domande": [
             {
-              "domanda": "Qual è lo score lineare? A) Un indirizzo URI; B) `w @ x + b`; C) `w + x + b` sempre.",
-              "risposta": "B) Il prodotto scalare dei pesi per le feature, più il bias."
+              "domanda": "Qual è lo score lineare adottato nella lezione? A) `x @ x + b`; B) `w @ x + b`; C) `w @ x - b`.",
+              "risposta": "B) Lo score è il prodotto scalare dei pesi `w` per le feature `x`, più il bias `b`. Le altre espressioni cambiano i vettori o il segno del bias."
             },
             {
-              "domanda": "Con la convenzione adottata, uno score negativo indica: A) Classe positiva; B) Un errore DNS; C) Classe negativa.",
-              "risposta": "C) La soglia a zero assegna la classe negativa allo score sotto zero."
+              "domanda": "Con la soglia a zero adottata nella lezione, uno score negativo indica: A) Classe positiva; B) Caso non classificabile; C) Classe negativa.",
+              "risposta": "C) Uno score sotto zero viene assegnato alla classe negativa secondo la convenzione adottata; non è un caso non classificabile."
             },
             {
-              "domanda": "Quando si aggiorna il perceptron mostrato? A) Margine non positivo; B) A ogni richiesta HTTP; C) Sempre.",
-              "risposta": "A) L’aggiornamento avviene quando `y * score` non è positivo."
+              "domanda": "Quando si aggiorna il perceptron mostrato? A) Quando il margine è non positivo; B) Solo quando una probabilità supera la soglia; C) Sempre, anche con margine positivo.",
+              "risposta": "A) L’aggiornamento avviene quando `y * score` non è positivo. La regola mostrata non richiede probabilità e non aggiorna ogni esempio."
             },
             {
-              "domanda": "La regressione logistica binaria usa: A) Solo cluster; B) Sigmoide e soglia; C) Cascata CSS.",
-              "risposta": "B) Converte lo score tramite sigmoide e può applicare una soglia."
+              "domanda": "Quale meccanismo usa la regressione logistica binaria descritta? A) Assegnazione al centroide più vicino; B) Sigmoide e soglia; C) Proiezione sulle componenti principali.",
+              "risposta": "B) Converte lo score tramite sigmoide e può applicare una soglia. Centroidi e componenti principali rimandano rispettivamente a clustering e PCA."
             },
             {
-              "domanda": "Quale dato deve restare fuori dagli aggiornamenti? A) Bias; B) Train; C) Test.",
-              "risposta": "C) Il test va tenuto separato per valutare la generalizzazione."
+              "domanda": "Quale insieme non si usa né per stimare i parametri né per scegliere il modello finale? A) Train; B) Validazione; C) Test.",
+              "risposta": "C) Il test resta separato per valutare la generalizzazione. Il train stima i parametri e la validazione aiuta a scegliere il modello."
             }
           ],
           "spiega_con_parole_tue": "Spiega con parole tue come un perceptron usa attributi, margine e aggiornamenti per tracciare una frontiera.",

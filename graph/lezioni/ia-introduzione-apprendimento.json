@@ -52,24 +52,24 @@
   "richiamo_attivo": {
     "domande": [
       {
-        "domanda": "Quali dati hanno un target noto nel supervisionato? A) Il train etichettato; B) Un foglio CSS; C) Solo il cluster.",
-        "risposta": "A) Il train etichettato associa attributi e target per apprendere."
+        "domanda": "Nell’addestramento supervisionato, quali dati hanno un target noto? A) Il train etichettato; B) Il test senza etichette; C) I soli gruppi trovati dal clustering.",
+        "risposta": "A) Il train etichettato associa a ogni esempio il suo target. Il clustering può invece operare senza target di classe."
       },
       {
-        "domanda": "Quale insieme va tenuto per la valutazione finale? A) Train; B) Test; C) Staging Git.",
-        "risposta": "B) Il test resta separato dalle scelte di addestramento e modello."
+        "domanda": "Quale insieme va tenuto separato per la valutazione finale? A) Train; B) Test; C) Validazione.",
+        "risposta": "B) Il test resta separato dalla stima dei parametri e dalla scelta del modello. Il train serve ad apprendere e la validazione a confrontare le scelte."
       },
       {
-        "domanda": "Che cosa descrive l’overfitting? A) Un cookie; B) Più memoria RAM; C) Eccessivo adattamento al train.",
-        "risposta": "C) Il modello può seguire anche il rumore e generalizzare male."
+        "domanda": "Che cosa descrive l’overfitting? A) Un modello troppo semplice che non adatta bene il train; B) Il passaggio di informazioni dal test al train; C) Un adattamento eccessivo al train, anche al rumore.",
+        "risposta": "C) L’overfitting può far generalizzare male. Un modello troppo semplice può essere in underfitting; il passaggio di informazioni dal test è leakage."
       },
       {
-        "domanda": "Con le righe vere, che cosa rappresenta una cella della matrice? A) Un confronto di classi; B) Un peso CSS; C) Una porta TCP.",
-        "risposta": "A) Conta i casi con quella classe vera e quella prevista."
+        "domanda": "Con le righe vere e le colonne predette, che cosa conta una cella della matrice di confusione? A) I casi con una data coppia di classi vera e predetta; B) Gli errori quadratici medi; C) Le feature usate dal modello.",
+        "risposta": "A) La cella conta i casi con quella classe vera e quella predetta. Non è né un errore quadratico medio né un conteggio delle feature."
       },
       {
-        "domanda": "Che cos’è l’accuratezza? A) Tempo di rete; B) Frazione di predizioni corrette; C) Numero di feature.",
-        "risposta": "B) È il numero di predizioni corrette diviso il totale valutato."
+        "domanda": "Che cos’è l’accuratezza di una classificazione? A) La media dei quadrati dei residui; B) La frazione delle predizioni corrette; C) Il numero di predizioni della sola classe positiva.",
+        "risposta": "B) È il numero di predizioni corrette diviso il totale valutato. La media dei quadrati è invece una misura di errore per valori numerici."
       }
     ],
     "spiega_con_parole_tue": "Spiega con parole tue perché una biblioteca deve separare train e test anche prima di calcolare le medie.",
