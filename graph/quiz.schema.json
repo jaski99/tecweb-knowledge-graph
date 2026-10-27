@@ -1,63 +1,654 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.local/tecweb-kg/quiz.schema.json",
-  "title": "Banca quiz e abbinamenti Tecnologie Web",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["versione", "descrizione", "elementi"],
-  "properties": {
-    "versione": {"const": 1},
-    "descrizione": {"type": "string", "minLength": 10},
-    "elementi": {
-      "type": "array",
-      "minItems": 1,
-      "items": {"oneOf": [{"$ref": "#/$defs/scelta_multipla"}, {"$ref": "#/$defs/abbinamento"}]}
-    }
-  },
-  "$defs": {
-    "opzione": {
+  "title": "Banca quiz Tecnologie Web — v1 e v2",
+  "oneOf": [
+    {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "testo"],
-      "properties": {"id": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"}, "testo": {"type": "string", "minLength": 2}}
-    },
-    "base": {
-      "type": "object",
-      "required": ["id", "tipo", "area", "titolo"],
+      "required": [
+        "versione",
+        "descrizione",
+        "elementi"
+      ],
       "properties": {
-        "id": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
-        "tipo": {"enum": ["scelta_multipla", "abbinamento"]},
-        "area": {"type": "integer", "minimum": 1, "maximum": 6},
-        "titolo": {"type": "string", "minLength": 3}
+        "versione": {
+          "const": 2
+        },
+        "descrizione": {
+          "type": "string",
+          "minLength": 10
+        },
+        "elementi": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/scelta_multipla"
+              },
+              {
+                "$ref": "#/$defs/abbinamento"
+              },
+              {
+                "$ref": "#/$defs/vero_falso"
+              },
+              {
+                "$ref": "#/$defs/completamento_codice"
+              }
+            ]
+          }
+        }
       }
     },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "versione",
+        "descrizione",
+        "elementi"
+      ],
+      "properties": {
+        "versione": {
+          "const": 1
+        },
+        "descrizione": {
+          "type": "string",
+          "minLength": 10
+        },
+        "elementi": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/legacy/scelta_multipla"
+              },
+              {
+                "$ref": "#/$defs/legacy/abbinamento"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
     "scelta_multipla": {
-      "allOf": [
-        {"$ref": "#/$defs/base"},
-        {"type": "object", "unevaluatedProperties": false,
-         "required": ["id", "tipo", "area", "titolo", "domanda", "opzioni", "risposta_corretta", "spiegazione", "nodo_id"],
-         "properties": {
-           "id": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"}, "tipo": {"const": "scelta_multipla"},
-           "area": {"type": "integer", "minimum": 1, "maximum": 6}, "titolo": {"type": "string", "minLength": 3},
-           "domanda": {"type": "string", "minLength": 10}, "opzioni": {"type": "array", "minItems": 3, "maxItems": 6, "items": {"$ref": "#/$defs/opzione"}},
-           "risposta_corretta": {"type": "string"}, "spiegazione": {"type": "string", "minLength": 10}, "nodo_id": {"type": "string", "minLength": 1}
-         }}
-      ]
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "tipo",
+        "area",
+        "titolo",
+        "nodo_id",
+        "domanda",
+        "opzioni",
+        "risposta_corretta",
+        "spiegazione"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "tipo": {
+          "const": "scelta_multipla"
+        },
+        "area": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "titolo": {
+          "type": "string",
+          "minLength": 3
+        },
+        "nodo_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origine": {
+          "const": "originale"
+        },
+        "fonte": {
+          "type": "string",
+          "minLength": 10
+        },
+        "domanda": {
+          "type": "string",
+          "minLength": 10
+        },
+        "opzioni": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "testo"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "testo": {
+                "type": "string",
+                "minLength": 2
+              },
+              "spiegazione": {
+                "type": "string",
+                "minLength": 10
+              },
+              "tipo": {
+                "enum": [
+                  "plausibile",
+                  "fuori_contesto"
+                ]
+              }
+            }
+          },
+          "maxItems": 6
+        },
+        "risposta_corretta": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "spiegazione": {
+          "type": "string",
+          "minLength": 10
+        }
+      }
     },
     "abbinamento": {
-      "allOf": [
-        {"$ref": "#/$defs/base"},
-        {"type": "object", "unevaluatedProperties": false,
-         "required": ["id", "tipo", "area", "titolo", "istruzioni", "opzioni", "distrattori", "abbinamenti"],
-         "properties": {
-           "id": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"}, "tipo": {"const": "abbinamento"},
-           "area": {"type": "integer", "minimum": 1, "maximum": 6}, "titolo": {"type": "string", "minLength": 3},
-           "istruzioni": {"type": "string", "minLength": 10},
-           "opzioni": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/opzione"}},
-           "distrattori": {"type": "array", "minItems": 2, "items": {"type": "object", "additionalProperties": false, "required": ["testo", "tipo"], "properties": {"testo": {"type": "string", "minLength": 2}, "tipo": {"enum": ["plausibile", "fuori_contesto"]}}}},
-           "abbinamenti": {"type": "array", "minItems": 2, "items": {"type": "object", "additionalProperties": false, "required": ["elemento", "risposta_id", "spiegazione", "nodo_id"], "properties": {"elemento": {"type": "string", "minLength": 3}, "risposta_id": {"type": "string", "minLength": 1}, "spiegazione": {"type": "string", "minLength": 10}, "nodo_id": {"type": "string", "minLength": 1}}}}
-         }}
-      ]
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "tipo",
+        "area",
+        "titolo",
+        "nodo_id",
+        "istruzioni",
+        "opzioni",
+        "distrattori",
+        "abbinamenti"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "tipo": {
+          "const": "abbinamento"
+        },
+        "area": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "titolo": {
+          "type": "string",
+          "minLength": 3
+        },
+        "nodo_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origine": {
+          "const": "originale"
+        },
+        "fonte": {
+          "type": "string",
+          "minLength": 10
+        },
+        "istruzioni": {
+          "type": "string",
+          "minLength": 10
+        },
+        "opzioni": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "testo"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "testo": {
+                "type": "string",
+                "minLength": 2
+              },
+              "spiegazione": {
+                "type": "string",
+                "minLength": 10
+              },
+              "tipo": {
+                "enum": [
+                  "plausibile",
+                  "fuori_contesto"
+                ]
+              }
+            }
+          }
+        },
+        "distrattori": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "testo",
+              "tipo",
+              "spiegazione"
+            ],
+            "properties": {
+              "testo": {
+                "type": "string",
+                "minLength": 2
+              },
+              "tipo": {
+                "enum": [
+                  "plausibile",
+                  "fuori_contesto"
+                ]
+              },
+              "spiegazione": {
+                "type": "string",
+                "minLength": 10
+              }
+            }
+          }
+        },
+        "abbinamenti": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "elemento",
+              "risposta_id",
+              "spiegazione",
+              "nodo_id"
+            ],
+            "properties": {
+              "elemento": {
+                "type": "string",
+                "minLength": 3
+              },
+              "risposta_id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "spiegazione": {
+                "type": "string",
+                "minLength": 10
+              },
+              "nodo_id": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "vero_falso": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "tipo",
+        "area",
+        "titolo",
+        "nodo_id",
+        "affermazione",
+        "risposta_corretta",
+        "spiegazione"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "tipo": {
+          "const": "vero_falso"
+        },
+        "area": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "titolo": {
+          "type": "string",
+          "minLength": 3
+        },
+        "nodo_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origine": {
+          "const": "originale"
+        },
+        "fonte": {
+          "type": "string",
+          "minLength": 10
+        },
+        "affermazione": {
+          "type": "string",
+          "minLength": 10
+        },
+        "risposta_corretta": {
+          "type": "boolean"
+        },
+        "spiegazione": {
+          "type": "string",
+          "minLength": 10
+        }
+      }
+    },
+    "completamento_codice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "tipo",
+        "area",
+        "titolo",
+        "nodo_id",
+        "linguaggio",
+        "codice_con_buchi",
+        "soluzioni",
+        "spiegazione"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "tipo": {
+          "const": "completamento_codice"
+        },
+        "area": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "titolo": {
+          "type": "string",
+          "minLength": 3
+        },
+        "nodo_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origine": {
+          "const": "originale"
+        },
+        "fonte": {
+          "type": "string",
+          "minLength": 10
+        },
+        "linguaggio": {
+          "type": "string",
+          "minLength": 1
+        },
+        "codice_con_buchi": {
+          "type": "string",
+          "pattern": "___[1-9][0-9]*___"
+        },
+        "soluzioni": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "pattern": "^[1-9][0-9]*$"
+          },
+          "additionalProperties": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        },
+        "spiegazione": {
+          "type": "string",
+          "minLength": 10
+        }
+      }
+    },
+    "legacy": {
+      "opzione": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "testo"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "testo": {
+            "type": "string",
+            "minLength": 2
+          }
+        }
+      },
+      "base": {
+        "type": "object",
+        "required": [
+          "id",
+          "tipo",
+          "area",
+          "titolo"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "tipo": {
+            "enum": [
+              "scelta_multipla",
+              "abbinamento"
+            ]
+          },
+          "area": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 7
+          },
+          "titolo": {
+            "type": "string",
+            "minLength": 3
+          }
+        }
+      },
+      "scelta_multipla": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/legacy/base"
+          },
+          {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "required": [
+              "id",
+              "tipo",
+              "area",
+              "titolo",
+              "domanda",
+              "opzioni",
+              "risposta_corretta",
+              "spiegazione",
+              "nodo_id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "tipo": {
+                "const": "scelta_multipla"
+              },
+              "area": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 7
+              },
+              "titolo": {
+                "type": "string",
+                "minLength": 3
+              },
+              "domanda": {
+                "type": "string",
+                "minLength": 10
+              },
+              "opzioni": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 6,
+                "items": {
+                  "$ref": "#/$defs/legacy/opzione"
+                }
+              },
+              "risposta_corretta": {
+                "type": "string"
+              },
+              "spiegazione": {
+                "type": "string",
+                "minLength": 10
+              },
+              "nodo_id": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        ]
+      },
+      "abbinamento": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/legacy/base"
+          },
+          {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "required": [
+              "id",
+              "tipo",
+              "area",
+              "titolo",
+              "istruzioni",
+              "opzioni",
+              "distrattori",
+              "abbinamenti"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "tipo": {
+                "const": "abbinamento"
+              },
+              "area": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 7
+              },
+              "titolo": {
+                "type": "string",
+                "minLength": 3
+              },
+              "istruzioni": {
+                "type": "string",
+                "minLength": 10
+              },
+              "opzioni": {
+                "type": "array",
+                "minItems": 3,
+                "items": {
+                  "$ref": "#/$defs/legacy/opzione"
+                }
+              },
+              "distrattori": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "testo",
+                    "tipo"
+                  ],
+                  "properties": {
+                    "testo": {
+                      "type": "string",
+                      "minLength": 2
+                    },
+                    "tipo": {
+                      "enum": [
+                        "plausibile",
+                        "fuori_contesto"
+                      ]
+                    }
+                  }
+                }
+              },
+              "abbinamenti": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "elemento",
+                    "risposta_id",
+                    "spiegazione",
+                    "nodo_id"
+                  ],
+                  "properties": {
+                    "elemento": {
+                      "type": "string",
+                      "minLength": 3
+                    },
+                    "risposta_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "spiegazione": {
+                      "type": "string",
+                      "minLength": 10
+                    },
+                    "nodo_id": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
     }
   }
 }

@@ -1,119 +1,125 @@
-// Simulatore di esercizi ricavati esclusivamente dal grafo, con sessione a tempo di due ore.
-import { clear, h } from '../dom.js';
-import { generaProva } from './genera.js';
+// Vista orchestratrice: banca e correzione restano indipendenti dal DOM.
+import { h } from '../dom.js';
+import { generaProva, catalogoEsercizi } from './genera.js';
 import { leggiTimer, formatTempo } from './timer.js';
-import {
-  consegna, creaSessione, leggiRisposta, leggiSessione,
-  mettiInPausa, riprendi, salvaSessione, scaduta, scriviRisposta, sessioneInCorsoValida,
-} from './sessione.js';
+import { consegna, creaSessione, leggiRisposta, leggiSessione, mettiInPausa,
+  riprendi, salvaSessione, scaduta, scriviRisposta } from './sessione.js';
 import { etichettaEsito, riepilogoRisposte } from './punteggio.js';
+import { rispostaCompleta, esitiItem, reportAree } from './correzione.js';
+import { registraEsito } from './esiti.js';
+import { controlliRisposta, feedbackItem } from './controlli.js';
 
 export function createSimulatoreView() {
-  return {
-    id: 'simulatore',
-    titolo: 'Simulatore · 2 ore',
-    render(root, ctx) {
-      const doc = ctx.document || root.ownerDocument;
-      const win = doc.defaultView || globalThis;
-      const graph = ctx.graph || { nodi: [], quiz: null };
-      const storage = ctx.storage;
-      const now = ctx.now || (() => Date.now());
-      const ask = ctx.confirm || ((message) => win.confirm(message));
-      let session = leggiSessione(storage);
-      let timerHandle = null;
-      let saveOk = true;
-      if (session && session.fase === 'svolgimento' && !sessioneInCorsoValida(session, now())) session = scaduta(session);
+  return { id: 'simulatore', titolo: 'Quiz e simulatore', render(root, ctx) {
+    const win = (ctx.document || root.ownerDocument).defaultView || globalThis;
+    const graph = ctx.graph || { nodi: [] };
+    const now = ctx.now || (() => Date.now());
+    const storage = ctx.storage;
+    const ask = ctx.confirm || ((text) => win.confirm(text));
+    let session = leggiSessione(storage);
+    let timerHandle = null;
+    let saveOk = true;
+    let modalita = 'simulazione';
+    let minuti = 120;
+    let seed = now();
+    const stopTimer = () => { if (timerHandle !== null) win.clearInterval(timerHandle); timerHandle = null; };
+    const persist = () => { saveOk = salvaSessione(storage, session) && saveOk; };
+    const registra = (item) => {
+      if (session.registrati?.[item.id]) return;
+      for (const esito of esitiItem(item, session.risposte[item.id], session.prova.modalita || 'simulazione', new Date(now()).toISOString())) {
+        if (!registraEsito(storage, esito)) saveOk = false;
+      }
+      session.registrati = { ...session.registrati, [item.id]: true };
+    };
+    const termina = (timeout = false) => {
+      session = timeout ? scaduta(session) : consegna(session, now());
+      session.prova.esercizi.forEach(registra);
+      persist(); draw();
+    };
+    const avvia = () => {
+      if (session && !ask('Sostituire la sessione salvata?')) return;
+      session = creaSessione(generaProva(graph.nodi, { quiz: graph.quiz, seed, now: now(), durataMs: minuti * 60000, modalita }), now());
+      if (modalita === 'allenamento') session = mettiInPausa(session, now());
+      persist(); draw();
+    };
+    const torna = () => h('a', { class: 'btn', href: '#/' }, '← Torna al grafo');
+    const titolo = (text) => h('header', { class: 'mod-top' }, torna(), h('h1', { id: 'sim-titolo', tabindex: '-1' }, text));
+    const intro = () => h('div', { class: 'module-page sim' }, titolo('Quiz e simulatore'),
+      h('p', {}, 'Quesiti originali di ripasso: non tratti da prove reali e non predittivi dell’esame. Programma: [F1], registro in docs/research/R3-programma-esame.md.'),
+      h('p', {}, `${catalogoEsercizi([], graph.quiz).length} quesiti della banca disponibili. Blueprint didattico: selezione bilanciata tra le aree disponibili, non distribuzione ufficiale.`),
+      h('label', {}, 'Modalità ', h('select', { id: 'sim-modalita', onchange: (e) => { modalita = e.target.value; } },
+        h('option', { value: 'simulazione' }, 'Simulazione'), h('option', { value: 'allenamento' }, 'Allenamento'))),
+      h('p', {}, 'Allenamento: feedback immediato alla risposta completa. Simulazione: senza appunti [F1], soluzioni solo a consegna.'),
+      h('label', {}, 'Durata in minuti (ipotesi didattica) ', h('input', { id: 'sim-durata', type: 'number', min: 1, max: 480, value: 120, onchange: (e) => {
+        minuti = Math.max(1, Math.min(480, Number(e.target.value) || 120)); e.target.value = minuti;
+      } })),
+      h('p', {}, '120 minuti / 2 ore è un’ipotesi configurabile: la durata ufficiale non è stata trovata. Nessun voto ufficiale viene calcolato.'),
+      h('label', {}, 'Seed riproducibile ', h('input', { id: 'sim-seed', type: 'number', value: seed, onchange: (e) => { seed = Number(e.target.value) || 0; } })),
+      h('button', { class: 'btn primary', id: 'sim-inizia', type: 'button', onclick: avvia }, 'Inizia la sessione'));
 
-      const persist = () => { saveOk = salvaSessione(storage, session); };
-      const stopTimer = () => { if (timerHandle != null) win.clearInterval(timerHandle); timerHandle = null; };
-      const torna = () => h('a', { class: 'btn', href: '#/' }, '← Torna al grafo');
-      const saveNotice = () => saveOk ? null : h('p', { class: 'sim-gap', role: 'status' }, 'Il browser non è riuscito a salvare la sessione.');
-
-      const avvia = () => {
-        if (session && !ask('Sostituire la sessione salvata? Le risposte attuali verranno cancellate.')) return;
-        const prova = generaProva(graph.nodi, { quiz: graph.quiz, now: now() });
-        if (!prova.esercizi.length) { draw(); return; }
-        session = creaSessione(prova, now());
-        persist();
-        draw();
-      };
-
-      const renderIntro = () => {
-        const esercizi = graph.nodi.flatMap((n) => n.esercizi || []).filter((e) => e?.testo?.trim() && e?.soluzione?.trim()).length;
-        return h('div', { class: 'module-page sim' },
-          h('header', { class: 'mod-top' }, torna(), h('h1', { id: 'sim-titolo', tabindex: '-1' }, "Simulatore d’esame · 2 ore")),
-          h('p', { class: 'sim-lead' }, 'Allenamento a tempo di 120 minuti. Le consegne e le soluzioni provengono dai campi esercizi del grafo; il simulatore non attribuisce punteggi né presume una struttura d’esame.'),
-          h('p', {}, `${esercizi} esercizi svolti disponibili nel grafo${Array.isArray(graph.quiz) ? `; ${graph.quiz.length} elementi quiz caricati` : ''}.`),
-          graph.nota_esame ? h('details', { class: 'note' }, h('summary', {}, 'Nota sulle informazioni d’esame'), h('p', {}, graph.nota_esame)) : null,
-          session ? h('p', { class: 'muted' }, session.fase === 'consegnata' ? 'È disponibile la correzione della sessione precedente.' : 'È disponibile una sessione salvata in questo browser.') : null,
-          saveNotice(),
-          h('div', { class: 'sim-actions' },
-            session?.fase === 'svolgimento' ? h('button', { class: 'btn primary', type: 'button', id: 'sim-riprendi', onclick: () => { session = riprendi(session, now()); persist(); draw(); } }, 'Riprendi la sessione') : null,
-            session?.fase === 'consegnata' ? h('button', { class: 'btn primary', type: 'button', id: 'sim-correzione', onclick: draw }, 'Rivedi le soluzioni') : null,
-            h('button', { class: `btn ${session ? '' : 'primary'}`, type: 'button', id: 'sim-inizia', onclick: avvia }, session ? 'Inizia una nuova sessione' : 'Inizia la sessione')));
-      };
-
-      const renderTimer = () => {
-        const info = leggiTimer(session.timer, now());
-        const cambia = () => {
-          session = info.running ? mettiInPausa(session, now()) : riprendi(session, now());
-          persist(); draw();
-        };
-        const submit = () => { session = consegna(session, now()); persist(); draw(); };
-        return h('div', { class: 'sim-timer' },
-          h('div', {}, h('p', { class: 'muted', id: 'sim-timer-note' }, info.running ? 'Tempo residuo: il timer continua anche se cambi scheda.' : 'Timer in pausa.'),
-            h('p', { class: 'sim-clock', id: 'sim-timer', role: 'timer', 'aria-live': 'off' }, formatTempo(info.rimanenti))),
-          h('div', { class: 'sim-timer-actions' },
-            h('button', { class: 'btn', type: 'button', id: 'sim-pause', onclick: cambia }, info.running ? 'Pausa' : 'Riprendi'),
-            h('button', { class: 'btn primary', type: 'button', id: 'sim-consegna', onclick: submit }, 'Consegna e mostra soluzioni')));
-      };
-
-      const renderExercise = (exercise, index, correction) => h('article', { class: 'sim-q', 'data-q': exercise.id },
-        h('h3', {}, `${index + 1}. ${exercise.nodoTitolo || exercise.tipoEsame || 'Esercizio'}`),
-        h('p', { class: 'muted' }, exercise.tipoEsame || 'Esercizio'),
-        h('div', { class: 'sim-testo' }, exercise.testo),
-        correction
-          ? h('div', { class: 'sim-confronto' },
-            h('section', { class: 'sim-box sim-tua' }, h('h4', {}, 'La tua risposta'), h('div', { class: 'sim-prosa' }, leggiRisposta(session, exercise.id).trim() || 'Nessuna risposta inserita.')),
-            h('section', { class: 'sim-box sim-soluzione' }, h('h4', {}, 'Soluzione disponibile nel grafo'), h('div', { class: 'sim-prosa sim-soluzione-testo' }, exercise.soluzione)))
-          : h('label', {}, 'La tua risposta', h('textarea', {
-            class: 'sim-input', 'data-q': exercise.id,
-            oninput: (event) => { session = scriviRisposta(session, exercise.id, event.target.value); persist(); },
-          }, leggiRisposta(session, exercise.id))),
-        exercise.nodoId && graph.byId?.has(exercise.nodoId)
-          ? h('p', {}, 'Nodo: ', h('a', { href: `#/lezione/${encodeURIComponent(exercise.nodoId)}` }, exercise.nodoTitolo || exercise.nodoId)) : null);
-
-      const renderSession = () => {
-        const correction = session.fase === 'consegnata';
-        const summary = riepilogoRisposte(session.prova.esercizi, session.risposte);
-        return h('div', { class: 'module-page sim' },
-          h('header', { class: 'mod-top' }, torna(), h('h1', { id: 'sim-titolo', tabindex: '-1' }, correction ? 'Correzione guidata' : "Simulatore d’esame"),
-            h('button', { class: 'btn', type: 'button', id: 'sim-nuova', onclick: avvia }, 'Nuova sessione')),
-          saveNotice(),
-          correction ? h('p', { id: 'sim-riepilogo', class: 'sim-riepilogo' }, etichettaEsito(summary)) : renderTimer(),
-          ...(!correction && leggiTimer(session.timer, now()).scaduto ? [h('p', { class: 'sim-gap', role: 'status' }, 'Tempo terminato: la sessione è stata consegnata.')]: []),
-          h('p', { class: 'muted' }, `${session.prova.esercizi.length} esercizi selezionati. Il confronto delle risposte è autovalutativo: nessun voto viene calcolato.`),
-          ...session.prova.esercizi.map((exercise, index) => renderExercise(exercise, index, correction)));
-      };
-
-      const draw = () => {
-        stopTimer();
-        if (session?.fase === 'svolgimento' && leggiTimer(session.timer, now()).scaduto) { session = scaduta(session); persist(); }
-        clear(root);
-        root.replaceChildren(session ? renderSession() : renderIntro());
-        root.querySelector('h1')?.focus();
-        if (session?.fase === 'svolgimento' && leggiTimer(session.timer, now()).running) {
-          timerHandle = win.setInterval(() => {
-            const info = leggiTimer(session.timer, now());
-            const clock = root.querySelector('#sim-timer');
-            if (clock) clock.textContent = formatTempo(info.rimanenti);
-            if (info.scaduto) draw();
-          }, 1000);
+    const esercizio = (item, index, correction) => {
+      const feedback = h('div', { class: 'sim-feedback', 'aria-live': 'polite' });
+      const shown = correction || session.confermate?.[item.id];
+      if (shown) feedback.append(feedbackItem(item, session.risposte[item.id]));
+      let controls;
+      const cambia = (value) => {
+        session = scriviRisposta(session, item.id, value);
+        if (session.prova.modalita === 'allenamento' && rispostaCompleta(item, value) && item.tipo !== 'aperta') {
+          session.confermate = { ...session.confermate, [item.id]: true };
+          registra(item);
+          controls.disabled = true;
+          feedback.replaceChildren(feedbackItem(item, value));
         }
+        persist();
       };
-
-      draw();
-      return stopTimer;
-    },
-  };
+      controls = controlliRisposta(item, leggiRisposta(session, item.id), cambia, Boolean(shown));
+      const article = h('article', { class: 'sim-q', 'data-q': item.id }, h('h3', {}, `${index + 1}. ${item.nodoTitolo}`),
+        h('p', { class: 'sim-testo' }, item.testo), controls, feedback);
+      if ((correction || session.prova.modalita === 'allenamento') && item.nodoId) article.append(h('a', {
+        href: `#/lezione/${encodeURIComponent(item.nodoId)}`,
+      }, 'Riapri il nodo'));
+      return article;
+    };
+    const report = () => h('section', { id: 'sim-report' }, h('h2', {}, 'Report per area'),
+      ...reportAree(session.prova.esercizi, session.risposte).map((r) => h('section', {},
+        h('h3', {}, `Area ${r.area}`), h('p', {}, `${r.corretti} corrette su ${r.totale - r.aperte} correggibili; ${r.aperte} aperte da autovalutare.`),
+        h('h4', {}, 'Riapri questi nodi'), r.nodi.length ? h('ul', {}, ...r.nodi.map((id) => h('li', {}, h('a', {
+          href: `#/lezione/${encodeURIComponent(id)}`,
+        }, graph.byId?.get(id)?.title || id)))) : h('p', {}, 'Nessun errore rilevato nei quesiti correggibili.'))));
+    const pagina = () => {
+      const correction = session.fase === 'consegnata';
+      const info = leggiTimer(session.timer, now());
+      return h('div', { class: 'module-page sim' }, titolo(correction ? 'Correzione guidata' : `Quiz · ${session.prova.modalita || 'simulazione'}`),
+        h('button', { class: 'btn', id: 'sim-nuova', onclick: () => {
+          if (ask('Chiudere la sessione e scegliere nuove impostazioni?')) { session = null; draw(); }
+        } }, 'Nuova sessione'),
+        !saveOk ? h('p', { role: 'alert' }, 'Salvataggio locale non riuscito: conserva questa scheda aperta.') : null,
+        correction ? h('p', { id: 'sim-riepilogo' }, etichettaEsito(riepilogoRisposte(session.prova.esercizi, session.risposte))) : h('div', { class: 'sim-timer' },
+          session.prova.modalita !== 'allenamento' ? h('div', {}, h('p', {}, 'Senza appunti [F1]. Durata: ipotesi didattica.'),
+            h('p', { id: 'sim-timer', class: 'sim-clock', role: 'timer' }, formatTempo(info.rimanenti)),
+            h('button', { class: 'btn', id: 'sim-pause', onclick: () => {
+              session = info.running ? mettiInPausa(session, now()) : riprendi(session, now()); persist(); draw();
+            } }, info.running ? 'Pausa' : 'Riprendi')) : h('p', {}, 'Allenamento senza limite di tempo. Feedback alla risposta completa.'),
+          h('button', { class: 'btn primary', id: 'sim-consegna', onclick: () => termina() }, 'Consegna e mostra soluzioni')),
+        correction ? report() : null,
+        ...session.prova.esercizi.map((item, i) => esercizio(item, i, correction)));
+    };
+    const draw = () => {
+      stopTimer();
+      if (session?.fase === 'svolgimento' && session.prova.modalita !== 'allenamento' && leggiTimer(session.timer, now()).scaduto) {
+        session = scaduta(session); session.prova.esercizi.forEach(registra); persist();
+      }
+      root.replaceChildren(session ? pagina() : intro());
+      root.querySelector('h1')?.focus();
+      if (session?.fase === 'svolgimento' && session.prova.modalita !== 'allenamento' && leggiTimer(session.timer, now()).running) {
+        timerHandle = win.setInterval(() => {
+          const info = leggiTimer(session.timer, now());
+          const clock = root.querySelector('#sim-timer');
+          if (clock) clock.textContent = formatTempo(info.rimanenti);
+          if (info.scaduto) termina(true);
+        }, 1000);
+      }
+    };
+    draw(); return stopTimer;
+  } };
 }

@@ -4,7 +4,7 @@ import { leggiTimer, timerNuovo, timerInPausa, timerInCorso } from './timer.js';
 export const CHIAVE_STORAGE = 'tecweb:simulatore:v1';
 
 export function creaSessione(prova, now) {
-  return { versione: 1, prova, fase: 'svolgimento', risposte: {}, timer: timerNuovo(now, prova.durataMs) };
+  return { versione: 1, prova, fase: 'svolgimento', risposte: {}, confermate: {}, registrati: {}, timer: timerNuovo(now, prova.durataMs) };
 }
 
 export function sessioneValida(data) {
@@ -36,10 +36,10 @@ export function cancellaSessione(storage, key = CHIAVE_STORAGE) {
   try { storage.removeItem(key); } catch { /* modalità privata */ }
 }
 
-export function leggiRisposta(sessione, id) { return String(sessione?.risposte?.[id] || ''); }
+export function leggiRisposta(sessione, id) { return sessione?.risposte?.[id] ?? ''; }
 
 export function scriviRisposta(sessione, id, testo) {
-  return { ...sessione, risposte: { ...sessione.risposte, [id]: String(testo) } };
+  return { ...sessione, risposte: { ...sessione.risposte, [id]: testo } };
 }
 
 export function sessioneInCorsoValida(sessione, now) {
