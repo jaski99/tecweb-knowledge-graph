@@ -1,0 +1,193 @@
+[
+  {
+    "id": "html5-struttura-semantica",
+    "title": "HTML5: struttura semantica della pagina",
+    "area": 3,
+    "gruppo": "A",
+    "tipo": "abilita",
+    "sapere": "L’HTML semantico sceglie elementi in base al significato e alla funzione del contenuto, non al suo aspetto. Landmark come header, nav, main, aside e footer descrivono la struttura; article e section rappresentano parti con un ruolo preciso e offrono una base accessibile.",
+    "saper_fare": [
+      "Strutturare una pagina con landmark HTML appropriati",
+      "Scegliere tra article, section e div in base al significato",
+      "Verificare che la gerarchia delle intestazioni descriva il contenuto"
+    ],
+    "prerequisiti": [
+      {
+        "id": "html-form-accessibilita",
+        "forza": "soft",
+        "motivo": "Aiuta a collegare struttura semantica e controlli accessibili."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "scritto: struttura HTML",
+        "testo": "Struttura il catalogo con intestazione, navigazione, contenuto principale, scheda di un libro e piè di pagina.",
+        "soluzione": "Usa header per l’identità del sito, nav per i collegamenti, un solo main per il contenuto dominante, article per la scheda autonoma e footer per le informazioni finali. Le classi CSS possono dare stile senza sostituire i landmark."
+      }
+    ],
+    "tempo_studio_min": 35,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Argomento esplicitamente elencato nel programma ufficiale [F1]; il gruppo A motiva questa priorità senza attribuire punteggi al nodo."
+    },
+    "risorse": [
+      {
+        "titolo": "MDN: semantica in HTML",
+        "url": "https://developer.mozilla.org/en-US/docs/Glossary/Semantics#semantics_in_html",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: elemento main",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/main",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "MDN"
+      }
+    ],
+    "checklist_ripasso": [
+      "Scegli elemento per significato, non per stile",
+      "Un solo main per il contenuto dominante",
+      "Heading e landmark devono descrivere una struttura leggibile"
+    ],
+    "worker": "X2"
+  },
+  {
+    "id": "react-componenti-jsx",
+    "title": "React: componenti, JSX, props e stato",
+    "area": 3,
+    "gruppo": "A",
+    "tipo": "abilita",
+    "sapere": "In React un componente è spesso una funzione JavaScript che restituisce JSX, una sintassi descrittiva per l’interfaccia. Le props ricevono dati dal componente padre; lo stato, gestito per esempio con useState, conserva dati che cambiano e un suo aggiornamento richiede un nuovo rendering.",
+    "saper_fare": [
+      "Creare un componente React con JSX valido",
+      "Passare dati tramite props senza modificarli",
+      "Aggiornare stato con il setter invece di mutare direttamente una variabile"
+    ],
+    "prerequisiti": [
+      {
+        "id": "dom-virtual-dom",
+        "forza": "hard",
+        "motivo": "Serve distinguere DOM e rappresentazione dichiarativa."
+      },
+      {
+        "id": "javascript-fetch-async-await",
+        "forza": "hard",
+        "motivo": "Serve integrare dati asincroni nei componenti."
+      },
+      {
+        "id": "json-formato-dati",
+        "forza": "soft",
+        "motivo": "Aiuta a interpretare dati ricevuti da API."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "scritto: componente React",
+        "testo": "Scrivi un componente che riceve il titolo di un libro come prop e conta le richieste con un pulsante.",
+        "soluzione": "Il componente riceve titolo nei parametri e chiama useState(0) per il conteggio. Il click usa il setter con una funzione `n => n + 1`; non si assegna direttamente alla variabile di stato."
+      }
+    ],
+    "tempo_studio_min": 50,
+    "priorita": {
+      "livello": "alta",
+      "motivazione": "Argomento esplicitamente elencato nel programma ufficiale [F1]; il gruppo A motiva questa priorità senza attribuire punteggi al nodo."
+    },
+    "risorse": [
+      {
+        "titolo": "React: il primo componente",
+        "url": "https://react.dev/learn/your-first-component",
+        "verificato": true
+      },
+      {
+        "titolo": "React: scrivere markup con JSX",
+        "url": "https://react.dev/learn/writing-markup-with-jsx",
+        "verificato": true
+      },
+      {
+        "titolo": "React: state, un componente come memoria",
+        "url": "https://react.dev/learn/state-a-components-memory",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "REACT"
+      }
+    ],
+    "checklist_ripasso": [
+      "Componente: funzione che restituisce JSX",
+      "Props: input letti dal componente",
+      "State: memoria locale aggiornata con il setter"
+    ],
+    "worker": "X2"
+  },
+  {
+    "id": "sensori-mobile-web",
+    "title": "Sensori nel Web mobile: posizione e orientamento",
+    "area": 3,
+    "gruppo": "B",
+    "tipo": "concetto",
+    "sapere": "Le Web API standard documentate da MDN consentono di leggere, quando supportato e autorizzato, dati come posizione geografica e orientamento. Geolocation richiede contesto sicuro e consenso; disponibilità, permessi e precisione non sono garantiti e serve un comportamento alternativo.",
+    "saper_fare": [
+      "Richiedere posizione con Geolocation dopo un’azione utente",
+      "Gestire successo, errore e indisponibilità",
+      "Descrivere limiti di supporto e permessi dei dati di orientamento"
+    ],
+    "prerequisiti": [
+      {
+        "id": "sviluppo-event-driven",
+        "forza": "hard",
+        "motivo": "I sensori consegnano aggiornamenti tramite callback ed eventi."
+      },
+      {
+        "id": "javascript-fetch-async-await",
+        "forza": "soft",
+        "motivo": "Aiuta a collegare dati del browser a richieste asincrone."
+      }
+    ],
+    "esercizi": [
+      {
+        "tipo_esame": "scritto: API del browser",
+        "testo": "Il catalogo mobile vuole ordinare le sedi vicine. Indica controlli e flusso per chiedere posizione in modo corretto.",
+        "soluzione": "Dopo un’azione esplicita verifica navigator.geolocation, esegui in HTTPS getCurrentPosition, gestisci callback di successo ed errore e offri scelta manuale della sede se consenso, supporto o posizione non sono disponibili."
+      }
+    ],
+    "tempo_studio_min": 30,
+    "priorita": {
+      "livello": "media",
+      "motivazione": "Argomento esplicitamente elencato nel programma ufficiale [F1]; il gruppo B motiva questa priorità senza attribuire punteggi al nodo."
+    },
+    "risorse": [
+      {
+        "titolo": "MDN: Geolocation API",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: eventi DeviceOrientation",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Device_orientation_events",
+        "verificato": true
+      },
+      {
+        "titolo": "MDN: contesti sicuri",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts",
+        "verificato": true
+      }
+    ],
+    "riferimenti_testo": [
+      {
+        "libro": "MDN"
+      }
+    ],
+    "checklist_ripasso": [
+      "Geolocation: consenso e contesto sicuro",
+      "Feature detection prima dell’uso",
+      "Gestire errore, precisione e alternativa manuale",
+      "Orientamento: supporto e permessi possono variare"
+    ],
+    "worker": "X2"
+  }
+]

@@ -1,0 +1,98 @@
+{
+  "perche_ti_serve": "Il programma ufficiale [F1] include HTML5: questo nodo A allena a strutturare pagine significative e accessibili.",
+  "scenario_fil_rouge": "La Biblioteca Aurora sta rendendo il proprio catalogo disponibile sul Web: studenti e bibliotecari cercano libri, propongono modifiche e collaborano sullo stesso servizio. Ogni scelta di questa lezione risolve un passaggio concreto di quel progetto, senza cambiare scenario.",
+  "definizione_esame": {
+    "definizione": "La struttura semantica HTML usa elementi che esprimono il ruolo del contenuto nella pagina.",
+    "scopo_vantaggio": "Rende il documento comprensibile a persone, browser e tecnologie assistive senza imporre uno stile CSS.",
+    "esempio": "Una scheda autonoma di libro può essere article dentro il contenuto principale main del catalogo."
+  },
+  "spiegazione": "## Prima l’intuizione e i prerequisiti\n\n**Richiama form HTML e accessibilità di base.** La pagina non dovrebbe essere una sequenza di div con nomi decorativi. Chiediti dove inizia il contenuto principale, quali collegamenti sono navigazione e quale blocco può essere compreso anche fuori dalla pagina. Nel progetto della Biblioteca Aurora la domanda iniziale è concreta: come far capire la struttura del catalogo anche quando i fogli di stile non sono disponibili. Prima di scegliere una API o scrivere istruzioni, identifica i dati coinvolti, chi è responsabile di ogni passaggio e quale risultato il browser deve comunicare. Questo evita di confondere il nome di una tecnologia con il problema che risolve.\n\n## Il flusso da saper disegnare\n\nI landmark rendono la pagina percorribile: header introduce una pagina o sezione, nav contiene navigazione, main raccoglie il contenuto dominante, aside aggiunge contenuto complementare e footer chiude pagina o sezione. Dentro main, una scheda con titolo e significato autonomo è un buon article; section raggruppa un tema con propria intestazione. Un buon ragionamento mantiene distinto ciò che avvia l’azione, ciò che trasforma i dati e ciò che rende il risultato visibile. Se uno dei passaggi fallisce, il comportamento previsto deve essere dichiarato: un’interfaccia affidabile non inventa un esito positivo né nasconde l’incertezza.\n\n```mermaid\nflowchart TD\n    A[html] --> B[header]\n    A --> C[nav]\n    A --> D[main]\n    D --> E[article: libro]\n    A --> F[footer]\n```\n\n## Applica l’idea con codice commentato\n\nOgni tag porta un ruolo. Un div resta utile soltanto per un raggruppamento privo di un elemento semantico più preciso; una classe CSS non cambia invece il ruolo del tag.\n\n```html\n<header>\n  <h1>Biblioteca Aurora</h1>\n</header>\n<nav aria-label=\"Catalogo\">\n  <a href=\"/catalogo\">Cerca libri</a>\n</nav>\n<main>\n  <!-- Questa scheda è contenuto autonomo del catalogo. -->\n  <article>\n    <h2>Il nome della rosa</h2>\n    <p>Disponibile in sede.</p>\n  </article>\n</main>\n<footer>Contatti della biblioteca</footer>\n```\n\nIl frammento è piccolo apposta: mostra il contratto essenziale senza far perdere di vista il passaggio concettuale. Nella pratica il codice va inserito in un progetto con test, gestione degli errori e responsabilità separate. Un input proveniente da utente, browser o rete non diventa attendibile soltanto perché ha raggiunto una funzione.\n\n## Confronto che evita una trappola\n\nSemantica non significa aggiungere tanti tag a caso. Un article non è ogni riquadro grafico e section non è il sostituto universale di div. I titoli devono raccontare il contenuto.\n\n| Elemento | Quando usarlo | Non usarlo solo per |\n|---|---|---|\n| main | Contenuto dominante | Applicare uno stile |\n| article | Contenuto autonomo | Ogni riquadro grafico |\n| section | Gruppo tematico con titolo | Sostituire ogni div |\n\n## Verifica mentale prima di proseguire\n\nLeggi l’albero senza CSS: deve essere ancora comprensibile. Controlla che esista un solo main e che un landmark non sia stato scelto per un semplice margine grafico. Ripeti il percorso con un caso normale e con un caso limite: domanda iniziale, controllo, esito. Se riesci a spiegare perché i due casi hanno risposte diverse, non stai soltanto memorizzando parole chiave ma stai applicando un contratto tecnico.",
+  "analogia": {
+    "testo": "È come organizzare una biblioteca con cartelli «ingresso», «catalogo» e «sala lettura»: i cartelli dicono a cosa serve ogni zona prima dell’arredo.",
+    "limite": "Nel documento non esistono muri reali: la semantica comunica ruoli logici ma non garantisce da sola contrasto, tastiera o buona grafica."
+  },
+  "worked_example": {
+    "titolo": "Scheda semantica del catalogo",
+    "problema": "Costruisci una pagina con titolo, navigazione al catalogo, area principale con una scheda autonoma e informazioni finali.",
+    "passi": [
+      "Usa header e h1 per l’identità.",
+      "Raccogli i link in nav.",
+      "Inserisci il contenuto dominante in un solo main.",
+      "Rappresenta la scheda con article e titolo proprio.",
+      "Chiudi le informazioni in footer."
+    ],
+    "soluzione": "La struttura è header, nav, main con article, poi footer. La scheda usa h2 perché il titolo del sito è h1. Le classi CSS sono aggiunte senza sostituire landmark e titoli.",
+    "perche_funziona": "La struttura conserva significato anche senza foglio di stile ed esplicita le zone principali a chi naviga per landmark o intestazioni."
+  },
+  "completion_problem": {
+    "titolo": "Completa il contenuto principale",
+    "testo": "La pagina ha header e navigazione. Completa il blocco che contiene una scheda autonoma di libro con elementi semantici appropriati.",
+    "passi_mancanti": [
+      "Aprire un unico main per il contenuto dominante.",
+      "Usare article per la scheda autonoma.",
+      "Aggiungere un’intestazione coerente della scheda."
+    ],
+    "soluzione": "<main>\n  <article>\n    <h2>Catalogo: titolo del libro</h2>\n    <p>Informazioni di disponibilità.</p>\n  </article>\n</main>\n<!-- main definisce l’area centrale; article definisce la scheda. -->"
+  },
+  "esercizio_autonomo": {
+    "titolo": "Correggi la pagina a div",
+    "testo": "Riscrivi una pagina composta soltanto da div con classi top, menu, content e bottom, mantenendo div soltanto dove non esiste significato più preciso.",
+    "suggerimento": "Nomina prima le zone raggiungibili: intestazione, navigazione, contenuto principale e chiusura.",
+    "soluzione_attesa": "Sostituisci i contenitori riconoscibili con header, nav, main e footer. Mantieni div per raggruppamenti neutri e usa article per una scheda di libro che sia autosufficiente."
+  },
+  "errori_trappole": [
+    {
+      "errore": "Scegliere tag HTML solo per lo stile predefinito",
+      "perche_sbagliato": "Il ruolo semantico dipende dal contenuto; l’aspetto è compito del CSS e può cambiare senza cambiare il tag.",
+      "distrattore": "Un metodo HTTP PUT crea un landmark."
+    },
+    {
+      "errore": "Usare più main per riquadri della pagina",
+      "perche_sbagliato": "main identifica il contenuto dominante del documento, non ogni colonna o pannello visivo.",
+      "distrattore": "Una Promise sostituisce un heading."
+    },
+    {
+      "errore": "Usare section come sinonimo universale di div",
+      "perche_sbagliato": "section rappresenta un gruppo tematico, di solito con intestazione; un raggruppamento neutro può restare div.",
+      "distrattore": "Un commit Git rende semantico un div."
+    }
+  ],
+  "richiamo_attivo": {
+    "domande": [
+      {
+        "domanda": "Che cosa comunica un landmark HTML?",
+        "risposta": "Comunica il ruolo di una zona, come navigazione, contenuto principale o chiusura."
+      },
+      {
+        "domanda": "Quando una scheda può essere article?",
+        "risposta": "Quando mantiene significato se letta o riusata separatamente dal resto della pagina."
+      },
+      {
+        "domanda": "Perché una classe CSS non basta?",
+        "risposta": "Perché descrive stile o script, mentre il tag HTML esprime il ruolo semantico del contenuto."
+      }
+    ],
+    "spiega_con_parole_tue": "Spiega perché una pagina resta comprensibile quando il suo albero HTML ha landmark corretti.",
+    "collegamenti_interleaving": [
+      {
+        "nodo": "html-form-accessibilita",
+        "collegamento": "La semantica dei landmark completa quella dei form: entrambi danno nomi e ruoli espliciti a controlli e zone."
+      }
+    ]
+  },
+  "riepilogo": "HTML semantico sceglie tag per ruolo. Usa landmark per zone della pagina e article per contenuti autonomi. Le classi CSS non sostituiscono il significato HTML. Mantieni titoli coerenti e un solo main per il contenuto dominante.",
+  "flashcard": {
+    "fronte": "A cosa serve HTML semantico?",
+    "retro": "A esprimere il ruolo del contenuto con elementi appropriati, così struttura e navigazione restano comprensibili oltre l’aspetto grafico."
+  },
+  "checklist": {
+    "so_fare": [
+      "Strutturare una pagina con landmark HTML",
+      "Scegliere article, section o div in base al significato"
+    ],
+    "so_dire": [
+      "Definire semantica HTML",
+      "Spiegare il ruolo di main e nav"
+    ]
+  }
+}
